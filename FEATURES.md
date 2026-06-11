@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F060. Next: F061.
+**Status:** Day 1 in progress. Last completed: F070. Next: F071.
 
 ---
 
@@ -96,16 +96,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F060 — Logging unit tests (serializers, levels, redaction)
 
 ### Web App Bootstrap (F061–F070)
-- [ ] F061 — `apps/web`: Vite + React + TypeScript scaffold
-- [ ] F062 — React Router setup with layout route + placeholder pages
-- [ ] F063 — App shell: sidebar, top bar, main pane, responsive collapse
-- [ ] F064 — Typed API client generated from shared route schemas
-- [ ] F065 — TanStack Query setup with sensible cache defaults
-- [ ] F066 — Global error boundary with friendly fallback + reload
-- [ ] F067 — Suspense/loading skeleton primitives
-- [ ] F068 — API base URL from env with dev proxy to server port
-- [ ] F069 — Vitest + Testing Library smoke test rendering the shell
-- [ ] F070 — `pnpm dev` runs server + web concurrently with one command
+- [x] F061 — `apps/web`: Vite + React + TypeScript scaffold
+- [x] F062 — React Router setup with layout route + placeholder pages
+- [x] F063 — App shell: sidebar, top bar, main pane, responsive collapse
+- [x] F064 — Typed API client generated from shared route schemas
+- [x] F065 — TanStack Query setup with sensible cache defaults
+- [x] F066 — Global error boundary with friendly fallback + reload
+- [x] F067 — Suspense/loading skeleton primitives
+- [x] F068 — API base URL from env with dev proxy to server port
+- [x] F069 — Vitest + Testing Library smoke test rendering the shell
+- [x] F070 — `pnpm dev` runs server + web concurrently with one command
 
 ### Design System Base (F071–F080)
 - [ ] F071 — `packages/ui`: CSS custom-property tokens (color, spacing, type scale, radii)

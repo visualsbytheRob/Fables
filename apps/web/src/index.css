@@ -1,0 +1,124 @@
+:root {
+  --bg: #16121f;
+  --bg-panel: #1f1a2b;
+  --bg-hover: #2a2438;
+  --text: #e8e4f0;
+  --text-dim: #9b93ad;
+  --accent: #b08fff;
+  --border: #322a44;
+  --radius: 8px;
+  --sidebar-width: 240px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #faf8fd;
+    --bg-panel: #ffffff;
+    --bg-hover: #f0ecf7;
+    --text: #241d33;
+    --text-dim: #6f6783;
+    --accent: #6d3fd4;
+    --border: #e2dcee;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  min-height: 100dvh;
+}
+
+.sidebar {
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar .brand {
+  font-weight: 700;
+  font-size: 18px;
+  padding: 8px 10px 16px;
+  color: var(--accent);
+}
+
+.sidebar a {
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 14px;
+}
+
+.sidebar a:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.sidebar a.active {
+  background: var(--bg-hover);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.main {
+  padding: 24px 32px;
+  min-width: 0;
+}
+
+.skeleton {
+  background: var(--bg-hover);
+  border-radius: var(--radius);
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.error-fallback {
+  max-width: 480px;
+  margin: 15vh auto;
+  text-align: center;
+  color: var(--text-dim);
+}
+
+@media (max-width: 720px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    flex-direction: row;
+    align-items: center;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .sidebar .brand {
+    padding: 8px 10px;
+  }
+  .main {
+    padding: 16px;
+  }
+}
