@@ -11,7 +11,7 @@ Your notes are the world. Your stories run on a compiler you own.
 
 1. Find the **first unchecked** `- [ ]` feature below. That is where work resumes.
 2. Implement features in order. A feature is **done** when: code exists, it compiles, relevant tests pass, and the box is checked `- [x]`.
-3. Commit in batches of ~10 features (one group = one commit) with message `feat(day-N): FXXX–FYYY <group name>`. Push to `claude/fables-repo-exploration-kgawi1` after every 2–3 commits.
+3. Commit in batches of ~10 features (one group = one commit) with message `feat(day-N): FXXX–FYYY <group name>`. Push directly to `main` after every 2–3 commits (user's standing instruction, 2026-06-11).
 4. Never skip ahead past an unchecked feature without marking it `- [~]` (deferred) with a one-line reason appended.
 5. If a feature is obsolete because of an earlier implementation decision, mark `- [x]` with `(subsumed by FXXX)` appended.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.

@@ -10,7 +10,7 @@ This repo is built in daily Claude Code sessions against a 1,000-feature plan.
 - Target throughput: ~100 features per session/day, in order.
 - One group of 10 features = one commit: `feat(day-N): FXXX–FYYY <group name>`.
 - Check boxes in `FEATURES.md` in the same commit as the implementation.
-- Push to `claude/fables-repo-exploration-kgawi1` every 2–3 commits. Never push to main.
+- Push directly to `main` every 2–3 commits (explicit standing instruction from the user, 2026-06-11).
 - Keep `pnpm test`, `pnpm typecheck`, and `pnpm build` green at every commit.
 
 ## On session end (or when stopping early)
