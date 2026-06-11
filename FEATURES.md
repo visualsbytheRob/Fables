@@ -24,16 +24,16 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 1 — Foundation & Monorepo (F001–F100)
 
 ### Repo & Tooling (F001–F010)
-- [ ] F001 — Initialize pnpm workspace monorepo with `apps/` and `packages/` directories
-- [ ] F002 — Root `package.json` with workspace scripts: `dev`, `build`, `test`, `lint`, `format`, `typecheck`
-- [ ] F003 — `pnpm-workspace.yaml` covering `apps/*` and `packages/*`
-- [ ] F004 — Shared `tsconfig.base.json`: strict mode, ES2022, path aliases for all packages
-- [ ] F005 — ESLint flat config shared across the workspace
-- [ ] F006 — Prettier config + `.editorconfig`
-- [ ] F007 — `.gitignore` covering node_modules, dist, data dirs, env files
-- [ ] F008 — Node version pinning: `.nvmrc` + `engines` field
-- [ ] F009 — `README.md` quickstart: clone → `pnpm install` → `pnpm dev` → tailscale serve
-- [ ] F010 — `scripts/doctor.mjs`: verifies Node version, pnpm presence, port availability
+- [x] F001 — Initialize pnpm workspace monorepo with `apps/` and `packages/` directories
+- [x] F002 — Root `package.json` with workspace scripts: `dev`, `build`, `test`, `lint`, `format`, `typecheck`
+- [x] F003 — `pnpm-workspace.yaml` covering `apps/*` and `packages/*`
+- [x] F004 — Shared `tsconfig.base.json`: strict mode, ES2022, path aliases for all packages
+- [x] F005 — ESLint flat config shared across the workspace
+- [x] F006 — Prettier config + `.editorconfig`
+- [x] F007 — `.gitignore` covering node_modules, dist, data dirs, env files
+- [x] F008 — Node version pinning: `.nvmrc` + `engines` field
+- [x] F009 — `README.md` quickstart: clone → `pnpm install` → `pnpm dev` → tailscale serve
+- [x] F010 — `scripts/doctor.mjs`: verifies Node version, pnpm presence, port availability
 
 ### Core Domain Package (F011–F020)
 - [ ] F011 — `packages/core`: package scaffold with build + test wiring

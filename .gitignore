@@ -1,0 +1,23 @@
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# local data — never commit a vault
+.fables/
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm
+*.fablesbak
+
+# env & logs
+.env
+.env.*
+!.env.example
+logs/
+*.log
+
+# editor/os noise
+.DS_Store
+.idea/
