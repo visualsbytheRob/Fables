@@ -17,13 +17,14 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F090. Next: F091.
+**Status:** Day 1 COMPLETE (F001–F100, 48 tests, 74.8% coverage). Next session: Day 2, F101.
 
 ---
 
 ## Day 1 — Foundation & Monorepo (F001–F100)
 
 ### Repo & Tooling (F001–F010)
+
 - [x] F001 — Initialize pnpm workspace monorepo with `apps/` and `packages/` directories
 - [x] F002 — Root `package.json` with workspace scripts: `dev`, `build`, `test`, `lint`, `format`, `typecheck`
 - [x] F003 — `pnpm-workspace.yaml` covering `apps/*` and `packages/*`
@@ -36,6 +37,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F010 — `scripts/doctor.mjs`: verifies Node version, pnpm presence, port availability
 
 ### Core Domain Package (F011–F020)
+
 - [x] F011 — `packages/core`: package scaffold with build + test wiring
 - [x] F012 — Branded ID types (`NoteId`, `StoryId`, `EntityId`) with ULID generation
 - [x] F013 — Domain types: `Note`, `Notebook`, `Tag`, `Attachment`
@@ -48,6 +50,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F020 — Unit tests covering all core utilities and schema round-trips
 
 ### Server Bootstrap (F021–F030)
+
 - [x] F021 — `apps/server`: Fastify app factory pattern (`buildApp()` returns configurable instance)
 - [x] F022 — `/api/v1/health` endpoint with version, uptime, db status
 - [x] F023 — Graceful shutdown: SIGINT/SIGTERM drain, close db, flush logs
@@ -60,6 +63,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F030 — Server integration tests: boot, health check, 404 envelope, shutdown
 
 ### Database Layer (F031–F040)
+
 - [x] F031 — better-sqlite3 connection module with WAL mode + foreign keys on
 - [x] F032 — Migrations runner: numbered SQL files, applied-migrations table, idempotent
 - [x] F033 — Migration 001: notes, notebooks, tags, note_tags tables
@@ -72,6 +76,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F040 — Repo unit tests against in-memory SQLite
 
 ### Config & Environment (F041–F050)
+
 - [x] F041 — Env parsing with zod: `PORT`, `DATA_DIR`, `LOG_LEVEL`, `NODE_ENV`
 - [x] F042 — Data directory resolution defaulting to `~/.fables`, auto-created
 - [x] F043 — `fables.config.json` optional file overriding env defaults
@@ -84,6 +89,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F050 — Config unit tests covering precedence and validation failures
 
 ### Logging & Observability (F051–F060)
+
 - [x] F051 — pino logger module with child-logger conventions per subsystem
 - [x] F052 — Log level control at runtime via `/api/v1/debug/log-level`
 - [x] F053 — Request ID propagation into all downstream logs
@@ -96,6 +102,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F060 — Logging unit tests (serializers, levels, redaction)
 
 ### Web App Bootstrap (F061–F070)
+
 - [x] F061 — `apps/web`: Vite + React + TypeScript scaffold
 - [x] F062 — React Router setup with layout route + placeholder pages
 - [x] F063 — App shell: sidebar, top bar, main pane, responsive collapse
@@ -108,6 +115,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F070 — `pnpm dev` runs server + web concurrently with one command
 
 ### Design System Base (F071–F080)
+
 - [x] F071 — `packages/ui`: CSS custom-property tokens (color, spacing, type scale, radii)
 - [x] F072 — Dark/light theme with system-preference detection + manual toggle
 - [x] F073 — Button, Input, Textarea, Select primitives
@@ -120,6 +128,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F080 — `/playground` route rendering every primitive for visual QA
 
 ### API Conventions (F081–F090)
+
 - [x] F081 — Response envelope: `{ data }` / `{ error: { code, message } }`
 - [x] F082 — Cursor pagination convention with `limit`/`cursor` params
 - [x] F083 — Stable error code catalog shared between server and client
@@ -132,22 +141,24 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F090 — Contract tests asserting envelope + pagination behavior
 
 ### Dev Experience & CI (F091–F100)
-- [ ] F091 — GitHub Actions CI: install, lint, typecheck, test, build on push/PR
-- [ ] F092 — Vitest workspace config running all package test suites
-- [ ] F093 — Coverage reporting with per-package thresholds
-- [ ] F094 — `pnpm typecheck` running project references build
-- [ ] F095 — Bundle size check for web build with budget warning
-- [ ] F096 — Pre-commit hook: lint-staged (eslint + prettier on staged files)
-- [ ] F097 — Issue + PR templates
-- [ ] F098 — `CONTRIBUTING.md` describing monorepo layout and commands
-- [ ] F099 — VS Code workspace settings + recommended extensions file
-- [ ] F100 — Day-1 retro note in `docs/devlog/day-01.md`
+
+- [x] F091 — GitHub Actions CI: install, lint, typecheck, test, build on push/PR
+- [x] F092 — Vitest workspace config running all package test suites
+- [x] F093 — Coverage reporting with per-package thresholds
+- [x] F094 — `pnpm typecheck` running project references build
+- [x] F095 — Bundle size check for web build with budget warning
+- [x] F096 — Pre-commit hook: lint-staged (eslint + prettier on staged files)
+- [x] F097 — Issue + PR templates
+- [x] F098 — `CONTRIBUTING.md` describing monorepo layout and commands
+- [x] F099 — VS Code workspace settings + recommended extensions file
+- [x] F100 — Day-1 retro note in `docs/devlog/day-01.md`
 
 ---
 
 ## Day 2 — Notes Core (F101–F200)
 
 ### Note CRUD API (F101–F110)
+
 - [ ] F101 — `POST /notes` create with title, body, notebook
 - [ ] F102 — `GET /notes/:id` fetch single note with metadata
 - [ ] F103 — `GET /notes` list with pagination, sort (updated/created/title)
@@ -160,6 +171,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F110 — CRUD integration tests covering happy paths and conflict cases
 
 ### Note Storage & Versioning (F111–F120)
+
 - [ ] F111 — Note revision table: append-only snapshots on save
 - [ ] F112 — Revision pruning policy (keep all <24h, daily afterward)
 - [ ] F113 — `GET /notes/:id/revisions` list endpoint
@@ -172,6 +184,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F120 — Versioning unit tests including pruning edge cases
 
 ### Markdown Editor (F121–F130)
+
 - [ ] F121 — CodeMirror 6 editor component with markdown language mode
 - [ ] F122 — Syntax highlighting theme matching app dark/light themes
 - [ ] F123 — Toolbar: bold, italic, heading, list, code, link, quote
@@ -184,6 +197,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F130 — Editor component tests (commands, list behavior)
 
 ### Markdown Rendering (F131–F140)
+
 - [ ] F131 — Markdown → HTML pipeline (remark/rehype) with sanitization
 - [ ] F132 — GFM support: tables, strikethrough, task lists, autolinks
 - [ ] F133 — Syntax-highlighted code blocks in preview
@@ -196,6 +210,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F140 — Rendering snapshot tests for the full pipeline
 
 ### Notebooks & Organization (F141–F150)
+
 - [ ] F141 — Notebook CRUD API with nesting (parent_id)
 - [ ] F142 — Notebook tree sidebar with expand/collapse, drag to reorder
 - [ ] F143 — Move note between notebooks (drag + command palette)
@@ -208,6 +223,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F150 — Notebook tree tests (nesting, moves, cycles prevented)
 
 ### Tags (F151–F160)
+
 - [ ] F151 — Tag CRUD API with rename propagation
 - [ ] F152 — Inline `#tag` parsing from note bodies into tag index
 - [ ] F153 — Tag autocomplete in editor on `#` trigger
@@ -220,6 +236,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F160 — Tag parsing + propagation tests
 
 ### Attachments & Files (F161–F170)
+
 - [ ] F161 — Attachment upload endpoint storing to `DATA_DIR/attachments` content-addressed
 - [ ] F162 — Attachment metadata table: mime, size, hash, source note
 - [ ] F163 — Image serving with on-the-fly resize variants
@@ -232,6 +249,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F170 — Attachment lifecycle tests (upload, GC, dedupe by hash)
 
 ### Note List & Navigation UI (F171–F180)
+
 - [ ] F171 — Note list pane: title, snippet, updated time, tag chips
 - [ ] F172 — Virtualized list for large notebooks
 - [ ] F173 — Sort + filter bar (date, title, has-attachments, tag)
@@ -244,6 +262,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F180 — Navigation flow tests (switcher, list selection, deep links)
 
 ### Autosave & History UX (F181–F190)
+
 - [ ] F181 — Debounced autosave with saving/saved indicator
 - [ ] F182 — Conflict detection on stale rev with merge prompt
 - [ ] F183 — Revision history panel with timeline slider
@@ -256,6 +275,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F190 — Autosave/conflict integration tests
 
 ### Power Features (F191–F200)
+
 - [ ] F191 — Quick capture modal (global hotkey) creating note in default notebook
 - [ ] F192 — Note templates v0: new-note-from-template picker
 - [ ] F193 — Word count + reading time in status bar
@@ -272,6 +292,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 3 — Linking, Graph & Queries (F201–F300)
 
 ### Wikilinks (F201–F210)
+
 - [ ] F201 — `[[wikilink]]` syntax parsing in note bodies
 - [ ] F202 — Link table maintenance on note save (source, target, position)
 - [ ] F203 — Wikilink autocomplete in editor on `[[` trigger
@@ -284,6 +305,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F210 — Wikilink parser test suite (nesting, escapes, unicode)
 
 ### Backlinks (F211–F220)
+
 - [ ] F211 — Backlinks API: incoming links for a note with context snippets
 - [ ] F212 — Backlinks panel in note view grouped by source note
 - [ ] F213 — Context snippet extraction around each backlink mention
@@ -296,6 +318,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F220 — Backlinks API tests including snippet boundaries
 
 ### Unlinked Mentions (F221–F230)
+
 - [ ] F221 — Unlinked mention detection: note titles appearing as plain text elsewhere
 - [ ] F222 — Mention index updated incrementally on save
 - [ ] F223 — Unlinked mentions section in backlinks panel
@@ -308,6 +331,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F230 — Mention detection test suite
 
 ### Graph Data API (F231–F240)
+
 - [ ] F231 — Graph endpoint: nodes (notes/entities/stories) + edges (links)
 - [ ] F232 — Graph filtering params: notebooks, tags, types, date range
 - [ ] F233 — Local graph endpoint: n-hop neighborhood around one note
@@ -320,6 +344,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F240 — Graph API tests on seeded fixtures
 
 ### Graph View UI (F241–F250)
+
 - [ ] F241 — Force-directed graph canvas (WebGL via pixi/sigma or d3+canvas)
 - [ ] F242 — Pan/zoom/drag interactions, mobile pinch support
 - [ ] F243 — Node styling by type (note/entity/story) and cluster color
@@ -332,6 +357,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F250 — Graph view performance test with 5k-node synthetic fixture
 
 ### Daily Notes & Journal (F251–F260)
+
 - [ ] F251 — Daily note convention: one note per day-key in Journal notebook
 - [ ] F252 — "Today" command creating/opening today's daily note
 - [ ] F253 — Calendar widget navigating to any day's note
@@ -344,6 +370,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F260 — Daily note flow tests
 
 ### Templates (F261–F270)
+
 - [ ] F261 — Template notebook convention + template picker
 - [ ] F262 — Template variables: `{{date}}`, `{{title}}`, `{{cursor}}`
 - [ ] F263 — Custom variable prompts on instantiation
@@ -356,6 +383,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F270 — Template engine tests (variables, escaping)
 
 ### Query Language — FQL (F271–F280)
+
 - [ ] F271 — FQL grammar v0: `tag:x notebook:y before:date "phrase"` filters
 - [ ] F272 — FQL parser with helpful syntax error messages
 - [ ] F273 — FQL → SQL compiler over the notes index
@@ -368,6 +396,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F280 — FQL test suite: parser cases + SQL output snapshots
 
 ### Saved Queries & Embeds (F281–F290)
+
 - [ ] F281 — Saved query CRUD: name, FQL string, icon
 - [ ] F282 — Saved queries section in sidebar acting as smart folders
 - [ ] F283 — Query embed block in notes: ```fql fenced block renders live results
@@ -380,6 +409,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F290 — Saved query + embed integration tests
 
 ### Import & Export (F291–F300)
+
 - [ ] F291 — Markdown folder import: directory of .md files → notebook, links resolved
 - [ ] F292 — Obsidian vault import: wikilinks, frontmatter, attachments mapped
 - [ ] F293 — Frontmatter handling: YAML metadata → tags/fields
@@ -396,6 +426,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 4 — Forge DSL: Language & Compiler Front-End (F301–F400)
 
 ### Language Specification (F301–F310)
+
 - [ ] F301 — `docs/forge/spec.md`: language overview, design goals, file extension `.fable`
 - [ ] F302 — Spec: scenes, passages, and the knot/stitch structural model
 - [ ] F303 — Spec: choices syntax (`*` once-only, `+` sticky), nested choice depth
@@ -408,6 +439,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F310 — Spec: formal grammar appendix (EBNF) kept in sync with parser
 
 ### Lexer (F311–F320)
+
 - [ ] F311 — `packages/forge-dsl`: package scaffold with strict build + tests
 - [ ] F312 — Token type definitions with source span tracking (line, col, offset)
 - [ ] F313 — Lexer core: text content vs logic mode switching
@@ -420,6 +452,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F320 — Lexer golden tests: fixture files → token stream snapshots
 
 ### Parser (F321–F330)
+
 - [ ] F321 — Recursive descent parser producing typed AST with spans
 - [ ] F322 — Parse story structure: header metadata, knots, stitches, content lines
 - [ ] F323 — Parse choices with nesting depth, conditions, and labels
@@ -432,6 +465,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F330 — Parser golden tests: fixtures → AST JSON snapshots
 
 ### AST & Visitors (F331–F340)
+
 - [ ] F331 — AST node type hierarchy with discriminated unions
 - [ ] F332 — Visitor/walker utility with enter/exit hooks
 - [ ] F333 — AST printer: AST → canonical source (basis for formatter)
@@ -444,6 +478,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F340 — Visitor + printer round-trip tests
 
 ### Diagnostics Engine (F341–F350)
+
 - [ ] F341 — Diagnostic type: severity, code, span, message, related spans
 - [ ] F342 — Diagnostic catalog with stable codes (`FORGE001`…)
 - [ ] F343 — Pretty terminal renderer: source frame with caret underlines
@@ -456,6 +491,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F350 — Diagnostics snapshot tests for every catalog code
 
 ### Symbol Resolution (F351–F360)
+
 - [ ] F351 — Symbol table: knots, stitches, variables, labels with scopes
 - [ ] F352 — Two-pass resolution: declare all, then resolve references
 - [ ] F353 — Divert target resolution incl. cross-file targets
@@ -468,6 +504,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F360 — Resolution test suite incl. multi-file fixtures
 
 ### Semantic Checks (F361–F370)
+
 - [ ] F361 — Type checking for expressions (bool/number/string/list)
 - [ ] F362 — Condition expressions must be boolean — error with coercion hint
 - [ ] F363 — List operations validity (membership, add/remove)
@@ -480,6 +517,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F370 — Semantic check test suite
 
 ### Formatter (F371–F380)
+
 - [ ] F371 — `forge fmt`: canonical formatting from AST printer
 - [ ] F372 — Indentation rules for nested choices and gathers
 - [ ] F373 — Logic line spacing + alignment conventions
@@ -492,6 +530,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F380 — Formatter golden tests across fixture corpus
 
 ### Editor Integration (F381–F390)
+
 - [ ] F381 — CodeMirror 6 language package for `.fable` (parser-backed)
 - [ ] F382 — Syntax highlighting: structure, logic, strings, bindings, comments
 - [ ] F383 — Live diagnostics in editor gutter + squiggles from compiler
@@ -504,6 +543,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F390 — Editor integration tests (completion, diagnostics overlay)
 
 ### Language Test Infrastructure (F391–F400)
+
 - [ ] F391 — Fixture corpus: 20+ `.fable` programs from trivial to gnarly
 - [ ] F392 — Golden test runner: lex/parse/resolve snapshots per fixture
 - [ ] F393 — Error fixture corpus: programs that must produce specific diagnostics
@@ -520,6 +560,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 5 — Compiler Back-End & VM (F401–F500)
 
 ### Intermediate Representation (F401–F410)
+
 - [ ] F401 — `packages/forge-vm`: package scaffold
 - [ ] F402 — IR design doc: flat container tree, instruction kinds
 - [ ] F403 — AST → IR lowering for content and structure
@@ -532,6 +573,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F410 — Lowering test suite with IR snapshots
 
 ### Bytecode Format (F411–F420)
+
 - [ ] F411 — Bytecode container spec: header, version, string table, instruction stream
 - [ ] F412 — Opcode set definition (~40 ops) with operand encodings
 - [ ] F413 — Serializer: IR → bytecode buffer
@@ -544,6 +586,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F420 — Round-trip tests: serialize → deserialize → identical execution
 
 ### Code Generation (F421–F430)
+
 - [ ] F421 — Codegen for text output ops with interpolation
 - [ ] F422 — Codegen for variable load/store, temp slots
 - [ ] F423 — Codegen for arithmetic/logic/comparison expression ops
@@ -556,6 +599,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F430 — Codegen golden tests: fixtures → disassembly snapshots
 
 ### VM Core (F431–F440)
+
 - [ ] F431 — VM execution loop: fetch/decode/execute over bytecode
 - [ ] F432 — Output buffer model: text fragments, line breaks, glue resolution
 - [ ] F433 — `Continue()` semantics: run until choice point or end
@@ -568,6 +612,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F440 — VM core tests driving fixture stories end-to-end
 
 ### State & Variables (F441–F450)
+
 - [ ] F441 — Variable storage: globals map, temp frames, typed values
 - [ ] F442 — Visit counts queryable from expressions (`visited(knot)`)
 - [ ] F443 — Read-only external state injection (host-provided values)
@@ -580,6 +625,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F450 — State round-trip property tests (serialize mid-story, resume, identical transcript)
 
 ### Choices & Control Flow (F451–F460)
+
 - [ ] F451 — Once-only choice consumption tracked in state
 - [ ] F452 — Sticky choices remain across revisits
 - [ ] F453 — Conditional choices evaluated lazily at presentation
@@ -592,6 +638,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F460 — Control flow torture tests (deep nesting, loops with exits)
 
 ### Saves & Snapshots (F461–F470)
+
 - [ ] F461 — Save slot model: named snapshots of VM state + story metadata
 - [ ] F462 — Save/load API endpoints per story per user
 - [ ] F463 — Autosave on every choice with ring buffer of last N
@@ -604,6 +651,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F470 — Save/rewind integration tests
 
 ### Randomness & Expressions (F471–F480)
+
 - [ ] F471 — Seedable PRNG in VM state (deterministic replays)
 - [ ] F472 — `RANDOM(min,max)` and dice expression support (`d20`, `3d6+2`)
 - [ ] F473 — Shuffle alternatives using state PRNG
@@ -616,6 +664,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F480 — Dice roller UI affordance in player (tap to roll visibly)
 
 ### Effects & Host Hooks (F481–F490)
+
 - [ ] F481 — External function registry: host functions callable from stories
 - [ ] F482 — Effect ops: play-audio, set-theme, vibrate (mobile), pause
 - [ ] F483 — Knowledge effects: `@journal(...)` writes a note entry from story flow
@@ -628,6 +677,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F490 — Effects integration tests with mock host
 
 ### Debugger & Tooling (F491–F500)
+
 - [ ] F491 — Step-through debugger API: step, step-over choice, inspect state
 - [ ] F492 — Breakpoints on knots/stitches/lines
 - [ ] F493 — Watch expressions evaluated against live state
@@ -644,6 +694,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 6 — Story Authoring & Player (F501–F600)
 
 ### Story Project Model (F501–F510)
+
 - [ ] F501 — Story CRUD API: title, description, cover, entry file
 - [ ] F502 — Multi-file story projects: .fable files tree per story
 - [ ] F503 — Story file CRUD with rename + include-path integrity
@@ -656,6 +707,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F510 — Story project API tests
 
 ### Author Editor UX (F511–F520)
+
 - [ ] F511 — Story workspace route: file tree + editor + preview three-pane
 - [ ] F512 — Multi-tab editing of story files
 - [ ] F513 — Compile status bar: errors/warnings count, click-to-jump
@@ -668,6 +720,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F520 — Author workspace e2e test (edit → compile → error → fix)
 
 ### Scene Graph Visualization (F521–F530)
+
 - [ ] F521 — Story flow graph: knots as nodes, diverts as edges (from IR)
 - [ ] F522 — Graph layout: layered/dagre for narrative flow direction
 - [ ] F523 — Node badges: choice count, word count, visit-tracking flags
@@ -680,6 +733,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F530 — Scene graph tests on fixture stories
 
 ### Live Playtest Pane (F531–F540)
+
 - [ ] F531 — Playtest pane running compiled story beside the editor
 - [ ] F532 — Hot reload: recompile + smart restart preserving choice path when valid
 - [ ] F533 — Replay-from-history after edits (re-applies prior choices)
@@ -692,6 +746,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F540 — Playtest pane integration tests
 
 ### Player UI Core (F541–F550)
+
 - [ ] F541 — Player route: distraction-free story reading flow
 - [ ] F542 — Progressive text reveal with configurable pacing
 - [ ] F543 — Choice buttons with tap targets sized for thumbs
@@ -704,6 +759,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F550 — Player core e2e test on a fixture story
 
 ### Player Presentation (F551–F560)
+
 - [ ] F551 — Typography themes: serif book, terminal, parchment, dark
 - [ ] F552 — Per-story theme override via story settings/tags
 - [ ] F553 — Text size + line height reader controls
@@ -716,6 +772,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F560 — Presentation snapshot tests
 
 ### History, Bookmarks & Rewind (F561–F570)
+
 - [ ] F561 — Choice history drawer: every choice made this playthrough
 - [ ] F562 — Tap any history entry → rewind to that point (uses F464)
 - [ ] F563 — Bookmark current moment with note
@@ -728,6 +785,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F570 — History/rewind integration tests
 
 ### Story Library (F571–F580)
+
 - [ ] F571 — Library view: cover grid of all stories with progress badges
 - [ ] F572 — Cover image generation: typographic covers from title + theme
 - [ ] F573 — Story metadata editing: blurb, author, tags, content notes
@@ -740,6 +798,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F580 — Library e2e tests
 
 ### Export & Sharing (F581–F590)
+
 - [ ] F581 — Export story source as zip of .fable files
 - [ ] F582 — Export compiled story as standalone `.fable.bin`
 - [ ] F583 — Self-contained HTML export: single file with embedded VM + story
@@ -752,6 +811,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F590 — Share-sheet integration on mobile PWA (Web Share API)
 
 ### Ambient Extras (F591–F600)
+
 - [ ] F591 — Audio cue effect: story-triggered one-shot sounds (host hook)
 - [ ] F592 — Ambient loop per scene tag with crossfade
 - [ ] F593 — Volume/mute controls persisted in player settings
@@ -768,6 +828,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 7 — The Fusion: Knowledge ↔ Story (F601–F700)
 
 ### Entity Notes (F601–F610)
+
 - [ ] F601 — Entity model: typed notes (character/place/item/faction/custom) with schema fields
 - [ ] F602 — Entity field schemas per type, user-editable (health: number, traits: list)
 - [ ] F603 — Entity editor UI: structured fields + freeform markdown body
@@ -780,6 +841,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F610 — Entity model tests
 
 ### Codex Auto-Generation (F611–F620)
+
 - [ ] F611 — Codex: auto-generated index note per story listing all bound entities
 - [ ] F612 — Codex entries reveal progressively (only entities the reader has met)
 - [ ] F613 — "Met" tracking: VM emits entity-encountered events into playthrough state
@@ -792,6 +854,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F620 — Codex behavior tests (reveal ordering, spoiler safety)
 
 ### Lore Embeds in Stories (F621–F630)
+
 - [ ] F621 — `[[note]]` refs in story text render as tappable lore links in player
 - [ ] F622 — Lore popover: note preview inside player without leaving the story
 - [ ] F623 — `@entity.field` interpolation in story text pulls live entity values
@@ -804,6 +867,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F630 — Lore embed integration tests
 
 ### Story Events → Journal (F631–F640)
+
 - [ ] F631 — `@journal()` effect (F483) writing structured entries to daily notes
 - [ ] F632 — Journal entry template: story, scene, chosen text, timestamp
 - [ ] F633 — Playthrough summary note auto-created on story completion
@@ -816,6 +880,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F640 — Journal effect tests
 
 ### Knowledge-Driven Conditions (F641–F650)
+
 - [ ] F641 — Story conditions over knowledge state: `{ @note.exists("...") }`
 - [ ] F642 — Conditions over entity fields: `{ @hero.health > 50 }` evaluated live
 - [ ] F643 — Conditions over tags: content unlocked if reader has notes tagged X
@@ -828,6 +893,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F650 — Knowledge-condition test matrix
 
 ### Timeline View (F651–F660)
+
 - [ ] F651 — Unified timeline: notes created/edited + story events + playthroughs by day
 - [ ] F652 — Timeline API with type filters and date windows
 - [ ] F653 — Timeline UI: vertical scroll, day groupings, type icons
@@ -840,6 +906,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F660 — Timeline tests
 
 ### Cross-Reference Browser (F661–F670)
+
 - [ ] F661 — Unified references panel: for any object, everything pointing at it (notes, stories, scenes, saves)
 - [ ] F662 — Reference type grouping: wikilinks, bindings, mentions, journal entries
 - [ ] F663 — Story → knowledge dependency report (everything a story reads/writes)
@@ -852,6 +919,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F670 — Cross-reference correctness tests
 
 ### Transclusion (F671–F680)
+
 - [ ] F671 — Block transclusion: `![[note^block]]` embeds live block content in notes
 - [ ] F672 — Note section transclusion: `![[note#heading]]`
 - [ ] F673 — Entity card transclusion in notes: `![[@hero]]` renders entity card
@@ -864,6 +932,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F680 — Transclusion tests incl. cycles
 
 ### World State Inspector (F681–F690)
+
 - [ ] F681 — World dashboard: all entities with story-mutated fields highlighted
 - [ ] F682 — Entity mutation history: which playthrough changed what, when
 - [ ] F683 — Revert entity mutations per playthrough or per field
@@ -876,6 +945,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F690 — Mutation audit retention policy + pruning
 
 ### Fusion Demo Content (F691–F700)
+
 - [ ] F691 — Demo world: "The Aesop Engine" — notebook of fable entities (Fox, Crow, Lion...)
 - [ ] F692 — Demo story 1: "The Fox & The Crow, Annotated" using lore embeds
 - [ ] F693 — Demo story 2: branching fable using entity mutations + codex reveals
@@ -892,6 +962,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 8 — Search & Intelligence (F701–F800)
 
 ### Full-Text Search (F701–F710)
+
 - [ ] F701 — SQLite FTS5 virtual table over notes (title, body) with porter stemming
 - [ ] F702 — FTS index maintenance triggers on note create/update/delete
 - [ ] F703 — Search endpoint with snippet + highlight offsets
@@ -904,6 +975,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F710 — FTS test suite
 
 ### Search UI (F711–F720)
+
 - [ ] F711 — Global search overlay (⌘⇧F) with grouped results (notes/entities/stories)
 - [ ] F712 — Result highlighting with matched-term emphasis
 - [ ] F713 — Keyboard navigation through results
@@ -916,6 +988,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F720 — Search UI e2e tests
 
 ### Local Embeddings Pipeline (F721–F730)
+
 - [ ] F721 — Embedding runtime: onnxruntime-node with a small sentence-transformer model
 - [ ] F722 — Model download-on-first-use with checksum + offline fallback messaging
 - [ ] F723 — Note chunking strategy: heading-aware chunks with overlap
@@ -928,6 +1001,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F730 — Embedding pipeline tests with a tiny test model
 
 ### Vector Search (F731–F740)
+
 - [ ] F731 — Vector store: sqlite-vec extension (or pure-JS fallback) for ANN queries
 - [ ] F732 — Similarity search endpoint: top-k chunks for a query embedding
 - [ ] F733 — Query embedding computed server-side on search
@@ -940,6 +1014,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F740 — Vector store tests incl. fallback path
 
 ### Hybrid Ranking (F741–F750)
+
 - [ ] F741 — Hybrid search: reciprocal-rank fusion of FTS + vector results
 - [ ] F742 — Mode toggle in search UI: keyword / semantic / hybrid
 - [ ] F743 — Recency boost factor in final ranking
@@ -952,6 +1027,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F750 — Hybrid pipeline tests
 
 ### Related Notes (F751–F760)
+
 - [ ] F751 — Related panel in note view: semantic neighbors + shared-link neighbors
 - [ ] F752 — Related entities for the current story scene in author mode
 - [ ] F753 — "Relevant lore" suggestions while writing story text (binding suggestions)
@@ -964,6 +1040,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F760 — Related suggestions tests
 
 ### Document Ingestion (F761–F770)
+
 - [ ] F761 — PDF ingestion: text extraction → note with source attachment
 - [ ] F762 — PDF page-anchored citations (note links back to page N)
 - [ ] F763 — OCR pipeline (tesseract-wasm) for scanned PDFs/images
@@ -976,6 +1053,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F770 — Ingestion pipeline tests with fixture documents
 
 ### Web Clipper (F771–F780)
+
 - [ ] F771 — Clip endpoint: URL → readability-extracted markdown note
 - [ ] F772 — Bookmarklet generator page for desktop browsers
 - [ ] F773 — iOS share-sheet flow: PWA share target receiving URLs
@@ -988,6 +1066,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F780 — Clipper tests with fixture HTML
 
 ### Audio & Voice (F781–F790)
+
 - [ ] F781 — Voice memo capture in PWA (MediaRecorder) saved as attachment
 - [ ] F782 — Whisper.cpp integration hook: local transcription job runner
 - [ ] F783 — Transcription queue with status + retry
@@ -1000,6 +1079,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F790 — Voice pipeline tests with fixture audio
 
 ### Insights (F791–F800)
+
 - [ ] F791 — Insights page: knowledge base stats, growth charts, orphan counts
 - [ ] F792 — Note streaks + writing heatmap (GitHub-style)
 - [ ] F793 — Stale important notes surfacing (high-degree, long-untouched)
@@ -1016,6 +1096,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 9 — PWA, Offline, Sync & Tailscale (F801–F900)
 
 ### PWA Manifest & Install (F801–F810)
+
 - [ ] F801 — Web app manifest: name, icons (maskable), theme colors, display standalone
 - [ ] F802 — Full icon set generation pipeline (SVG source → all sizes)
 - [ ] F803 — iOS-specific meta: apple-touch-icon, status bar style, splash screens
@@ -1028,6 +1109,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F810 — Manifest/install smoke tests
 
 ### Service Worker (F811–F820)
+
 - [ ] F811 — Service worker with Workbox: precache app shell on install
 - [ ] F812 — Runtime caching: stale-while-revalidate for API GETs
 - [ ] F813 — Cache-first strategy for attachments and fonts
@@ -1040,6 +1122,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F820 — Service worker tests (Workbox strategy units + e2e offline check)
 
 ### Local Store — IndexedDB (F821–F830)
+
 - [ ] F821 — IndexedDB layer (Dexie) mirroring notes, entities, story metadata
 - [ ] F822 — Initial hydration: bulk pull into IDB on first connect
 - [ ] F823 — Read-through pattern: UI reads IDB first, network refreshes
@@ -1052,6 +1135,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F830 — IDB layer unit tests
 
 ### Sync Protocol — Op Log (F831–F840)
+
 - [ ] F831 — `packages/sync`: operation log design — every mutation is an op with lamport clock + device ID
 - [ ] F832 — Server op-log table + `/sync/pull` since-cursor endpoint
 - [ ] F833 — `/sync/push` endpoint: batch op ingestion with idempotency keys
@@ -1064,6 +1148,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F840 — Sync engine unit tests (interleaved op orders converge)
 
 ### Conflict Resolution (F841–F850)
+
 - [ ] F841 — Conflict policy: field-level last-writer-wins with lamport ordering
 - [ ] F842 — Note body conflicts: three-way text merge when clean
 - [ ] F843 — Unresolvable body conflicts → conflict copy note + banner
@@ -1076,6 +1161,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F850 — Conflict UX e2e test
 
 ### Offline Editing UX (F851–F860)
+
 - [ ] F851 — Offline indicator pill with pending-op count
 - [ ] F852 — Full note editing offline (create/edit/tag) via outbox
 - [ ] F853 — Offline story playing with local save slots
@@ -1088,6 +1174,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F860 — Offline UX polish pass on all empty/error states
 
 ### Sync Reliability (F861–F870)
+
 - [ ] F861 — Exponential backoff + jitter on sync failures
 - [ ] F862 — Partial batch failure handling (per-op acks)
 - [ ] F863 — Sync health panel: last sync, op counts, error history
@@ -1100,6 +1187,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F870 — Chaos tests: kill connection mid-batch, verify no loss/dupes
 
 ### Notifications (F871–F880)
+
 - [ ] F871 — Local notification service: in-app notification center
 - [ ] F872 — Daily journal reminder (configurable time, local scheduling)
 - [ ] F873 — Story update notices (new endings unlocked, scenario regressions)
@@ -1112,9 +1200,10 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F880 — Notification tests
 
 ### Tailscale Integration (F881–F890)
+
 - [ ] F881 — `docs/tailscale.md`: full setup guide — tailscale serve, ts.net HTTPS, iPhone install walkthrough with screenshots
 - [ ] F882 — `scripts/serve.sh`: one command starting server + `tailscale serve` config
-- [ ] F883 — Tailnet origin detection: server logs the https://*.ts.net URL on boot
+- [ ] F883 — Tailnet origin detection: server logs the https://\*.ts.net URL on boot
 - [ ] F884 — QR code printed in terminal + settings page for phone onboarding
 - [ ] F885 — HTTPS-only checks: SW + clipboard + media features verified behind ts.net cert
 - [ ] F886 — Optional auth layer: single-user token gate for defense-in-depth
@@ -1124,6 +1213,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F890 — End-to-end tailnet checklist: fresh phone → installed PWA in <5 min
 
 ### Mobile Polish (F891–F900)
+
 - [ ] F891 — Touch-target audit: all interactive elements ≥44px on phone
 - [ ] F892 — Swipe gestures: back navigation, note list actions (archive/pin)
 - [ ] F893 — Pull-to-refresh on list views triggering sync
@@ -1140,6 +1230,7 @@ Your notes are the world. Your stories run on a compiler you own.
 ## Day 10 — Hardening, Tests, Perf & Ship (F901–F1000)
 
 ### Unit Test Sweep (F901–F910)
+
 - [ ] F901 — Coverage audit: every package ≥85%, gaps ticketed and filled
 - [ ] F902 — Core domain edge case tests (unicode titles, huge notes, empty states)
 - [ ] F903 — Repository layer tests for every query path
@@ -1152,6 +1243,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F910 — Test runtime budget: full suite under 3 minutes
 
 ### End-to-End Tests (F911–F920)
+
 - [ ] F911 — Playwright setup with server+web fixture harness and seeded data
 - [ ] F912 — E2E: first-run onboarding → create note → link → graph shows edge
 - [ ] F913 — E2E: author story → compile error → fix → playtest → finish
@@ -1164,6 +1256,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F920 — E2E suite in CI with trace artifacts on failure
 
 ### Performance (F921–F930)
+
 - [ ] F921 — Performance budget doc: startup <2s, route nav <200ms, search <100ms
 - [ ] F922 — Web bundle analysis: code-split routes, lazy-load graph/editor/player
 - [ ] F923 — Server cold-start profiling + optimization
@@ -1176,6 +1269,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F930 — Perf regression gate comparing benchmark results to baseline
 
 ### Accessibility (F931–F940)
+
 - [ ] F931 — Axe automated scan integrated into e2e suite, zero violations
 - [ ] F932 — Full keyboard navigation audit (every feature mouse-free)
 - [ ] F933 — Screen reader pass: landmarks, labels, live regions for sync/toasts
@@ -1188,6 +1282,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F940 — Accessibility statement doc
 
 ### Security (F941–F950)
+
 - [ ] F941 — Threat model doc for a tailnet-deployed single-user app
 - [ ] F942 — Markdown/HTML sanitization audit (XSS via notes, clips, story text)
 - [ ] F943 — SQL injection audit: all queries parameterized, verified by grep + tests
@@ -1200,6 +1295,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F950 — Secrets scan hook + history check
 
 ### Backup & Restore (F951–F960)
+
 - [ ] F951 — Scheduled backup job: nightly SQLite snapshot + attachments manifest
 - [ ] F952 — Backup retention policy (7 daily, 4 weekly, 6 monthly)
 - [ ] F953 — One-file backup archive format (.fablesbak = tar.zst)
@@ -1212,6 +1308,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F960 — Backup/restore integration tests
 
 ### Migrations & Upgrades (F961–F970)
+
 - [ ] F961 — App version display + changelog page in settings
 - [ ] F962 — DB migration dry-run + automatic pre-migration backup
 - [ ] F963 — Bytecode version upgrade path: recompile-all command
@@ -1224,6 +1321,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F970 — Rollback runbook doc
 
 ### Local Analytics (F971–F980)
+
 - [ ] F971 — Local-only usage stats: feature counters, no network egress ever
 - [ ] F972 — Stats dashboard: most-used features, busiest hours
 - [ ] F973 — Knowledge growth metrics over time (notes, links, words)
@@ -1236,6 +1334,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F980 — Analytics tests
 
 ### Documentation (F981–F990)
+
 - [ ] F981 — Docs site: VitePress under `docs/` served at `/docs` route
 - [ ] F982 — User guide: notes, linking, graph, daily flow
 - [ ] F983 — Forge language tutorial: zero to first story in 10 steps
@@ -1248,6 +1347,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F990 — Docs build in CI with link checker
 
 ### Release & Ship (F991–F1000)
+
 - [ ] F991 — Production build pipeline: single `pnpm build` → `dist/` runnable artifact
 - [ ] F992 — `pnpm start` production mode: one process serving API + web + docs
 - [ ] F993 — systemd unit + launchd plist templates for run-on-boot
@@ -1261,4 +1361,4 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ---
 
-*1,000 features. 10 days. One fable at a time.*
+_1,000 features. 10 days. One fable at a time._
