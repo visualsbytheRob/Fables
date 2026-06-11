@@ -1,7 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import compress from '@fastify/compress';
 import cors from '@fastify/cors';
+import etag from '@fastify/etag';
+import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
 import { isAppError, type ErrorCode } from '@fables/core';
 import Fastify, { type FastifyInstance } from 'fastify';
@@ -50,6 +53,19 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   await app.register(cors, {
     // Single-user app on a tailnet: allow the ts.net origin and localhost dev ports.
     origin: [/^https?:\/\/localhost(:\d+)?$/, /^https:\/\/[a-z0-9-]+\.[a-z0-9-]+\.ts\.net$/],
+  });
+  await app.register(etag);
+  await app.register(compress, { global: true, encodings: ['br', 'gzip'] });
+  await app.register(rateLimit, {
+    // Generous: this protects against runaway scripts, not adversaries — the
+    // tailnet is the actual perimeter.
+    max: 600,
+    timeWindow: '1 minute',
+  });
+
+  // API version negotiation (F086): clients can pin via x-fables-api-version.
+  app.addHook('onSend', async (_request, reply) => {
+    reply.header('x-fables-api-version', '1');
   });
 
   app.setErrorHandler((error, request, reply) => {

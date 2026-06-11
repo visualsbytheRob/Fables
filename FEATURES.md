@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F080. Next: F081.
+**Status:** Day 1 in progress. Last completed: F090. Next: F091.
 
 ---
 
@@ -120,16 +120,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F080 — `/playground` route rendering every primitive for visual QA
 
 ### API Conventions (F081–F090)
-- [ ] F081 — Response envelope: `{ data }` / `{ error: { code, message } }`
-- [ ] F082 — Cursor pagination convention with `limit`/`cursor` params
-- [ ] F083 — Stable error code catalog shared between server and client
-- [ ] F084 — Validation middleware: zod-checked params/query/body per route
-- [ ] F085 — Route schema registry enabling typed client generation
-- [ ] F086 — `/api/v1` version prefix and version negotiation header
-- [ ] F087 — ETag support on GET endpoints for cache validation
-- [ ] F088 — Response compression (gzip/brotli) for JSON payloads
-- [ ] F089 — Light rate limiting tuned for single-user tailnet use
-- [ ] F090 — Contract tests asserting envelope + pagination behavior
+- [x] F081 — Response envelope: `{ data }` / `{ error: { code, message } }`
+- [x] F082 — Cursor pagination convention with `limit`/`cursor` params
+- [x] F083 — Stable error code catalog shared between server and client
+- [x] F084 — Validation middleware: zod-checked params/query/body per route
+- [x] F085 — Route schema registry enabling typed client generation
+- [x] F086 — `/api/v1` version prefix and version negotiation header
+- [x] F087 — ETag support on GET endpoints for cache validation
+- [x] F088 — Response compression (gzip/brotli) for JSON payloads
+- [x] F089 — Light rate limiting tuned for single-user tailnet use
+- [x] F090 — Contract tests asserting envelope + pagination behavior
 
 ### Dev Experience & CI (F091–F100)
 - [ ] F091 — GitHub Actions CI: install, lint, typecheck, test, build on push/PR
