@@ -20,6 +20,11 @@ process.on('SIGTERM', () => void shutdown('SIGTERM'));
 try {
   await app.listen({ port: config.port, host: config.host });
   app.log.info(`Fables server ready — data dir: ${config.dataDir}`);
+  if (config.open) {
+    const { exec } = await import('node:child_process');
+    const opener = process.platform === 'darwin' ? 'open' : 'xdg-open';
+    exec(`${opener} http://${config.host}:${config.port}`);
+  }
 } catch (error) {
   app.log.error(error);
   process.exit(1);

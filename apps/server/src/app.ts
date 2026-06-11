@@ -8,6 +8,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
 import { openDb, type Db } from './db/connection.js';
 import { migrate } from './db/migrate.js';
+import { configRoutes } from './routes/config.js';
 import { routes } from './routes/index.js';
 
 declare module 'fastify' {
@@ -76,6 +77,7 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   for (const route of routes) {
     await app.register(route, { prefix: '/api/v1' });
   }
+  await app.register(configRoutes(config), { prefix: '/api/v1' });
 
   // Serve the built web app when it exists (production mode).
   const webDist = path.resolve(fileURLToPath(import.meta.url), '../../../web/dist');

@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F040. Next: F041.
+**Status:** Day 1 in progress. Last completed: F050. Next: F051.
 
 ---
 
@@ -72,16 +72,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F040 — Repo unit tests against in-memory SQLite
 
 ### Config & Environment (F041–F050)
-- [ ] F041 — Env parsing with zod: `PORT`, `DATA_DIR`, `LOG_LEVEL`, `NODE_ENV`
-- [ ] F042 — Data directory resolution defaulting to `~/.fables`, auto-created
-- [ ] F043 — `fables.config.json` optional file overriding env defaults
-- [ ] F044 — Dev vs prod mode switches (pretty logs, dev proxy hints)
-- [ ] F045 — CLI flags for server entry: `--port`, `--data-dir`, `--open`
-- [ ] F046 — Config precedence: flags > env > config file > defaults; documented
-- [ ] F047 — `/api/v1/config` endpoint exposing non-sensitive effective config
-- [ ] F048 — Secrets policy: no secrets in repo; `.env.example` template
-- [ ] F049 — Config docs section in README
-- [ ] F050 — Config unit tests covering precedence and validation failures
+- [x] F041 — Env parsing with zod: `PORT`, `DATA_DIR`, `LOG_LEVEL`, `NODE_ENV`
+- [x] F042 — Data directory resolution defaulting to `~/.fables`, auto-created
+- [x] F043 — `fables.config.json` optional file overriding env defaults
+- [x] F044 — Dev vs prod mode switches (pretty logs, dev proxy hints)
+- [x] F045 — CLI flags for server entry: `--port`, `--data-dir`, `--open`
+- [x] F046 — Config precedence: flags > env > config file > defaults; documented
+- [x] F047 — `/api/v1/config` endpoint exposing non-sensitive effective config
+- [x] F048 — Secrets policy: no secrets in repo; `.env.example` template
+- [x] F049 — Config docs section in README
+- [x] F050 — Config unit tests covering precedence and validation failures
 
 ### Logging & Observability (F051–F060)
 - [ ] F051 — pino logger module with child-logger conventions per subsystem

@@ -57,3 +57,17 @@ pnpm lint         # eslint
 pnpm typecheck    # tsc across the workspace
 pnpm format       # prettier
 ```
+
+## Configuration
+
+Precedence: **CLI flags > environment > `fables.config.json` > defaults**.
+
+| Setting   | Flag          | Env         | Default      |
+| --------- | ------------- | ----------- | ------------ |
+| Port      | `--port`      | `PORT`      | `4870`       |
+| Host      | `--host`      | `HOST`      | `127.0.0.1`  |
+| Data dir  | `--data-dir`  | `DATA_DIR`  | `~/.fables`  |
+| Log level | `--log-level` | `LOG_LEVEL` | `info`       |
+
+`--open` opens a browser after start. See `.env.example`; effective config is served at
+`GET /api/v1/config`. No secrets ever live in this repo.
