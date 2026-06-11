@@ -1,6 +1,6 @@
 # Fables — Session Protocol
 
-This repo is built in daily Claude Code sessions against a 1,000-feature plan.
+This repo is built in daily Claude Code sessions against a 2,000-feature plan (two tiers in FEATURES.md).
 
 ## On session start
 
