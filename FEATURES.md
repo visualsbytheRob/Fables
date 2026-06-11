@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F010. Next: F011.
+**Status:** Day 1 in progress. Last completed: F020. Next: F021.
 
 ---
 
@@ -36,16 +36,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F010 — `scripts/doctor.mjs`: verifies Node version, pnpm presence, port availability
 
 ### Core Domain Package (F011–F020)
-- [ ] F011 — `packages/core`: package scaffold with build + test wiring
-- [ ] F012 — Branded ID types (`NoteId`, `StoryId`, `EntityId`) with ULID generation
-- [ ] F013 — Domain types: `Note`, `Notebook`, `Tag`, `Attachment`
-- [ ] F014 — Domain types: `Story`, `Scene`, `Entity`, `Link`
-- [ ] F015 — Zod schemas mirroring all domain types for runtime validation
-- [ ] F016 — `Result<T, E>` utility type with `ok`/`err` helpers and combinators
-- [ ] F017 — Error taxonomy: `AppError` hierarchy with stable error codes
-- [ ] F018 — Date/time utilities: ISO handling, relative formatting, day-key helpers
-- [ ] F019 — Slug + title utilities (unicode-safe, collision-suffixing)
-- [ ] F020 — Unit tests covering all core utilities and schema round-trips
+- [x] F011 — `packages/core`: package scaffold with build + test wiring
+- [x] F012 — Branded ID types (`NoteId`, `StoryId`, `EntityId`) with ULID generation
+- [x] F013 — Domain types: `Note`, `Notebook`, `Tag`, `Attachment`
+- [x] F014 — Domain types: `Story`, `Scene`, `Entity`, `Link`
+- [x] F015 — Zod schemas mirroring all domain types for runtime validation
+- [x] F016 — `Result<T, E>` utility type with `ok`/`err` helpers and combinators
+- [x] F017 — Error taxonomy: `AppError` hierarchy with stable error codes
+- [x] F018 — Date/time utilities: ISO handling, relative formatting, day-key helpers
+- [x] F019 — Slug + title utilities (unicode-safe, collision-suffixing)
+- [x] F020 — Unit tests covering all core utilities and schema round-trips
 
 ### Server Bootstrap (F021–F030)
 - [ ] F021 — `apps/server`: Fastify app factory pattern (`buildApp()` returns configurable instance)
