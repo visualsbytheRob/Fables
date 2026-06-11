@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F030. Next: F031.
+**Status:** Day 1 in progress. Last completed: F040. Next: F041.
 
 ---
 
@@ -60,16 +60,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F030 — Server integration tests: boot, health check, 404 envelope, shutdown
 
 ### Database Layer (F031–F040)
-- [ ] F031 — better-sqlite3 connection module with WAL mode + foreign keys on
-- [ ] F032 — Migrations runner: numbered SQL files, applied-migrations table, idempotent
-- [ ] F033 — Migration 001: notes, notebooks, tags, note_tags tables
-- [ ] F034 — Migration 002: stories, scenes, entities, links tables
-- [ ] F035 — Repository pattern: typed repo per table, no raw SQL outside repos
-- [ ] F036 — Transaction helper wrapping multi-repo operations
-- [ ] F037 — Seed script with demo notebook, notes, and a sample story
-- [ ] F038 — `pnpm db:backup` command producing timestamped copy of the SQLite file
-- [ ] F039 — `pnpm db:check` integrity check command (PRAGMA integrity_check)
-- [ ] F040 — Repo unit tests against in-memory SQLite
+- [x] F031 — better-sqlite3 connection module with WAL mode + foreign keys on
+- [x] F032 — Migrations runner: numbered SQL files, applied-migrations table, idempotent
+- [x] F033 — Migration 001: notes, notebooks, tags, note_tags tables
+- [x] F034 — Migration 002: stories, scenes, entities, links tables
+- [x] F035 — Repository pattern: typed repo per table, no raw SQL outside repos
+- [x] F036 — Transaction helper wrapping multi-repo operations
+- [x] F037 — Seed script with demo notebook, notes, and a sample story
+- [x] F038 — `pnpm db:backup` command producing timestamped copy of the SQLite file
+- [x] F039 — `pnpm db:check` integrity check command (PRAGMA integrity_check)
+- [x] F040 — Repo unit tests against in-memory SQLite
 
 ### Config & Environment (F041–F050)
 - [ ] F041 — Env parsing with zod: `PORT`, `DATA_DIR`, `LOG_LEVEL`, `NODE_ENV`

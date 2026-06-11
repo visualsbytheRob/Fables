@@ -13,7 +13,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ['scripts/**', '**/*.test.ts', '**/vitest.config.ts'],
+    files: ['scripts/**', '**/cli.ts', '**/*.test.ts', '**/vitest.config.ts'],
     rules: { 'no-console': 'off' },
   },
   {

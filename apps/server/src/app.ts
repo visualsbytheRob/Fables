@@ -6,7 +6,15 @@ import fastifyStatic from '@fastify/static';
 import { isAppError, type ErrorCode } from '@fables/core';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
+import { openDb, type Db } from './db/connection.js';
+import { migrate } from './db/migrate.js';
 import { routes } from './routes/index.js';
+
+declare module 'fastify' {
+  interface FastifyInstance {
+    db: Db;
+  }
+}
 
 const HTTP_STATUS: Record<ErrorCode, number> = {
   BAD_REQUEST: 400,
@@ -31,6 +39,14 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
     },
     genReqId: () => crypto.randomUUID(),
     disableRequestLogging: config.env === 'test',
+  });
+
+  const db = openDb(config.env === 'test' ? ':memory:' : config.dataDir);
+  const { applied } = migrate(db);
+  if (applied.length > 0) app.log.info({ applied }, 'database migrations applied');
+  app.decorate('db', db);
+  app.addHook('onClose', () => {
+    db.close();
   });
 
   await app.register(cors, {
