@@ -7,7 +7,9 @@ import { isAppError, type ErrorCode } from '@fables/core';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
 import { openDb, type Db } from './db/connection.js';
+import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
+import { buildLoggerOptions } from './logging.js';
 import { configRoutes } from './routes/config.js';
 import { routes } from './routes/index.js';
 
@@ -32,17 +34,12 @@ export const APP_VERSION = '0.1.0';
 
 export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   const app = Fastify({
-    logger: {
-      level: config.logLevel,
-      ...(config.env === 'development'
-        ? { transport: { target: 'pino-pretty', options: { translateTime: 'HH:MM:ss' } } }
-        : {}),
-    },
+    logger: buildLoggerOptions(config) as { level: string },
     genReqId: () => crypto.randomUUID(),
     disableRequestLogging: config.env === 'test',
   });
 
-  const db = openDb(config.env === 'test' ? ':memory:' : config.dataDir);
+  const db = instrumentDb(openDb(config.env === 'test' ? ':memory:' : config.dataDir), app.log);
   const { applied } = migrate(db);
   if (applied.length > 0) app.log.info({ applied }, 'database migrations applied');
   app.decorate('db', db);

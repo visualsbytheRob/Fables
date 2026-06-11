@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F050. Next: F051.
+**Status:** Day 1 in progress. Last completed: F060. Next: F061.
 
 ---
 
@@ -84,16 +84,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F050 — Config unit tests covering precedence and validation failures
 
 ### Logging & Observability (F051–F060)
-- [ ] F051 — pino logger module with child-logger conventions per subsystem
-- [ ] F052 — Log level control at runtime via `/api/v1/debug/log-level`
-- [ ] F053 — Request ID propagation into all downstream logs
-- [ ] F054 — Slow query logging: warn when SQLite call exceeds threshold
-- [ ] F055 — Error serializer capturing code, stack, cause chain
-- [ ] F056 — Rotating file transport for logs in `DATA_DIR/logs`
-- [ ] F057 — Startup banner: version, port, data dir, tailnet hint
-- [ ] F058 — `/api/v1/debug/stats` endpoint: db size, note/story counts, memory
-- [ ] F059 — Debug namespaces toggled via env (`DEBUG=forge:*`)
-- [ ] F060 — Logging unit tests (serializers, levels, redaction)
+- [x] F051 — pino logger module with child-logger conventions per subsystem
+- [x] F052 — Log level control at runtime via `/api/v1/debug/log-level`
+- [x] F053 — Request ID propagation into all downstream logs
+- [x] F054 — Slow query logging: warn when SQLite call exceeds threshold
+- [x] F055 — Error serializer capturing code, stack, cause chain
+- [x] F056 — Rotating file transport for logs in `DATA_DIR/logs`
+- [x] F057 — Startup banner: version, port, data dir, tailnet hint
+- [x] F058 — `/api/v1/debug/stats` endpoint: db size, note/story counts, memory
+- [x] F059 — Debug namespaces toggled via env (`DEBUG=forge:*`)
+- [x] F060 — Logging unit tests (serializers, levels, redaction)
 
 ### Web App Bootstrap (F061–F070)
 - [ ] F061 — `apps/web`: Vite + React + TypeScript scaffold

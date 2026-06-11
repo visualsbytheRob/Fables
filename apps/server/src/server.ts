@@ -1,4 +1,4 @@
-import { buildApp } from './app.js';
+import { APP_VERSION, buildApp } from './app.js';
 import { loadConfig } from './config.js';
 
 const config = loadConfig();
@@ -19,7 +19,10 @@ process.on('SIGTERM', () => void shutdown('SIGTERM'));
 
 try {
   await app.listen({ port: config.port, host: config.host });
-  app.log.info(`Fables server ready — data dir: ${config.dataDir}`);
+  app.log.info(
+    `Fables v${APP_VERSION} ready at http://${config.host}:${config.port} — data: ${config.dataDir}. ` +
+      `Phone access: \`tailscale serve --bg ${config.port}\` then open the ts.net URL.`,
+  );
   if (config.open) {
     const { exec } = await import('node:child_process');
     const opener = process.platform === 'darwin' ? 'open' : 'xdg-open';
