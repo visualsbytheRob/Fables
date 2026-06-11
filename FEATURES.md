@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F020. Next: F021.
+**Status:** Day 1 in progress. Last completed: F030. Next: F031.
 
 ---
 
@@ -48,16 +48,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F020 — Unit tests covering all core utilities and schema round-trips
 
 ### Server Bootstrap (F021–F030)
-- [ ] F021 — `apps/server`: Fastify app factory pattern (`buildApp()` returns configurable instance)
-- [ ] F022 — `/api/v1/health` endpoint with version, uptime, db status
-- [ ] F023 — Graceful shutdown: SIGINT/SIGTERM drain, close db, flush logs
-- [ ] F024 — Request logging with request IDs via pino
-- [ ] F025 — Central error handler mapping `AppError` codes → HTTP statuses
-- [ ] F026 — CORS configuration permitting tailnet origins
-- [ ] F027 — Static file serving of the built web app from the server
-- [ ] F028 — Route registration pattern: one module per resource, auto-registered
-- [ ] F029 — Server config loader (port, host, data dir) with zod validation
-- [ ] F030 — Server integration tests: boot, health check, 404 envelope, shutdown
+- [x] F021 — `apps/server`: Fastify app factory pattern (`buildApp()` returns configurable instance)
+- [x] F022 — `/api/v1/health` endpoint with version, uptime, db status
+- [x] F023 — Graceful shutdown: SIGINT/SIGTERM drain, close db, flush logs
+- [x] F024 — Request logging with request IDs via pino
+- [x] F025 — Central error handler mapping `AppError` codes → HTTP statuses
+- [x] F026 — CORS configuration permitting tailnet origins
+- [x] F027 — Static file serving of the built web app from the server
+- [x] F028 — Route registration pattern: one module per resource, auto-registered
+- [x] F029 — Server config loader (port, host, data dir) with zod validation
+- [x] F030 — Server integration tests: boot, health check, 404 envelope, shutdown
 
 ### Database Layer (F031–F040)
 - [ ] F031 — better-sqlite3 connection module with WAL mode + foreign keys on
