@@ -1,11 +1,11 @@
-# FABLES — 1,000-Feature Build Plan
+# FABLES — 2,000-Feature Build Plan
 
 **Fables** is a personal Knowledge OS fused with an interactive fiction engine ("Fable Forge").
 Your notes are the world. Your stories run on a compiler you own.
 
 - **Architecture:** TypeScript pnpm monorepo. `apps/server` (Fastify + SQLite) and `apps/web` (Vite + React PWA). `packages/core` (domain), `packages/forge-dsl` (lexer/parser/compiler), `packages/forge-vm` (bytecode runtime), `packages/sync` (offline op-log sync), `packages/ui` (design system).
 - **Deployment:** built remotely with Claude Code, cloned and run locally, served over the tailnet via `tailscale serve` (HTTPS via ts.net certs), installed as a PWA on iPhone.
-- **Cadence:** 10 days × 100 features. ~11 days of credits = buffer day included.
+- **Cadence:** Tier 1 (F1–F1000): the core app, 10 thematic days. Tier 2 (F1001–F2000): ten stretch epics. Target ~200–300 features/day via parallel agent teams; ~9 build days remain.
 
 ## Execution Protocol (read me first, future sessions)
 
@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 COMPLETE (F001–F100, 48 tests, 74.8% coverage). Next session: Day 2, F101.
+**Status:** Day 1 COMPLETE (F001–F100, 48 tests, 74.8% coverage). Scope extended to 2,000 features (Tier 2 epics added). Next session: Day 2, F101, parallel teams.
 
 ---
 
@@ -1361,4 +1361,1333 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ---
 
-_1,000 features. 10 days. One fable at a time._
+_Tier 1 ends here. Tier 2 — ten stretch epics — begins below._
+
+# TIER 2 — Stretch Epics (F1001–F2000)
+
+Ten genuinely new subsystems. Same rules: in order, boxes checked with implementation,
+green tree at every commit. Epics assume Tier 1 is complete.
+
+## Epic 11 — Plugin & Extension Architecture (F1001–F1100)
+
+### Plugin Manifest & Loader (F1001–F1010)
+
+- [ ] F1001 — Plugin manifest spec: id, version, permissions, entry, UI contributions
+- [ ] F1002 — Plugin directory layout under `DATA_DIR/plugins/<id>`
+- [ ] F1003 — Manifest validation with versioned schema
+- [ ] F1004 — Plugin loader: discover, validate, register at boot
+- [ ] F1005 — Enable/disable plugins without restart
+- [ ] F1006 — Plugin dependency declarations + load ordering
+- [ ] F1007 — Semver compatibility checks against app version
+- [ ] F1008 — Broken plugin quarantine (load failure never breaks boot)
+- [ ] F1009 — Plugin registry persistence (installed, enabled, settings)
+- [ ] F1010 — Loader test suite with fixture plugins
+
+### Sandboxed Runtime (F1011–F1020)
+
+- [ ] F1011 — Plugin code runs in isolated worker threads, never the main process
+- [ ] F1012 — Structured RPC bridge between host and plugin worker
+- [ ] F1013 — CPU/memory budgets per plugin with kill-on-exceed
+- [ ] F1014 — No filesystem/network access except via granted capability APIs
+- [ ] F1015 — Capability grant model bound to manifest permissions
+- [ ] F1016 — Plugin crash isolation + auto-restart with backoff
+- [ ] F1017 — Timeout handling on all plugin calls
+- [ ] F1018 — Audit log of capability use per plugin
+- [ ] F1019 — Sandbox escape test suite (adversarial fixtures)
+- [ ] F1020 — Runtime performance overhead benchmark
+
+### Notes API for Plugins (F1021–F1030)
+
+- [ ] F1021 — Read API: query notes/tags/links with FQL from plugins
+- [ ] F1022 — Write API: create/update notes with attribution metadata
+- [ ] F1023 — Plugin-defined virtual notes (computed content)
+- [ ] F1024 — Markdown post-processor hook (transform rendered output)
+- [ ] F1025 — Custom block types registered by plugins (```myblock fences)
+- [ ] F1026 — Tag and metadata APIs
+- [ ] F1027 — Search extension hook (plugins add result sources)
+- [ ] F1028 — Rate limits + batching on plugin data access
+- [ ] F1029 — Change subscription API (watch note events)
+- [ ] F1030 — Notes API contract tests
+
+### Story/VM API for Plugins (F1031–F1040)
+
+- [ ] F1031 — External function registration from plugins into the Forge VM
+- [ ] F1032 — Custom story effects contributed by plugins
+- [ ] F1033 — Compiler diagnostic contributions (custom lint rules)
+- [ ] F1034 — Story export format plugins
+- [ ] F1035 — Player UI overlays from plugins (stat widgets)
+- [ ] F1036 — VM state read access with story-scoped permission
+- [ ] F1037 — Pre/post choice hooks
+- [ ] F1038 — Plugin-provided stdlib extensions with namespacing
+- [ ] F1039 — Determinism guard: plugin functions declared pure vs effectful
+- [ ] F1040 — Story API contract tests
+
+### UI Extension Points (F1041–F1050)
+
+- [ ] F1041 — Sidebar panel contribution API
+- [ ] F1042 — Command palette command contributions
+- [ ] F1043 — Note context-menu item contributions
+- [ ] F1044 — Editor toolbar button contributions
+- [ ] F1045 — Settings page sections per plugin
+- [ ] F1046 — Custom routes/pages registered by plugins
+- [ ] F1047 — Status bar item contributions
+- [ ] F1048 — Theme contributions (full token sets)
+- [ ] F1049 — UI contribution sandboxing (iframe/portal isolation)
+- [ ] F1050 — Extension point e2e tests
+
+### Event Hooks & Filters (F1051–F1060)
+
+- [ ] F1051 — Typed event bus exposed to plugins (note.saved, story.completed…)
+- [ ] F1052 — Filter chains: plugins transform data in defined pipelines
+- [ ] F1053 — Hook priority + ordering controls
+- [ ] F1054 — Async hook support with timeout budgets
+- [ ] F1055 — Event replay protection (idempotency keys)
+- [ ] F1056 — Hook failure isolation (one bad filter never corrupts the chain)
+- [ ] F1057 — Event documentation generator from registry
+- [ ] F1058 — Hook performance profiler per plugin
+- [ ] F1059 — Wildcard subscriptions with permission gating
+- [ ] F1060 — Event system test suite
+
+### Permissions & Settings UX (F1061–F1070)
+
+- [ ] F1061 — Install-time permission review screen
+- [ ] F1062 — Runtime permission prompts for escalations
+- [ ] F1063 — Per-plugin settings storage with schema-driven forms
+- [ ] F1064 — Permission revocation without uninstall
+- [ ] F1065 — Plugin detail page: permissions, resource use, audit trail
+- [ ] F1066 — Notebook-scoped data access grants
+- [ ] F1067 — Privacy labels (what data the plugin touches)
+- [ ] F1068 — Bulk plugin management UI
+- [ ] F1069 — Permission model documentation
+- [ ] F1070 — Permission enforcement tests
+
+### Plugin Dev Kit (F1071–F1080)
+
+- [ ] F1071 — `pnpm create-plugin` scaffold command
+- [ ] F1072 — Typed SDK package (@fables/plugin-sdk)
+- [ ] F1073 — Hot-reload during plugin development
+- [ ] F1074 — Plugin test harness with mock host
+- [ ] F1075 — Dev mode inspector (RPC traffic, events, perf)
+- [ ] F1076 — SDK documentation site section
+- [ ] F1077 — Plugin packaging command (.fplugin archive)
+- [ ] F1078 — Signature/checksum on packaged plugins
+- [ ] F1079 — Example-driven tutorial: build a word-count plugin
+- [ ] F1080 — SDK semver/compat test matrix
+
+### Example Plugins (F1081–F1090)
+
+- [ ] F1081 — Word-count & writing-stats plugin
+- [ ] F1082 — Pomodoro/focus timer plugin with note logging
+- [ ] F1083 — Weather-in-daily-note plugin (network capability demo)
+- [ ] F1084 — Dice-roller story effect plugin (VM extension demo)
+- [ ] F1085 — Custom theme pack plugin
+- [ ] F1086 — Mood tracker with chart panel
+- [ ] F1087 — Readwise-style highlights importer plugin
+- [ ] F1088 — Story achievement system plugin
+- [ ] F1089 — Each example doubles as SDK integration test
+- [ ] F1090 — Example gallery page in docs
+
+### Distribution (F1091–F1100)
+
+- [ ] F1091 — File-based install: drop .fplugin, app offers install
+- [ ] F1092 — Install from URL (tailnet/HTTPS) with checksum verification
+- [ ] F1093 — Update detection + one-click plugin updates
+- [ ] F1094 — Plugin export/backup with vault backups
+- [ ] F1095 — Compatibility report before update (API usage scan)
+- [ ] F1096 — Uninstall with data cleanup options
+- [ ] F1097 — Trusted-source allowlist
+- [ ] F1098 — Plugin catalog page (local registry of known plugins)
+- [ ] F1099 — Distribution security review
+- [ ] F1100 — Epic 11 retro devlog
+
+## Epic 12 — Real-Time Collaboration & CRDT (F1101–F1200)
+
+### CRDT Core (F1101–F1110)
+
+- [ ] F1101 — CRDT engine integration (Yjs) in packages/sync
+- [ ] F1102 — Note body as Y.Text with markdown semantics preserved
+- [ ] F1103 — CRDT ↔ op-log bridge (Tier 1 sync stays canonical for non-collab data)
+- [ ] F1104 — Garbage collection / tombstone compaction policy
+- [ ] F1105 — Snapshot + update encoding for storage efficiency
+- [ ] F1106 — CRDT document versioning and migration
+- [ ] F1107 — Offline edits merge through CRDT on reconnect
+- [ ] F1108 — Convergence property tests (random concurrent ops)
+- [ ] F1109 — Memory benchmarks on large documents
+- [ ] F1110 — CRDT core test suite
+
+### Collaborative Editor (F1111–F1120)
+
+- [ ] F1111 — CodeMirror binding to Y.Text (shared editing)
+- [ ] F1112 — Remote cursor rendering with user colors
+- [ ] F1113 — Remote selection highlights
+- [ ] F1114 — Typing presence indicators
+- [ ] F1115 — Undo/redo scoped to local user's edits
+- [ ] F1116 — Cursor-stable view during remote edits
+- [ ] F1117 — Conflict-free task list toggling
+- [ ] F1118 — Collaborative editing latency budget (<100ms perceived)
+- [ ] F1119 — Editor degradation when peer connection drops
+- [ ] F1120 — Collab editor e2e tests (two simulated clients)
+
+### Sync Server (F1121–F1130)
+
+- [ ] F1121 — WebSocket collab endpoint with room-per-document
+- [ ] F1122 — Update broadcast with backpressure handling
+- [ ] F1123 — Room lifecycle: create, idle timeout, persistence flush
+- [ ] F1124 — Reconnection with state vector catch-up
+- [ ] F1125 — Per-room authorization checks
+- [ ] F1126 — Server-side update persistence batching
+- [ ] F1127 — Room metrics in debug stats
+- [ ] F1128 — Horizontal readiness: room state externalizable
+- [ ] F1129 — Load test: 20 concurrent editors on one note
+- [ ] F1130 — Sync server test suite
+
+### Presence & Awareness (F1131–F1140)
+
+- [ ] F1131 — Awareness protocol: who's viewing/editing what
+- [ ] F1132 — Avatar stack on open documents
+- [ ] F1133 — Vault-level presence sidebar (active now)
+- [ ] F1134 — Follow mode: jump to a collaborator's view
+- [ ] F1135 — Idle/away detection
+- [ ] F1136 — Per-device presence identity (named devices)
+- [ ] F1137 — Presence privacy toggle
+- [ ] F1138 — Awareness state cleanup on disconnect
+- [ ] F1139 — Presence event hooks for plugins
+- [ ] F1140 — Awareness tests
+
+### Sharing & Invites (F1141–F1150)
+
+- [ ] F1141 — Share model: per-note/notebook grants to named devices/users
+- [ ] F1142 — Tailnet share links with scoped tokens
+- [ ] F1143 — Read-only vs edit permission levels
+- [ ] F1144 — Share management UI (who has access to what)
+- [ ] F1145 — Link expiry and revocation
+- [ ] F1146 — Guest identity (name + color) for link visitors
+- [ ] F1147 — Shared-with-me view
+- [ ] F1148 — Access audit log
+- [ ] F1149 — Permission enforcement tests across sync + collab paths
+- [ ] F1150 — Sharing e2e tests
+
+### Collaborative Stories (F1151–F1160)
+
+- [ ] F1151 — Shared story-file editing via CRDT
+- [ ] F1152 — Compile coordination (one compiler run per change burst)
+- [ ] F1153 — Shared playtest sessions: synchronized story state
+- [ ] F1154 — Vote-on-choice mode for group play
+- [ ] F1155 — Author/playtester role split in shared sessions
+- [ ] F1156 — Live diagnostics visible to all editors
+- [ ] F1157 — Story session chat sidebar
+- [ ] F1158 — Spectator mode for live readings
+- [ ] F1159 — Group-play session recording to transcript
+- [ ] F1160 — Collab story tests
+
+### Comments & Suggestions (F1161–F1170)
+
+- [ ] F1161 — Anchored comments on note ranges (CRDT-stable anchors)
+- [ ] F1162 — Comment threads with resolve state
+- [ ] F1163 — Suggestion mode: proposed edits with accept/reject
+- [ ] F1164 — Comment notifications in notification center
+- [ ] F1165 — Comments on story knots in author mode
+- [ ] F1166 — Comment search and filters
+- [ ] F1167 — Comment export with note export
+- [ ] F1168 — Anchor survival through heavy edits (tests)
+- [ ] F1169 — Emoji reactions on comments
+- [ ] F1170 — Comments test suite
+
+### Merge & History in Collab (F1171–F1180)
+
+- [ ] F1171 — Named versions on shared docs (manual checkpoints)
+- [ ] F1172 — Attribution view: who wrote what (per-character authorship)
+- [ ] F1173 — Time-slider playback of document history
+- [ ] F1174 — Restore checkpoint with collaborator confirmation
+- [ ] F1175 — Diff view between checkpoints
+- [ ] F1176 — Revision pruning policy for CRDT history
+- [ ] F1177 — Export attribution data
+- [ ] F1178 — History performance on year-old documents
+- [ ] F1179 — Forensic recovery tool (extract content from raw updates)
+- [ ] F1180 — History tests
+
+### Conflict-Free Structures (F1181–F1190)
+
+- [ ] F1181 — Entity fields as CRDT maps (concurrent field edits merge)
+- [ ] F1182 — Notebook tree as CRDT (concurrent moves resolve sanely)
+- [ ] F1183 — Tag operations made commutative
+- [ ] F1184 — Canvas objects as CRDT (positions merge)
+- [ ] F1185 — Save-slot collision handling in shared stories
+- [ ] F1186 — Cross-structure transaction semantics documented
+- [ ] F1187 — Migration of Tier 1 data into CRDT-backed forms
+- [ ] F1188 — Fallback path: collab disabled still fully functional
+- [ ] F1189 — Structure convergence fuzz tests
+- [ ] F1190 — Structures test suite
+
+### Collab Hardening (F1191–F1200)
+
+- [ ] F1191 — Three-device chaos test (partitions, clock skew, kill -9)
+- [ ] F1192 — Bandwidth budget on phone connections
+- [ ] F1193 — Battery impact audit on mobile PWA
+- [ ] F1194 — Security review of room auth and share tokens
+- [ ] F1195 — Data integrity checksums across collab + sync paths
+- [ ] F1196 — Collab health diagnostics page
+- [ ] F1197 — Graceful single-user mode when server unreachable
+- [ ] F1198 — Docs: collaboration setup and mental model
+- [ ] F1199 — Full collab e2e suite in CI
+- [ ] F1200 — Epic 12 retro devlog
+
+## Epic 13 — Encrypted Vault & Security Tier (F1201–F1300)
+
+### Crypto Core (F1201–F1210)
+
+- [ ] F1201 — libsodium integration with audited primitive choices documented
+- [ ] F1202 — Key derivation: Argon2id from passphrase with tuned params
+- [ ] F1203 — Master key / data key hierarchy (rotate data keys cheaply)
+- [ ] F1204 — Authenticated encryption helpers (XChaCha20-Poly1305)
+- [ ] F1205 — Secure memory handling (zeroing, no key logging)
+- [ ] F1206 — Crypto module API with misuse-resistant design
+- [ ] F1207 — Known-answer tests against reference vectors
+- [ ] F1208 — Constant-time comparison utilities
+- [ ] F1209 — Crypto parameter versioning for future upgrades
+- [ ] F1210 — Crypto core test suite
+
+### Encrypted Storage (F1211–F1220)
+
+- [ ] F1211 — Encrypted vault mode: note bodies/titles encrypted at rest
+- [ ] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
+- [ ] F1213 — Encrypted FTS approach: in-memory index built post-unlock
+- [ ] F1214 — Encrypted attachments with streaming encrypt/decrypt
+- [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
+- [ ] F1216 — Decrypt-on-read caching with memory bounds
+- [ ] F1217 — Write-path encryption with crash-safe ordering
+- [ ] F1218 — Encrypted backup format (.fablesbak v2)
+- [ ] F1219 — Performance benchmark: encrypted vs plaintext vault
+- [ ] F1220 — Encrypted storage tests
+
+### Key Management UX (F1221–F1230)
+
+- [ ] F1221 — Vault unlock screen with passphrase entry
+- [ ] F1222 — Recovery codes generated at vault creation
+- [ ] F1223 — Passphrase change flow (re-wrap, not re-encrypt)
+- [ ] F1224 — WebAuthn/passkey unlock where available
+- [ ] F1225 — Unlock session duration settings
+- [ ] F1226 — Wrong-passphrase rate limiting with backoff
+- [ ] F1227 — Key fingerprint display for device verification
+- [ ] F1228 — Emergency export with explicit re-auth
+- [ ] F1229 — Forgotten passphrase = data loss messaging (honest UX)
+- [ ] F1230 — Key management flow tests
+
+### Lock Behavior (F1231–F1240)
+
+- [ ] F1231 — Auto-lock on idle (configurable)
+- [ ] F1232 — Lock on PWA background/visibility change option
+- [ ] F1233 — Locked-state UI: nothing sensitive rendered or cached
+- [ ] F1234 — In-memory state purge on lock
+- [ ] F1235 — Quick-unlock PIN with device-bound wrapping key
+- [ ] F1236 — Panic lock command (palette + URL)
+- [ ] F1237 — Lock status indicator everywhere
+- [ ] F1238 — Pending-edit preservation across lock (encrypted holding pen)
+- [ ] F1239 — Lock behavior on multiple tabs coordinated
+- [ ] F1240 — Lock tests incl. memory inspection assertions
+
+### Per-Note Encryption (F1241–F1250)
+
+- [ ] F1241 — Secret notes: per-note encryption inside a plaintext vault
+- [ ] F1242 — Separate key path so vault passphrase ≠ secret-note passphrase
+- [ ] F1243 — Secret note UI treatment (locked cards, blur previews)
+- [ ] F1244 — Secret notes excluded from search/embeddings/exports by default
+- [ ] F1245 — Bulk convert notes to/from secret
+- [ ] F1246 — Secret notebooks (whole-notebook encryption)
+- [ ] F1247 — Link behavior into secret notes (stub until unlocked)
+- [ ] F1248 — Secret note session timeouts independent of vault
+- [ ] F1249 — Plugin API blind spot: secrets never exposed to plugins
+- [ ] F1250 — Per-note encryption tests
+
+### Encrypted Sync & Collab (F1251–F1260)
+
+- [ ] F1251 — Encrypted op-log payloads (server stores ciphertext)
+- [ ] F1252 — Encrypted CRDT updates for collab on encrypted docs
+- [ ] F1253 — Device key exchange for multi-device vaults
+- [ ] F1254 — Device authorization flow (QR + fingerprint verify)
+- [ ] F1255 — Revoked-device key rotation
+- [ ] F1256 — Encrypted share grants (wrapped keys per recipient)
+- [ ] F1257 — Metadata minimization in sync envelopes
+- [ ] F1258 — E2E property: server compromise reveals no content (test)
+- [ ] F1259 — Encrypted sync performance benchmarks
+- [ ] F1260 — Encrypted sync tests
+
+### Hardening (F1261–F1270)
+
+- [ ] F1261 — CSP tightened to strict-dynamic with nonce
+- [ ] F1262 — Subresource integrity on all assets
+- [ ] F1263 — Clipboard hygiene (auto-clear copied secrets)
+- [ ] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
+- [ ] F1265 — Memory-safe attachment preview pipeline
+- [ ] F1266 — Dependency supply-chain audit + pinning policy
+- [ ] F1267 — Fuzzing pass on all parsers (markdown, FQL, .fable, imports)
+- [ ] F1268 — Server-side request forgery guards on clipper/import URLs
+- [ ] F1269 — Security headers verification suite
+- [ ] F1270 — Hardening regression tests
+
+### Threat Modeling & Audit (F1271–F1280)
+
+- [ ] F1271 — Threat model v2 covering collab, plugins, encryption
+- [ ] F1272 — Attack tree for vault compromise paths
+- [ ] F1273 — Plugin permission escalation analysis
+- [ ] F1274 — Self-audit checklist run + findings fixed
+- [ ] F1275 — Crypto design doc for external review
+- [ ] F1276 — Privacy data-flow map (what leaves the machine: nothing)
+- [ ] F1277 — Incident response runbook (corruption, key loss, device theft)
+- [ ] F1278 — Secure defaults review (everything safe out of the box)
+- [ ] F1279 — Penetration test scenarios as e2e suite
+- [ ] F1280 — Audit documentation set
+
+### Compliance-Grade Features (F1281–F1290)
+
+- [ ] F1281 — Full vault wipe with verification
+- [ ] F1282 — Data inventory export (everything stored, machine-readable)
+- [ ] F1283 — Retention policies per notebook (auto-purge)
+- [ ] F1284 — Tamper-evident audit log (hash chain)
+- [ ] F1285 — Read receipts opt-out everywhere
+- [ ] F1286 — Legal hold mode (freeze deletions)
+- [ ] F1287 — Redaction tool (true content removal from history)
+- [ ] F1288 — Export with redactions applied
+- [ ] F1289 — Compliance feature documentation
+- [ ] F1290 — Compliance feature tests
+
+### Security Epic Close (F1291–F1300)
+
+- [ ] F1291 — Full-suite security regression run
+- [ ] F1292 — Performance re-baseline with encryption enabled
+- [ ] F1293 — Encrypted vault disaster recovery drill (scripted)
+- [ ] F1294 — Documentation: security model for normal humans
+- [ ] F1295 — Documentation: security model for experts
+- [ ] F1296 — Default-mode decision: encryption opt-in flow polished
+- [ ] F1297 — Migration guides between all vault modes
+- [ ] F1298 — Security FAQ
+- [ ] F1299 — Epic security sign-off checklist
+- [ ] F1300 — Epic 13 retro devlog
+
+## Epic 14 — Local AI Co-Writer & Intelligence (F1301–F1400)
+
+### Local Model Runtime (F1301–F1310)
+
+- [ ] F1301 — Ollama adapter: detect, list models, health check
+- [ ] F1302 — llama.cpp server adapter as alternative backend
+- [ ] F1303 — Backend abstraction: one interface, pluggable engines
+- [ ] F1304 — Model capability registry (context size, speed class)
+- [ ] F1305 — Streaming token output through server to UI
+- [ ] F1306 — Request queue with cancellation
+- [ ] F1307 — Resource guardrails (no AI when battery/CPU constrained, configurable)
+- [ ] F1308 — Model download guidance UI (not bundled)
+- [ ] F1309 — Zero-AI graceful mode: every feature optional
+- [ ] F1310 — Runtime adapter tests with mock backend
+
+### Prompt Infrastructure (F1311–F1320)
+
+- [ ] F1311 — Prompt template system with typed slots
+- [ ] F1312 — Context budget manager (fit notes into model context)
+- [ ] F1313 — Template library versioned in-repo
+- [ ] F1314 — Per-task model routing (small for tags, big for prose)
+- [ ] F1315 — Response schema validation (JSON tasks re-asked on parse failure)
+- [ ] F1316 — Prompt/response logging (local, inspectable, off by default)
+- [ ] F1317 — User-editable prompt overrides
+- [ ] F1318 — Determinism settings (temperature presets per task)
+- [ ] F1319 — Prompt regression harness with golden outputs
+- [ ] F1320 — Prompt infra tests
+
+### Vault Q&A — RAG (F1321–F1330)
+
+- [ ] F1321 — Ask-your-vault: question → retrieval (Tier 1 hybrid search) → grounded answer
+- [ ] F1322 — Citation rendering: every claim links to source notes
+- [ ] F1323 — Retrieval tuning UI (scope to notebooks/tags)
+- [ ] F1324 — Conversation memory within a Q&A session
+- [ ] F1325 — Answer confidence signal (retrieval coverage heuristic)
+- [ ] F1326 — "No good sources" honest refusal path
+- [ ] F1327 — Q&A history saved as searchable notes (opt-in)
+- [ ] F1328 — Follow-up question suggestions
+- [ ] F1329 — RAG quality eval set (50 labeled Q→A pairs over demo vault)
+- [ ] F1330 — RAG pipeline tests
+
+### Note Intelligence (F1331–F1340)
+
+- [ ] F1331 — Summarize note/notebook commands
+- [ ] F1332 — Auto-tag suggestions with one-tap accept
+- [ ] F1333 — Title suggestions for untitled notes
+- [ ] F1334 — Link suggestions: AI-proposed wikilinks with context
+- [ ] F1335 — Outline generation from messy notes
+- [ ] F1336 — Rewrite tools: tighten, expand, change tone
+- [ ] F1337 — Meeting-note structurer (actions, decisions extracted)
+- [ ] F1338 — Weekly review draft generation from journal
+- [ ] F1339 — All intelligence actions undoable + clearly attributed
+- [ ] F1340 — Note intelligence tests
+
+### Story Co-Writer (F1341–F1350)
+
+- [ ] F1341 — Beat suggestion: given current knot, propose next beats
+- [ ] F1342 — Choice expansion: AI drafts choice sets in author's style
+- [ ] F1343 — Scene prose draft from outline notes
+- [ ] F1344 — Style capture: learn tone from existing story text
+- [ ] F1345 — Consistency checker: contradictions vs entity facts
+- [ ] F1346 — Branch gap analysis (suggest content for thin paths)
+- [ ] F1347 — Co-writer panel in author workspace with diff-style accept
+- [ ] F1348 — Generated content provenance markers in source
+- [ ] F1349 — Co-writer eval scenarios
+- [ ] F1350 — Co-writer tests
+
+### Character & Dialogue (F1351–F1360)
+
+- [ ] F1351 — Entity-grounded dialogue: lines consistent with character sheets
+- [ ] F1352 — Voice cards: speech patterns per character
+- [ ] F1353 — Dialogue polish pass (subtext, brevity)
+- [ ] F1354 — NPC interview mode (chat with a character to develop them)
+- [ ] F1355 — Interview transcripts → entity fact extraction
+- [ ] F1356 — Relationship dynamics suggestions from entity graph
+- [ ] F1357 — Name generator with world-consistency
+- [ ] F1358 — Character arc tracker across story branches
+- [ ] F1359 — Dialogue eval set
+- [ ] F1360 — Character AI tests
+
+### Reader-Side AI (F1361–F1370)
+
+- [ ] F1361 — Recap generation when resuming a story
+- [ ] F1362 — Spoiler-safe hint system in player
+- [ ] F1363 — Reading-level adaptation mode (same story, simpler prose)
+- [ ] F1364 — Translation mode for story text (local model)
+- [ ] F1365 — Post-story discussion questions generator
+- [ ] F1366 — Personalized story recommendations from reading history
+- [ ] F1367 — Reader AI features fully opt-in per story
+- [ ] F1368 — Author controls: allow/deny reader-side AI transforms
+- [ ] F1369 — Reader AI honesty: transformed text clearly labeled
+- [ ] F1370 — Reader AI tests
+
+### AI Command Surface (F1371–F1380)
+
+- [ ] F1371 — Palette AI actions with natural-language fallback
+- [ ] F1372 — Inline editor AI menu on selection
+- [ ] F1373 — Slash commands in editor (/summarize, /continue)
+- [ ] F1374 — AI action keyboard shortcuts
+- [ ] F1375 — Streaming inline preview before accept
+- [ ] F1376 — Multi-step AI workflows (summarize → tag → file)
+- [ ] F1377 — Custom user-defined AI actions (prompt + scope)
+- [ ] F1378 — AI action usage stats (local)
+- [ ] F1379 — Abuse guard: actions never auto-run on bulk data without confirm
+- [ ] F1380 — Command surface tests
+
+### Evaluation & Guardrails (F1381–F1390)
+
+- [ ] F1381 — Eval harness CLI running all eval sets against configured models
+- [ ] F1382 — Quality gates: features degrade gracefully under weak models
+- [ ] F1383 — Hallucination tripwires in grounded tasks (citation coverage check)
+- [ ] F1384 — Latency budgets per AI feature with timeout UX
+- [ ] F1385 — Output filter: AI never writes outside granted scopes
+- [ ] F1386 — Privacy assertion suite: zero network egress during AI ops
+- [ ] F1387 — Model comparison report generator
+- [ ] F1388 — Failure taxonomy + user-facing error language
+- [ ] F1389 — Eval results tracked in repo over time
+- [ ] F1390 — Guardrail tests
+
+### AI Settings & Trust (F1391–F1400)
+
+- [ ] F1391 — AI settings page: backend, models, per-feature toggles
+- [ ] F1392 — Global AI kill switch
+- [ ] F1393 — Data-use explainer (what context each feature sees)
+- [ ] F1394 — Per-notebook AI exclusions (private areas)
+- [ ] F1395 — Secret notes always invisible to AI (enforced + tested)
+- [ ] F1396 — First-run AI onboarding with honest capability framing
+- [ ] F1397 — Local-only badge in UI during AI operations
+- [ ] F1398 — AI feature documentation
+- [ ] F1399 — Full AI suite e2e on demo vault
+- [ ] F1400 — Epic 14 retro devlog
+
+## Epic 15 — Importers & Interop (F1401–F1500)
+
+### Interop Infrastructure (F1401–F1410)
+
+- [ ] F1401 — Importer framework: source adapter interface, staging area, dry-run reports
+- [ ] F1402 — Mapping engine: foreign structures → Fables model with rule files
+- [ ] F1403 — Asset pipeline shared by all importers (media dedupe, relinking)
+- [ ] F1404 — Link graph reconstruction pass (resolve internal refs post-import)
+- [ ] F1405 — Import job persistence (resume interrupted imports)
+- [ ] F1406 — Collision strategies (skip/rename/merge) shared UI
+- [ ] F1407 — Import provenance metadata on every imported note
+- [ ] F1408 — Rollback: undo an entire import batch
+- [ ] F1409 — Importer SDK so plugins can add sources
+- [ ] F1410 — Framework tests with synthetic source
+
+### Notion (F1411–F1420)
+
+- [ ] F1411 — Notion export (.zip) parser: pages, databases, blocks
+- [ ] F1412 — Database → notebook + structured entity mapping option
+- [ ] F1413 — Block type coverage (toggles, callouts, columns → markdown strategy)
+- [ ] F1414 — Relation/rollup property handling
+- [ ] F1415 — Notion internal links → wikilinks
+- [ ] F1416 — Media and file property import
+- [ ] F1417 — Nested page hierarchy preservation
+- [ ] F1418 — Notion-specific dry-run report (what maps lossy)
+- [ ] F1419 — Notion fixture corpus tests
+- [ ] F1420 — Notion import docs
+
+### Apple Notes (F1421–F1430)
+
+- [ ] F1421 — Apple Notes export path documentation (the honest options)
+- [ ] F1422 — .enex-via-Exporter ingestion route
+- [ ] F1423 — Folder structure mapping
+- [ ] F1424 — Inline image + scan attachment handling
+- [ ] F1425 — Checklist conversion to task lists
+- [ ] F1426 — Table conversion
+- [ ] F1427 — Creation/modification date preservation
+- [ ] F1428 — Locked-note detection + skip report
+- [ ] F1429 — Apple Notes fixture tests
+- [ ] F1430 — Apple Notes guide
+
+### Evernote (F1431–F1440)
+
+- [ ] F1431 — ENEX parser (notes, resources, attributes)
+- [ ] F1432 — ENML → markdown conversion
+- [ ] F1433 — Notebook/stack mapping
+- [ ] F1434 — Tag import with hierarchy
+- [ ] F1435 — Web-clip note handling (simplify vs preserve)
+- [ ] F1436 — Resource (attachment) extraction with hashes
+- [ ] F1437 — Reminder/todo attribute mapping
+- [ ] F1438 — Large ENEX streaming (multi-GB files)
+- [ ] F1439 — Evernote fixture tests
+- [ ] F1440 — Evernote guide
+
+### Roam / Logseq (F1441–F1450)
+
+- [ ] F1441 — Roam JSON export parser
+- [ ] F1442 — Logseq directory parser (md + org modes)
+- [ ] F1443 — Block-reference semantics → block links/transclusion
+- [ ] F1444 — Daily-notes mapping to Fables journal
+- [ ] F1445 — Outliner indentation → markdown structure strategy
+- [ ] F1446 — Block UID preservation for link integrity
+- [ ] F1447 — Queries → FQL translation (best-effort + report)
+- [ ] F1448 — Namespace pages → nested notebooks option
+- [ ] F1449 — Roam/Logseq fixture tests
+- [ ] F1450 — Outliner import guide
+
+### Bear / Day One / Misc (F1451–F1460)
+
+- [ ] F1451 — Bear export import (md + assets, tag syntax)
+- [ ] F1452 — Day One JSON import → journal with metadata
+- [ ] F1453 — Day One photos/locations/weather as note metadata
+- [ ] F1454 — Simplenote export import
+- [ ] F1455 — Google Keep takeout import
+- [ ] F1456 — Standard Notes export import
+- [ ] F1457 — Joplin export (JEX) import
+- [ ] F1458 — Generic folder-of-markdown enhancer (frontmatter dialects)
+- [ ] F1459 — Misc importer fixture tests
+- [ ] F1460 — Per-source guides
+
+### Documents (F1461–F1470)
+
+- [ ] F1461 — .docx import via mammoth-style conversion
+- [ ] F1462 — HTML directory import (static site → notes)
+- [ ] F1463 — CSV → structured entities wizard
+- [ ] F1464 — OPML import (outlines, feed lists)
+- [ ] F1465 — ICS calendar import → timeline events
+- [ ] F1466 — Email (.eml/.mbox) import to notes
+- [ ] F1467 — Plain-text heuristics (headings, lists detection)
+- [ ] F1468 — Document import fixtures
+- [ ] F1469 — Format detection on drop (route to right importer)
+- [ ] F1470 — Document import docs
+
+### Export Adapters (F1471–F1480)
+
+- [ ] F1471 — Export framework mirroring importer architecture
+- [ ] F1472 — Obsidian-flavored vault export
+- [ ] F1473 — Notion-importable export (md + csv structure)
+- [ ] F1474 — Logseq-compatible export
+- [ ] F1475 — JSON canonical export (full fidelity, documented schema)
+- [ ] F1476 — Static site export (read-only HTML vault)
+- [ ] F1477 — PDF book export (notebook → chaptered document)
+- [ ] F1478 — Selective export by FQL query
+- [ ] F1479 — Round-trip fidelity tests (export→import→compare)
+- [ ] F1480 — Export docs
+
+### Import UX (F1481–F1490)
+
+- [ ] F1481 — Unified import wizard: pick source, upload, map, preview, run
+- [ ] F1482 — Mapping preview UI (sample of converted notes)
+- [ ] F1483 — Progress with per-file status and pause/resume
+- [ ] F1484 — Error triage view (failed items, reasons, retry)
+- [ ] F1485 — Post-import tour (where everything went)
+- [ ] F1486 — Import health report (links resolved %, lossy conversions)
+- [ ] F1487 — Scheduled re-import for living sources (folder watch)
+- [ ] F1488 — CLI import parity for all sources
+- [ ] F1489 — Import UX e2e tests
+- [ ] F1490 — Migration-day playbooks (per-source checklists)
+
+### Interop Epic Close (F1491–F1500)
+
+- [ ] F1491 — Cross-importer link integrity audit tool
+- [ ] F1492 — Performance: 50k-note import benchmark
+- [ ] F1493 — Memory ceiling enforcement on huge imports
+- [ ] F1494 — Fidelity scoreboard doc (what survives per source)
+- [ ] F1495 — Import telemetry (local) for failure-pattern tuning
+- [ ] F1496 — Fixture corpus consolidation + licensing check
+- [ ] F1497 — Importer fuzz pass (malformed exports never crash)
+- [ ] F1498 — Full interop regression suite in CI
+- [ ] F1499 — Interop documentation hub
+- [ ] F1500 — Epic 15 retro devlog
+
+## Epic 16 — Canvas & Spatial Views (F1501–F1600)
+
+### Canvas Engine (F1501–F1510)
+
+- [ ] F1501 — Infinite canvas: pan/zoom with culling and LOD
+- [ ] F1502 — Canvas document model (objects, transforms, z-order)
+- [ ] F1503 — Spatial index (R-tree) for hit-testing at scale
+- [ ] F1504 — 60fps interaction budget at 1k objects (benchmarked)
+- [ ] F1505 — Snapping and alignment guides
+- [ ] F1506 — Multi-select, group, lock operations
+- [ ] F1507 — Undo system for spatial operations
+- [ ] F1508 — Canvas persistence format + autosave
+- [ ] F1509 — Minimap navigation
+- [ ] F1510 — Engine test suite
+
+### Cards & Content (F1511–F1520)
+
+- [ ] F1511 — Note cards on canvas (live content, resize modes)
+- [ ] F1512 — Edit-in-place on canvas cards
+- [ ] F1513 — Entity cards with field display
+- [ ] F1514 — Image/media objects
+- [ ] F1515 — Text labels and sticky notes (canvas-native)
+- [ ] F1516 — Web embed cards (clipped pages)
+- [ ] F1517 — Query cards (live FQL results on canvas)
+- [ ] F1518 — Story knot cards (compiler-synced)
+- [ ] F1519 — Card style options (color, size presets)
+- [ ] F1520 — Card tests
+
+### Connectors (F1521–F1530)
+
+- [ ] F1521 — Edges between objects with arrowheads and labels
+- [ ] F1522 — Edge routing (orthogonal/curved, obstacle-aware)
+- [ ] F1523 — Edge semantics: typed connections create real links
+- [ ] F1524 — Auto-layout commands (tree, grid, force)
+- [ ] F1525 — Connector styles per link type
+- [ ] F1526 — Reconnect/reroute interactions
+- [ ] F1527 — Edge bundling at scale
+- [ ] F1528 — Connection validity rules (what may link to what)
+- [ ] F1529 — Connector accessibility (keyboard creation/navigation)
+- [ ] F1530 — Connector tests
+
+### Drawing (F1531–F1540)
+
+- [ ] F1531 — Freehand ink with pressure (Pencil support)
+- [ ] F1532 — Shape tools (rect, ellipse, line, arrow)
+- [ ] F1533 — Ink smoothing and simplification
+- [ ] F1534 — Eraser and lasso for strokes
+- [ ] F1535 — Color/width presets with theme awareness
+- [ ] F1536 — Ink-to-shape recognition (optional)
+- [ ] F1537 — Drawing layers above/below cards
+- [ ] F1538 — Stroke serialization efficiency
+- [ ] F1539 — Palm rejection handling on tablet
+- [ ] F1540 — Drawing tests
+
+### Story Mapping Mode (F1541–F1550)
+
+- [ ] F1541 — Story map: canvas view generated from story IR
+- [ ] F1542 — Two-way sync: move/connect knots on canvas ↔ source edits
+- [ ] F1543 — Beat cards not yet in source (planning objects → stub knots)
+- [ ] F1544 — Path coloring by playthrough data
+- [ ] F1545 — Act/chapter swim-lanes
+- [ ] F1546 — Canvas annotations attached to knots (author notes)
+- [ ] F1547 — Diff overlay after story edits
+- [ ] F1548 — Export story map as image/PDF
+- [ ] F1549 — Story map e2e test (canvas edit → compile → play)
+- [ ] F1550 — Story mapping tests
+
+### Boards (F1551–F1560)
+
+- [ ] F1551 — Kanban board view over query results
+- [ ] F1552 — Column definitions from tag/field values
+- [ ] F1553 — Drag between columns mutates the underlying field
+- [ ] F1554 — Board cards with cover images and badges
+- [ ] F1555 — Swimlanes by second dimension
+- [ ] F1556 — WIP limits and column stats
+- [ ] F1557 — Board templates (writing pipeline, reading list)
+- [ ] F1558 — Boards as canvas objects (board-on-canvas)
+- [ ] F1559 — Board keyboard operation
+- [ ] F1560 — Board tests
+
+### Embedding & Linking (F1561–F1570)
+
+- [ ] F1561 — Canvas embeds in notes (live viewport snapshot)
+- [ ] F1562 — Deep links to canvas regions
+- [ ] F1563 — Note → canvas backlinks (where is this note placed)
+- [ ] F1564 — Canvas in graph view as first-class node
+- [ ] F1565 — Canvas templates gallery
+- [ ] F1566 — Duplicate/instance semantics for cards (mirror vs copy)
+- [ ] F1567 — Canvas search (find object, fly to it)
+- [ ] F1568 — Frames: named regions with presentation order
+- [ ] F1569 — Presentation mode (walk frames like slides)
+- [ ] F1570 — Embedding tests
+
+### Touch & Mobile Canvas (F1571–F1580)
+
+- [ ] F1571 — Touch gesture map (pinch, two-finger pan, long-press menus)
+- [ ] F1572 — Phone canvas mode (view + light edit)
+- [ ] F1573 — Stylus vs finger tool separation
+- [ ] F1574 — Haptic feedback on snaps/connections
+- [ ] F1575 — Mobile toolbar ergonomics
+- [ ] F1576 — Offline canvas editing through op outbox
+- [ ] F1577 — Battery-aware rendering (reduce effects on low power)
+- [ ] F1578 — Tablet split-view layout (canvas + note)
+- [ ] F1579 — Mobile canvas e2e tests
+- [ ] F1580 — Touch interaction docs
+
+### Canvas Sync & Collab (F1581–F1590)
+
+- [ ] F1581 — Canvas objects through CRDT structures (Epic 12 integration)
+- [ ] F1582 — Concurrent move/resize convergence
+- [ ] F1583 — Presence cursors on shared canvases
+- [ ] F1584 — Collaborative drawing sessions
+- [ ] F1585 — Object-level locking during edit
+- [ ] F1586 — Canvas history checkpoints
+- [ ] F1587 — Conflict UX for irreconcilable spatial edits
+- [ ] F1588 — Shared canvas permissions
+- [ ] F1589 — Canvas collab load test
+- [ ] F1590 — Canvas sync tests
+
+### Canvas Epic Close (F1591–F1600)
+
+- [ ] F1591 — Performance hardening pass (10k objects usable)
+- [ ] F1592 — Accessibility: full keyboard spatial navigation
+- [ ] F1593 — Canvas export (SVG/PNG/PDF, region or full)
+- [ ] F1594 — Import from Obsidian Canvas / Excalidraw formats
+- [ ] F1595 — Canvas plugin API surface
+- [ ] F1596 — Demo canvases in seed content
+- [ ] F1597 — Canvas user guide
+- [ ] F1598 — Full canvas regression suite
+- [ ] F1599 — Canvas telemetry (local perf stats)
+- [ ] F1600 — Epic 16 retro devlog
+
+## Epic 17 — Audio Fables (F1601–F1700)
+
+### TTS Foundation (F1601–F1610)
+
+- [ ] F1601 — Local TTS engine adapter (Piper-class voices)
+- [ ] F1602 — Voice catalog: install, preview, manage local voices
+- [ ] F1603 — Server-side synthesis pipeline with caching by text hash
+- [ ] F1604 — Web Speech API fallback path
+- [ ] F1605 — Pronunciation lexicon (names, invented words)
+- [ ] F1606 — SSML-ish markup subset (pauses, emphasis, rate)
+- [ ] F1607 — Synthesis queue with priority (interactive vs batch)
+- [ ] F1608 — Voice settings per vault (default narrator)
+- [ ] F1609 — Synthesis benchmark + quality matrix doc
+- [ ] F1610 — TTS adapter tests
+
+### Voice Casting (F1611–F1620)
+
+- [ ] F1611 — Per-entity voice assignment (character → voice)
+- [ ] F1612 — Dialogue attribution detection in story text
+- [ ] F1613 — Narrator vs character line separation
+- [ ] F1614 — Voice audition UI (hear candidates per character)
+- [ ] F1615 — Per-character rate/pitch adjustments
+- [ ] F1616 — Cast sheet per story (saved casting)
+- [ ] F1617 — Casting templates (reuse across stories)
+- [ ] F1618 — Uncast-line fallback rules
+- [ ] F1619 — Casting data in story manifest
+- [ ] F1620 — Casting tests
+
+### Narration Renderer (F1621–F1630)
+
+- [ ] F1621 — Story path → audio scene rendering (line-by-line synthesis)
+- [ ] F1622 — Choice-point audio handling (menu voice, earcons)
+- [ ] F1623 — Live narration in player (speak as you read)
+- [ ] F1624 — Pre-render mode: full path baked to audio file
+- [ ] F1625 — Pause/resume/skip controls tied to story position
+- [ ] F1626 — Audio position ↔ text position sync model
+- [ ] F1627 — Speed control with pitch preservation
+- [ ] F1628 — Sleep timer
+- [ ] F1629 — Renderer performance (faster-than-realtime synthesis)
+- [ ] F1630 — Renderer tests
+
+### Soundscapes (F1631–F1640)
+
+- [ ] F1631 — Layered ambient engine (loops + one-shots, Web Audio)
+- [ ] F1632 — Scene-tag soundscape bindings (# scene: storm)
+- [ ] F1633 — Crossfade and ducking under narration
+- [ ] F1634 — Bundled CC0 sound library with attribution manifest
+- [ ] F1635 — User sound import to library
+- [ ] F1636 — Soundscape editor (compose layers per scene)
+- [ ] F1637 — Story-effect sound triggers (~ play("door"))
+- [ ] F1638 — Volume mixing panel (narration/ambient/effects)
+- [ ] F1639 — Audio memory management (sample unloading)
+- [ ] F1640 — Soundscape tests
+
+### Read-Along (F1641–F1650)
+
+- [ ] F1641 — Word/sentence-level highlight sync during narration
+- [ ] F1642 — Synthesis timestamp extraction for alignment
+- [ ] F1643 — Auto-scroll following narration
+- [ ] F1644 — Tap-word-to-jump audio seeking
+- [ ] F1645 — Karaoke mode styling options
+- [ ] F1646 — Read-along for plain notes (not just stories)
+- [ ] F1647 — Alignment fallback when timestamps unavailable
+- [ ] F1648 — Reading-practice mode (record user, simple comparison)
+- [ ] F1649 — Read-along accessibility review
+- [ ] F1650 — Read-along tests
+
+### Recording Studio (F1651–F1660)
+
+- [ ] F1651 — Human narration recording per knot/paragraph
+- [ ] F1652 — Punch-in re-recording (fix one sentence)
+- [ ] F1653 — Take management (multiple takes, pick best)
+- [ ] F1654 — Waveform editor (trim, silence trim)
+- [ ] F1655 — Noise gate / normalize processing
+- [ ] F1656 — Mixed casts: human + TTS in one story
+- [ ] F1657 — Recording session checklist UI (lines remaining)
+- [ ] F1658 — Mobile recording support (PWA mic)
+- [ ] F1659 — Storage strategy for takes (opus, content-addressed)
+- [ ] F1660 — Studio tests
+
+### Audio Export (F1661–F1670)
+
+- [ ] F1661 — Path-to-audiobook export (chosen path → m4b with chapters)
+- [ ] F1662 — Chapter markers from knot titles
+- [ ] F1663 — Embedded cover art and metadata
+- [ ] F1664 — MP3/opus alternative formats
+- [ ] F1665 — Multi-path export (one file per major branch)
+- [ ] F1666 — Note-to-audio export (listen to any notebook)
+- [ ] F1667 — Export queue with progress + cancel
+- [ ] F1668 — Output size estimation upfront
+- [ ] F1669 — Export integrity tests (duration, chapters)
+- [ ] F1670 — Export docs
+
+### Playback System (F1671–F1680)
+
+- [ ] F1671 — Media Session API: lock-screen controls, artwork
+- [ ] F1672 — Background playback in PWA
+- [ ] F1673 — Playback position persistence per story/note
+- [ ] F1674 — Listening queue (chain stories/notes)
+- [ ] F1675 — Offline audio caching with pin controls
+- [ ] F1676 — Bluetooth/headphone control handling
+- [ ] F1677 — Interruption recovery (calls, route changes)
+- [ ] F1678 — Listening stats (time, completion)
+- [ ] F1679 — CarPlay-adjacent web behavior verification
+- [ ] F1680 — Playback tests
+
+### Audio Accessibility (F1681–F1690)
+
+- [ ] F1681 — Full app audio-first navigation review
+- [ ] F1682 — Choice reading with numbered selection by voice UI patterns
+- [ ] F1683 — Audio descriptions for story images
+- [ ] F1684 — Caption/transcript view for all audio
+- [ ] F1685 — Dyslexia-friendly read-along presets
+- [ ] F1686 — Volume normalization across voices
+- [ ] F1687 — Mono/balance options
+- [ ] F1688 — Flashing/motion-free audio visualizations
+- [ ] F1689 — A11y audio review with checklist
+- [ ] F1690 — Accessibility tests
+
+### Audio Epic Close (F1691–F1700)
+
+- [ ] F1691 — End-to-end: cast → soundscape → narrate → export demo fable
+- [ ] F1692 — Performance: synthesis cache hit-rate tuning
+- [ ] F1693 — Disk budget controls for audio caches
+- [ ] F1694 — Audio settings consolidation page
+- [ ] F1695 — Demo audio fable in seed content
+- [ ] F1696 — Audio user guide
+- [ ] F1697 — Audio regression suite
+- [ ] F1698 — Battery profiling on mobile playback
+- [ ] F1699 — Audio plugin API surface
+- [ ] F1700 — Epic 17 retro devlog
+
+## Epic 18 — Spaced Repetition & Learning (F1701–F1800)
+
+### Scheduler Core (F1701–F1710)
+
+- [ ] F1701 — Card model: prompt/answer bound to source note blocks
+- [ ] F1702 — FSRS scheduler implementation with parameter defaults
+- [ ] F1703 — Review log storage (every rating, full history)
+- [ ] F1704 — Scheduler parameter optimization from review history
+- [ ] F1705 — Due-queue computation with timezone correctness
+- [ ] F1706 — New-card introduction limits and ordering
+- [ ] F1707 — Suspend/bury mechanics
+- [ ] F1708 — Scheduler property tests (intervals monotone sane)
+- [ ] F1709 — FSRS conformance vectors test
+- [ ] F1710 — Scheduler benchmark (100k cards)
+
+### Card Authoring (F1711–F1720)
+
+- [ ] F1711 — Cloze syntax in notes ({{c1::hidden}})
+- [ ] F1712 — Q&A block syntax for explicit cards
+- [ ] F1713 — Auto-card suggestions from note structure (definitions, lists)
+- [ ] F1714 — Card preview in editor gutter
+- [ ] F1715 — Multi-cloze cards from one block
+- [ ] F1716 — Image occlusion cards (mask regions)
+- [ ] F1717 — Card-source live link (edit note updates card)
+- [ ] F1718 — Orphaned card handling on note deletion
+- [ ] F1719 — Card browser with FQL filtering
+- [ ] F1720 — Authoring tests
+
+### Review Experience (F1721–F1730)
+
+- [ ] F1721 — Phone-first review UI (big tap targets, swipe ratings)
+- [ ] F1722 — Keyboard review flow on desktop (1-4, space)
+- [ ] F1723 — Answer reveal animations (reduced-motion aware)
+- [ ] F1724 — Session length controls and auto-stop
+- [ ] F1725 — In-review source peek (jump to note context)
+- [ ] F1726 — Audio cards (TTS question/answer via Epic 17)
+- [ ] F1727 — Review offline with sync of logs
+- [ ] F1728 — Undo last rating
+- [ ] F1729 — Review session summary screen
+- [ ] F1730 — Review UX tests
+
+### Story-Driven Learning (F1731–F1740)
+
+- [ ] F1731 — Quiz knots: story choices as recall checks
+- [ ] F1732 — Story generator from due cards (review disguised as fable)
+- [ ] F1733 — Mastery gates in stories (path unlocks by retention)
+- [ ] F1734 — Learning-mode story template in Forge stdlib
+- [ ] F1735 — Card creation from story content (codex → cards)
+- [ ] F1736 — Spaced story re-reads (schedule story revisits)
+- [ ] F1737 — Language-learning fable mode (vocab integration)
+- [ ] F1738 — Story quiz analytics
+- [ ] F1739 — Demo learning fable in seed
+- [ ] F1740 — Story-learning tests
+
+### Decks & Organization (F1741–F1750)
+
+- [ ] F1741 — Decks as saved queries (dynamic membership)
+- [ ] F1742 — Deck-level scheduler settings
+- [ ] F1743 — Deck dashboard (due counts, forecast)
+- [ ] F1744 — Cross-deck review sessions
+- [ ] F1745 — Tag-driven deck composition
+- [ ] F1746 — Deck sharing format (.fdeck)
+- [ ] F1747 — Per-notebook card defaults
+- [ ] F1748 — Filtered/custom study sessions
+- [ ] F1749 — Deck management tests
+- [ ] F1750 — Deck docs
+
+### Memory Insights (F1751–F1760)
+
+- [ ] F1751 — Retention charts (true retention over time)
+- [ ] F1752 — Review heatmap calendar
+- [ ] F1753 — Workload forecast graph
+- [ ] F1754 — Difficulty distribution analysis
+- [ ] F1755 — Leech detection with remediation suggestions
+- [ ] F1756 — Time-per-card stats
+- [ ] F1757 — Knowledge coverage map (which notes have cards)
+- [ ] F1758 — Streaks and gentle gamification (optional)
+- [ ] F1759 — Insights export
+- [ ] F1760 — Insights tests
+
+### Sibling & Edge Cases (F1761–F1770)
+
+- [ ] F1761 — Sibling spacing (related cards not same session)
+- [ ] F1762 — Duplicate card detection
+- [ ] F1763 — Timezone travel handling
+- [ ] F1764 — Vacation mode (pause without pile-up shock)
+- [ ] F1765 — Catch-up strategy after long gaps
+- [ ] F1766 — Card priority overrides
+- [ ] F1767 — Maximum interval caps
+- [ ] F1768 — Re-learning steps configuration
+- [ ] F1769 — Edge case test matrix
+- [ ] F1770 — Scheduler edge docs
+
+### Notifications & Habits (F1771–F1780)
+
+- [ ] F1771 — Daily review reminder (local notifications)
+- [ ] F1772 — Due-count badge on app icon
+- [ ] F1773 — Best-time suggestion from review history
+- [ ] F1774 — Habit streak protection (one-tap minimum session)
+- [ ] F1775 — Weekly learning digest note
+- [ ] F1776 — Quiet hours respect
+- [ ] F1777 — Reminder copy variants (non-nagging tone)
+- [ ] F1778 — Notification deep-link straight into review
+- [ ] F1779 — Habit feature tests
+- [ ] F1780 — Habit design doc
+
+### Anki Interop (F1781–F1790)
+
+- [ ] F1781 — .apkg import (notes, cards, scheduling state)
+- [ ] F1782 — Anki template → card rendering mapping
+- [ ] F1783 — Media import from apkg
+- [ ] F1784 — Scheduling state translation (preserve intervals)
+- [ ] F1785 — Export to .apkg
+- [ ] F1786 — Shared-deck import smoke corpus
+- [ ] F1787 — Round-trip fidelity report
+- [ ] F1788 — Large collection import (100k cards) benchmark
+- [ ] F1789 — Anki interop tests
+- [ ] F1790 — Anki migration guide
+
+### Learning Epic Close (F1791–F1800)
+
+- [ ] F1791 — Full learning-loop e2e (note → card → reviews → retention)
+- [ ] F1792 — Performance on phone review sessions
+- [ ] F1793 — Learning settings consolidation
+- [ ] F1794 — Demo deck in seed content
+- [ ] F1795 — Learning user guide
+- [ ] F1796 — Scientific honesty pass (claims match evidence)
+- [ ] F1797 — Learning regression suite
+- [ ] F1798 — Plugin API for custom card types
+- [ ] F1799 — Learning analytics privacy review
+- [ ] F1800 — Epic 18 retro devlog
+
+## Epic 19 — Story Interop & Distribution (F1801–F1900)
+
+### .fablepack Format (F1801–F1810)
+
+- [ ] F1801 — Container spec: story source, bytecode, assets, casting, manifest, signature
+- [ ] F1802 — Deterministic packing (reproducible archives)
+- [ ] F1803 — Pack/unpack CLI and UI
+- [ ] F1804 — Manifest schema with capability requirements (audio, AI, knowledge bindings)
+- [ ] F1805 — Dependency-free packs (knowledge refs snapshotted or stubbed)
+- [ ] F1806 — Pack validation + content warnings metadata
+- [ ] F1807 — Version compatibility ranges in manifest
+- [ ] F1808 — Pack integrity (hash tree, optional signing)
+- [ ] F1809 — Spec document published in docs
+- [ ] F1810 — Format conformance tests
+
+### Standalone Player (F1811–F1820)
+
+- [ ] F1811 — Single-file HTML player hardening (works from file://)
+- [ ] F1812 — Player size budget (<300KB before story data)
+- [ ] F1813 — Saves in localStorage with export/import
+- [ ] F1814 — Theme/typography parity with in-app player
+- [ ] F1815 — Audio support in standalone (bundled assets)
+- [ ] F1816 — Accessibility parity in standalone
+- [ ] F1817 — Offline-complete guarantee test
+- [ ] F1818 — Standalone analytics: none, verified
+- [ ] F1819 — Browser matrix testing (Safari/Firefox/Chrome, iOS)
+- [ ] F1820 — Standalone player tests
+
+### Ink Compatibility (F1821–F1830)
+
+- [ ] F1821 — .ink parser for the common-subset grammar
+- [ ] F1822 — Ink → Forge AST mapping with semantics notes
+- [ ] F1823 — Unsupported-construct report (clear, itemized)
+- [ ] F1824 — Ink JSON (compiled) runtime adapter option
+- [ ] F1825 — The Intercept and classic samples as test corpus
+- [ ] F1826 — Forge → Ink export (compatible subset)
+- [ ] F1827 — Divert/knot semantic equivalence tests
+- [ ] F1828 — Ink import UI flow
+- [ ] F1829 — Ink interop docs
+- [ ] F1830 — Ink conformance suite
+
+### Twine Compatibility (F1831–F1840)
+
+- [ ] F1831 — Twee 3 parser
+- [ ] F1832 — Harlowe/SugarCube macro subset mapping strategy
+- [ ] F1833 — Twine HTML archive import
+- [ ] F1834 — Passage links → choices/diverts conversion
+- [ ] F1835 — Twine variable semantics mapping
+- [ ] F1836 — Forge → Twee export (subset)
+- [ ] F1837 — Unsupported-macro report
+- [ ] F1838 — Twine corpus tests
+- [ ] F1839 — Twine import UI
+- [ ] F1840 — Twine interop docs
+
+### Versioning & Releases (F1841–F1850)
+
+- [ ] F1841 — Story release channel: draft → released versions with names
+- [ ] F1842 — Story changelog generation between releases
+- [ ] F1843 — Save-compat checks between story versions
+- [ ] F1844 — Release diff viewer (what changed narratively)
+- [ ] F1845 — Rollback to prior release
+- [ ] F1846 — Release notes in pack manifest
+- [ ] F1847 — Reader update prompts for re-imported packs
+- [ ] F1848 — Branch freeze (lock a path while editing others)
+- [ ] F1849 — Versioning tests
+- [ ] F1850 — Release workflow docs
+
+### Reader Feedback Loop (F1851–F1860)
+
+- [ ] F1851 — Local reader feedback notes (per-moment reactions)
+- [ ] F1852 — Feedback export bundle to send back to authors
+- [ ] F1853 — Author feedback inbox (import reader bundles)
+- [ ] F1854 — Aggregated choice statistics (local playthroughs)
+- [ ] F1855 — Drop-off analysis per knot
+- [ ] F1856 — Ending distribution charts
+- [ ] F1857 — Playtest mode with structured prompts at checkpoints
+- [ ] F1858 — Feedback anonymization options
+- [ ] F1859 — Feedback loop tests
+- [ ] F1860 — Playtesting guide
+
+### Cover Art & Presentation (F1861–F1870)
+
+- [ ] F1861 — Cover studio: typographic cover designer (fonts, palettes, motifs)
+- [ ] F1862 — Procedural cover motifs from story tags
+- [ ] F1863 — Cover image import with safe-area guides
+- [ ] F1864 — Library shelf aesthetics (spines, stacks view)
+- [ ] F1865 — Story trailer cards (shareable image with blurb + QR)
+- [ ] F1866 — Open Graph metadata in exports
+- [ ] F1867 — Print-style title pages in transcripts/PDF
+- [ ] F1868 — Cover asset pipeline (sizes, formats)
+- [ ] F1869 — Cover studio tests
+- [ ] F1870 — Presentation docs
+
+### Vault-to-Vault Sharing (F1871–F1880)
+
+- [ ] F1871 — Tailnet vault discovery (opt-in mDNS-style announce)
+- [ ] F1872 — Library sharing: browse a friend's shared shelf
+- [ ] F1873 — Pack transfer over tailnet with verification
+- [ ] F1874 — Borrowing semantics (time-boxed reads) as honor-system metadata
+- [ ] F1875 — Shared shelf permissions
+- [ ] F1876 — Update notifications for shared packs
+- [ ] F1877 — Transfer resume on interruption
+- [ ] F1878 — Shelf privacy controls
+- [ ] F1879 — Sharing tests
+- [ ] F1880 — Sharing setup guide
+
+### Story Archives (F1881–F1890)
+
+- [ ] F1881 — Archive.org-style local story archive format (everything, forever)
+- [ ] F1882 — Reading history preservation across vault migrations
+- [ ] F1883 — Dead-format rescue importers (old pack versions)
+- [ ] F1884 — Story preservation checklist (assets, fonts, voices pinned)
+- [ ] F1885 — Archival export with fixity manifest
+- [ ] F1886 — Bulk archive verification command
+- [ ] F1887 — Archive browser UI (deep past shelf)
+- [ ] F1888 — Format migration framework for future changes
+- [ ] F1889 — Archive tests
+- [ ] F1890 — Preservation docs
+
+### Distribution Epic Close (F1891–F1900)
+
+- [ ] F1891 — Full pipeline e2e: author → release → pack → share → play elsewhere
+- [ ] F1892 — Interop conformance dashboard (Ink/Twine/standalone status)
+- [ ] F1893 — Pack security review (no script injection via stories)
+- [ ] F1894 — Distribution performance (large pack handling)
+- [ ] F1895 — Demo pack gallery in seed
+- [ ] F1896 — Distribution user guide
+- [ ] F1897 — Distribution regression suite
+- [ ] F1898 — Community format RFC docs (inviting other tools)
+- [ ] F1899 — Distribution plugin hooks
+- [ ] F1900 — Epic 19 retro devlog
+
+## Epic 20 — Multi-Vault, Automation & Power Tools (F1901–F2000)
+
+### Multi-Vault (F1901–F1910)
+
+- [ ] F1901 — Vault registry: multiple data dirs, named vaults
+- [ ] F1902 — Vault switcher UI with fast switching
+- [ ] F1903 — Per-vault settings isolation
+- [ ] F1904 — Cross-vault search (opt-in federation)
+- [ ] F1905 — Move/copy notes between vaults
+- [ ] F1906 — Vault templates (work, personal, worldbuilding presets)
+- [ ] F1907 — Per-vault encryption states coexisting
+- [ ] F1908 — Vault archive/cold storage
+- [ ] F1909 — Multi-vault tests
+- [ ] F1910 — Multi-vault docs
+
+### Automation Rules (F1911–F1920)
+
+- [ ] F1911 — Rule engine: triggers (events, schedules, FQL conditions) → actions
+- [ ] F1912 — Action library (move, tag, template, notify, export, run plugin)
+- [ ] F1913 — Rule builder UI (no-code, with FQL escape hatch)
+- [ ] F1914 — Dry-run mode for rules
+- [ ] F1915 — Rule run history with diffs
+- [ ] F1916 — Loop/cascade protection (rule firing limits)
+- [ ] F1917 — Rule templates gallery (inbox-zero, weekly review prep)
+- [ ] F1918 — Disable-on-error with notification
+- [ ] F1919 — Rule engine tests
+- [ ] F1920 — Automation docs
+
+### Scheduled Jobs (F1921–F1930)
+
+- [ ] F1921 — Cron-style scheduler with human-readable recurrence UI
+- [ ] F1922 — Job types: backups, digests, re-indexing, rule triggers
+- [ ] F1923 — Job run log with durations and outcomes
+- [ ] F1924 — Missed-job catch-up policy (machine was asleep)
+- [ ] F1925 — Job concurrency limits
+- [ ] F1926 — Manual run-now for any job
+- [ ] F1927 — Job failure notifications with backoff
+- [ ] F1928 — Resource-aware scheduling (defer heavy jobs while active)
+- [ ] F1929 — Scheduler tests
+- [ ] F1930 — Jobs docs
+
+### Webhooks & Integrations (F1931–F1940)
+
+- [ ] F1931 — Outbound webhooks on events (tailnet/local targets)
+- [ ] F1932 — Inbound webhook endpoints with token auth (capture from anywhere)
+- [ ] F1933 — Webhook payload templates
+- [ ] F1934 — Delivery retries with dead-letter view
+- [ ] F1935 — Shortcuts-app recipes documented (iOS automation)
+- [ ] F1936 — Email-in capture (local SMTP catcher option)
+- [ ] F1937 — RSS feed output of selected queries
+- [ ] F1938 — Webhook security review
+- [ ] F1939 — Webhook tests
+- [ ] F1940 — Integration cookbook
+
+### Scripting Console (F1941–F1950)
+
+- [ ] F1941 — Sandboxed JS console against the plugin API surface
+- [ ] F1942 — Script library (saved scripts with descriptions)
+- [ ] F1943 — Script scheduling (scripts as job actions)
+- [ ] F1944 — Console REPL with API autocomplete
+- [ ] F1945 — Result rendering (tables, JSON tree)
+- [ ] F1946 — Dry-run transaction wrapper for scripts
+- [ ] F1947 — Script permission scoping like plugins
+- [ ] F1948 — Example script gallery
+- [ ] F1949 — Console tests
+- [ ] F1950 — Scripting docs
+
+### Bulk Operations (F1951–F1960)
+
+- [ ] F1951 — Bulk operation framework: preview → confirm → undoable batch
+- [ ] F1952 — Find-and-replace across vault (regex, scoped)
+- [ ] F1953 — Bulk frontmatter/field editing
+- [ ] F1954 — Bulk link rewriting (restructure-safe moves)
+- [ ] F1955 — Bulk tag operations with preview counts
+- [ ] F1956 — Batch note merging tool
+- [ ] F1957 — Batch splitting (one note → many by heading)
+- [ ] F1958 — Operation journal (every bulk op replayable/reversible)
+- [ ] F1959 — Bulk ops tests
+- [ ] F1960 — Bulk ops docs
+
+### FQL v2 (F1961–F1970)
+
+- [ ] F1961 — Aggregations (count, group-by in query embeds)
+- [ ] F1962 — Joins across types (notes with their entities' fields)
+- [ ] F1963 — Computed fields and expressions in results
+- [ ] F1964 — Query variables and parameterized saved queries
+- [ ] F1965 — EXPLAIN view for query performance
+- [ ] F1966 — Query result charts (bar, line, pie in embeds)
+- [ ] F1967 — FQL v2 grammar docs + migration notes
+- [ ] F1968 — Query linting with suggestions
+- [ ] F1969 — FQL v2 test suite
+- [ ] F1970 — Query cookbook
+
+### Workspace Profiles (F1971–F1980)
+
+- [ ] F1971 — Profiles: named UI states (open panes, filters, theme)
+- [ ] F1972 — Focus modes (hide features per profile: writing mode, review mode)
+- [ ] F1973 — Time-based profile switching option
+- [ ] F1974 — Per-profile notification rules
+- [ ] F1975 — Profile quick-switch in palette
+- [ ] F1976 — Reading-only profile for phone evenings
+- [ ] F1977 — Profile export/import
+- [ ] F1978 — Default profile per device
+- [ ] F1979 — Profile tests
+- [ ] F1980 — Profile docs
+
+### Power Tools (F1981–F1990)
+
+- [ ] F1981 — Vault statistics deep-dive page (everything measurable)
+- [ ] F1982 — Duplicate note finder with merge workflow
+- [ ] F1983 — Broken-everything finder (links, embeds, bindings, attachments)
+- [ ] F1984 — Vault linter with fix-its (naming, structure conventions)
+- [ ] F1985 — Storage analyzer (what's taking space)
+- [ ] F1986 — Performance profiler page (slowest queries, renders)
+- [ ] F1987 — Keyboard macro recorder
+- [ ] F1988 — Custom CSS injection point with examples
+- [ ] F1989 — Power tools tests
+- [ ] F1990 — Power user guide
+
+### Grand Close (F1991–F2000)
+
+- [ ] F1991 — Full 2,000-feature regression run, all suites green
+- [ ] F1992 — Performance re-baseline of the complete system
+- [ ] F1993 — Documentation completeness audit (every feature findable)
+- [ ] F1994 — Fresh-machine install test of the full system
+- [ ] F1995 — Demo vault v2 showcasing all epics
+- [ ] F1996 — v2.0.0 release with changelog and artifacts
+- [ ] F1997 — Final Lighthouse + a11y + security passes
+- [ ] F1998 — The Fables Book: docs site narrative tour of the system
+- [ ] F1999 — Project retrospective: what 2,000 features taught us
+- [ ] F2000 — 🏁 Ship v2.0 — announcement note written as a fable
+
+---
+
+_2,000 features. Two tiers. One fable at a time._
