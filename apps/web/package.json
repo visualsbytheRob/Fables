@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fables/ui": "workspace:*",
     "@tanstack/react-query": "^5.90.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

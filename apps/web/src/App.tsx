@@ -1,8 +1,19 @@
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { NavLink, Outlet, Route, Routes } from 'react-router-dom';
+import {
+  BookOpen,
+  CalendarDays,
+  CommandPalette,
+  FileText,
+  Network,
+  ThemeProvider,
+  ToastProvider,
+  type PaletteCommand,
+} from '@fables/ui';
+import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { fetchHealth } from './api/client.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
+import { PlaygroundPage } from './pages/Playground.js';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -11,20 +22,36 @@ const queryClient = new QueryClient({
 });
 
 function Shell() {
+  const navigate = useNavigate();
+  const commands: PaletteCommand[] = [
+    { id: 'notes', label: 'Go to Notes', keywords: 'home', run: () => navigate('/') },
+    { id: 'stories', label: 'Go to Stories', keywords: 'fables play', run: () => navigate('/stories') },
+    { id: 'graph', label: 'Go to Graph', keywords: 'links network', run: () => navigate('/graph') },
+    { id: 'today', label: 'Open Today', keywords: 'daily journal', run: () => navigate('/today') },
+    { id: 'playground', label: 'UI Playground', keywords: 'design system', run: () => navigate('/playground') },
+  ];
+
   return (
     <div className="shell">
       <nav className="sidebar">
         <div className="brand">Fables</div>
         <NavLink to="/" end>
-          Notes
+          <FileText size={16} /> Notes
         </NavLink>
-        <NavLink to="/stories">Stories</NavLink>
-        <NavLink to="/graph">Graph</NavLink>
-        <NavLink to="/today">Today</NavLink>
+        <NavLink to="/stories">
+          <BookOpen size={16} /> Stories
+        </NavLink>
+        <NavLink to="/graph">
+          <Network size={16} /> Graph
+        </NavLink>
+        <NavLink to="/today">
+          <CalendarDays size={16} /> Today
+        </NavLink>
       </nav>
       <main className="main">
         <Outlet />
       </main>
+      <CommandPalette commands={commands} />
     </div>
   );
 }
@@ -56,17 +83,22 @@ const Placeholder = ({ title, day }: { title: string; day: number }) => (
 export function App() {
   return (
     <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <Routes>
-          <Route element={<Shell />}>
-            <Route index element={<HomePage />} />
-            <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
-            <Route path="graph" element={<Placeholder title="Graph" day={3} />} />
-            <Route path="today" element={<Placeholder title="Today" day={3} />} />
-            <Route path="*" element={<Placeholder title="Not found" day={1} />} />
-          </Route>
-        </Routes>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <QueryClientProvider client={queryClient}>
+            <Routes>
+              <Route element={<Shell />}>
+                <Route index element={<HomePage />} />
+                <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
+                <Route path="graph" element={<Placeholder title="Graph" day={3} />} />
+                <Route path="today" element={<Placeholder title="Today" day={3} />} />
+                <Route path="playground" element={<PlaygroundPage />} />
+                <Route path="*" element={<Placeholder title="Not found" day={1} />} />
+              </Route>
+            </Routes>
+          </QueryClientProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </ErrorBoundary>
   );
 }

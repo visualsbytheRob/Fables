@@ -1,0 +1,244 @@
+/* ===== Fables design tokens (F071) ===== */
+:root,
+[data-theme='dark'] {
+  --bg: #16121f;
+  --bg-panel: #1f1a2b;
+  --bg-hover: #2a2438;
+  --bg-active: #352d47;
+  --text: #e8e4f0;
+  --text-dim: #9b93ad;
+  --accent: #b08fff;
+  --accent-contrast: #221640;
+  --danger: #ff7878;
+  --border: #322a44;
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 20px;
+  --text-xl: 28px;
+
+  --radius-sm: 6px;
+  --radius: 8px;
+  --radius-lg: 14px;
+
+  /* breakpoints are documented here and used in media queries: 720px phone, 1080px desktop-wide */
+}
+
+[data-theme='light'] {
+  --bg: #faf8fd;
+  --bg-panel: #ffffff;
+  --bg-hover: #f0ecf7;
+  --bg-active: #e6dff3;
+  --text: #241d33;
+  --text-dim: #6f6783;
+  --accent: #6d3fd4;
+  --accent-contrast: #ffffff;
+  --danger: #c43c3c;
+  --border: #e2dcee;
+  --shadow: 0 8px 32px rgba(40, 20, 80, 0.14);
+}
+
+/* ===== Focus & motion (F079) ===== */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Primitives (F073) ===== */
+.ui-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.ui-btn:hover {
+  background: var(--bg-hover);
+}
+.ui-btn--primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 600;
+}
+.ui-btn--primary:hover {
+  filter: brightness(1.1);
+  background: var(--accent);
+}
+.ui-btn--danger {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.ui-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ui-input,
+.ui-textarea,
+.ui-select {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-family: inherit;
+}
+.ui-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* ===== Overlays (F074) ===== */
+.ui-dialog {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-panel);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  padding: var(--space-5);
+  max-width: min(480px, 90vw);
+}
+.ui-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.ui-tooltip {
+  position: absolute;
+  z-index: 50;
+  background: var(--bg-active);
+  color: var(--text);
+  font-size: var(--text-xs);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.ui-popover {
+  position: absolute;
+  z-index: 40;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-3);
+}
+
+/* ===== Toasts (F075) ===== */
+.ui-toasts {
+  position: fixed;
+  bottom: var(--space-5);
+  right: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  z-index: 100;
+}
+.ui-toast {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow);
+  font-size: var(--text-sm);
+  animation: ui-toast-in 160ms ease-out;
+}
+.ui-toast--error {
+  border-left-color: var(--danger);
+}
+@keyframes ui-toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+}
+
+/* ===== Command palette (F077) ===== */
+.ui-palette {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  z-index: 90;
+}
+.ui-palette__panel {
+  margin-top: 12vh;
+  width: min(560px, 92vw);
+  height: fit-content;
+  max-height: 60vh;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.ui-palette__input {
+  border: none;
+  border-bottom: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  padding: var(--space-4);
+  font-size: var(--text-md);
+  outline: none;
+}
+.ui-palette__list {
+  overflow-y: auto;
+  padding: var(--space-2);
+}
+.ui-palette__item {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.ui-palette__item[aria-selected='true'] {
+  background: var(--bg-active);
+}
+
+/* ===== Layout utilities (F078) ===== */
+.ui-container {
+  max-width: 920px;
+  margin-inline: auto;
+  padding-inline: var(--space-4);
+}
+.ui-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+.ui-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}

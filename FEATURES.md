@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 in progress. Last completed: F070. Next: F071.
+**Status:** Day 1 in progress. Last completed: F080. Next: F081.
 
 ---
 
@@ -108,16 +108,16 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F070 — `pnpm dev` runs server + web concurrently with one command
 
 ### Design System Base (F071–F080)
-- [ ] F071 — `packages/ui`: CSS custom-property tokens (color, spacing, type scale, radii)
-- [ ] F072 — Dark/light theme with system-preference detection + manual toggle
-- [ ] F073 — Button, Input, Textarea, Select primitives
-- [ ] F074 — Dialog, Popover, Tooltip primitives (accessible, focus-trapped)
-- [ ] F075 — Toast/notification system
-- [ ] F076 — Icon set wiring (lucide) with consistent sizing
-- [ ] F077 — Command palette shell component (⌘K) with fuzzy filter
-- [ ] F078 — Responsive breakpoints + container utilities
-- [ ] F079 — Focus-visible styles and reduced-motion support
-- [ ] F080 — `/playground` route rendering every primitive for visual QA
+- [x] F071 — `packages/ui`: CSS custom-property tokens (color, spacing, type scale, radii)
+- [x] F072 — Dark/light theme with system-preference detection + manual toggle
+- [x] F073 — Button, Input, Textarea, Select primitives
+- [x] F074 — Dialog, Popover, Tooltip primitives (accessible, focus-trapped)
+- [x] F075 — Toast/notification system
+- [x] F076 — Icon set wiring (lucide) with consistent sizing
+- [x] F077 — Command palette shell component (⌘K) with fuzzy filter
+- [x] F078 — Responsive breakpoints + container utilities
+- [x] F079 — Focus-visible styles and reduced-motion support
+- [x] F080 — `/playground` route rendering every primitive for visual QA
 
 ### API Conventions (F081–F090)
 - [ ] F081 — Response envelope: `{ data }` / `{ error: { code, message } }`

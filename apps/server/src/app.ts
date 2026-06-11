@@ -80,7 +80,11 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   const webDist = path.resolve(fileURLToPath(import.meta.url), '../../../web/dist');
   if (fs.existsSync(webDist)) {
     await app.register(fastifyStatic, { root: webDist, wildcard: false });
-    app.get('/*', (_request, reply) => reply.sendFile('index.html'));
+    // SPA fallback for client-side routes — but API misses must stay JSON 404s.
+    app.get('/*', (request, reply) => {
+      if (request.url.startsWith('/api/')) return reply.callNotFound();
+      return reply.sendFile('index.html');
+    });
   }
 
   return app;
