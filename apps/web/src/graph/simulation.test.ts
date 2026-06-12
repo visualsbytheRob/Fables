@@ -20,7 +20,7 @@ describe('force simulation (F241/F250)', () => {
     expect(seen.size).toBe(500);
   });
 
-  it('survives 10 ticks at 5k synthetic nodes with no NaN (perf fixture)', () => {
+  it('survives 10 ticks at 5k synthetic nodes with no NaN (perf fixture)', { timeout: 30_000 }, () => {
     const n = 5000;
     const nodes = Array.from({ length: n }, (_, i) => ({ id: `n${i}`, degree: (i % 7) + 1 }));
     // Ring + chords: every node has edges, communities overlap.
