@@ -39,6 +39,10 @@ const TemplatesPage = lazy(() =>
 const ImportPage = lazy(() =>
   import('./pages/ImportPage.js').then((m) => ({ default: m.ImportPage })),
 );
+// Forge editor stack (CodeMirror + the .fable compiler) stays off the main chunk.
+const ForgePlaygroundPage = lazy(() =>
+  import('./forge/ForgePlayground.js').then((m) => ({ default: m.ForgePlaygroundPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +86,12 @@ function Shell() {
       label: 'UI Playground',
       keywords: 'design system',
       run: () => navigate('/playground'),
+    },
+    {
+      id: 'forge-playground',
+      label: 'Forge Playground',
+      keywords: 'fable dsl editor compiler',
+      run: () => navigate('/forge-playground'),
     },
     ...registered,
   ];
@@ -148,6 +158,7 @@ export function App() {
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />
                   <Route path="import" element={lazyPage(<ImportPage />)} />
                   <Route path="playground" element={<PlaygroundPage />} />
+                  <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>
               </Routes>

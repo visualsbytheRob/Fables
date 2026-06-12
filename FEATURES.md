@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 4 compiler core done (F311–F377, F379–F380, F391–F396, F399–F400). Pending: F301–F310 spec, F378+F381–F390 editor integration, F397–F398. 814 tests green. Next: those + Day 5 VM (F401).
+**Status:** Day 4 COMPLETE (F301–F400). 882 tests green, forge-dsl coverage 98.4% (gate ≥90%). Day 5 VM lane (F401–F500) in flight. Next: F401.
 
 ---
 
@@ -427,16 +427,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Language Specification (F301–F310)
 
-- [ ] F301 — `docs/forge/spec.md`: language overview, design goals, file extension `.fable`
-- [ ] F302 — Spec: scenes, passages, and the knot/stitch structural model
-- [ ] F303 — Spec: choices syntax (`*` once-only, `+` sticky), nested choice depth
-- [ ] F304 — Spec: variables, types (bool/number/string/list), declarations
-- [ ] F305 — Spec: conditionals, expressions, operator precedence table
-- [ ] F306 — Spec: diverts/jumps between scenes and stories
-- [ ] F307 — Spec: tags, metadata blocks, author directives
-- [ ] F308 — Spec: knowledge-base bindings (`@entity`, `@note` references) — the fusion hook
-- [ ] F309 — Spec: includes/imports across .fable files
-- [ ] F310 — Spec: formal grammar appendix (EBNF) kept in sync with parser
+- [x] F301 — `docs/forge/spec.md`: language overview, design goals, file extension `.fable`
+- [x] F302 — Spec: scenes, passages, and the knot/stitch structural model
+- [x] F303 — Spec: choices syntax (`*` once-only, `+` sticky), nested choice depth
+- [x] F304 — Spec: variables, types (bool/number/string/list), declarations
+- [x] F305 — Spec: conditionals, expressions, operator precedence table
+- [x] F306 — Spec: diverts/jumps between scenes and stories
+- [x] F307 — Spec: tags, metadata blocks, author directives
+- [x] F308 — Spec: knowledge-base bindings (`@entity`, `@note` references) — the fusion hook
+- [x] F309 — Spec: includes/imports across .fable files
+- [x] F310 — Spec: formal grammar appendix (EBNF) kept in sync with parser
 
 ### Lexer (F311–F320)
 
@@ -525,22 +525,22 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F375 — Idempotency guarantee: fmt(fmt(x)) === fmt(x), property-tested
 - [x] F376 — Range formatting (format selection only)
 - [x] F377 — `--check` mode for CI
-- [ ] F378 — Format-on-save wiring in the web editor
+- [x] F378 — Format-on-save wiring in the web editor
 - [x] F379 — Formatter config: max width, choice marker style
 - [x] F380 — Formatter golden tests across fixture corpus
 
 ### Editor Integration (F381–F390)
 
-- [ ] F381 — CodeMirror 6 language package for `.fable` (parser-backed)
-- [ ] F382 — Syntax highlighting: structure, logic, strings, bindings, comments
-- [ ] F383 — Live diagnostics in editor gutter + squiggles from compiler
-- [ ] F384 — Autocomplete: knot names, variables, entity bindings
-- [ ] F385 — Go-to-definition for diverts and variables
-- [ ] F386 — Hover info: variable type, knot summary, entity preview
-- [ ] F387 — Document outline panel (knots/stitches tree)
-- [ ] F388 — Rename refactor for knots and variables
-- [ ] F389 — Folding for knots and choice blocks
-- [ ] F390 — Editor integration tests (completion, diagnostics overlay)
+- [x] F381 — CodeMirror 6 language package for `.fable` (parser-backed)
+- [x] F382 — Syntax highlighting: structure, logic, strings, bindings, comments
+- [x] F383 — Live diagnostics in editor gutter + squiggles from compiler
+- [x] F384 — Autocomplete: knot names, variables, entity bindings
+- [x] F385 — Go-to-definition for diverts and variables
+- [x] F386 — Hover info: variable type, knot summary, entity preview
+- [x] F387 — Document outline panel (knots/stitches tree)
+- [x] F388 — Rename refactor for knots and variables
+- [x] F389 — Folding for knots and choice blocks
+- [x] F390 — Editor integration tests (completion, diagnostics overlay)
 
 ### Language Test Infrastructure (F391–F400)
 
@@ -550,8 +550,8 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F394 — Property tests: printer/parser round-trip
 - [x] F395 — Fuzzer: grammar-aware random program generator
 - [x] F396 — Performance benchmark: 10k-line story compiles under budget
-- [ ] F397 — Coverage gate for forge-dsl ≥ 90%
-- [ ] F398 — Spec ↔ implementation conformance checklist doc
+- [x] F397 — Coverage gate for forge-dsl ≥ 90%
+- [x] F398 — Spec ↔ implementation conformance checklist doc
 - [x] F399 — `forge check` CLI command (compile-only, report diagnostics)
 - [x] F400 — Day-4 retro note in `docs/devlog/day-04.md`
 

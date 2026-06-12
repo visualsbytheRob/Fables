@@ -1,0 +1,218 @@
+/* Forge editor styling (F382/F383/F389): token classes ride on the app's
+   --code-* palette so .fable sources match markdown code highlighting. */
+
+.tok-forge-keyword {
+  color: var(--code-keyword);
+  font-weight: 600;
+}
+.tok-forge-heading {
+  color: var(--code-title);
+  font-weight: 700;
+}
+.tok-forge-choice {
+  color: var(--code-keyword);
+  font-weight: 700;
+}
+.tok-forge-label {
+  color: var(--code-attr);
+  font-style: italic;
+}
+.tok-forge-divert {
+  color: var(--code-title);
+}
+.tok-forge-string {
+  color: var(--code-string);
+}
+.tok-forge-number,
+.tok-forge-bool {
+  color: var(--code-literal);
+}
+.tok-forge-operator {
+  color: var(--code-keyword);
+}
+.tok-forge-variable {
+  color: var(--code-attr);
+}
+.tok-forge-brace {
+  color: var(--code-comment);
+  font-weight: 600;
+}
+.tok-forge-tag {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.tok-forge-binding {
+  color: var(--code-string);
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+}
+.tok-forge-comment {
+  color: var(--code-comment);
+  font-style: italic;
+}
+.tok-forge-invalid {
+  color: var(--danger, #e5484d);
+  text-decoration: underline wavy var(--danger, #e5484d);
+}
+
+/* Diagnostics (F383) */
+.cm-forge-diagnostic-error {
+  text-decoration: underline wavy var(--danger, #e5484d);
+  text-underline-offset: 3px;
+}
+.cm-forge-diagnostic-warning {
+  text-decoration: underline wavy var(--warning, #f5a524);
+  text-underline-offset: 3px;
+}
+.cm-forge-diagnostic-hint {
+  text-decoration: underline dotted var(--text-dim, #8b8b9e);
+  text-underline-offset: 3px;
+}
+.cm-forge-diagnostic-gutter {
+  width: 1.1em;
+}
+.cm-forge-gutter-marker {
+  font-size: 0.7em;
+  line-height: 1.6;
+  cursor: help;
+}
+.cm-forge-gutter-error {
+  color: var(--danger, #e5484d);
+}
+.cm-forge-gutter-warning {
+  color: var(--warning, #f5a524);
+}
+.cm-forge-gutter-hint {
+  color: var(--text-dim, #8b8b9e);
+}
+
+/* Hover (F386) */
+.cm-forge-hover {
+  padding: 6px 9px;
+  max-width: 42ch;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 12px;
+}
+.cm-forge-hover-headline {
+  font-weight: 700;
+}
+.cm-forge-hover-line {
+  color: var(--text-dim, #8b8b9e);
+}
+
+/* Folding (F389) */
+.cm-forge-fold-gutter {
+  width: 1em;
+}
+.cm-forge-fold-marker {
+  cursor: pointer;
+  color: var(--text-dim, #8b8b9e);
+}
+.cm-forge-fold-placeholder {
+  cursor: pointer;
+  padding: 0 4px;
+  margin: 0 2px;
+  border-radius: 4px;
+  background: var(--bg-active, rgba(128, 128, 128, 0.2));
+  color: var(--text-dim, #8b8b9e);
+}
+
+/* Outline panel (F387) */
+.forge-outline {
+  min-width: 180px;
+  max-width: 260px;
+  overflow: auto;
+  font-size: 13px;
+}
+.forge-outline-title {
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--text-dim, #8b8b9e);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.forge-outline-empty {
+  color: var(--text-dim, #8b8b9e);
+}
+.forge-outline-list {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+.forge-outline-list .forge-outline-list {
+  padding-left: 14px;
+}
+.forge-outline-entry {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  width: 100%;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+}
+.forge-outline-entry:hover {
+  background: var(--bg-hover, rgba(128, 128, 128, 0.12));
+}
+.forge-outline-entry.is-active {
+  background: var(--bg-active, rgba(128, 128, 128, 0.18));
+  font-weight: 600;
+}
+.forge-outline-glyph {
+  color: var(--code-title, #82aaff);
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 11px;
+}
+
+/* Playground layout */
+.forge-playground {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+.forge-playground-editor {
+  flex: 1;
+  min-width: 0;
+}
+.forge-playground-editor .cm-editor {
+  border: 1px solid var(--border, rgba(128, 128, 128, 0.25));
+  border-radius: 8px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+.forge-playground-side {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 280px;
+  flex-shrink: 0;
+}
+.forge-diagnostic-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+}
+.forge-diagnostic-list li {
+  padding: 3px 0;
+  cursor: pointer;
+}
+.forge-diagnostic-list .severity-error {
+  color: var(--danger, #e5484d);
+}
+.forge-diagnostic-list .severity-warning {
+  color: var(--warning, #f5a524);
+}
+.forge-diagnostic-list .severity-hint {
+  color: var(--text-dim, #8b8b9e);
+}
+.forge-diagnostic-empty {
+  color: var(--code-string, #2e7d32);
+  font-size: 12px;
+}

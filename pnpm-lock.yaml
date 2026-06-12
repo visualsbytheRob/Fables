@@ -93,6 +93,9 @@ importers:
       '@codemirror/language-data':
         specifier: ^6.5.2
         version: 6.5.2
+      '@fables/forge-dsl':
+        specifier: workspace:*
+        version: link:../../packages/forge-dsl
       '@fables/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -165,6 +168,12 @@ importers:
         version: 4.4.3
 
   packages/forge-dsl: {}
+
+  packages/forge-vm:
+    dependencies:
+      '@fables/forge-dsl':
+        specifier: workspace:*
+        version: link:../forge-dsl
 
   packages/ui:
     dependencies:
