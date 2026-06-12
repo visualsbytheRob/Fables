@@ -40,4 +40,4 @@ import/export server side (F271–F300, UI halves pending).
 - Agent sessions can be cut off by usage-limit resets mid-task; work is recovered by verifying
   the tree and committing what's demonstrably done. Boxes are only checked with evidence.
 
-**Suite at close: 377 tests, all green. 233/2000 features.**
+**Suite at close: 377 tests, all green. 287/2000 features.**
