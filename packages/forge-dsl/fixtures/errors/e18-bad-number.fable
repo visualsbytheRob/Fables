@@ -1,0 +1,7 @@
+// expect: FORGE004
+VAR x = 12abc
+
+-> go
+=== go ===
+{x}
+-> END

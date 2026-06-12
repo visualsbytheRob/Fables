@@ -1,0 +1,9 @@
+-> riverbank
+
+=== riverbank ===
+A salmon flashes in the shallows.
+* Lunge [at the salmon] at the salmon and miss entirely.
+  -> riverbank
++ Wait [patiently] with the patience of winter.
+  The salmon drifts closer.
+  -> END

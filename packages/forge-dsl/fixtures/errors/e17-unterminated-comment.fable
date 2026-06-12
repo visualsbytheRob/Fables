@@ -1,0 +1,7 @@
+// expect: FORGE003
+-> go
+
+=== go ===
+Fine so far.
+/* this comment never ends
+-> END

@@ -1,0 +1,10 @@
+VAR has_key = true
+VAR coins = 5
+
+-> gate
+
+=== gate ===
+The iron gate is {has_key: unlocked|sealed shut}.
+The toll keeper {coins > 3: nods you through|turns you away}.
+You feel {has_key: relief}.
+-> END

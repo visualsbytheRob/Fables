@@ -1,0 +1,7 @@
+// expect: FORGE203
+VAR hunger = 2
+
+-> hunt
+=== hunt ===
+~ hunger = hunger + hungr
+-> END

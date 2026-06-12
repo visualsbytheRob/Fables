@@ -1,0 +1,12 @@
+-> spring
+
+=== spring ===
+{spring > 1: You have been here before.|The water is new to you.}
++ Drink again.
+  -> spring
+* Move on.
+  -> meadow
+
+=== meadow ===
+{spring} visits to the spring brought you here.
+-> END

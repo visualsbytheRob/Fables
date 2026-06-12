@@ -1,0 +1,6 @@
+INCLUDE dup-other.fable
+
+-> shared_knot
+=== shared_knot ===
+First version.
+-> END

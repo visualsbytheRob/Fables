@@ -1,0 +1,6 @@
+// expect: FORGE308
+-> go
+
+=== go ===
+The count is {+}.
+-> END

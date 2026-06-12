@@ -1,0 +1,7 @@
+// expect: FORGE103
+VAR hunger
+
+-> go
+=== go ===
+Onward.
+-> END

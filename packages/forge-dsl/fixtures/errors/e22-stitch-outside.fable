@@ -1,0 +1,8 @@
+// expect: FORGE109
+= orphan_stitch
+This stitch has no knot.
+
+-> go
+=== go ===
+Onward.
+-> END

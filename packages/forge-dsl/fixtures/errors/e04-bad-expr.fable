@@ -1,0 +1,7 @@
+// expect: FORGE102
+VAR x = 1
+
+-> go
+=== go ===
+~ x = 1 + * 2
+-> END

@@ -1,0 +1,6 @@
+// expect: FORGE105
+-> go
+
+=== go ===
+You walk on. ->
+-> END

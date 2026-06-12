@@ -1,0 +1,7 @@
+// expect: FORGE303
+VAR coins = 5
+
+-> pouch
+=== pouch ===
+{coins has 3: Yes.|No.}
+-> END

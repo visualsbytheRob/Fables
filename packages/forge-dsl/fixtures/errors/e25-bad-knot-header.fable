@@ -1,0 +1,10 @@
+// expect: FORGE106
+-> go
+
+=== ===
+Nameless place.
+-> END
+
+=== go ===
+Onward.
+-> END

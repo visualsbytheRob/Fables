@@ -1,0 +1,11 @@
+// expect: FORGE306
+-> day
+
+=== day ===
+-> lesson ->
+Lesson over.
+-> END
+
+=== lesson ===
+No way back from this lesson.
+-> END

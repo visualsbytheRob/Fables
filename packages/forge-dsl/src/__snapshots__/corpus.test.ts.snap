@@ -1,0 +1,673 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`golden snapshots per fixture (F392) > lex: 01-hello.fable 1`] = `"Text(A fox trotted …) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 02-two-knots.fable 1`] = `"Divert(->) Identifier(den) KnotMarker(===) Identifier(den) KnotMarker(===) Text(The fox curled…) Divert(->) Identifier(morning) KnotMarker(===) Identifier(morning) KnotMarker(===) Text(Sunlight crept…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 03-choices-basic.fable 1`] = `"Divert(->) Identifier(crossroads) KnotMarker(===) Identifier(crossroads) KnotMarker(===) Text(The path split…) ChoiceStar(*) Text(Take the shade…) Text(Ferns brush yo…) Divert(->) Identifier(crossroads) ChoiceStar(*) Text(Follow the sun…) Text(The grass hums…) Divert(->) Identifier(crossroads) ChoicePlus(+) Text(Sit and rest a…) Divert(->) Identifier(crossroads) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 04-choice-brackets.fable 1`] = `"Divert(->) Identifier(riverbank) KnotMarker(===) Identifier(riverbank) KnotMarker(===) Text(A salmon flash…) ChoiceStar(*) Text(Lunge ) LBracket([) Text(at the salmon) RBracket(]) Text( at the salmon…) Divert(->) Identifier(riverbank) ChoicePlus(+) Text(Wait ) LBracket([) Text(patiently) RBracket(]) Text( with the pati…) Text(The salmon dri…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 05-nested-choices.fable 1`] = `"Divert(->) Identifier(burrow) KnotMarker(===) Identifier(burrow) KnotMarker(===) Text(The rabbit kit…) ChoicePlus(+) Text(Tell them a st…) ChoiceStar(*) ChoiceStar(*) Text(The one about …) Text(They gasp at t…) GatherDash(-) GatherDash(-) Text(They drift to …) Divert(->) Identifier(END) ChoiceStar(*) ChoiceStar(*) Text(The one about …) ChoiceStar(*) ChoiceStar(*) ChoiceStar(*) Text(Make the endin…) Divert(->) Identifier(END) ChoiceStar(*) ChoiceStar(*) ChoiceStar(*) Text(Make the endin…) Divert(->) Identifier(END) ChoicePlus(+) ChoicePlus(+) Text(A story you ma…) Divert(->) Identifier(END) ChoicePlus(+) Text(Shoo them off …) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 06-gathers-labels.fable 1`] = `"Divert(->) Identifier(clearing) KnotMarker(===) Identifier(clearing) KnotMarker(===) Text(Moonlight pool…) ChoiceStar(*) LParen(() Identifier(howl) RParen()) Text(Howl at the mo…) ChoiceStar(*) LParen(() Identifier(dig) RParen()) Text(Dig at the col…) ChoicePlus(+) LParen(() Identifier(wait) RParen()) Text(Do nothing at …) GatherDash(-) LParen(() Identifier(gathered) RParen()) Text(Whatever you d…) LBrace({) Identifier(howl) Operator(>) Number(0) Colon(:) Text( Your throat i…) RBrace(}) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 07-variables.fable 1`] = `"VarKeyword(VAR) Identifier(hunger) Operator(=) Number(3) VarKeyword(VAR) Identifier(name) Operator(=) String("Reynard") ConstKeyword(CONST) Identifier(den_name) Operator(=) String("Bramble Hollo…) Divert(->) Identifier(hunt) KnotMarker(===) Identifier(hunt) KnotMarker(===) Tilde(~) TempKeyword(temp) Identifier(found) Operator(=) Number(2) Tilde(~) Identifier(hunger) Operator(=) Identifier(hunger) Operator(-) Identifier(found) LBrace({) Identifier(name) RBrace(}) Text( returns to ) LBrace({) Identifier(den_name) RBrace(}) Text( with ) LBrace({) Identifier(found) RBrace(}) Text( voles.) Text(Hunger is now ) LBrace({) Identifier(hunger) RBrace(}) Text(.) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 08-expressions.fable 1`] = `"VarKeyword(VAR) Identifier(cunning) Operator(=) Number(4) VarKeyword(VAR) Identifier(boldness) Operator(=) Number(2) VarKeyword(VAR) Identifier(is_winter) Operator(=) BoolLiteral(false) Divert(->) Identifier(ledger) KnotMarker(===) Identifier(ledger) KnotMarker(===) Text(Score: ) LBrace({) Identifier(cunning) Operator(*) Number(2) Operator(+) Identifier(boldness) Operator(%) Number(3) Operator(-) Number(1) RBrace(}) Text(.) Text(Verdict: ) LBrace({) LParen(() Identifier(cunning) Operator(>) Number(3) Operator(and) Identifier(boldness) Operator(>) Number(1) RParen()) Operator(or) Identifier(is_winter) Colon(:) Text( ready) Pipe(|) Text(not ready) RBrace(}) Text(.) Text(Plan: ) LBrace({) LParen(() Identifier(cunning) Operator(>=) Identifier(boldness) Operator(?) String("scheme") Colon(:) String("charge") RParen()) RBrace(}) Text(.) Text(Negation: ) LBrace({) Operator(not) Identifier(is_winter) Colon(:) Text( green season) Pipe(|) Text(white season) RBrace(}) Text(.) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 09-conditionals-inline.fable 1`] = `"VarKeyword(VAR) Identifier(has_key) Operator(=) BoolLiteral(true) VarKeyword(VAR) Identifier(coins) Operator(=) Number(5) Divert(->) Identifier(gate) KnotMarker(===) Identifier(gate) KnotMarker(===) Text(The iron gate …) LBrace({) Identifier(has_key) Colon(:) Text( unlocked) Pipe(|) Text(sealed shut) RBrace(}) Text(.) Text(The toll keepe…) LBrace({) Identifier(coins) Operator(>) Number(3) Colon(:) Text( nods you thro…) Pipe(|) Text(turns you away) RBrace(}) Text(.) Text(You feel ) LBrace({) Identifier(has_key) Colon(:) Text( relief) RBrace(}) Text(.) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 10-alternatives.fable 1`] = `"Divert(->) Identifier(watch) KnotMarker(===) Identifier(watch) KnotMarker(===) Text(The heron ) LBrace({) Text(stands) Pipe(|) Text(still stands) Pipe(|) Text(has not moved) RBrace(}) Text(.) Text(The reeds ) LBrace({) Ampersand(&) Text(whisper) Pipe(|) Text(rattle) Pipe(|) Text(sigh) RBrace(}) Text(.) Text(A frog ) LBrace({) ShuffleMarker(~) Text(plops) Pipe(|) Text(croaks) Pipe(|) Text(vanishes) RBrace(}) Text(.) ChoicePlus(+) Text(Keep watching.) Divert(->) Identifier(watch) ChoicePlus(+) Text(Leave the mars…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 11-glue-tags.fable 1`] = `"Divert(->) Identifier(intro) KnotMarker(===) Identifier(intro) KnotMarker(===) Text( ) Tag(# chapter: one) Text(The lion yawne…) Glue(<>) Text(It was a vast …) Tag(# mood: sleepy) Text(He had eaten w…) Glue(<>) Text( Twice, in fac…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 12-stitches.fable 1`] = `"Divert(->) Identifier(palace) KnotMarker(===) Identifier(palace) KnotMarker(===) Text(The lion's pal…) Divert(->) Identifier(palace) Dot(.) Identifier(throne) StitchMarker(=) Identifier(throne) Text(He receives vi…) Divert(->) Identifier(court) StitchMarker(=) Identifier(kitchen) Text(Bones, mostly.) Divert(->) Identifier(END) KnotMarker(===) Identifier(court) KnotMarker(===) Text(A jackal plead…) Divert(->) Identifier(palace) Dot(.) Identifier(kitchen) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 13-tunnels.fable 1`] = `"Divert(->) Identifier(day) KnotMarker(===) Identifier(day) KnotMarker(===) Text(The cubs want …) Divert(->) Identifier(pounce_lesson) Divert(->) Text(After the less…) Divert(->) Identifier(END) KnotMarker(===) Identifier(pounce_lesson) KnotMarker(===) Text(Crouch. Wiggle…) TunnelReturn(->->) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 14-lists.fable 1`] = `"VarKeyword(VAR) Identifier(satchel) Operator(=) LBracket([) String("feather") Comma(,) String("acorn") RBracket(]) Divert(->) Identifier(trade) KnotMarker(===) Identifier(trade) KnotMarker(===) Tilde(~) Identifier(satchel) Operator(=) Identifier(satchel) Operator(+) String("river stone") LBrace({) Identifier(satchel) Operator(has) String("acorn") Colon(:) Text( The acorn is …) Pipe(|) Text(No acorn!) RBrace(}) Tilde(~) Identifier(satchel) Operator(=) Identifier(satchel) Operator(-) String("feather") LBrace({) Identifier(satchel) Operator(hasnt) String("feather") Colon(:) Text( The feather i…) RBrace(}) Text(You carry ) LBrace({) Identifier(COUNT) LParen(() Identifier(satchel) RParen()) RBrace(}) Text( treasures.) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 15-comments.fable 1`] = `"CommentLine(// The fable o…) VarKeyword(VAR) Identifier(patience) Operator(=) Number(10) CommentLine(// she has ple…) Divert(->) Identifier(shore) CommentBlock(/* The shore i…) KnotMarker(===) Identifier(shore) KnotMarker(===) Text(The stork wait…) CommentLine(// and waits) Tilde(~) Identifier(patience) Operator(=) Identifier(patience) Operator(-) Number(1) CommentLine(// tick) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 16-bindings.fable 1`] = `"Divert(->) Identifier(meeting) KnotMarker(===) Identifier(meeting) KnotMarker(===) At(@) Identifier(fox) LParen(() Text(Reynard the Fo…) RParen()) Text( bows low.) Text(His health sit…) At(@) Identifier(fox) Dot(.) Identifier(health) Text( today.) Text(You recall wha…) NoteRefOpen([[) Text(The Trial of R…) NoteRefClose(]]) Text(.) At(@) Identifier(crow) Text( watches from …) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 17-read-counts.fable 1`] = `"Divert(->) Identifier(spring) KnotMarker(===) Identifier(spring) KnotMarker(===) LBrace({) Identifier(spring) Operator(>) Number(1) Colon(:) Text( You have been…) Pipe(|) Text(The water is n…) RBrace(}) ChoicePlus(+) Text(Drink again.) Divert(->) Identifier(spring) ChoiceStar(*) Text(Move on.) Divert(->) Identifier(meadow) KnotMarker(===) Identifier(meadow) KnotMarker(===) LBrace({) Identifier(spring) RBrace(}) Text( visits to the…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 18-fallback-choice.fable 1`] = `"Divert(->) Identifier(larder) KnotMarker(===) Identifier(larder) KnotMarker(===) Text(The larder gro…) ChoiceStar(*) Text(Take the last …) Divert(->) Identifier(larder) ChoiceStar(*) Text(Take the dried…) Divert(->) Identifier(larder) ChoiceStar(*) Divert(->) Identifier(empty) KnotMarker(===) Identifier(empty) KnotMarker(===) Text(Nothing is lef…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 19-escapes.fable 1`] = `"Divert(->) Identifier(sign) KnotMarker(===) Identifier(sign) KnotMarker(===) Text(The sign reads…) Text(A carved \\{run…) Text(The price list…) Text(\\@nobody lives…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 20-header-metadata.fable 1`] = `"Tag(# title: The C…) Tag(# author: Aeso…) Tag(# version: 2) Divert(->) Identifier(council) KnotMarker(===) Identifier(council) KnotMarker(===) Text(The beasts ass…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 21-strings.fable 1`] = `"VarKeyword(VAR) Identifier(greeting) Operator(=) String("Good ") Operator(+) String("morrow") VarKeyword(VAR) Identifier(mood) Operator(=) String("wary") Divert(->) Identifier(parley) KnotMarker(===) Identifier(parley) KnotMarker(===) Text(") LBrace({) Identifier(greeting) RBrace(}) Text(," says the wo…) LBrace({) Identifier(mood) Operator(==) String("wary") Colon(:) Text( You keep your…) Pipe(|) Text(You step close…) RBrace(}) Text(The wolf says …) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 22-builtins.fable 1`] = `"VarKeyword(VAR) Identifier(den_count) Operator(=) Number(3) Divert(->) Identifier(divvy) KnotMarker(===) Identifier(divvy) KnotMarker(===) Tilde(~) TempKeyword(temp) Identifier(roll) Operator(=) Identifier(RANDOM) LParen(() Number(1) Comma(,) Number(6) RParen()) Tilde(~) TempKeyword(temp) Identifier(share) Operator(=) Identifier(FLOOR) LParen(() Identifier(roll) Operator(/) Identifier(den_count) RParen()) Text(Each den gets ) LBrace({) Identifier(MAX) LParen(() Identifier(share) Comma(,) Number(1) RParen()) RBrace(}) Text( hare) LBrace({) Identifier(ABS) LParen(() Identifier(share) Operator(-) Number(1) RParen()) Operator(!=) Number(0) Colon(:) Text( s) RBrace(}) Text(.) Text(After ) LBrace({) Identifier(TURNS) LParen(() RParen()) RBrace(}) Text( turns, the hu…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 23-fox-and-crow.fable 1`] = `"Tag(# title: The F…) VarKeyword(VAR) Identifier(cunning) Operator(=) Number(3) ConstKeyword(CONST) Identifier(prize) Operator(=) String("cheese") Text(The wood smell…) Divert(->) Identifier(meeting) KnotMarker(===) Identifier(meeting) KnotMarker(===) Text(A crow sat on …) LBrace({) Identifier(prize) RBrace(}) Text( in her beak.) ChoiceStar(*) LParen(() Identifier(flatter) RParen()) Text("What a beauti…) Text(The crow puffe…) LBrace({) Identifier(cunning) Operator(>) Number(2) Colon(:) Text( She suspects …) Pipe(|) Text(She eyes you w…) RBrace(}) ChoiceStar(*) ChoiceStar(*) Text("Sing for me!"…) LBracket([) RBracket(]) Text( The crow open…) Divert(->) Identifier(drop) Divert(->) ChoiceStar(*) LBrace({) Identifier(cunning) Operator(>) Number(1) RBrace(}) Text( (sneak) Wait …) LBracket([) Text(and watch) RBracket(]) Text( and watch the…) Divert(->) Identifier(waiting) ChoicePlus(+) Text(Walk away. ) Tag(# quiet ending) Divert(->) Identifier(END) GatherDash(-) LParen(() Identifier(after) RParen()) Text(The forest hum…) LBrace({) Ampersand(&) Text(Wind stirs.) Pipe(|) Text(Leaves fall.) Pipe(|) Text(A twig snaps.) RBrace(}) Divert(->) Identifier(waiting) KnotMarker(===) Identifier(waiting) KnotMarker(===) Text(Time passes. ) Glue(<>) Text(The cheese ) LBrace({) ShuffleMarker(~) Text(falls) Pipe(|) Text(stays put) Pipe(|) Text(wobbles) RBrace(}) Text(.) Tilde(~) Identifier(cunning) Operator(=) Identifier(cunning) Operator(+) Number(1) Divert(->) Identifier(meeting) Dot(.) Identifier(after) KnotMarker(===) Identifier(drop) KnotMarker(===) Text(The cheese tum…) TunnelReturn(->->) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: 24-lion-court-epic.fable 1`] = `"Tag(# title: The L…) Tag(# author: Aeso…) VarKeyword(VAR) Identifier(favor) Operator(=) Number(0) VarKeyword(VAR) Identifier(tribute) Operator(=) LBracket([) String("honey") Comma(,) String("figs") RBracket(]) ConstKeyword(CONST) Identifier(king) Operator(=) String("Leo") IncludeKeyword(INCLUDE) Text(shared-beasts.…) Text(The summons ar…) Divert(->) Identifier(gates) KnotMarker(===) Identifier(gates) KnotMarker(===) Text( ) Tag(# act: one) Text(Two hyenas fla…) LBrace({) Identifier(king) RBrace(}) Text('s court.) ChoiceStar(*) LBrace({) Identifier(favor) Operator(>=) Number(0) RBrace(}) Text( Present your …) Tilde(~) Identifier(favor) Operator(=) Identifier(favor) Operator(+) Number(1) LBrace({) Identifier(tribute) Operator(has) String("honey") Colon(:) Text( The hyenas sn…) RBrace(}) Divert(->) Identifier(hall) ChoiceStar(*) LParen(() Identifier(bribe) RParen()) Text(Slip the hyena…) Tilde(~) Identifier(tribute) Operator(=) Identifier(tribute) Operator(-) String("figs") Tilde(~) Identifier(favor) Operator(=) Identifier(favor) Operator(-) Number(1) Divert(->) Identifier(hall) ChoicePlus(+) Text(Turn back.) Text(The road home …) Glue(<>) Text(And it rains.) Divert(->) Identifier(END) KnotMarker(===) Identifier(hall) KnotMarker(===) Text(The hall smell…) LBrace({) Identifier(gates) Dot(.) Identifier(bribe) Operator(>) Number(0) Colon(:) Text( A hyena winks…) RBrace(}) Divert(->) Identifier(audience) Divert(->) Text(The audience o…) ChoicePlus(+) Text(Stay for the f…) LBrace({) Ampersand(&) Text(The drums star…) Pipe(|) Text(The drums cont…) Pipe(|) Text(You stop heari…) RBrace(}) Divert(->) Identifier(feast) ChoicePlus(+) Text(Slip away quie…) Divert(->) Identifier(END) ChoiceStar(*) LParen(() Identifier(study) RParen()) Text(Consult the be…) LBracket([) RBracket(]) Text( first.) Divert(->) Identifier(beast_glossary) StitchMarker(=) Identifier(feast) Tilde(~) TempKeyword(temp) Identifier(courses) Operator(=) Identifier(RANDOM) LParen(() Number(3) Comma(,) Number(7) RParen()) LBrace({) Identifier(courses) RBrace(}) Text( courses! Your…) LBrace({) Identifier(favor) RBrace(}) Text(.) Divert(->) Identifier(END) KnotMarker(===) Identifier(audience) KnotMarker(===) LBrace({) Identifier(king) RBrace(}) Text( regards you ) LBrace({) Identifier(favor) Operator(>) Number(0) Colon(:) Text( warmly) Pipe(|) Text(coolly) RBrace(}) Text(.) Text("Speak," he ru…) ChoiceStar(*) Text("I bring news …) LBracket([) RBracket(]) Text( You tell him …) Tilde(~) Identifier(favor) Operator(=) Identifier(favor) Operator(+) Number(2) ChoiceStar(*) Text("I seek your j…) LBracket([) RBracket(]) Text( You lay out t…) Tilde(~) Identifier(favor) Operator(=) Identifier(favor) Operator(+) Number(1) ChoiceStar(*) Text(Say nothing.) GatherDash(-) Text(He waves a paw…) TunnelReturn(->->) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > lex: shared-beasts.fable 1`] = `"KnotMarker(===) Identifier(beast_glossary) KnotMarker(===) Text(A reference of…) Divert(->) Identifier(END) EOF()"`;
+
+exports[`golden snapshots per fixture (F392) > parse: 01-hello.fable 1`] = `
+"A fox trotted through the quiet wood.
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 02-two-knots.fable 1`] = `
+"-> den
+
+=== den ===
+The fox curled up in her den.
+-> morning
+
+=== morning ===
+Sunlight crept across the moss.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 03-choices-basic.fable 1`] = `
+"-> crossroads
+
+=== crossroads ===
+The path splits beneath an old oak.
+* Take the shaded trail.
+  Ferns brush your ankles.
+  -> crossroads
+* Follow the sunny ridge.
+  The grass hums with crickets.
+  -> crossroads
++ Sit and rest a while.
+  -> crossroads
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 04-choice-brackets.fable 1`] = `
+"-> riverbank
+
+=== riverbank ===
+A salmon flashes in the shallows.
+* Lunge [at the salmon] at the salmon and miss entirely.
+  -> riverbank
++ Wait [patiently] with the patience of winter.
+  The salmon drifts closer.
+  -> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 05-nested-choices.fable 1`] = `
+"-> burrow
+
+=== burrow ===
+The rabbit kits crowd around you.
++ Tell them a story.
+  * * The one about the moon.
+    They gasp at the part with the owl.
+  - - They drift to sleep.
+  -> END
+  * * The one about the river.
+    * * * Make the ending happy.
+      -> END
+    * * * Make the ending true.
+      -> END
+  + + A story you make up on the spot.
+    -> END
++ Shoo them off to bed.
+  -> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 06-gathers-labels.fable 1`] = `
+"-> clearing
+
+=== clearing ===
+Moonlight pools in the clearing.
+* (howl) Howl at the moon.
+* (dig) Dig at the cold earth.
++ (wait) Do nothing at all.
+- (gathered) Whatever you did, the night swallows it.
+{howl > 0: Your throat is still sore.}
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 07-variables.fable 1`] = `
+"VAR hunger = 3
+VAR name = "Reynard"
+CONST den_name = "Bramble Hollow"
+
+-> hunt
+
+=== hunt ===
+~ temp found = 2
+~ hunger = hunger - found
+{name} returns to {den_name} with {found} voles.
+Hunger is now {hunger}.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 08-expressions.fable 1`] = `
+"VAR cunning = 4
+VAR boldness = 2
+VAR is_winter = false
+
+-> ledger
+
+=== ledger ===
+Score: {cunning * 2 + boldness % 3 - 1}.
+Verdict: {cunning > 3 && boldness > 1 || is_winter: ready|not ready}.
+Plan: {cunning >= boldness ? "scheme" : "charge"}.
+Negation: {!is_winter: green season|white season}.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 09-conditionals-inline.fable 1`] = `
+"VAR has_key = true
+VAR coins = 5
+
+-> gate
+
+=== gate ===
+The iron gate is {has_key: unlocked|sealed shut}.
+The toll keeper {coins > 3: nods you through|turns you away}.
+You feel {has_key: relief}.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 10-alternatives.fable 1`] = `
+"-> watch
+
+=== watch ===
+The heron {stands|still stands|has not moved}.
+The reeds {&whisper|rattle|sigh}.
+A frog {~plops|croaks|vanishes}.
++ Keep watching.
+  -> watch
++ Leave the marsh.
+  -> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 11-glue-tags.fable 1`] = `
+"-> intro
+
+=== intro === # chapter: one
+The lion yawned. <>
+It was a vast yawn. # mood: sleepy
+He had eaten well. <> Twice, in fact.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 12-stitches.fable 1`] = `
+"-> palace
+
+=== palace ===
+The lion's palace is a sun-warmed rock.
+-> palace.throne
+= throne
+He receives visitors here.
+-> court
+= kitchen
+Bones, mostly.
+-> END
+
+=== court ===
+A jackal pleads his case.
+-> palace.kitchen
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 13-tunnels.fable 1`] = `
+"-> day
+
+=== day ===
+The cubs want to play.
+-> pounce_lesson ->
+After the lesson, everyone naps.
+-> END
+
+=== pounce_lesson ===
+Crouch. Wiggle. Leap!
+->->
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 14-lists.fable 1`] = `
+"VAR satchel = ["feather", "acorn"]
+
+-> trade
+
+=== trade ===
+~ satchel = satchel + "river stone"
+{satchel has "acorn": The acorn is safe.|No acorn!}
+~ satchel = satchel - "feather"
+{satchel hasnt "feather": The feather is gone.}
+You carry {COUNT(satchel)} treasures.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 15-comments.fable 1`] = `
+"// The fable of the patient stork.
+VAR patience = 10 // she has plenty
+
+-> shore
+
+/* The shore is where
+   everything happens. */
+=== shore ===
+The stork waits. // and waits
+~ patience = patience - 1 // tick
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 16-bindings.fable 1`] = `
+"-> meeting
+
+=== meeting ===
+@fox(Reynard the Fox) bows low.
+His health sits at @fox.health today.
+You recall what the ledger said: [[The Trial of Reynard]].
+@crow watches from the elm.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 17-read-counts.fable 1`] = `
+"-> spring
+
+=== spring ===
+{spring > 1: You have been here before.|The water is new to you.}
++ Drink again.
+  -> spring
+* Move on.
+  -> meadow
+
+=== meadow ===
+{spring} visits to the spring brought you here.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 18-fallback-choice.fable 1`] = `
+"-> larder
+
+=== larder ===
+The larder grows barer each visit.
+* Take the last honeycomb.
+  -> larder
+* Take the dried fish.
+  -> larder
+* -> empty
+
+=== empty ===
+Nothing is left but crumbs and regret.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 19-escapes.fable 1`] = `
+"-> sign
+
+=== sign ===
+The sign reads: \\-> market this way \\<>.
+A carved \\{rune\\} marks the post. \\# not a tag
+The price list: 3 * fish, 2 + eggs.
+\\@nobody lives here.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 20-header-metadata.fable 1`] = `
+"# title: The Council of Beasts
+# author: Aesop
+# version: 2
+
+-> council
+
+=== council ===
+The beasts assemble at the stone table.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 21-strings.fable 1`] = `
+"VAR greeting = "Good " + "morrow"
+VAR mood = "wary"
+
+-> parley
+
+=== parley ===
+"{greeting}," says the wolf.
+{mood == "wary": You keep your distance.|You step closer.}
+The wolf says "staynback" with a ""grin"".
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 22-builtins.fable 1`] = `
+"VAR den_count = 3
+
+-> divvy
+
+=== divvy ===
+~ temp roll = RANDOM(1, 6)
+~ temp share = FLOOR(roll / den_count)
+Each den gets {MAX(share, 1)} hare{ABS(share - 1) != 0: s}.
+After {TURNS()} turns, the hunt ends.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 23-fox-and-crow.fable 1`] = `
+"# title: The Fox and the Crow
+
+VAR cunning = 3
+CONST prize = "cheese"
+
+The wood smelled of rain.
+-> meeting
+
+=== meeting ===
+A crow sat on a branch with a piece of {prize} in her beak.
+* (flatter) "What a beautiful voice you must have!"
+  The crow puffed up her chest. {cunning > 2: She suspects nothing.|She eyes you warily.}
+  * * "Sing for me!" [] The crow opens her beak. -> drop ->
+* {cunning > 1} (sneak) Wait quietly [and watch] and watch the branch.
+  -> waiting
++ Walk away. # quiet ending
+  -> END
+- (after) The forest hums. {&Wind stirs.|Leaves fall.|A twig snaps.}
+-> waiting
+
+=== waiting ===
+Time passes. <>
+The cheese {~falls|stays put|wobbles}.
+~ cunning = cunning + 1
+-> meeting.after
+
+=== drop ===
+The cheese tumbles down!
+->->
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: 24-lion-court-epic.fable 1`] = `
+"# title: The Lion's Court
+# author: Aesop
+
+INCLUDE shared-beasts.fable
+
+VAR favor = 0
+VAR tribute = ["honey", "figs"]
+CONST king = "Leo"
+
+The summons arrived on a thorn.
+-> gates
+
+=== gates === # act: one
+Two hyenas flank the gates of {king}'s court.
+* {favor >= 0} Present your tribute.
+  ~ favor = favor + 1
+  {tribute has "honey": The hyenas sniff the honey approvingly.}
+  -> hall
+* (bribe) Slip the hyenas a fig.
+  ~ tribute = tribute - "figs"
+  ~ favor = favor - 1
+  -> hall
++ Turn back.
+  The road home is long. <>
+  And it rains.
+  -> END
+
+=== hall ===
+The hall smells of warm stone. {gates.bribe > 0: A hyena winks at you.}
+-> audience ->
+The audience over, you exhale.
++ Stay for the feast.
+  {&The drums start.|The drums continue.|You stop hearing the drums.}
+  -> feast
++ Slip away quietly.
+  -> END
+* (study) Consult the beast glossary [] first.
+  -> beast_glossary
+= feast
+~ temp courses = RANDOM(3, 7)
+{courses} courses! Your favor stands at {favor}.
+-> END
+
+=== audience ===
+{king} regards you {favor > 0: warmly|coolly}.
+"Speak," he rumbles.
+* "I bring news of the river." [] You tell him of the drying ford.
+  ~ favor = favor + 2
+* "I seek your judgement." [] You lay out the jackal's claim.
+  ~ favor = favor + 1
+* Say nothing.
+- He waves a paw, satisfied or not.
+->->
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > parse: shared-beasts.fable 1`] = `
+"=== beast_glossary ===
+A reference of every beast at court.
+-> END
+"
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 01-hello.fable 1`] = `
+"targets: (none)
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 02-two-knots.fable 1`] = `
+"targets: den, morning
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 03-choices-basic.fable 1`] = `
+"targets: crossroads
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 04-choice-brackets.fable 1`] = `
+"targets: riverbank
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 05-nested-choices.fable 1`] = `
+"targets: burrow
+globals: (none)
+diagnostics:
+warning[FORGE304]: this is unreachable: flow always diverts at line 9
+  --> 05-nested-choices.fable:10:3
+   |
+ 9 |       -> END
+10 |   * * The one about the river.
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+11 |     * * * Make the ending happy.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+12 |       -> END
+   | ^^^^^^^^^^^^
+13 |     * * * Make the ending true.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 |       -> END
+   | ^^^^^^^^^^^^
+15 |   + + A story you make up on the spot.
+
+warning[FORGE304]: this is unreachable: flow always diverts at line 9
+  --> 05-nested-choices.fable:15:3
+   |
+14 |       -> END
+15 |   + + A story you make up on the spot.
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+16 |     -> END
+   | ^^^^^^^^^^
+17 | + Shoo them off to bed.
+
+2 warnings."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 06-gathers-labels.fable 1`] = `
+"targets: clearing, clearing.dig, clearing.gathered, clearing.howl, clearing.wait
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 07-variables.fable 1`] = `
+"targets: hunt
+globals: den_name, hunger, name
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 08-expressions.fable 1`] = `
+"targets: ledger
+globals: boldness, cunning, is_winter
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 09-conditionals-inline.fable 1`] = `
+"targets: gate
+globals: coins, has_key
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 10-alternatives.fable 1`] = `
+"targets: watch
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 11-glue-tags.fable 1`] = `
+"targets: intro
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 12-stitches.fable 1`] = `
+"targets: court, palace, palace.kitchen, palace.throne
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 13-tunnels.fable 1`] = `
+"targets: day, pounce_lesson
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 14-lists.fable 1`] = `
+"targets: trade
+globals: satchel
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 15-comments.fable 1`] = `
+"targets: shore
+globals: patience
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 16-bindings.fable 1`] = `
+"targets: meeting
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 17-read-counts.fable 1`] = `
+"targets: meadow, spring
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 18-fallback-choice.fable 1`] = `
+"targets: empty, larder
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 19-escapes.fable 1`] = `
+"targets: sign
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 20-header-metadata.fable 1`] = `
+"targets: council
+globals: (none)
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 21-strings.fable 1`] = `
+"targets: parley
+globals: greeting, mood
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 22-builtins.fable 1`] = `
+"targets: divvy
+globals: den_count
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 23-fox-and-crow.fable 1`] = `
+"targets: drop, meeting, meeting.after, meeting.flatter, waiting
+globals: cunning, prize
+diagnostics:
+warning[FORGE305]: all of this choice point are once-only and "meeting" can be revisited — add a sticky "+" choice or a fallback "* -> target" to avoid a dead end
+  --> 23-fox-and-crow.fable:13:3
+   |
+12 |   The crow puffed up her chest. {cunning > 2: She suspects nothing.|She eyes you warily.}
+13 |   * * "Sing for me!" [] The crow opens her beak. -> drop ->
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+14 | * {cunning > 1} (sneak) Wait quietly [and watch] and watch the branch.
+
+1 warning."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: 24-lion-court-epic.fable 1`] = `
+"targets: audience, beast_glossary, gates, gates.bribe, hall, hall.feast, hall.study
+globals: favor, king, tribute
+diagnostics:
+No problems found."
+`;
+
+exports[`golden snapshots per fixture (F392) > resolve+check: shared-beasts.fable 1`] = `
+"targets: beast_glossary
+globals: (none)
+diagnostics:
+No problems found."
+`;

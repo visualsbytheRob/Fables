@@ -1,0 +1,10 @@
+// expect: FORGE301
+VAR coins = 5
+VAR name = "fox"
+
+-> shop
+=== shop ===
+~ coins = coins + name
+{coins} coins remain.
+The shopkeep is {name}.
+-> END

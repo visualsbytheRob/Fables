@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** F001–F300 COMPLETE (300/300 Tier-1 days 1–3) + 422 tests green. Day 4 Forge DSL compiler lane in flight. Next: F301.
+**Status:** Day 4 compiler core done (F311–F377, F379–F380, F391–F396, F399–F400). Pending: F301–F310 spec, F378+F381–F390 editor integration, F397–F398. 814 tests green. Next: those + Day 5 VM (F401).
 
 ---
 
@@ -440,94 +440,94 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Lexer (F311–F320)
 
-- [ ] F311 — `packages/forge-dsl`: package scaffold with strict build + tests
-- [ ] F312 — Token type definitions with source span tracking (line, col, offset)
-- [ ] F313 — Lexer core: text content vs logic mode switching
-- [ ] F314 — Tokenize structural markers: knots `===`, stitches `=`, choices `*`/`+`
-- [ ] F315 — Tokenize logic: identifiers, numbers, strings with escapes, operators
-- [ ] F316 — Tokenize diverts `->`, glue `<>`, tags `#`, comments `//` `/* */`
-- [ ] F317 — Tokenize knowledge bindings `@entity(...)` and `[[note]]` refs
-- [ ] F318 — Lexer error recovery: invalid char → error token, keep going
-- [ ] F319 — Lexer fuzz harness: random input never throws, always terminates
-- [ ] F320 — Lexer golden tests: fixture files → token stream snapshots
+- [x] F311 — `packages/forge-dsl`: package scaffold with strict build + tests
+- [x] F312 — Token type definitions with source span tracking (line, col, offset)
+- [x] F313 — Lexer core: text content vs logic mode switching
+- [x] F314 — Tokenize structural markers: knots `===`, stitches `=`, choices `*`/`+`
+- [x] F315 — Tokenize logic: identifiers, numbers, strings with escapes, operators
+- [x] F316 — Tokenize diverts `->`, glue `<>`, tags `#`, comments `//` `/* */`
+- [x] F317 — Tokenize knowledge bindings `@entity(...)` and `[[note]]` refs
+- [x] F318 — Lexer error recovery: invalid char → error token, keep going
+- [x] F319 — Lexer fuzz harness: random input never throws, always terminates
+- [x] F320 — Lexer golden tests: fixture files → token stream snapshots
 
 ### Parser (F321–F330)
 
-- [ ] F321 — Recursive descent parser producing typed AST with spans
-- [ ] F322 — Parse story structure: header metadata, knots, stitches, content lines
-- [ ] F323 — Parse choices with nesting depth, conditions, and labels
-- [ ] F324 — Parse expressions: precedence climbing, unary/binary/ternary
-- [ ] F325 — Parse logic lines: VAR/CONST declarations, assignments, function calls
-- [ ] F326 — Parse diverts, tunnels (call/return), and end-of-flow markers
-- [ ] F327 — Parse inline conditionals and alternatives (`{cond: a|b}`, sequences/cycles)
-- [ ] F328 — Parse knowledge bindings into dedicated AST nodes
-- [ ] F329 — Parser error recovery: sync points so one error doesn't cascade
-- [ ] F330 — Parser golden tests: fixtures → AST JSON snapshots
+- [x] F321 — Recursive descent parser producing typed AST with spans
+- [x] F322 — Parse story structure: header metadata, knots, stitches, content lines
+- [x] F323 — Parse choices with nesting depth, conditions, and labels
+- [x] F324 — Parse expressions: precedence climbing, unary/binary/ternary
+- [x] F325 — Parse logic lines: VAR/CONST declarations, assignments, function calls
+- [x] F326 — Parse diverts, tunnels (call/return), and end-of-flow markers
+- [x] F327 — Parse inline conditionals and alternatives (`{cond: a|b}`, sequences/cycles)
+- [x] F328 — Parse knowledge bindings into dedicated AST nodes
+- [x] F329 — Parser error recovery: sync points so one error doesn't cascade
+- [x] F330 — Parser golden tests: fixtures → AST JSON snapshots
 
 ### AST & Visitors (F331–F340)
 
-- [ ] F331 — AST node type hierarchy with discriminated unions
-- [ ] F332 — Visitor/walker utility with enter/exit hooks
-- [ ] F333 — AST printer: AST → canonical source (basis for formatter)
-- [ ] F334 — Span utilities: node → source excerpt for diagnostics
-- [ ] F335 — AST query helpers: find-all-diverts, find-all-bindings, etc.
-- [ ] F336 — Parent-pointer pass for upward traversal
-- [ ] F337 — AST JSON serialization stable across versions
-- [ ] F338 — Node factory helpers for tests and codegen tooling
-- [ ] F339 — AST invariant checker (no orphan spans, valid parent chains)
-- [ ] F340 — Visitor + printer round-trip tests
+- [x] F331 — AST node type hierarchy with discriminated unions
+- [x] F332 — Visitor/walker utility with enter/exit hooks
+- [x] F333 — AST printer: AST → canonical source (basis for formatter)
+- [x] F334 — Span utilities: node → source excerpt for diagnostics
+- [x] F335 — AST query helpers: find-all-diverts, find-all-bindings, etc.
+- [x] F336 — Parent-pointer pass for upward traversal
+- [x] F337 — AST JSON serialization stable across versions
+- [x] F338 — Node factory helpers for tests and codegen tooling
+- [x] F339 — AST invariant checker (no orphan spans, valid parent chains)
+- [x] F340 — Visitor + printer round-trip tests
 
 ### Diagnostics Engine (F341–F350)
 
-- [ ] F341 — Diagnostic type: severity, code, span, message, related spans
-- [ ] F342 — Diagnostic catalog with stable codes (`FORGE001`…)
-- [ ] F343 — Pretty terminal renderer: source frame with caret underlines
-- [ ] F344 — JSON diagnostic output for editor integration
-- [ ] F345 — Multi-error collection: compile never stops at first error
-- [ ] F346 — Warnings: unreachable content, unused variables, empty choices
-- [ ] F347 — Hints: did-you-mean suggestions for misspelled knot names
-- [ ] F348 — Diagnostic suppression comments (`// forge-ignore FORGE012`)
-- [ ] F349 — Severity configuration (promote warnings to errors)
-- [ ] F350 — Diagnostics snapshot tests for every catalog code
+- [x] F341 — Diagnostic type: severity, code, span, message, related spans
+- [x] F342 — Diagnostic catalog with stable codes (`FORGE001`…)
+- [x] F343 — Pretty terminal renderer: source frame with caret underlines
+- [x] F344 — JSON diagnostic output for editor integration
+- [x] F345 — Multi-error collection: compile never stops at first error
+- [x] F346 — Warnings: unreachable content, unused variables, empty choices
+- [x] F347 — Hints: did-you-mean suggestions for misspelled knot names
+- [x] F348 — Diagnostic suppression comments (`// forge-ignore FORGE012`)
+- [x] F349 — Severity configuration (promote warnings to errors)
+- [x] F350 — Diagnostics snapshot tests for every catalog code
 
 ### Symbol Resolution (F351–F360)
 
-- [ ] F351 — Symbol table: knots, stitches, variables, labels with scopes
-- [ ] F352 — Two-pass resolution: declare all, then resolve references
-- [ ] F353 — Divert target resolution incl. cross-file targets
-- [ ] F354 — Variable scope rules: global VAR, temp `~ temp`, choice-local
-- [ ] F355 — Duplicate declaration detection with both spans reported
-- [ ] F356 — Undefined reference errors with nearest-name suggestion
-- [ ] F357 — Knowledge binding resolution against the notes/entities DB at compile time
-- [ ] F358 — Include graph resolution with cycle detection
-- [ ] F359 — Dead knot detection (unreachable from entry point)
-- [ ] F360 — Resolution test suite incl. multi-file fixtures
+- [x] F351 — Symbol table: knots, stitches, variables, labels with scopes
+- [x] F352 — Two-pass resolution: declare all, then resolve references
+- [x] F353 — Divert target resolution incl. cross-file targets
+- [x] F354 — Variable scope rules: global VAR, temp `~ temp`, choice-local
+- [x] F355 — Duplicate declaration detection with both spans reported
+- [x] F356 — Undefined reference errors with nearest-name suggestion
+- [x] F357 — Knowledge binding resolution against the notes/entities DB at compile time
+- [x] F358 — Include graph resolution with cycle detection
+- [x] F359 — Dead knot detection (unreachable from entry point)
+- [x] F360 — Resolution test suite incl. multi-file fixtures
 
 ### Semantic Checks (F361–F370)
 
-- [ ] F361 — Type checking for expressions (bool/number/string/list)
-- [ ] F362 — Condition expressions must be boolean — error with coercion hint
-- [ ] F363 — List operations validity (membership, add/remove)
-- [ ] F364 — Choice structure rules: no content after unconditional divert
-- [ ] F365 — Once-only choice exhaustion analysis (possible dead ends flagged)
-- [ ] F366 — Tunnel call/return pairing validation
-- [ ] F367 — Const reassignment errors
-- [ ] F368 — String interpolation expression validation
-- [ ] F369 — Entity binding field checks (`@hero.health` exists on entity schema)
-- [ ] F370 — Semantic check test suite
+- [x] F361 — Type checking for expressions (bool/number/string/list)
+- [x] F362 — Condition expressions must be boolean — error with coercion hint
+- [x] F363 — List operations validity (membership, add/remove)
+- [x] F364 — Choice structure rules: no content after unconditional divert
+- [x] F365 — Once-only choice exhaustion analysis (possible dead ends flagged)
+- [x] F366 — Tunnel call/return pairing validation
+- [x] F367 — Const reassignment errors
+- [x] F368 — String interpolation expression validation
+- [x] F369 — Entity binding field checks (`@hero.health` exists on entity schema)
+- [x] F370 — Semantic check test suite
 
 ### Formatter (F371–F380)
 
-- [ ] F371 — `forge fmt`: canonical formatting from AST printer
-- [ ] F372 — Indentation rules for nested choices and gathers
-- [ ] F373 — Logic line spacing + alignment conventions
-- [ ] F374 — Comment preservation through format
-- [ ] F375 — Idempotency guarantee: fmt(fmt(x)) === fmt(x), property-tested
-- [ ] F376 — Range formatting (format selection only)
-- [ ] F377 — `--check` mode for CI
+- [x] F371 — `forge fmt`: canonical formatting from AST printer
+- [x] F372 — Indentation rules for nested choices and gathers
+- [x] F373 — Logic line spacing + alignment conventions
+- [x] F374 — Comment preservation through format
+- [x] F375 — Idempotency guarantee: fmt(fmt(x)) === fmt(x), property-tested
+- [x] F376 — Range formatting (format selection only)
+- [x] F377 — `--check` mode for CI
 - [ ] F378 — Format-on-save wiring in the web editor
-- [ ] F379 — Formatter config: max width, choice marker style
-- [ ] F380 — Formatter golden tests across fixture corpus
+- [x] F379 — Formatter config: max width, choice marker style
+- [x] F380 — Formatter golden tests across fixture corpus
 
 ### Editor Integration (F381–F390)
 
@@ -544,16 +544,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Language Test Infrastructure (F391–F400)
 
-- [ ] F391 — Fixture corpus: 20+ `.fable` programs from trivial to gnarly
-- [ ] F392 — Golden test runner: lex/parse/resolve snapshots per fixture
-- [ ] F393 — Error fixture corpus: programs that must produce specific diagnostics
-- [ ] F394 — Property tests: printer/parser round-trip
-- [ ] F395 — Fuzzer: grammar-aware random program generator
-- [ ] F396 — Performance benchmark: 10k-line story compiles under budget
+- [x] F391 — Fixture corpus: 20+ `.fable` programs from trivial to gnarly
+- [x] F392 — Golden test runner: lex/parse/resolve snapshots per fixture
+- [x] F393 — Error fixture corpus: programs that must produce specific diagnostics
+- [x] F394 — Property tests: printer/parser round-trip
+- [x] F395 — Fuzzer: grammar-aware random program generator
+- [x] F396 — Performance benchmark: 10k-line story compiles under budget
 - [ ] F397 — Coverage gate for forge-dsl ≥ 90%
 - [ ] F398 — Spec ↔ implementation conformance checklist doc
-- [ ] F399 — `forge check` CLI command (compile-only, report diagnostics)
-- [ ] F400 — Day-4 retro note in `docs/devlog/day-04.md`
+- [x] F399 — `forge check` CLI command (compile-only, report diagnostics)
+- [x] F400 — Day-4 retro note in `docs/devlog/day-04.md`
 
 ---
 

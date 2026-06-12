@@ -1,0 +1,92 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lexer: golden token streams (F320) > snapshot: bindings and tunnels 1`] = `
+"KnotMarker @1:1 "==="
+Identifier @1:5 "a"
+KnotMarker @1:7 "==="
+Newline @1:10
+At @2:1 "@"
+Identifier @2:2 "fox"
+LParen @2:5 "("
+Text @2:6 "Reynard"
+RParen @2:13 ")"
+Dot @2:14 "."
+Identifier @2:15 "mood"
+Text @2:19 " watches "
+NoteRefOpen @2:28 "[["
+Text @2:30 "The Ledger"
+NoteRefClose @2:40 "]]"
+Text @2:42 "."
+Newline @2:43
+Divert @3:1 "->"
+Identifier @3:4 "b"
+Divert @3:6 "->"
+Newline @3:8
+TunnelReturn @4:1 "->->"
+Newline @4:5
+EOF @5:1"
+`;
+
+exports[`lexer: golden token streams (F320) > snapshot: structural sampler 1`] = `
+"Tag @1:1 "# title: Sampler"
+Newline @1:17
+VarKeyword @2:1 "VAR"
+Identifier @2:5 "x"
+Operator @2:7 "="
+Number @2:9 "1"
+Newline @2:10
+Divert @3:1 "->"
+Identifier @3:4 "top"
+Newline @3:7
+KnotMarker @4:1 "==="
+Identifier @4:5 "top"
+KnotMarker @4:9 "==="
+Newline @4:12
+Text @5:1 "Text with "
+LBrace @5:11 "{"
+Identifier @5:12 "x"
+RBrace @5:13 "}"
+Text @5:14 " and "
+LBrace @5:19 "{"
+Ampersand @5:20 "&"
+Text @5:21 "a"
+Pipe @5:22 "|"
+Text @5:23 "b"
+RBrace @5:24 "}"
+Text @5:25 " mixed. "
+Glue @5:33 "<>"
+Text @5:35 " "
+Tag @5:36 "# tag"
+Newline @5:41
+ChoiceStar @6:1 "*"
+LParen @6:3 "("
+Identifier @6:4 "lbl"
+RParen @6:7 ")"
+LBrace @6:9 "{"
+Identifier @6:10 "x"
+Operator @6:12 ">"
+Number @6:14 "0"
+RBrace @6:15 "}"
+Text @6:16 " Choice "
+LBracket @6:24 "["
+Text @6:25 "only"
+RBracket @6:29 "]"
+Text @6:30 " after. "
+Divert @6:38 "->"
+Identifier @6:41 "top"
+Newline @6:44
+GatherDash @7:1 "-"
+Text @7:3 "All done."
+Newline @7:12
+Tilde @8:1 "~"
+Identifier @8:3 "x"
+Operator @8:5 "="
+Identifier @8:7 "x"
+Operator @8:9 "+"
+Number @8:11 "1"
+Newline @8:12
+Divert @9:1 "->"
+Identifier @9:4 "END"
+Newline @9:7
+EOF @10:1"
+`;

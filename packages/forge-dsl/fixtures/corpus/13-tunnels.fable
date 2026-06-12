@@ -1,0 +1,11 @@
+-> day
+
+=== day ===
+The cubs want to play.
+-> pounce_lesson ->
+After the lesson, everyone naps.
+-> END
+
+=== pounce_lesson ===
+Crouch. Wiggle. Leap!
+->->

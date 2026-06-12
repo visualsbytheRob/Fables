@@ -1,0 +1,12 @@
+VAR hunger = 3
+VAR name = "Reynard"
+CONST den_name = "Bramble Hollow"
+
+-> hunt
+
+=== hunt ===
+~ temp found = 2
+~ hunger = hunger - found
+{name} returns to {den_name} with {found} voles.
+Hunger is now {hunger}.
+-> END

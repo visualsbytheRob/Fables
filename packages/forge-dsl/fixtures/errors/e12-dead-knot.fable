@@ -1,0 +1,10 @@
+// expect: FORGE208
+-> start
+
+=== start ===
+The story goes this way.
+-> END
+
+=== forgotten ===
+No road leads here.
+-> END

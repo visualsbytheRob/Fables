@@ -1,0 +1,6 @@
+// expect: FORGE101
+-> go
+
+=== go extra_words_here
+Onward.
+-> END

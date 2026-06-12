@@ -1,0 +1,317 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE001 Invalid character 1`] = `
+"error[FORGE001]: invalid character ";" in expression
+  --> <source>:1:9
+  |
+1 | ~ x = 1 ; 2
+  |         ^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE002 Unterminated string literal 1`] = `
+"error[FORGE002]: string literal is missing a closing quote
+  --> <source>:1:7
+  |
+1 | ~ x = "open
+  |       ^^^^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE003 Unterminated block comment 1`] = `
+"error[FORGE003]: block comment is missing closing "*/"
+  --> <source>:1:6
+  |
+1 | text /* never closed
+  |      ^^^^^^^^^^^^^^^"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE004 Malformed number literal 1`] = `
+"error[FORGE004]: malformed number literal "12abc"
+  --> <source>:1:7
+  |
+1 | ~ x = 12abc
+  |       ^^^^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE101 Unexpected token 1`] = `
+"error[FORGE101]: unexpected "extra ===" before end of line
+  --> <source>:1:7
+  |
+1 | === k extra ===
+  |       ^^^^^^^^^
+2 | body"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE102 Invalid expression 1`] = `
+"error[FORGE102]: expected an expression but found "*"
+  --> <source>:1:11
+  |
+1 | ~ x = 1 + * 2
+  |           ^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE103 Invalid declaration 1`] = `
+"error[FORGE103]: VAR lonely must be initialised with "= <expression>"
+  --> <source>:1:11
+  |
+1 | VAR lonely
+  |           ^
+2 | 
+  | ^"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE104 Unterminated inline expression 1`] = `
+"error[FORGE104]: inline "{" block is not closed before the end of the line
+  --> <source>:1:13
+  |
+1 | The gate is {locked
+  |             ^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE105 Invalid divert target 1`] = `
+"error[FORGE105]: divert "->" must name a target knot, stitch, or label
+  --> <source>:1:9
+  |
+1 | Onward. ->
+  |         ^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE106 Invalid knot or stitch header 1`] = `
+"error[FORGE106]: knot header must be "=== knot_name ==="
+  --> <source>:1:1
+  |
+1 | === ===
+  | ^^^
+2 | nameless"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE107 Choice nesting depth skips a level 1`] = `
+"warning[FORGE107]: choice at depth 3 skips a nesting level (deepest open choice is 1)
+  --> <source>:3:1
+  |
+2 | * a
+3 | * * * deep
+  | ^^^^^^^^^^
+4 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE108 Invalid knowledge binding 1`] = `
+"error[FORGE108]: note reference is missing closing "]]"
+  --> <source>:1:14
+  |
+1 | You recall [[The Ledger
+  |              ^^^^^^^^^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE109 Stitch outside of knot 1`] = `
+"error[FORGE109]: a stitch ("= name") must appear inside a knot
+  --> <source>:1:1
+  |
+1 | = floating
+  | ^
+2 | text"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE110 Invalid INCLUDE directive 1`] = `
+"error[FORGE110]: INCLUDE must be followed by a file path
+  --> <source>:1:1
+  |
+1 | INCLUDE
+  | ^^^^^^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE201 Duplicate declaration 1`] = `
+"error[FORGE201]: duplicate knot "twice"
+  --> <source>:3:5
+  |
+2 | -> END
+3 | === twice ===
+  |     ^^^^^
+4 | -> END
+  = first declared here (<source>:1:5)"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE202 Unknown divert target 1`] = `
+"error[FORGE202]: unknown divert target "nowheer" — did you mean "nowhere"?
+  --> <source>:1:1
+  |
+1 | -> nowheer
+  | ^^^^^^^^^^
+2 | === nowhere ==="
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE203 Unknown variable 1`] = `
+"error[FORGE203]: cannot assign to unknown variable "cuning" — did you mean "cunning"?
+  --> <source>:2:3
+  |
+1 | VAR cunning = 1
+2 | ~ cuning = 2
+  |   ^^^^^^
+3 | {cunning}"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE204 Unknown entity 1`] = `
+"error[FORGE204]: unknown entity "wolverine"
+  --> <source>:1:1
+  |
+1 | @wolverine howls.
+  | ^^^^^^^^^^
+2 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE205 Unknown note 1`] = `
+"warning[FORGE205]: note "[[Missing Note]]" does not exist in the knowledge base
+  --> <source>:1:5
+  |
+1 | See [[Missing Note]].
+  |     ^^^^^^^^^^^^^^^^
+2 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE206 Include cycle detected 1`] = `
+"error[FORGE206]: including "cycle-a.fable" creates a cycle: <entry> -> cycle-a.fable -> cycle-b.fable -> cycle-a.fable
+  --> <source>:1:1
+  |
+1 | INCLUDE cycle-a.fable
+  | ^^^^^^^^^^^^^^^^^^^^^
+2 | -> a_knot"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE207 Included file not found 1`] = `
+"error[FORGE207]: included file "missing.fable" was not found
+  --> <source>:1:1
+  |
+1 | INCLUDE missing.fable
+  | ^^^^^^^^^^^^^^^^^^^^^
+2 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE208 Unreachable knot 1`] = `
+"warning[FORGE208]: knot "marooned" is unreachable from the story entry point
+  --> <source>:4:5
+  |
+3 | -> END
+4 | === marooned ===
+  |     ^^^^^^^^
+5 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE209 Unused variable 1`] = `
+"warning[FORGE209]: variable "dusty" is never used
+  --> <source>:1:5
+  |
+1 | VAR dusty = 1
+  |     ^^^^^
+2 | hello"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE301 Type mismatch 1`] = `
+"error[FORGE301]: "+" needs numbers, but this is number + string
+  --> <source>:1:9
+  |
+1 | VAR x = 1 + "fox"
+  |         ^^^^^^^^^
+2 | {x}"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE302 Condition must be boolean 1`] = `
+"error[FORGE302]: inline condition must be a bool, but this is a number — compare it explicitly, e.g. "x > 0"
+  --> <source>:2:2
+  |
+1 | VAR coins = 5
+2 | {coins: rich|poor} {coins}
+  |  ^^^^^
+3 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE303 Invalid list operation 1`] = `
+"error[FORGE303]: "has" needs a list on the left, but this is a number
+  --> <source>:2:2
+  |
+1 | VAR n = 3
+2 | {n has 1: yes}
+  |  ^^^^^^^
+3 | {n}"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE304 Unreachable content after divert 1`] = `
+"warning[FORGE304]: this is unreachable: flow always diverts at line 2
+  --> <source>:3:1
+  |
+2 | -> END
+3 | never read
+  | ^^^^^^^^^^
+4 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE305 Once-only choices may exhaust 1`] = `
+"warning[FORGE305]: all of this choice point are once-only and "loop" can be revisited — add a sticky "+" choice or a fallback "* -> target" to avoid a dead end
+  --> <source>:2:1
+  |
+1 | === loop ===
+2 | * once
+  | ^^^^^^
+3 |   -> loop
+  | ^^^^^^^^^
+4 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE306 Unbalanced tunnel call/return 1`] = `
+"warning[FORGE306]: "->->" returns from a tunnel, but knot "k" is never called as one ("-> k ->")
+  --> <source>:2:1
+  |
+1 | === k ===
+2 | ->->
+  | ^^^^
+3 | "
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE307 Cannot reassign constant 1`] = `
+"error[FORGE307]: cannot reassign constant "king"
+  --> <source>:2:3
+  |
+1 | CONST king = "Leo"
+2 | ~ king = "Scar"
+  |   ^^^^
+3 | {king}
+  = declared CONST here (<source>:1:7)"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE308 Invalid interpolation expression 1`] = `
+"error[FORGE308]: this "{...}" block is not a valid expression to interpolate
+  --> <source>:1:14
+  |
+1 | The count is {+}.
+  |              ^^^
+2 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE309 Unknown entity field 1`] = `
+"error[FORGE309]: entity "fox" has no field "armour"
+  --> <source>:1:1
+  |
+1 | @fox.armour gleams.
+  | ^^^^^^^^^^^
+2 | -> END"
+`;
+
+exports[`diagnostic catalog (F342) > snapshot: FORGE310 Empty choice 1`] = `
+"warning[FORGE310]: this choice has no text for the reader to pick
+  --> <source>:2:1
+  |
+1 | === k ===
+2 | *
+  | ^
+3 |   hidden
+  | ^^^^^^^^
+4 |   -> END
+  | ^^^^^^^^
+5 | + leave"
+`;

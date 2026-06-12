@@ -1,0 +1,10 @@
+// expect: FORGE310
+-> hall
+
+=== hall ===
+The hall is silent.
+*
+  Something happens anyway.
+  -> END
++ Leave.
+  -> END

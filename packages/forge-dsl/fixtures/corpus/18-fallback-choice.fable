@@ -1,0 +1,13 @@
+-> larder
+
+=== larder ===
+The larder grows barer each visit.
+* Take the last honeycomb.
+  -> larder
+* Take the dried fish.
+  -> larder
+* -> empty
+
+=== empty ===
+Nothing is left but crumbs and regret.
+-> END

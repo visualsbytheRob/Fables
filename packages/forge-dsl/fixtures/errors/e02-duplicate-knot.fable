@@ -1,0 +1,10 @@
+// expect: FORGE201
+-> den
+
+=== den ===
+A fox den.
+-> END
+
+=== den ===
+Another fox den, suspiciously similar.
+-> END

@@ -1,0 +1,10 @@
+VAR greeting = "Good " + "morrow"
+VAR mood = "wary"
+
+-> parley
+
+=== parley ===
+"{greeting}," says the wolf.
+{mood == "wary": You keep your distance.|You step closer.}
+The wolf says "stay\nback" with a "\"grin\"".
+-> END

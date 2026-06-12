@@ -1,0 +1,12 @@
+// expect: FORGE107
+-> go
+
+=== go ===
+A question.
++ Answer it.
+  * * * Way too deep.
+    -> END
+  + + Stay shallow.
+    -> END
++ Ignore it.
+  -> END

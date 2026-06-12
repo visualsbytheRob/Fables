@@ -1,0 +1,17 @@
+-> palace
+
+=== palace ===
+The lion's palace is a sun-warmed rock.
+-> palace.throne
+
+= throne
+He receives visitors here.
+-> court
+
+= kitchen
+Bones, mostly.
+-> END
+
+=== court ===
+A jackal pleads his case.
+-> palace.kitchen

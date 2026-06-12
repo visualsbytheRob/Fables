@@ -1,0 +1,14 @@
+{
+  "name": "@fables/forge-dsl",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:coverage": "cd ../.. && vitest run --coverage.enabled --coverage.include='packages/forge-dsl/src/**' --coverage.thresholds.lines=90 --coverage.thresholds.functions=90 --coverage.thresholds.statements=90 --coverage.thresholds.branches=85 packages/forge-dsl"
+  }
+}

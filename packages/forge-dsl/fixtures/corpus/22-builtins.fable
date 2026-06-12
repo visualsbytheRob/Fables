@@ -1,0 +1,10 @@
+VAR den_count = 3
+
+-> divvy
+
+=== divvy ===
+~ temp roll = RANDOM(1, 6)
+~ temp share = FLOOR(roll / den_count)
+Each den gets {MAX(share, 1)} hare{ABS(share - 1) != 0: s}.
+After {TURNS()} turns, the hunt ends.
+-> END

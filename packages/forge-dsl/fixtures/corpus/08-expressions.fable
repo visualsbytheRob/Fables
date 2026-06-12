@@ -1,0 +1,12 @@
+VAR cunning = 4
+VAR boldness = 2
+VAR is_winter = false
+
+-> ledger
+
+=== ledger ===
+Score: {cunning * 2 + boldness % 3 - 1}.
+Verdict: {(cunning > 3 and boldness > 1) or is_winter: ready|not ready}.
+Plan: {(cunning >= boldness ? "scheme" : "charge")}.
+Negation: {not is_winter: green season|white season}.
+-> END

@@ -1,0 +1,9 @@
+// expect: FORGE305
+-> loop
+
+=== loop ===
+Around again.
+* Pick the apple.
+  -> loop
+* Pick the pear.
+  -> loop

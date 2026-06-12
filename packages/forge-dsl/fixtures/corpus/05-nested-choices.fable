@@ -1,0 +1,18 @@
+-> burrow
+
+=== burrow ===
+The rabbit kits crowd around you.
++ Tell them a story.
+  * * The one about the moon.
+    They gasp at the part with the owl.
+    - - They drift to sleep.
+      -> END
+  * * The one about the river.
+    * * * Make the ending happy.
+      -> END
+    * * * Make the ending true.
+      -> END
+  + + A story you make up on the spot.
+    -> END
++ Shoo them off to bed.
+  -> END

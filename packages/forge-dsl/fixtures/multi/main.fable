@@ -1,0 +1,8 @@
+# title: The Wandering Fox
+
+INCLUDE forest.fable
+INCLUDE river.fable
+
+VAR spirit = 2
+
+-> forest_edge

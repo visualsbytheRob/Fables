@@ -1,0 +1,11 @@
+// The fable of the patient stork.
+VAR patience = 10 // she has plenty
+
+-> shore
+
+/* The shore is where
+   everything happens. */
+=== shore ===
+The stork waits. // and waits
+~ patience = patience - 1 // tick
+-> END

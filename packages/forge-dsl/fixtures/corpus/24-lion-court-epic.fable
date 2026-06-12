@@ -1,0 +1,54 @@
+# title: The Lion's Court
+# author: Aesop
+
+VAR favor = 0
+VAR tribute = ["honey", "figs"]
+CONST king = "Leo"
+
+INCLUDE shared-beasts.fable
+
+The summons arrived on a thorn.
+-> gates
+
+=== gates === # act: one
+Two hyenas flank the gates of {king}'s court.
+* {favor >= 0} Present your tribute.
+  ~ favor = favor + 1
+  {tribute has "honey": The hyenas sniff the honey approvingly.}
+  -> hall
+* (bribe) Slip the hyenas a fig.
+  ~ tribute = tribute - "figs"
+  ~ favor = favor - 1
+  -> hall
++ Turn back.
+  The road home is long. <>
+  And it rains.
+  -> END
+
+=== hall ===
+The hall smells of warm stone. {gates.bribe > 0: A hyena winks at you.}
+-> audience ->
+The audience over, you exhale.
++ Stay for the feast.
+  {&The drums start.|The drums continue.|You stop hearing the drums.}
+  -> feast
++ Slip away quietly.
+  -> END
+* (study) Consult the beast glossary [] first.
+  -> beast_glossary
+
+= feast
+~ temp courses = RANDOM(3, 7)
+{courses} courses! Your favor stands at {favor}.
+-> END
+
+=== audience ===
+{king} regards you {favor > 0: warmly|coolly}.
+"Speak," he rumbles.
+* "I bring news of the river." [] You tell him of the drying ford.
+  ~ favor = favor + 2
+* "I seek your judgement." [] You lay out the jackal's claim.
+  ~ favor = favor + 1
+* Say nothing.
+- He waves a paw, satisfied or not.
+->->

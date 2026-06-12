@@ -1,0 +1,6 @@
+// expect: FORGE002
+VAR name = "Reynard
+-> go
+=== go ===
+Hello {name}.
+-> END

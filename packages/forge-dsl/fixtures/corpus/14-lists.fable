@@ -1,0 +1,11 @@
+VAR satchel = ["feather", "acorn"]
+
+-> trade
+
+=== trade ===
+~ satchel = satchel + "river stone"
+{satchel has "acorn": The acorn is safe.|No acorn!}
+~ satchel = satchel - "feather"
+{satchel hasnt "feather": The feather is gone.}
+You carry {COUNT(satchel)} treasures.
+-> END

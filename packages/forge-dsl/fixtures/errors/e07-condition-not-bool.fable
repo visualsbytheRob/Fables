@@ -1,0 +1,10 @@
+// expect: FORGE302
+VAR coins = 5
+
+-> toll
+=== toll ===
+{coins: You can pay.|Empty pockets.}
+* {coins} Pay the toll.
+  -> END
++ Argue instead.
+  -> END

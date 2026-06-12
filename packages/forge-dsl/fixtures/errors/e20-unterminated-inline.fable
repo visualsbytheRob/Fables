@@ -1,0 +1,6 @@
+// expect: FORGE104
+-> go
+
+=== go ===
+The gate is {locked
+-> END

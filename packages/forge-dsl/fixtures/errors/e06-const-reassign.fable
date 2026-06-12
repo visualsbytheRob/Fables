@@ -1,0 +1,8 @@
+// expect: FORGE307
+CONST king = "Leo"
+
+-> coup
+=== coup ===
+~ king = "Scar"
+The throne changes paws: {king}.
+-> END

@@ -1,0 +1,7 @@
+// expect: FORGE110
+INCLUDE
+
+-> go
+=== go ===
+Onward.
+-> END

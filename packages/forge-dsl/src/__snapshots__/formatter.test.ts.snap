@@ -1,0 +1,414 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`formatter golden corpus (F380) > golden format: 01-hello.fable 1`] = `
+"A fox trotted through the quiet wood.
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 02-two-knots.fable 1`] = `
+"-> den
+
+=== den ===
+The fox curled up in her den.
+-> morning
+
+=== morning ===
+Sunlight crept across the moss.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 03-choices-basic.fable 1`] = `
+"-> crossroads
+
+=== crossroads ===
+The path splits beneath an old oak.
+* Take the shaded trail.
+  Ferns brush your ankles.
+  -> crossroads
+* Follow the sunny ridge.
+  The grass hums with crickets.
+  -> crossroads
++ Sit and rest a while.
+  -> crossroads
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 04-choice-brackets.fable 1`] = `
+"-> riverbank
+
+=== riverbank ===
+A salmon flashes in the shallows.
+* Lunge [at the salmon] at the salmon and miss entirely.
+  -> riverbank
++ Wait [patiently] with the patience of winter.
+  The salmon drifts closer.
+  -> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 05-nested-choices.fable 1`] = `
+"-> burrow
+
+=== burrow ===
+The rabbit kits crowd around you.
++ Tell them a story.
+  * * The one about the moon.
+    They gasp at the part with the owl.
+  - - They drift to sleep.
+  -> END
+  * * The one about the river.
+    * * * Make the ending happy.
+      -> END
+    * * * Make the ending true.
+      -> END
+  + + A story you make up on the spot.
+    -> END
++ Shoo them off to bed.
+  -> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 06-gathers-labels.fable 1`] = `
+"-> clearing
+
+=== clearing ===
+Moonlight pools in the clearing.
+* (howl) Howl at the moon.
+* (dig) Dig at the cold earth.
++ (wait) Do nothing at all.
+- (gathered) Whatever you did, the night swallows it.
+{howl > 0: Your throat is still sore.}
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 07-variables.fable 1`] = `
+"VAR hunger = 3
+VAR name = "Reynard"
+CONST den_name = "Bramble Hollow"
+
+-> hunt
+
+=== hunt ===
+~ temp found = 2
+~ hunger = hunger - found
+{name} returns to {den_name} with {found} voles.
+Hunger is now {hunger}.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 08-expressions.fable 1`] = `
+"VAR cunning = 4
+VAR boldness = 2
+VAR is_winter = false
+
+-> ledger
+
+=== ledger ===
+Score: {cunning * 2 + boldness % 3 - 1}.
+Verdict: {cunning > 3 && boldness > 1 || is_winter: ready|not ready}.
+Plan: {cunning >= boldness ? "scheme" : "charge"}.
+Negation: {!is_winter: green season|white season}.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 09-conditionals-inline.fable 1`] = `
+"VAR has_key = true
+VAR coins = 5
+
+-> gate
+
+=== gate ===
+The iron gate is {has_key: unlocked|sealed shut}.
+The toll keeper {coins > 3: nods you through|turns you away}.
+You feel {has_key: relief}.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 10-alternatives.fable 1`] = `
+"-> watch
+
+=== watch ===
+The heron {stands|still stands|has not moved}.
+The reeds {&whisper|rattle|sigh}.
+A frog {~plops|croaks|vanishes}.
++ Keep watching.
+  -> watch
++ Leave the marsh.
+  -> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 11-glue-tags.fable 1`] = `
+"-> intro
+
+=== intro === # chapter: one
+The lion yawned. <>
+It was a vast yawn. # mood: sleepy
+He had eaten well. <> Twice, in fact.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 12-stitches.fable 1`] = `
+"-> palace
+
+=== palace ===
+The lion's palace is a sun-warmed rock.
+-> palace.throne
+= throne
+He receives visitors here.
+-> court
+= kitchen
+Bones, mostly.
+-> END
+
+=== court ===
+A jackal pleads his case.
+-> palace.kitchen
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 13-tunnels.fable 1`] = `
+"-> day
+
+=== day ===
+The cubs want to play.
+-> pounce_lesson ->
+After the lesson, everyone naps.
+-> END
+
+=== pounce_lesson ===
+Crouch. Wiggle. Leap!
+->->
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 14-lists.fable 1`] = `
+"VAR satchel = ["feather", "acorn"]
+
+-> trade
+
+=== trade ===
+~ satchel = satchel + "river stone"
+{satchel has "acorn": The acorn is safe.|No acorn!}
+~ satchel = satchel - "feather"
+{satchel hasnt "feather": The feather is gone.}
+You carry {COUNT(satchel)} treasures.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 15-comments.fable 1`] = `
+"// The fable of the patient stork.
+VAR patience = 10 // she has plenty
+
+-> shore
+
+/* The shore is where
+   everything happens. */
+=== shore ===
+The stork waits. // and waits
+~ patience = patience - 1 // tick
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 16-bindings.fable 1`] = `
+"-> meeting
+
+=== meeting ===
+@fox(Reynard the Fox) bows low.
+His health sits at @fox.health today.
+You recall what the ledger said: [[The Trial of Reynard]].
+@crow watches from the elm.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 17-read-counts.fable 1`] = `
+"-> spring
+
+=== spring ===
+{spring > 1: You have been here before.|The water is new to you.}
++ Drink again.
+  -> spring
+* Move on.
+  -> meadow
+
+=== meadow ===
+{spring} visits to the spring brought you here.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 18-fallback-choice.fable 1`] = `
+"-> larder
+
+=== larder ===
+The larder grows barer each visit.
+* Take the last honeycomb.
+  -> larder
+* Take the dried fish.
+  -> larder
+* -> empty
+
+=== empty ===
+Nothing is left but crumbs and regret.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 19-escapes.fable 1`] = `
+"-> sign
+
+=== sign ===
+The sign reads: \\-> market this way \\<>.
+A carved \\{rune\\} marks the post. \\# not a tag
+The price list: 3 * fish, 2 + eggs.
+\\@nobody lives here.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 20-header-metadata.fable 1`] = `
+"# title: The Council of Beasts
+# author: Aesop
+# version: 2
+
+-> council
+
+=== council ===
+The beasts assemble at the stone table.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 21-strings.fable 1`] = `
+"VAR greeting = "Good " + "morrow"
+VAR mood = "wary"
+
+-> parley
+
+=== parley ===
+"{greeting}," says the wolf.
+{mood == "wary": You keep your distance.|You step closer.}
+The wolf says "staynback" with a ""grin"".
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 22-builtins.fable 1`] = `
+"VAR den_count = 3
+
+-> divvy
+
+=== divvy ===
+~ temp roll = RANDOM(1, 6)
+~ temp share = FLOOR(roll / den_count)
+Each den gets {MAX(share, 1)} hare{ABS(share - 1) != 0: s}.
+After {TURNS()} turns, the hunt ends.
+-> END
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 23-fox-and-crow.fable 1`] = `
+"# title: The Fox and the Crow
+
+VAR cunning = 3
+CONST prize = "cheese"
+
+The wood smelled of rain.
+-> meeting
+
+=== meeting ===
+A crow sat on a branch with a piece of {prize} in her beak.
+* (flatter) "What a beautiful voice you must have!"
+  The crow puffed up her chest. {cunning > 2: She suspects nothing.|She eyes you warily.}
+  * * "Sing for me!" [] The crow opens her beak. -> drop ->
+* {cunning > 1} (sneak) Wait quietly [and watch] and watch the branch.
+  -> waiting
++ Walk away. # quiet ending
+  -> END
+- (after) The forest hums. {&Wind stirs.|Leaves fall.|A twig snaps.}
+-> waiting
+
+=== waiting ===
+Time passes. <>
+The cheese {~falls|stays put|wobbles}.
+~ cunning = cunning + 1
+-> meeting.after
+
+=== drop ===
+The cheese tumbles down!
+->->
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: 24-lion-court-epic.fable 1`] = `
+"# title: The Lion's Court
+# author: Aesop
+
+INCLUDE shared-beasts.fable
+
+VAR favor = 0
+VAR tribute = ["honey", "figs"]
+CONST king = "Leo"
+
+The summons arrived on a thorn.
+-> gates
+
+=== gates === # act: one
+Two hyenas flank the gates of {king}'s court.
+* {favor >= 0} Present your tribute.
+  ~ favor = favor + 1
+  {tribute has "honey": The hyenas sniff the honey approvingly.}
+  -> hall
+* (bribe) Slip the hyenas a fig.
+  ~ tribute = tribute - "figs"
+  ~ favor = favor - 1
+  -> hall
++ Turn back.
+  The road home is long. <>
+  And it rains.
+  -> END
+
+=== hall ===
+The hall smells of warm stone. {gates.bribe > 0: A hyena winks at you.}
+-> audience ->
+The audience over, you exhale.
++ Stay for the feast.
+  {&The drums start.|The drums continue.|You stop hearing the drums.}
+  -> feast
++ Slip away quietly.
+  -> END
+* (study) Consult the beast glossary [] first.
+  -> beast_glossary
+= feast
+~ temp courses = RANDOM(3, 7)
+{courses} courses! Your favor stands at {favor}.
+-> END
+
+=== audience ===
+{king} regards you {favor > 0: warmly|coolly}.
+"Speak," he rumbles.
+* "I bring news of the river." [] You tell him of the drying ford.
+  ~ favor = favor + 2
+* "I seek your judgement." [] You lay out the jackal's claim.
+  ~ favor = favor + 1
+* Say nothing.
+- He waves a paw, satisfied or not.
+->->
+"
+`;
+
+exports[`formatter golden corpus (F380) > golden format: shared-beasts.fable 1`] = `
+"=== beast_glossary ===
+A reference of every beast at court.
+-> END
+"
+`;

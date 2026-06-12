@@ -1,0 +1,11 @@
+// expect: FORGE304
+-> way
+
+=== way ===
+You set off at dawn.
+-> camp
+This line can never be read.
+
+=== camp ===
+The fire is warm.
+-> END

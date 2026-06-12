@@ -1,0 +1,7 @@
+// expect: FORGE207
+INCLUDE no-such-file.fable
+
+-> go
+=== go ===
+Onward.
+-> END

@@ -1,0 +1,7 @@
+// expect: FORGE209
+VAR dust = 99
+
+-> go
+=== go ===
+Nothing uses the dust.
+-> END

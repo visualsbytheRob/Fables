@@ -1,0 +1,8 @@
+-> meeting
+
+=== meeting ===
+@fox(Reynard the Fox) bows low.
+His health sits at @fox.health today.
+You recall what the ledger said: [[The Trial of Reynard]].
+@crow watches from the elm.
+-> END

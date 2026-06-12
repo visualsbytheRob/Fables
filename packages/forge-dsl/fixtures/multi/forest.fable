@@ -1,0 +1,11 @@
+=== forest_edge ===
+Pines crowd the path.
+~ spirit = spirit + 1
+* Head deeper in.
+  -> forest_heart
++ Follow the water sounds.
+  -> river_bend
+
+=== forest_heart ===
+It is dark and very quiet.
+-> river_bend

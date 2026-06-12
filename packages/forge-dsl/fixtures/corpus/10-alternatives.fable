@@ -1,0 +1,10 @@
+-> watch
+
+=== watch ===
+The heron {stands|still stands|has not moved}.
+The reeds {&whisper|rattle|sigh}.
+A frog {~plops|croaks|vanishes}.
++ Keep watching.
+  -> watch
++ Leave the marsh.
+  -> END

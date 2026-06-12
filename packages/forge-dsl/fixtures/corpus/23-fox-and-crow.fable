@@ -1,0 +1,29 @@
+# title: The Fox and the Crow
+
+VAR cunning = 3
+CONST prize = "cheese"
+
+The wood smelled of rain.
+-> meeting
+
+=== meeting ===
+A crow sat on a branch with a piece of {prize} in her beak.
+* (flatter) "What a beautiful voice you must have!"
+  The crow puffed up her chest. {cunning > 2: She suspects nothing.|She eyes you warily.}
+  * * "Sing for me!" [] The crow opens her beak. -> drop ->
+* {cunning > 1} (sneak) Wait quietly [and watch] and watch the branch.
+  -> waiting
++ Walk away. # quiet ending
+  -> END
+- (after) The forest hums. {&Wind stirs.|Leaves fall.|A twig snaps.}
+-> waiting
+
+=== waiting ===
+Time passes. <>
+The cheese {~falls|stays put|wobbles}.
+~ cunning = cunning + 1
+-> meeting.after
+
+=== drop ===
+The cheese tumbles down!
+->->

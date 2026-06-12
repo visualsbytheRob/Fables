@@ -1,0 +1,10 @@
+-> clearing
+
+=== clearing ===
+Moonlight pools in the clearing.
+* (howl) Howl at the moon.
+* (dig) Dig at the cold earth.
++ (wait) Do nothing at all.
+- (gathered) Whatever you did, the night swallows it.
+{howl > 0: Your throat is still sore.}
+-> END
