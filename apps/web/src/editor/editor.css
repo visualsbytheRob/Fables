@@ -1,0 +1,102 @@
+/* MarkdownEditor chrome (F122): colors come from the Fables design tokens, so the
+   editor follows dark/light automatically. Selectors are written with bumped
+   specificity (three classes) so they deterministically beat CodeMirror's
+   runtime-injected theme styles regardless of stylesheet order. */
+
+.md-editor {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.md-editor__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  flex-wrap: wrap;
+}
+
+.md-editor__tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+
+.md-editor__tool:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.md-editor__sep {
+  width: 1px;
+  height: 18px;
+  background: var(--border);
+  margin-inline: var(--space-1);
+}
+
+.md-editor__lang {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+  padding: 2px var(--space-1);
+}
+
+.md-editor .cm-editor.cm-editor {
+  background: var(--bg);
+  color: var(--text);
+  outline: none;
+  flex: 1;
+}
+
+.md-editor .cm-editor .cm-scroller {
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  line-height: 1.65;
+  padding: var(--space-3) var(--space-4);
+}
+
+.md-editor .cm-editor .cm-content {
+  caret-color: var(--accent);
+}
+
+.md-editor .cm-editor .cm-cursor {
+  border-left-color: var(--accent);
+}
+
+.md-editor .cm-editor .cm-activeLine {
+  background: transparent;
+}
+
+.md-editor .cm-editor.cm-focused .cm-activeLine {
+  background: var(--bg-hover);
+}
+
+.md-editor .cm-editor .cm-selectionBackground,
+.md-editor .cm-editor.cm-focused .cm-selectionBackground {
+  background: var(--bg-active);
+}
+
+.md-editor .cm-editor .cm-placeholder {
+  color: var(--text-dim);
+}
+
+.md-editor .cm-editor .cm-panels {
+  background: var(--bg-panel);
+  color: var(--text);
+  border-color: var(--border);
+}

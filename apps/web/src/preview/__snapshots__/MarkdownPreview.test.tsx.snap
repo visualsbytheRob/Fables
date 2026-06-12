@@ -1,0 +1,23 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`pipeline snapshot (F140) > renders the kitchen sink consistently 1`] = `
+"<div class="md-preview"><h1 id="the-fox-and-the-compiler">The Fox and the Compiler<a class="md-heading-anchor" href="#the-fox-and-the-compiler" aria-label="Link to “The Fox and the Compiler”">#</a></h1>
+<p>A <strong>bold</strong> fox met an <em>italic</em> crow.<sup><a href="#user-content-fn-why" id="user-content-fnref-why" data-footnote-ref="true" aria-describedby="footnote-label">1</a></sup></p>
+<ul class="contains-task-list">
+<li class="task-list-item"><input disabled="" type="checkbox"> flatter the crow</li>
+<li class="task-list-item"><input disabled="" type="checkbox" checked=""> steal the <code>cheese</code></li>
+</ul>
+<table><thead><tr><th>Animal</th><th>Role</th></tr></thead><tbody><tr><td>Fox</td><td>Trickster</td></tr></tbody></table>
+<blockquote>
+<p>Moral: never trust a flatterer.</p>
+</blockquote>
+<pre><code class="hljs language-js"><span class="hljs-keyword">const</span> moral = <span class="hljs-string">"earned"</span>;
+</code></pre>
+<section data-footnotes="true" class="footnotes"><h2 id="footnote-label" class="sr-only">Footnotes<a class="md-heading-anchor" href="#footnotes" aria-label="Link to “Footnotes”">#</a></h2>
+<ol>
+<li id="user-content-fn-why">
+<p>Crows hold grudges. <a href="#user-content-fnref-why" data-footnote-backref="" aria-label="Back to reference 1" class="data-footnote-backref">↩</a></p>
+</li>
+</ol>
+</section></div>"
+`;

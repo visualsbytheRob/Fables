@@ -30,6 +30,14 @@
   --radius: 8px;
   --radius-lg: 14px;
 
+  /* Code syntax tokens (F122/F133): consumed by the editor + preview highlighters. */
+  --code-keyword: #c792ea;
+  --code-string: #a5d6a7;
+  --code-comment: #7c7493;
+  --code-literal: #f7a673;
+  --code-title: #82aaff;
+  --code-attr: #ffcb6b;
+
   /* breakpoints are documented here and used in media queries: 720px phone, 1080px desktop-wide */
 }
 
@@ -45,6 +53,13 @@
   --danger: #c43c3c;
   --border: #e2dcee;
   --shadow: 0 8px 32px rgba(40, 20, 80, 0.14);
+
+  --code-keyword: #7c3aed;
+  --code-string: #2e7d32;
+  --code-comment: #8d86a3;
+  --code-literal: #b45309;
+  --code-title: #1d4ed8;
+  --code-attr: #92400e;
 }
 
 /* ===== Focus & motion (F079) ===== */

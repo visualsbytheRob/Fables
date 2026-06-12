@@ -1,0 +1,303 @@
+/* ===== Markdown preview (F131–F138) — typography on Fables tokens ===== */
+.md-preview {
+  color: var(--text);
+  font-size: var(--text-md);
+  line-height: 1.65;
+  word-wrap: break-word;
+}
+
+.md-preview > :first-child {
+  margin-top: 0;
+}
+
+.md-preview h1,
+.md-preview h2,
+.md-preview h3,
+.md-preview h4,
+.md-preview h5,
+.md-preview h6 {
+  line-height: 1.25;
+  margin: 1.4em 0 0.5em;
+}
+
+.md-preview h1 {
+  font-size: var(--text-xl);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+.md-preview h2 {
+  font-size: var(--text-lg);
+}
+
+.md-preview a {
+  color: var(--accent);
+}
+
+.md-preview blockquote {
+  margin: var(--space-3) 0;
+  padding: var(--space-1) var(--space-4);
+  border-left: 3px solid var(--accent);
+  color: var(--text-dim);
+  background: var(--bg-panel);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.md-preview code {
+  font-family: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+}
+
+.md-preview pre {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  overflow-x: auto;
+}
+
+.md-preview pre code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  font-size: var(--text-sm);
+}
+
+/* Tables (F132) */
+.md-preview table {
+  border-collapse: collapse;
+  margin: var(--space-3) 0;
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.md-preview th,
+.md-preview td {
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-3);
+}
+
+.md-preview th {
+  background: var(--bg-panel);
+}
+
+.md-preview tr:nth-child(2n) {
+  background: var(--bg-panel);
+}
+
+/* Task lists (F132/F134) */
+.md-preview li.task-list-item {
+  list-style: none;
+}
+
+.md-preview ul:has(> li.task-list-item) {
+  padding-left: var(--space-4);
+}
+
+.md-preview li.task-list-item input[type='checkbox'] {
+  accent-color: var(--accent);
+  margin-right: var(--space-2);
+  cursor: pointer;
+}
+
+/* Heading anchors (F138) */
+.md-preview .md-heading-anchor {
+  margin-left: var(--space-2);
+  color: var(--text-dim);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 120ms;
+}
+
+.md-preview h1:hover .md-heading-anchor,
+.md-preview h2:hover .md-heading-anchor,
+.md-preview h3:hover .md-heading-anchor,
+.md-preview h4:hover .md-heading-anchor,
+.md-preview h5:hover .md-heading-anchor,
+.md-preview h6:hover .md-heading-anchor,
+.md-preview .md-heading-anchor:focus-visible {
+  opacity: 1;
+}
+
+/* Footnotes (F135) */
+.md-preview section[data-footnotes] {
+  margin-top: var(--space-6);
+  border-top: 1px solid var(--border);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+
+.md-preview .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* Mermaid stub (F137, deferred) */
+.md-preview .md-mermaid-stub {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3);
+}
+
+.md-preview .md-mermaid-stub > p {
+  margin-top: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+/* ===== Syntax highlighting (F133): hljs classes → Fables code tokens ===== */
+.md-preview .hljs-keyword,
+.md-preview .hljs-selector-tag,
+.md-preview .hljs-tag,
+.md-preview .hljs-meta {
+  color: var(--code-keyword);
+}
+
+.md-preview .hljs-string,
+.md-preview .hljs-regexp,
+.md-preview .hljs-addition {
+  color: var(--code-string);
+}
+
+.md-preview .hljs-comment,
+.md-preview .hljs-quote {
+  color: var(--code-comment);
+  font-style: italic;
+}
+
+.md-preview .hljs-number,
+.md-preview .hljs-literal,
+.md-preview .hljs-built_in,
+.md-preview .hljs-deletion {
+  color: var(--code-literal);
+}
+
+.md-preview .hljs-title,
+.md-preview .hljs-function,
+.md-preview .hljs-section,
+.md-preview .hljs-name {
+  color: var(--code-title);
+}
+
+.md-preview .hljs-attr,
+.md-preview .hljs-attribute,
+.md-preview .hljs-variable,
+.md-preview .hljs-template-variable,
+.md-preview .hljs-type,
+.md-preview .hljs-symbol {
+  color: var(--code-attr);
+}
+
+/* ===== Table of contents (F138) ===== */
+.md-toc {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-4);
+}
+
+.md-toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.md-toc li {
+  padding-block: 2px;
+}
+
+.md-toc a {
+  color: var(--text-dim);
+  text-decoration: none;
+}
+
+.md-toc a:hover {
+  color: var(--accent);
+}
+
+/* ===== Split view (F139) ===== */
+.md-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  min-height: 0;
+  height: 100%;
+}
+
+.md-split__pane {
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.md-split__pane--editor {
+  overflow-y: hidden; /* CodeMirror's .cm-scroller scrolls */
+  display: flex;
+  flex-direction: column;
+}
+
+.md-split__pane--editor .md-editor {
+  flex: 1;
+  min-height: 0;
+}
+
+.md-split__pane--editor .md-editor .cm-editor {
+  height: 100%;
+}
+
+.md-split__pane--preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.md-split__tabs {
+  display: none;
+  gap: var(--space-2);
+}
+
+.md-split__tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+
+.md-split__tabs button[aria-selected='true'] {
+  background: var(--bg-active);
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* Phone fallback (F139): tabs instead of side-by-side */
+@media (max-width: 720px) {
+  .md-split {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .md-split__tabs {
+    display: flex;
+  }
+
+  .md-split--tab-write .md-split__pane--preview,
+  .md-split--tab-preview .md-split__pane--editor {
+    display: none;
+  }
+}

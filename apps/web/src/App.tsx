@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import {
   BookOpen,
@@ -15,6 +16,11 @@ import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
 import { PlaygroundPage } from './pages/Playground.js';
 
+// Code-split the editor stack (CodeMirror + markdown pipeline) off the main chunk.
+const EditorDemo = lazy(() =>
+  import('./pages/EditorDemo.js').then((m) => ({ default: m.EditorDemo })),
+);
+
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false },
@@ -25,10 +31,20 @@ function Shell() {
   const navigate = useNavigate();
   const commands: PaletteCommand[] = [
     { id: 'notes', label: 'Go to Notes', keywords: 'home', run: () => navigate('/') },
-    { id: 'stories', label: 'Go to Stories', keywords: 'fables play', run: () => navigate('/stories') },
+    {
+      id: 'stories',
+      label: 'Go to Stories',
+      keywords: 'fables play',
+      run: () => navigate('/stories'),
+    },
     { id: 'graph', label: 'Go to Graph', keywords: 'links network', run: () => navigate('/graph') },
     { id: 'today', label: 'Open Today', keywords: 'daily journal', run: () => navigate('/today') },
-    { id: 'playground', label: 'UI Playground', keywords: 'design system', run: () => navigate('/playground') },
+    {
+      id: 'playground',
+      label: 'UI Playground',
+      keywords: 'design system',
+      run: () => navigate('/playground'),
+    },
   ];
 
   return (
@@ -65,10 +81,12 @@ function HomePage() {
       {health.isError && <p>Server unreachable — is `pnpm dev` running?</p>}
       {health.data && (
         <p>
-          Connected to Fables v{health.data.version} — db {health.data.db}. The notes experience
-          lands on Day 2.
+          Connected to Fables v{health.data.version} — db {health.data.db}.
         </p>
       )}
+      <Suspense fallback={<Skeleton height={320} />}>
+        <EditorDemo />
+      </Suspense>
     </div>
   );
 }

@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 1 COMPLETE (F001–F100, 48 tests, 74.8% coverage). Scope extended to 2,000 features (Tier 2 epics added). Next session: Day 2, F101, parallel teams.
+**Status:** Day 2 in progress. F101–F140 done (F137 deferred). 170 tests. Next: F141 (notebook UI) + Day 3 server lane.
 
 ---
 
@@ -185,29 +185,29 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Markdown Editor (F121–F130)
 
-- [ ] F121 — CodeMirror 6 editor component with markdown language mode
-- [ ] F122 — Syntax highlighting theme matching app dark/light themes
-- [ ] F123 — Toolbar: bold, italic, heading, list, code, link, quote
-- [ ] F124 — Keyboard shortcuts for all toolbar actions
-- [ ] F125 — Smart lists: continue/indent/outdent with Tab/Shift-Tab
-- [ ] F126 — Code block editing with language tag + nested highlighting
-- [ ] F127 — Image paste → attachment upload → markdown link insertion
-- [ ] F128 — Drag-and-drop file attach into editor
-- [ ] F129 — Editor settings: font size, line width, vim-lite mode toggle
-- [ ] F130 — Editor component tests (commands, list behavior)
+- [x] F121 — CodeMirror 6 editor component with markdown language mode
+- [x] F122 — Syntax highlighting theme matching app dark/light themes
+- [x] F123 — Toolbar: bold, italic, heading, list, code, link, quote
+- [x] F124 — Keyboard shortcuts for all toolbar actions
+- [x] F125 — Smart lists: continue/indent/outdent with Tab/Shift-Tab
+- [x] F126 — Code block editing with language tag + nested highlighting
+- [x] F127 — Image paste → attachment upload → markdown link insertion
+- [x] F128 — Drag-and-drop file attach into editor
+- [x] F129 — Editor settings: font size, line width, vim-lite mode toggle
+- [x] F130 — Editor component tests (commands, list behavior)
 
 ### Markdown Rendering (F131–F140)
 
-- [ ] F131 — Markdown → HTML pipeline (remark/rehype) with sanitization
-- [ ] F132 — GFM support: tables, strikethrough, task lists, autolinks
-- [ ] F133 — Syntax-highlighted code blocks in preview
-- [ ] F134 — Task list checkboxes toggleable from preview (writes back to source)
-- [ ] F135 — Footnotes and definition list support
-- [ ] F136 — Math rendering (KaTeX) behind a setting
-- [ ] F137 — Mermaid diagram rendering behind a setting
-- [ ] F138 — Heading anchor links + in-note table of contents component
-- [ ] F139 — Split view: editor | live preview with synced scroll
-- [ ] F140 — Rendering snapshot tests for the full pipeline
+- [x] F131 — Markdown → HTML pipeline (remark/rehype) with sanitization
+- [x] F132 — GFM support: tables, strikethrough, task lists, autolinks
+- [x] F133 — Syntax-highlighted code blocks in preview
+- [x] F134 — Task list checkboxes toggleable from preview (writes back to source)
+- [x] F135 — Footnotes and definition list support
+- [x] F136 — Math rendering (KaTeX) behind a setting
+- [~] F137 — Mermaid diagram rendering behind a setting (deferred: mermaid dep not installed; setting stubbed)
+- [x] F138 — Heading anchor links + in-note table of contents component
+- [x] F139 — Split view: editor | live preview with synced scroll
+- [x] F140 — Rendering snapshot tests for the full pipeline
 
 ### Notebooks & Organization (F141–F150)
 
