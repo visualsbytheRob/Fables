@@ -1,0 +1,426 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "" 1`] = `
+{
+  "ast": null,
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "(a b) OR (c NOT d)" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "children": [
+          {
+            "phrase": false,
+            "type": "text",
+            "value": "a",
+          },
+          {
+            "phrase": false,
+            "type": "text",
+            "value": "b",
+          },
+        ],
+        "type": "and",
+      },
+      {
+        "children": [
+          {
+            "phrase": false,
+            "type": "text",
+            "value": "c",
+          },
+          {
+            "child": {
+              "phrase": false,
+              "type": "text",
+              "value": "d",
+            },
+            "type": "not",
+          },
+        ],
+        "type": "and",
+      },
+    ],
+    "type": "or",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "\\"quoted phrase\\"" 1`] = `
+{
+  "ast": {
+    "phrase": true,
+    "type": "text",
+    "value": "quoted phrase",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "NOT (fox OR den) tag:animals" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "child": {
+          "children": [
+            {
+              "phrase": false,
+              "type": "text",
+              "value": "fox",
+            },
+            {
+              "phrase": false,
+              "type": "text",
+              "value": "den",
+            },
+          ],
+          "type": "or",
+        },
+        "type": "not",
+      },
+      {
+        "type": "tag",
+        "value": "animals",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "NOT fox" 1`] = `
+{
+  "ast": {
+    "child": {
+      "phrase": false,
+      "type": "text",
+      "value": "fox",
+    },
+    "type": "not",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "created:>7d updated:<30d" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "field": "created",
+        "spec": {
+          "days": 7,
+          "kind": "relative",
+          "op": ">",
+        },
+        "type": "date",
+      },
+      {
+        "field": "updated",
+        "spec": {
+          "days": 30,
+          "kind": "relative",
+          "op": "<",
+        },
+        "type": "date",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "created:2026-06 updated:2026-06-12" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "field": "created",
+        "spec": {
+          "kind": "month",
+          "month": 6,
+          "year": 2026,
+        },
+        "type": "date",
+      },
+      {
+        "field": "updated",
+        "spec": {
+          "date": "2026-06-12",
+          "kind": "day",
+        },
+        "type": "date",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "fox AND den" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "fox",
+      },
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "den",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "fox OR den" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "fox",
+      },
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "den",
+      },
+    ],
+    "type": "or",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "fox den" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "fox",
+      },
+      {
+        "phrase": false,
+        "type": "text",
+        "value": "den",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "fox sort:created asc" 1`] = `
+{
+  "ast": {
+    "phrase": false,
+    "type": "text",
+    "value": "fox",
+  },
+  "sort": {
+    "dir": "asc",
+    "key": "created",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "fox" 1`] = `
+{
+  "ast": {
+    "phrase": false,
+    "type": "text",
+    "value": "fox",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "has:attachment pinned:true pinned:false" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "type": "has",
+        "what": "attachment",
+      },
+      {
+        "type": "pinned",
+        "value": true,
+      },
+      {
+        "type": "pinned",
+        "value": false,
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "linksto:[[Harbor Town]]" 1`] = `
+{
+  "ast": {
+    "title": "Harbor Town",
+    "type": "linksto",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "notebook:nb_01HZXW8E2RVQJ4Y6T3M9KDFCAB" 1`] = `
+{
+  "ast": {
+    "type": "notebook",
+    "value": "nb_01HZXW8E2RVQJ4Y6T3M9KDFCAB",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "sort:title" 1`] = `
+{
+  "ast": null,
+  "sort": {
+    "dir": "asc",
+    "key": "title",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "tag:#camping" 1`] = `
+{
+  "ast": {
+    "type": "tag",
+    "value": "camping",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "tag:animals notebook:Inbox" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "type": "tag",
+        "value": "animals",
+      },
+      {
+        "type": "notebook",
+        "value": "Inbox",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;
+
+exports[`FQL parser (F272, F274–F277) — AST snapshots (F280) > parses "title:harbor body:dawn" 1`] = `
+{
+  "ast": {
+    "children": [
+      {
+        "type": "title",
+        "value": "harbor",
+      },
+      {
+        "type": "body",
+        "value": "dawn",
+      },
+    ],
+    "type": "and",
+  },
+  "sort": {
+    "dir": "desc",
+    "key": "updated",
+  },
+  "warnings": [],
+}
+`;

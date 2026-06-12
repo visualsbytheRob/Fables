@@ -5,12 +5,16 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   attachmentsApi,
+  graphApi,
+  linksApi,
   notebooksApi,
   notesApi,
   revisionsApi,
   tagsApi,
   trashApi,
+  type GraphFilterParams,
   type ListNotesParams,
+  type Note,
   type NotePatch,
   type NoteSort,
 } from './client.js';
@@ -27,6 +31,14 @@ export const queryKeys = {
   diff: (noteId: string, rev: number, against: number) => ['diff', noteId, rev, against] as const,
   attachments: ['attachments'] as const,
   trash: ['trash'] as const,
+  backlinks: (noteId: string) => ['backlinks', noteId] as const,
+  mentions: (noteId: string) => ['mentions', noteId] as const,
+  allLinks: ['backlinks'] as const,
+  allMentions: ['mentions'] as const,
+  graph: (filter: GraphFilterParams) => ['graph', 'full', filter] as const,
+  localGraph: (noteId: string, hops: number, filter: GraphFilterParams) =>
+    ['graph', 'local', noteId, hops, filter] as const,
+  allGraphs: ['graph'] as const,
 };
 
 /** Everything note-related that a write may touch. */
@@ -37,6 +49,9 @@ export function useInvalidateNotes() {
     void qc.invalidateQueries({ queryKey: queryKeys.notebooks });
     void qc.invalidateQueries({ queryKey: queryKeys.tags });
     void qc.invalidateQueries({ queryKey: queryKeys.trash });
+    void qc.invalidateQueries({ queryKey: queryKeys.allLinks });
+    void qc.invalidateQueries({ queryKey: queryKeys.allMentions });
+    void qc.invalidateQueries({ queryKey: queryKeys.allGraphs });
     if (noteId !== undefined) {
       void qc.invalidateQueries({ queryKey: queryKeys.note(noteId) });
       void qc.invalidateQueries({ queryKey: queryKeys.revisions(noteId) });
@@ -107,6 +122,68 @@ export function useAttachments() {
 
 export function useTrash() {
   return useQuery({ queryKey: queryKeys.trash, queryFn: () => trashApi.list({ limit: 200 }) });
+}
+
+/** Walks the keyset cursor to collect every note (capped at `maxPages`). */
+export async function fetchAllNotes(notebookId?: string, maxPages = 20): Promise<Note[]> {
+  const all: Note[] = [];
+  let cursor: string | undefined;
+  for (let i = 0; i < maxPages; i += 1) {
+    const page = await notesApi.list({
+      limit: 200,
+      ...(notebookId !== undefined ? { notebookId } : {}),
+      ...(cursor !== undefined ? { cursor } : {}),
+    });
+    all.push(...page.data);
+    if (page.page.nextCursor === null) break;
+    cursor = page.page.nextCursor;
+  }
+  return all;
+}
+
+/**
+ * Full note index for wikilink autocomplete + title resolution (F203/F204).
+ * Key starts with 'notes' so note writes invalidate it automatically.
+ */
+export function useNoteIndex(enabled = true) {
+  return useQuery({
+    queryKey: ['notes', 'title-index'],
+    queryFn: () => fetchAllNotes(),
+    enabled,
+    staleTime: 15_000,
+  });
+}
+
+export function useBacklinks(noteId: string | null) {
+  return useQuery({
+    queryKey: queryKeys.backlinks(noteId ?? 'none'),
+    queryFn: () => linksApi.backlinks(noteId as string),
+    enabled: noteId !== null,
+  });
+}
+
+export function useMentions(noteId: string | null) {
+  return useQuery({
+    queryKey: queryKeys.mentions(noteId ?? 'none'),
+    queryFn: () => linksApi.mentions(noteId as string),
+    enabled: noteId !== null,
+  });
+}
+
+export function useGraph(filter: GraphFilterParams, enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.graph(filter),
+    queryFn: () => graphApi.full(filter),
+    enabled,
+  });
+}
+
+export function useLocalGraph(noteId: string | null, hops: number, filter: GraphFilterParams = {}) {
+  return useQuery({
+    queryKey: queryKeys.localGraph(noteId ?? 'none', hops, filter),
+    queryFn: () => graphApi.local(noteId as string, hops, filter),
+    enabled: noteId !== null,
+  });
 }
 
 /* ===== Mutations ===== */
@@ -203,6 +280,16 @@ export function useMergeTags() {
 export function useDeleteTag() {
   const invalidate = useInvalidateNotes();
   return useMutation({ mutationFn: tagsApi.remove, onSuccess: () => invalidate() });
+}
+
+/** Convert one mention ({ mentionId }) or all ({ all: true }) into wikilinks (F223–F225). */
+export function useConvertMentions(noteId: string) {
+  const invalidate = useInvalidateNotes();
+  return useMutation({
+    mutationFn: (input: { mentionId?: string; all?: boolean }) =>
+      linksApi.convertMentions(noteId, input),
+    onSuccess: () => invalidate(noteId),
+  });
 }
 
 export function useDeleteAttachment() {

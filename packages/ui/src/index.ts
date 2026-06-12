@@ -41,6 +41,8 @@ export {
   Copy,
   Download,
   FilePlus2,
+  // Day 3: graph, journal, templates (F241–F270)
+  Flame,
   Folder,
   FolderOpen,
   FolderPlus,

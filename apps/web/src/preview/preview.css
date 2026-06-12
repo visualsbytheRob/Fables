@@ -301,3 +301,22 @@
     display: none;
   }
 }
+
+/* Wikilinks (F204/F206) */
+
+.md-preview a.wikilink {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  cursor: pointer;
+}
+
+.md-preview a.wikilink:hover {
+  border-bottom-color: var(--accent);
+}
+
+.md-preview a.wikilink--broken {
+  color: var(--danger);
+  border-bottom: 1px dashed var(--danger);
+  opacity: 0.85;
+}

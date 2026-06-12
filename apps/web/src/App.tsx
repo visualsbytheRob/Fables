@@ -26,6 +26,15 @@ const NotesPage = lazy(() =>
 const AttachmentsPage = lazy(() =>
   import('./pages/Attachments.js').then((m) => ({ default: m.AttachmentsPage })),
 );
+const GraphPage = lazy(() =>
+  import('./graph/GraphPage.js').then((m) => ({ default: m.GraphPage })),
+);
+const TodayPage = lazy(() =>
+  import('./daily/TodayPage.js').then((m) => ({ default: m.TodayPage })),
+);
+const TemplatesPage = lazy(() =>
+  import('./templates/TemplatesPage.js').then((m) => ({ default: m.TemplatesPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,6 +55,12 @@ function Shell() {
     },
     { id: 'graph', label: 'Go to Graph', keywords: 'links network', run: () => navigate('/graph') },
     { id: 'today', label: 'Open Today', keywords: 'daily journal', run: () => navigate('/today') },
+    {
+      id: 'templates',
+      label: 'Manage templates',
+      keywords: 'template snippets',
+      run: () => navigate('/templates'),
+    },
     {
       id: 'attachments',
       label: 'Go to Attachments',
@@ -115,8 +130,9 @@ export function App() {
                   <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
                   <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
                   <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
-                  <Route path="graph" element={<Placeholder title="Graph" day={3} />} />
-                  <Route path="today" element={<Placeholder title="Today" day={3} />} />
+                  <Route path="graph" element={lazyPage(<GraphPage />)} />
+                  <Route path="today" element={lazyPage(<TodayPage />)} />
+                  <Route path="templates" element={lazyPage(<TemplatesPage />)} />
                   <Route path="playground" element={<PlaygroundPage />} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>

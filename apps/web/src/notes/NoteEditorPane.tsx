@@ -7,6 +7,7 @@
  * tag autocomplete (F153), and an image lightbox (F166).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
   ClipboardCopy,
@@ -14,13 +15,14 @@ import {
   Download,
   History,
   Info,
+  Link2,
   Maximize2,
   Minimize2,
   Pin,
   PinOff,
   useToast,
 } from '@fables/ui';
-import { keymap, Prec } from '@uiw/react-codemirror';
+import { EditorView, keymap, Prec } from '@uiw/react-codemirror';
 import type { Extension } from '@uiw/react-codemirror';
 import {
   attachmentsApi,
@@ -28,20 +30,32 @@ import {
   type NotebookTreeNode,
   type NoteWithTags,
 } from '../api/client.js';
-import { useInvalidateNotes, usePatchNote, useTags } from '../api/hooks.js';
+import {
+  useCreateNote,
+  useInvalidateNotes,
+  useNoteIndex,
+  usePatchNote,
+  useTags,
+} from '../api/hooks.js';
 import { useRegisterCommands } from '../commands/registry.js';
 import { MarkdownEditor } from '../editor/MarkdownEditor.js';
 import { loadEditorSettings } from '../editor/settings.js';
-import { MarkdownPreview } from '../preview/MarkdownPreview.js';
+import { wikilinkAutocomplete } from '../editor/wikilinkAutocomplete.js';
+import { wikilinkClickExtension } from '../editor/wikilinkClick.js';
+import { buildTitleIndex, resolveTitle } from '../links/wikilinks.js';
+import { MarkdownPreview, type WikilinkHandlers } from '../preview/MarkdownPreview.js';
 import { SplitView } from '../preview/SplitView.js';
 import { toggleTaskAtLine } from '../preview/tasks.js';
+import { BacklinksPanel } from './BacklinksPanel.js';
 import { ConflictDialog } from './ConflictDialog.js';
 import { recoverableDraft, clearDraft, type Draft } from './drafts.js';
 import { copyAsHtml, copyText, downloadMarkdown, noteToMarkdown } from './exporters.js';
 import { HistoryPanel } from './HistoryPanel.js';
 import { NoteInfoPanel } from './NoteInfoPanel.js';
 import { breadcrumb } from './notebookTreeModel.js';
+import { loadBacklinksPanel, saveBacklinksPanel } from './prefs.js';
 import { tagAutocomplete } from './tagAutocomplete.js';
+import { TemplatePicker } from './TemplatePicker.js';
 import { readingTimeMinutes, wordCount } from './text.js';
 import { useAutosave } from './useAutosave.js';
 
@@ -73,6 +87,8 @@ export function NoteEditorPane({
   flushRef,
 }: NoteEditorPaneProps) {
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [title, setTitle] = useState(note.title);
   const [body, setBody] = useState(note.body);
   const [draft, setDraft] = useState<Draft | null>(() =>
@@ -80,12 +96,17 @@ export function NoteEditorPane({
   );
   const [showHistory, setShowHistory] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showBacklinks, setShowBacklinks] = useState(() => loadBacklinksPanel().open);
+  const [showInsertTemplate, setShowInsertTemplate] = useState(false);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [editorSettings] = useState(loadEditorSettings);
   const autosave = useAutosave(note);
   const patchNote = usePatchNote();
+  const createNote = useCreateNote();
   const invalidate = useInvalidateNotes();
   const tags = useTags();
+  const noteIndex = useNoteIndex();
+  const viewRef = useRef<EditorView | null>(null);
 
   // Latest content for callbacks/commands without re-binding.
   const contentRef = useRef({ title, body });
@@ -130,12 +151,121 @@ export function NoteEditorPane({
     return () => window.removeEventListener('beforeunload', onBeforeUnload);
   }, [autosave]);
 
-  // Tag autocomplete (F153) over the live tag list.
+  /* ===== Wikilinks (F203/F204/F206) ===== */
+
+  const titleIndex = useMemo(() => buildTitleIndex(noteIndex.data ?? []), [noteIndex.data]);
+
+  // Navigate to a note title: open it when it exists, create-then-open when
+  // broken (F206). Pending edits flush first so links in them resolve.
+  const openTarget = useCallback(
+    (target: string) => {
+      const go = (id: string) => navigate(`/notes/${id}`);
+      const existing = resolveTitle(titleIndex, target);
+      if (existing !== null) {
+        void flush().finally(() => go(existing));
+        return;
+      }
+      createNote.mutate(
+        { notebookId: note.notebookId, title: target, body: '' },
+        {
+          onSuccess: (created) => {
+            toast(`Created “${target}”`);
+            void flush().finally(() => go(created.id));
+          },
+          onError: (err) => toast(`Create failed: ${err.message}`, 'error'),
+        },
+      );
+    },
+    [titleIndex, createNote, note.notebookId, navigate, toast, flush],
+  );
+
+  const wikilinkHandlers = useMemo<WikilinkHandlers>(
+    () => ({
+      resolve: (target) => resolveTitle(titleIndex, target),
+      onNavigate: (noteId) => {
+        void flush().finally(() => navigate(`/notes/${noteId}`));
+      },
+      onCreate: openTarget,
+    }),
+    [titleIndex, navigate, openTarget, flush],
+  );
+
+  // Open-at-position (F215): /notes/:id?pos=N scrolls the editor to the
+  // offset once CodeMirror has mounted, then strips the param.
+  useEffect(() => {
+    const raw = searchParams.get('pos');
+    if (raw === null) return;
+    const pos = Number(raw);
+    let cancelled = false;
+    let tries = 0;
+    const attempt = () => {
+      if (cancelled) return;
+      const view = viewRef.current;
+      if (!view) {
+        if ((tries += 1) < 40) setTimeout(attempt, 50);
+        return;
+      }
+      const clamped = Math.max(0, Math.min(pos, view.state.doc.length));
+      view.dispatch({
+        selection: { anchor: clamped },
+        effects: EditorView.scrollIntoView(clamped, { y: 'center' }),
+      });
+      view.focus();
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          next.delete('pos');
+          return next;
+        },
+        { replace: true },
+      );
+    };
+    attempt();
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams, setSearchParams]);
+
+  const toggleBacklinks = useCallback(() => {
+    setShowBacklinks((open) => {
+      const next = !open;
+      saveBacklinksPanel({ ...loadBacklinksPanel(), open: next });
+      return next;
+    });
+  }, []);
+
+  // Insert a rendered template at the cursor (F264).
+  const insertAtCursor = useCallback(
+    (text: string, cursorOffset: number | null) => {
+      const view = viewRef.current;
+      if (!view) return;
+      const at = view.state.selection.main.from;
+      const caret = at + (cursorOffset ?? text.length);
+      view.dispatch({
+        changes: { from: at, to: view.state.selection.main.to, insert: text },
+        selection: { anchor: caret },
+        userEvent: 'input',
+        scrollIntoView: true,
+      });
+      view.focus();
+      edit({ body: view.state.doc.toString() });
+    },
+    [edit],
+  );
+
+  // Tag autocomplete (F153) over the live tag list + wikilink completion on
+  // `[[` (F203) + Cmd/Ctrl-click wikilink navigation (F204).
   const tagNamesRef = useRef<string[]>([]);
   tagNamesRef.current = (tags.data ?? []).map((t) => t.name);
+  const noteTitlesRef = useRef<string[]>([]);
+  noteTitlesRef.current = (noteIndex.data ?? []).map((n) => n.title);
+  const openTargetRef = useRef(openTarget);
+  openTargetRef.current = openTarget;
   const extraExtensions = useMemo<Extension[]>(
     () => [
       tagAutocomplete(() => tagNamesRef.current),
+      wikilinkAutocomplete(() => noteTitlesRef.current),
+      wikilinkClickExtension((link) => openTargetRef.current(link.target)),
       Prec.high(
         keymap.of([
           {
@@ -212,6 +342,18 @@ export function NoteEditorPane({
       run: () => setShowHistory((v) => !v),
     },
     {
+      id: 'note-backlinks',
+      label: 'Toggle backlinks panel',
+      keywords: 'connections links mentions graph',
+      run: toggleBacklinks,
+    },
+    {
+      id: 'note-insert-template',
+      label: 'Insert template at cursor…',
+      keywords: 'snippet template insert',
+      run: () => setShowInsertTemplate(true),
+    },
+    {
       id: 'note-info',
       label: 'Note info',
       keywords: 'details stats',
@@ -237,7 +379,11 @@ export function NoteEditorPane({
   const words = wordCount(body);
 
   return (
-    <div className={`note-pane${showHistory ? ' note-pane--history' : ''}`}>
+    <div
+      className={`note-pane${showHistory ? ' note-pane--history' : ''}${
+        showBacklinks ? ' note-pane--connections' : ''
+      }`}
+    >
       <div className="note-pane__main">
         {!focusMode && (
           <div className="note-pane__top">
@@ -269,6 +415,14 @@ export function NoteEditorPane({
                 onClick={() => setShowHistory((v) => !v)}
               >
                 <History size={14} />
+              </Button>
+              <Button
+                title="Backlinks & connections"
+                aria-label="Backlinks"
+                aria-pressed={showBacklinks}
+                onClick={toggleBacklinks}
+              >
+                <Link2 size={14} />
               </Button>
               <Button title="Note info" aria-label="Note info" onClick={() => setShowInfo(true)}>
                 <Info size={14} />
@@ -341,6 +495,7 @@ export function NoteEditorPane({
               settings={editorSettings}
               onUpload={onUpload}
               extraExtensions={extraExtensions}
+              viewRef={viewRef}
               placeholder="Tell a fable…"
             />
           }
@@ -350,6 +505,7 @@ export function NoteEditorPane({
               onToggleTask={onToggleTask}
               richMedia
               onImageClick={(src, alt) => setLightbox({ src, alt })}
+              wikilinks={wikilinkHandlers}
             />
           }
         />
@@ -366,6 +522,26 @@ export function NoteEditorPane({
           </span>
         </div>
       </div>
+
+      {showBacklinks && (
+        <BacklinksPanel
+          noteId={note.id}
+          onOpenAt={(sourceId, position) => {
+            void flush().finally(() => navigate(`/notes/${sourceId}?pos=${position}`));
+          }}
+          onClose={toggleBacklinks}
+        />
+      )}
+
+      <TemplatePicker
+        open={showInsertTemplate}
+        roots={roots}
+        targetNotebookId={note.notebookId}
+        mode="insert"
+        noteTitle={title}
+        onInsert={insertAtCursor}
+        onClose={() => setShowInsertTemplate(false)}
+      />
 
       {showHistory && (
         <HistoryPanel

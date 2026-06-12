@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 2 COMPLETE + Day 3 server lane done. 232/2000 checked, 287 tests. Next: Day 3 web lane (F241+ & six UI halves) + FQL/import server lane (F271–F300).
+**Status:** Day 3 nearly complete: F101–F300 done except F278, F282–F290, F297 (query/saved-query/import UI) and F137. 377 tests green. Next: those UI gaps, then Day 4 (Forge DSL).
 
 ---
 
@@ -295,8 +295,8 @@ Your notes are the world. Your stories run on a compiler you own.
 
 - [x] F201 — `[[wikilink]]` syntax parsing in note bodies
 - [x] F202 — Link table maintenance on note save (source, target, position)
-- [ ] F203 — Wikilink autocomplete in editor on `[[` trigger
-- [ ] F204 — Click-to-navigate wikilinks in preview and editor
+- [x] F203 — Wikilink autocomplete in editor on `[[` trigger
+- [x] F204 — Click-to-navigate wikilinks in preview and editor
 - [x] F205 — `[[link|alias]]` display alias support
 - [x] F206 — Broken link styling + create-on-click for missing targets
 - [x] F207 — Heading-level links `[[note#heading]]`
@@ -307,13 +307,13 @@ Your notes are the world. Your stories run on a compiler you own.
 ### Backlinks (F211–F220)
 
 - [x] F211 — Backlinks API: incoming links for a note with context snippets
-- [ ] F212 — Backlinks panel in note view grouped by source note
+- [x] F212 — Backlinks panel in note view grouped by source note
 - [x] F213 — Context snippet extraction around each backlink mention
 - [x] F214 — Backlink count badge on note list items
-- [ ] F215 — Click backlink snippet → open source at exact position
+- [x] F215 — Click backlink snippet → open source at exact position
 - [x] F216 — Backlinks for headings and blocks, not just whole notes
 - [x] F217 — Backlinks sort: by recency, by source notebook
-- [ ] F218 — Backlinks panel collapse state persistence
+- [x] F218 — Backlinks panel collapse state persistence
 - [x] F219 — Link integrity job: detect and report orphaned link rows
 - [x] F220 — Backlinks API tests including snippet boundaries
 
@@ -321,7 +321,7 @@ Your notes are the world. Your stories run on a compiler you own.
 
 - [x] F221 — Unlinked mention detection: note titles appearing as plain text elsewhere
 - [x] F222 — Mention index updated incrementally on save
-- [ ] F223 — Unlinked mentions section in backlinks panel
+- [x] F223 — Unlinked mentions section in backlinks panel
 - [x] F224 — One-click "link this mention" converting text to wikilink
 - [x] F225 — Bulk "link all mentions" action with preview
 - [x] F226 — Alias-aware mention detection (entity aliases match too)
@@ -345,59 +345,59 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Graph View UI (F241–F250)
 
-- [ ] F241 — Force-directed graph canvas (WebGL via pixi/sigma or d3+canvas)
-- [ ] F242 — Pan/zoom/drag interactions, mobile pinch support
-- [ ] F243 — Node styling by type (note/entity/story) and cluster color
-- [ ] F244 — Hover highlight of node neighborhood, dim the rest
-- [ ] F245 — Click node → preview popover; double-click → open note
-- [ ] F246 — Graph filter toolbar bound to graph API params
-- [ ] F247 — Local graph mode embedded in note view sidebar
-- [ ] F248 — Graph search: type to locate and center a node
-- [ ] F249 — Layout settings: gravity, link distance, freeze toggle
-- [ ] F250 — Graph view performance test with 5k-node synthetic fixture
+- [x] F241 — Force-directed graph canvas (WebGL via pixi/sigma or d3+canvas)
+- [x] F242 — Pan/zoom/drag interactions, mobile pinch support
+- [x] F243 — Node styling by type (note/entity/story) and cluster color
+- [x] F244 — Hover highlight of node neighborhood, dim the rest
+- [x] F245 — Click node → preview popover; double-click → open note
+- [x] F246 — Graph filter toolbar bound to graph API params
+- [x] F247 — Local graph mode embedded in note view sidebar
+- [x] F248 — Graph search: type to locate and center a node
+- [x] F249 — Layout settings: gravity, link distance, freeze toggle
+- [x] F250 — Graph view performance test with 5k-node synthetic fixture
 
 ### Daily Notes & Journal (F251–F260)
 
-- [ ] F251 — Daily note convention: one note per day-key in Journal notebook
-- [ ] F252 — "Today" command creating/opening today's daily note
-- [ ] F253 — Calendar widget navigating to any day's note
-- [ ] F254 — Daily note template with configurable sections
-- [ ] F255 — Streak indicator for consecutive journaling days
-- [ ] F256 — Yesterday/tomorrow quick navigation in daily notes
-- [ ] F257 — Automatic date heading + created-via-capture entries appended
-- [ ] F258 — Week view: seven daily notes summarized
-- [ ] F259 — On-this-day resurfacing of past years' entries
-- [ ] F260 — Daily note flow tests
+- [x] F251 — Daily note convention: one note per day-key in Journal notebook
+- [x] F252 — "Today" command creating/opening today's daily note
+- [x] F253 — Calendar widget navigating to any day's note
+- [x] F254 — Daily note template with configurable sections
+- [x] F255 — Streak indicator for consecutive journaling days
+- [x] F256 — Yesterday/tomorrow quick navigation in daily notes
+- [x] F257 — Automatic date heading + created-via-capture entries appended
+- [x] F258 — Week view: seven daily notes summarized
+- [x] F259 — On-this-day resurfacing of past years' entries
+- [x] F260 — Daily note flow tests
 
 ### Templates (F261–F270)
 
-- [ ] F261 — Template notebook convention + template picker
-- [ ] F262 — Template variables: `{{date}}`, `{{title}}`, `{{cursor}}`
-- [ ] F263 — Custom variable prompts on instantiation
-- [ ] F264 — Insert-template-at-cursor command (not just new note)
-- [ ] F265 — Entity templates (character sheet, location sheet, item card)
-- [ ] F266 — Story scene template for Forge authoring
-- [ ] F267 — Template preview before instantiation
-- [ ] F268 — Default template per notebook setting
-- [ ] F269 — Template management UI (list, edit, duplicate)
-- [ ] F270 — Template engine tests (variables, escaping)
+- [x] F261 — Template notebook convention + template picker
+- [x] F262 — Template variables: `{{date}}`, `{{title}}`, `{{cursor}}`
+- [x] F263 — Custom variable prompts on instantiation
+- [x] F264 — Insert-template-at-cursor command (not just new note)
+- [x] F265 — Entity templates (character sheet, location sheet, item card)
+- [x] F266 — Story scene template for Forge authoring
+- [x] F267 — Template preview before instantiation
+- [x] F268 — Default template per notebook setting
+- [x] F269 — Template management UI (list, edit, duplicate)
+- [x] F270 — Template engine tests (variables, escaping)
 
 ### Query Language — FQL (F271–F280)
 
-- [ ] F271 — FQL grammar v0: `tag:x notebook:y before:date "phrase"` filters
-- [ ] F272 — FQL parser with helpful syntax error messages
-- [ ] F273 — FQL → SQL compiler over the notes index
-- [ ] F274 — Boolean operators AND/OR/NOT with grouping parens
-- [ ] F275 — Field queries: title:, body:, has:attachment, linksto:[[note]]
-- [ ] F276 — Date math: `updated:>7d`, `created:2026-06`
-- [ ] F277 — Sort directives: `sort:updated desc`
+- [x] F271 — FQL grammar v0: `tag:x notebook:y before:date "phrase"` filters
+- [x] F272 — FQL parser with helpful syntax error messages
+- [x] F273 — FQL → SQL compiler over the notes index
+- [x] F274 — Boolean operators AND/OR/NOT with grouping parens
+- [x] F275 — Field queries: title:, body:, has:attachment, linksto:[[note]]
+- [x] F276 — Date math: `updated:>7d`, `created:2026-06`
+- [x] F277 — Sort directives: `sort:updated desc`
 - [ ] F278 — FQL query bar UI with syntax highlighting + completion
-- [ ] F279 — FQL error recovery: partial results with warning chips
-- [ ] F280 — FQL test suite: parser cases + SQL output snapshots
+- [x] F279 — FQL error recovery: partial results with warning chips
+- [x] F280 — FQL test suite: parser cases + SQL output snapshots
 
 ### Saved Queries & Embeds (F281–F290)
 
-- [ ] F281 — Saved query CRUD: name, FQL string, icon
+- [x] F281 — Saved query CRUD: name, FQL string, icon
 - [ ] F282 — Saved queries section in sidebar acting as smart folders
 - [ ] F283 — Query embed block in notes: ```fql fenced block renders live results
 - [ ] F284 — Embed result rendering: list, table, count modes
@@ -410,16 +410,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Import & Export (F291–F300)
 
-- [ ] F291 — Markdown folder import: directory of .md files → notebook, links resolved
-- [ ] F292 — Obsidian vault import: wikilinks, frontmatter, attachments mapped
-- [ ] F293 — Frontmatter handling: YAML metadata → tags/fields
-- [ ] F294 — Import dry-run report before committing
-- [ ] F295 — Full vault export: notebooks → folders of .md + attachments
-- [ ] F296 — Export fidelity: round-trip import(export(x)) preserves links
+- [x] F291 — Markdown folder import: directory of .md files → notebook, links resolved
+- [x] F292 — Obsidian vault import: wikilinks, frontmatter, attachments mapped
+- [x] F293 — Frontmatter handling: YAML metadata → tags/fields
+- [x] F294 — Import dry-run report before committing
+- [x] F295 — Full vault export: notebooks → folders of .md + attachments
+- [x] F296 — Export fidelity: round-trip import(export(x)) preserves links
 - [ ] F297 — Import progress UI with per-file error reporting
-- [ ] F298 — Duplicate handling strategy on import (skip/rename/merge)
-- [ ] F299 — CLI import command for huge vaults (`pnpm fables import <dir>`)
-- [ ] F300 — Day-3 retro note in `docs/devlog/day-03.md`
+- [x] F298 — Duplicate handling strategy on import (skip/rename/merge)
+- [x] F299 — CLI import command for huge vaults (`pnpm fables import <dir>`)
+- [x] F300 — Day-3 retro note in `docs/devlog/day-03.md`
 
 ---
 

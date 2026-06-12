@@ -10,7 +10,8 @@
     "start": "node dist/server.js",
     "db:backup": "tsx src/db/cli.ts backup",
     "db:check": "tsx src/db/cli.ts check",
-    "db:seed": "tsx src/db/cli.ts seed"
+    "db:seed": "tsx src/db/cli.ts seed",
+    "import:vault": "tsx src/cli/import.ts"
   },
   "dependencies": {
     "@fables/core": "workspace:*",

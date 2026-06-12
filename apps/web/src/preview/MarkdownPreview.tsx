@@ -10,9 +10,24 @@ import type { Components, ExtraProps, Options } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 import rehypeSanitize from 'rehype-sanitize';
+import {
+  decodeWikilinkHref,
+  preprocessWikilinks,
+  WIKILINK_HREF_PREFIX,
+  type Wikilink,
+} from '../links/wikilinks.js';
 import { previewSchema } from './sanitize.js';
 import { slugify } from './toc.js';
 import './preview.css';
+
+/** Wikilink rendering + navigation hooks (F204/F206). */
+export interface WikilinkHandlers {
+  /** Resolve a link target title to a note id, or null when broken. */
+  resolve: (target: string) => string | null;
+  onNavigate: (noteId: string, link: Wikilink) => void;
+  /** Broken-link click: create the note with that title, then open it. */
+  onCreate: (target: string) => void;
+}
 
 export interface PreviewSettings {
   /** Render $…$ / $$…$$ via KaTeX (F136). */
@@ -36,6 +51,8 @@ export interface MarkdownPreviewProps {
   onImageClick?: (src: string, alt: string) => void;
   /** Render attachment links as inline PDF/audio players (F167/F168). */
   richMedia?: boolean;
+  /** Enable `[[wikilink]]` rendering + click-through (F204/F206). */
+  wikilinks?: WikilinkHandlers;
 }
 
 const AUDIO_EXT_RE = /\.(mp3|m4a|wav|ogg|oga|flac|aac)$/i;
@@ -87,6 +104,7 @@ export function MarkdownPreview({
   className,
   onImageClick,
   richMedia = false,
+  wikilinks,
 }: MarkdownPreviewProps) {
   // highlight.js and KaTeX dominate the bundle, so both rehype plugins are
   // loaded lazily; the preview renders unhighlighted/plain until they arrive
@@ -181,6 +199,28 @@ export function MarkdownPreview({
       a({ node: _node, children, ...props }) {
         const href = String(props.href ?? '');
         const label = textOf(children);
+        // Wikilinks (F204/F206): resolved links navigate; broken links are
+        // styled distinctly and create-then-open the missing note on click.
+        if (wikilinks && href.startsWith(WIKILINK_HREF_PREFIX)) {
+          const link = decodeWikilinkHref(href);
+          if (!link) return <a {...props}>{children}</a>;
+          const targetId = wikilinks.resolve(link.target);
+          const broken = targetId === null;
+          return (
+            <a
+              {...props}
+              className={broken ? 'wikilink wikilink--broken' : 'wikilink'}
+              title={broken ? `Create “${link.target}”` : `Open “${link.target}”`}
+              onClick={(e) => {
+                e.preventDefault();
+                if (broken) wikilinks.onCreate(link.target);
+                else wikilinks.onNavigate(targetId, link);
+              }}
+            >
+              {children}
+            </a>
+          );
+        }
         if (richMedia && isAttachmentHref(href)) {
           if (AUDIO_EXT_RE.test(label)) {
             return (
@@ -221,13 +261,20 @@ export function MarkdownPreview({
         return <pre {...rest}>{children}</pre>;
       },
     }),
-    [onToggleTask, settings.mermaid, onImageClick, richMedia],
+    [onToggleTask, settings.mermaid, onImageClick, richMedia, wikilinks],
+  );
+
+  // Rewrite [[wikilinks]] into markdown links the pipeline understands; the
+  // rewrite never adds/removes lines, so task-checkbox line numbers stay valid.
+  const effectiveSource = useMemo(
+    () => (wikilinks ? preprocessWikilinks(source) : source),
+    [source, wikilinks],
   );
 
   return (
     <div className={className ? `md-preview ${className}` : 'md-preview'}>
       <Markdown remarkPlugins={remarkPlugins} rehypePlugins={rehypePlugins} components={components}>
-        {source}
+        {effectiveSource}
       </Markdown>
     </div>
   );

@@ -3,6 +3,8 @@ import { migration002Stories } from './002-stories.js';
 import { migration003NoteRevisions } from './003-note-revisions.js';
 import { migration004Attachments } from './004-attachments.js';
 import { migration005Links } from './005-links.js';
+import { migration006SavedQueries } from './006-saved-queries.js';
+import { migration007ImportJobs } from './007-import-jobs.js';
 
 export interface Migration {
   id: number;
@@ -17,4 +19,6 @@ export const migrations: Migration[] = [
   migration003NoteRevisions,
   migration004Attachments,
   migration005Links,
+  migration006SavedQueries,
+  migration007ImportJobs,
 ];

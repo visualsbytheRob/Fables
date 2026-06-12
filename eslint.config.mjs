@@ -7,13 +7,16 @@ export default tseslint.config(
   ...tseslint.configs.recommended,
   {
     rules: {
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/consistent-type-imports': 'error',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
   },
   {
-    files: ['scripts/**', '**/cli.ts', '**/*.test.ts', '**/vitest.config.ts'],
+    files: ['scripts/**', '**/cli.ts', '**/cli/**', '**/*.test.ts', '**/vitest.config.ts'],
     rules: { 'no-console': 'off' },
   },
   {

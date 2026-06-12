@@ -1,11 +1,14 @@
 /**
  * Quick capture (F191): global Mod-Shift-N opens a small modal that posts a
  * new note straight into the default capture notebook (F145), falling back
- * to the first notebook when none is set.
+ * to the first notebook when none is set. Can also append the text as a
+ * timestamped entry to today's daily note (F257).
  */
 import { useEffect, useState } from 'react';
 import { Button, Dialog, Select, Textarea, useToast } from '@fables/ui';
+import { useQueryClient } from '@tanstack/react-query';
 import { useCreateNote, useNotebookTree } from '../api/hooks.js';
+import { appendToToday } from '../daily/journal.js';
 import { allNodes } from './notebookTreeModel.js';
 import { loadDefaultNotebook } from './prefs.js';
 
@@ -14,8 +17,10 @@ export function QuickCapture({ onCreated }: { onCreated?: (noteId: string) => vo
   const [text, setText] = useState('');
   const [notebookId, setNotebookId] = useState('');
   const { toast } = useToast();
+  const qc = useQueryClient();
   const tree = useNotebookTree();
   const createNote = useCreateNote();
+  const [appending, setAppending] = useState(false);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -87,6 +92,25 @@ export function QuickCapture({ onCreated }: { onCreated?: (noteId: string) => vo
         </Select>
         <div className="ui-row" style={{ justifyContent: 'flex-end' }}>
           <Button onClick={() => setOpen(false)}>Cancel</Button>
+          <Button
+            disabled={text.trim() === '' || appending}
+            title="Append as a timestamped entry to today's daily note"
+            onClick={() => {
+              setAppending(true);
+              void appendToToday(text)
+                .then(() => {
+                  toast('Added to today');
+                  setText('');
+                  setOpen(false);
+                  void qc.invalidateQueries({ queryKey: ['notes'] });
+                  void qc.invalidateQueries({ queryKey: ['notebooks'] });
+                })
+                .catch((err: Error) => toast(`Capture failed: ${err.message}`, 'error'))
+                .finally(() => setAppending(false));
+            }}
+          >
+            {appending ? 'Adding…' : 'Add to today'}
+          </Button>
           <Button variant="primary" disabled={text.trim() === ''} onClick={submit}>
             Capture (⌘↵)
           </Button>

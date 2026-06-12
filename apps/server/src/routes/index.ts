@@ -3,10 +3,13 @@ import { attachmentsRoutes } from './attachments.js';
 import { debugRoutes } from './debug.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
+import { importExportRoutes } from './import-export.js';
 import { linksRoutes } from './links.js';
 import { notebooksRoutes } from './notebooks.js';
 import { notesRoutes } from './notes.js';
+import { queryRoutes } from './query.js';
 import { revisionsRoutes } from './revisions.js';
+import { savedQueriesRoutes } from './saved-queries.js';
 import { tagsRoutes } from './tags.js';
 import { trashRoutes } from './trash.js';
 
@@ -22,4 +25,7 @@ export const routes: FastifyPluginAsync[] = [
   notebooksRoutes,
   tagsRoutes,
   attachmentsRoutes,
+  queryRoutes,
+  savedQueriesRoutes,
+  importExportRoutes,
 ];

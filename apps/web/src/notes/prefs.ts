@@ -69,3 +69,48 @@ export function removeRecent(id: string): string[] {
   write(RECENTS_KEY, next);
   return next;
 }
+
+/* ===== Backlinks panel (F218) ===== */
+
+const BACKLINKS_KEY = 'fables.notes.backlinksPanel';
+
+export interface BacklinksPanelState {
+  open: boolean;
+  /** Per-section collapse: linked / mentions / graph. */
+  collapsed: Record<string, boolean>;
+}
+
+export const loadBacklinksPanel = (): BacklinksPanelState =>
+  read<BacklinksPanelState>(BACKLINKS_KEY, { open: false, collapsed: {} });
+
+export const saveBacklinksPanel = (state: BacklinksPanelState): void => write(BACKLINKS_KEY, state);
+
+/* ===== Daily note template sections (F254) ===== */
+
+const DAILY_SECTIONS_KEY = 'fables.daily.sections';
+
+export const defaultDailySections = ['Tasks', 'Notes', 'Journal'];
+
+export const loadDailySections = (): string[] => {
+  const value = read<string[]>(DAILY_SECTIONS_KEY, defaultDailySections);
+  return Array.isArray(value) && value.every((s) => typeof s === 'string')
+    ? value
+    : defaultDailySections;
+};
+
+export const saveDailySections = (sections: string[]): void => write(DAILY_SECTIONS_KEY, sections);
+
+/* ===== Default template per notebook (F269) ===== */
+
+const DEFAULT_TEMPLATES_KEY = 'fables.templates.defaults';
+
+/** notebookId → template note id. */
+export const loadDefaultTemplates = (): Record<string, string> =>
+  read<Record<string, string>>(DEFAULT_TEMPLATES_KEY, {});
+
+export const saveDefaultTemplate = (notebookId: string, templateId: string | null): void => {
+  const map = loadDefaultTemplates();
+  if (templateId === null) delete map[notebookId];
+  else map[notebookId] = templateId;
+  write(DEFAULT_TEMPLATES_KEY, map);
+};

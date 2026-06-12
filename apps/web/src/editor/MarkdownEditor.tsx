@@ -46,6 +46,11 @@ export interface MarkdownEditorProps {
   autoFocus?: boolean;
   /** Caller-supplied extensions (tag autocomplete, extra keymaps — F153/F189). */
   extraExtensions?: Extension[];
+  /**
+   * Live handle to the underlying EditorView for callers needing cursor /
+   * scroll control (backlink jump F215, insert-template-at-cursor F264).
+   */
+  viewRef?: { current: EditorView | null };
 }
 
 const CODE_BLOCK_LANGUAGES = ['', 'js', 'ts', 'python', 'rust', 'sql', 'bash', 'json', 'css'];
@@ -95,6 +100,7 @@ export function MarkdownEditor({
   placeholder,
   autoFocus = false,
   extraExtensions,
+  viewRef,
 }: MarkdownEditorProps) {
   const cmRef = useRef<ReactCodeMirrorRef>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -197,7 +203,10 @@ export function MarkdownEditor({
         )}
       </div>
       <CodeMirror
-        ref={cmRef}
+        ref={(instance) => {
+          cmRef.current = instance;
+          if (viewRef) viewRef.current = instance?.view ?? null;
+        }}
         value={value}
         onChange={onChange}
         // 'dark' brings the one-dark token palette; chrome colors are overridden

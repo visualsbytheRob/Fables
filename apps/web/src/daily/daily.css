@@ -1,0 +1,176 @@
+/* Journal / daily notes (F251–F259) */
+
+.today-page {
+  display: flex;
+  gap: var(--space-4);
+  height: 100%;
+  min-height: 0;
+}
+
+.today-page__side {
+  width: 280px;
+  flex: none;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-right: var(--space-2);
+}
+
+.today-page__main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.today-page__empty {
+  display: grid;
+  place-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  color: var(--text-dim);
+}
+
+.today-page__nav {
+  align-items: center;
+}
+
+.today-page__streak {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--accent);
+  font-size: var(--text-sm);
+}
+
+.today-page__h {
+  margin: 0 0 var(--space-1);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+}
+
+.today-page__week-row {
+  display: flex;
+  width: 100%;
+  gap: var(--space-2);
+  align-items: baseline;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  text-align: left;
+  font-size: var(--text-sm);
+}
+
+.today-page__week-row:hover {
+  background: var(--bg-hover);
+}
+
+.today-page__week-row--active {
+  background: var(--bg-active);
+}
+
+.today-page__week-day {
+  flex: none;
+  width: 92px;
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+.today-page__week-snippet {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+/* Calendar widget (F253) */
+
+.cal {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+
+.cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+.cal__head button {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: var(--space-1);
+}
+
+.cal__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.cal__dow {
+  text-align: center;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  padding-bottom: 2px;
+}
+
+.cal__day {
+  position: relative;
+  aspect-ratio: 1;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.cal__day:hover {
+  background: var(--bg-hover);
+}
+
+.cal__day--selected {
+  background: var(--bg-active);
+}
+
+.cal__day--today {
+  outline: 1px solid var(--accent);
+}
+
+.cal__dot {
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media (max-width: 720px) {
+  .today-page {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .today-page__side {
+    width: 100%;
+    padding-right: 0;
+  }
+}

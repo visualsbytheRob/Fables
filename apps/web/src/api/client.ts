@@ -275,6 +275,101 @@ export const revisionsApi = {
     api.get<RevisionDiff>(`/notes/${noteId}/revisions/${rev}/diff${qs({ against })}`),
 };
 
+/* ===== Links: backlinks + unlinked mentions (F211–F230) ===== */
+
+export interface LinkSnippet {
+  text: string;
+  highlightStart: number;
+  highlightEnd: number;
+}
+
+export interface IncomingLinkItem {
+  id: string;
+  /** UTF-16 offset of the link/mention in the source body. */
+  position: number;
+  length: number;
+  text: string;
+  heading: string | null;
+  blockId: string | null;
+  snippet: LinkSnippet;
+}
+
+export interface IncomingLinkGroup {
+  note: { id: string; title: string; notebookId: string; updatedAt: string };
+  count: number;
+  links: IncomingLinkItem[];
+}
+
+export interface IncomingLinks {
+  noteId: string;
+  total: number;
+  sources: IncomingLinkGroup[];
+}
+
+export const linksApi = {
+  backlinks: (noteId: string) => api.get<IncomingLinks>(`/notes/${noteId}/backlinks`),
+  mentions: (noteId: string) => api.get<IncomingLinks>(`/notes/${noteId}/mentions`),
+  /** Convert one mention (by id) or every mention into a real wikilink. */
+  convertMentions: (noteId: string, input: { mentionId?: string; all?: boolean }) =>
+    api.post<{ converted: number }>(`/notes/${noteId}/mentions/link`, input),
+};
+
+/* ===== Graph (F231–F240) ===== */
+
+export type GraphLinkKind = 'wikilink' | 'mention' | 'binding' | 'relation';
+
+export interface GraphNode {
+  id: string;
+  type: 'note';
+  title: string;
+  notebookId: string;
+  degree: number;
+  orphan: boolean;
+  community: number;
+}
+
+export interface GraphEdge {
+  source: string;
+  target: string;
+  kind: GraphLinkKind;
+  weight: number;
+}
+
+export interface GraphData {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  stats: { nodes: number; edges: number; orphans: number; communities: number };
+}
+
+export interface GraphFilterParams {
+  notebookId?: string;
+  tag?: string;
+  /** Link kinds to include; the server defaults to wikilinks only. */
+  kinds?: GraphLinkKind[];
+  since?: string;
+}
+
+/** Builds the query-param record the graph endpoints accept (F246). */
+export function buildGraphParams(
+  filter: GraphFilterParams,
+  extra: Record<string, string | number | undefined> = {},
+): Record<string, string | number | undefined> {
+  return {
+    notebookId: filter.notebookId || undefined,
+    tag: filter.tag || undefined,
+    kinds: filter.kinds && filter.kinds.length > 0 ? filter.kinds.join(',') : undefined,
+    since: filter.since || undefined,
+    ...extra,
+  };
+}
+
+export const graphApi = {
+  full: (filter: GraphFilterParams = {}) =>
+    api.get<GraphData>(`/graph${qs(buildGraphParams(filter))}`),
+  local: (noteId: string, hops: number, filter: GraphFilterParams = {}) =>
+    api.get<GraphData>(`/notes/${noteId}/graph${qs(buildGraphParams(filter, { hops }))}`),
+};
+
 /* ===== Attachments ===== */
 
 /** Public URL an attachment streams from (img src / link href). */
