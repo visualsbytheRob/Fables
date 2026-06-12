@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 2-3 parallel. F101–F140 + Day 3 server lane (F201–F240 minus 6 UI halves) done. Web lane F141–F200 in flight. Next: merge web lane, then Day 3 UI.
+**Status:** Day 2 COMPLETE + Day 3 server lane done. 232/2000 checked, 287 tests. Next: Day 3 web lane (F241+ & six UI halves) + FQL/import server lane (F271–F300).
 
 ---
 
@@ -211,81 +211,81 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Notebooks & Organization (F141–F150)
 
-- [ ] F141 — Notebook CRUD API with nesting (parent_id)
-- [ ] F142 — Notebook tree sidebar with expand/collapse, drag to reorder
-- [ ] F143 — Move note between notebooks (drag + command palette)
-- [ ] F144 — Notebook icons + colors
-- [ ] F145 — Default notebook setting for quick capture
-- [ ] F146 — Notebook-level note count badges
-- [ ] F147 — Archive notebook flag hiding it from default views
-- [ ] F148 — Breadcrumb navigation for nested notebooks
-- [ ] F149 — Notebook deletion with note re-homing flow
-- [ ] F150 — Notebook tree tests (nesting, moves, cycles prevented)
+- [x] F141 — Notebook CRUD API with nesting (parent_id)
+- [x] F142 — Notebook tree sidebar with expand/collapse, drag to reorder
+- [x] F143 — Move note between notebooks (drag + command palette)
+- [x] F144 — Notebook icons + colors
+- [x] F145 — Default notebook setting for quick capture
+- [x] F146 — Notebook-level note count badges
+- [x] F147 — Archive notebook flag hiding it from default views
+- [x] F148 — Breadcrumb navigation for nested notebooks
+- [x] F149 — Notebook deletion with note re-homing flow
+- [x] F150 — Notebook tree tests (nesting, moves, cycles prevented)
 
 ### Tags (F151–F160)
 
-- [ ] F151 — Tag CRUD API with rename propagation
-- [ ] F152 — Inline `#tag` parsing from note bodies into tag index
-- [ ] F153 — Tag autocomplete in editor on `#` trigger
-- [ ] F154 — Tag sidebar section with counts
-- [ ] F155 — Tag filter view: notes by tag with AND/OR combination
-- [ ] F156 — Tag colors + emoji support
-- [ ] F157 — Nested tags (`#world/characters`) with hierarchy view
-- [ ] F158 — Merge tags operation
-- [ ] F159 — Orphan tag cleanup job
-- [ ] F160 — Tag parsing + propagation tests
+- [x] F151 — Tag CRUD API with rename propagation
+- [x] F152 — Inline `#tag` parsing from note bodies into tag index
+- [x] F153 — Tag autocomplete in editor on `#` trigger
+- [x] F154 — Tag sidebar section with counts
+- [x] F155 — Tag filter view: notes by tag with AND/OR combination
+- [x] F156 — Tag colors + emoji support
+- [x] F157 — Nested tags (`#world/characters`) with hierarchy view
+- [x] F158 — Merge tags operation
+- [x] F159 — Orphan tag cleanup job
+- [x] F160 — Tag parsing + propagation tests
 
 ### Attachments & Files (F161–F170)
 
-- [ ] F161 — Attachment upload endpoint storing to `DATA_DIR/attachments` content-addressed
-- [ ] F162 — Attachment metadata table: mime, size, hash, source note
-- [ ] F163 — Image serving with on-the-fly resize variants
-- [ ] F164 — Attachment garbage collection for unreferenced files
-- [ ] F165 — File type allowlist + size limits with clear errors
-- [ ] F166 — Image lightbox viewer in note preview
-- [ ] F167 — PDF attachment inline preview
-- [ ] F168 — Audio attachment player component
-- [ ] F169 — Attachment manager view: all files, sizes, owning notes
-- [ ] F170 — Attachment lifecycle tests (upload, GC, dedupe by hash)
+- [x] F161 — Attachment upload endpoint storing to `DATA_DIR/attachments` content-addressed
+- [x] F162 — Attachment metadata table: mime, size, hash, source note
+- [x] F163 — Image serving with on-the-fly resize variants
+- [x] F164 — Attachment garbage collection for unreferenced files
+- [x] F165 — File type allowlist + size limits with clear errors
+- [x] F166 — Image lightbox viewer in note preview
+- [x] F167 — PDF attachment inline preview
+- [x] F168 — Audio attachment player component
+- [x] F169 — Attachment manager view: all files, sizes, owning notes
+- [x] F170 — Attachment lifecycle tests (upload, GC, dedupe by hash)
 
 ### Note List & Navigation UI (F171–F180)
 
-- [ ] F171 — Note list pane: title, snippet, updated time, tag chips
-- [ ] F172 — Virtualized list for large notebooks
-- [ ] F173 — Sort + filter bar (date, title, has-attachments, tag)
-- [ ] F174 — Multi-select with bulk action toolbar
-- [ ] F175 — Note context menu (open, duplicate, move, delete)
-- [ ] F176 — Quick switcher (⌘P): fuzzy jump to any note
-- [ ] F177 — Recent notes + pinned notes sections
-- [ ] F178 — Pin/unpin note action
-- [ ] F179 — Three-pane responsive layout collapsing gracefully to phone width
-- [ ] F180 — Navigation flow tests (switcher, list selection, deep links)
+- [x] F171 — Note list pane: title, snippet, updated time, tag chips
+- [x] F172 — Virtualized list for large notebooks
+- [x] F173 — Sort + filter bar (date, title, has-attachments, tag)
+- [x] F174 — Multi-select with bulk action toolbar
+- [x] F175 — Note context menu (open, duplicate, move, delete)
+- [x] F176 — Quick switcher (⌘P): fuzzy jump to any note
+- [x] F177 — Recent notes + pinned notes sections
+- [x] F178 — Pin/unpin note action
+- [x] F179 — Three-pane responsive layout collapsing gracefully to phone width
+- [x] F180 — Navigation flow tests (switcher, list selection, deep links)
 
 ### Autosave & History UX (F181–F190)
 
-- [ ] F181 — Debounced autosave with saving/saved indicator
-- [ ] F182 — Conflict detection on stale rev with merge prompt
-- [ ] F183 — Revision history panel with timeline slider
-- [ ] F184 — Side-by-side revision diff view
-- [ ] F185 — One-click restore from history panel
-- [ ] F186 — Local draft recovery from unexpected tab close (localStorage)
-- [ ] F187 — Undo/redo depth beyond editor default, persisted per session
-- [ ] F188 — "Unsaved changes" navigation guard
-- [ ] F189 — Save status in command palette + keyboard force-save
-- [ ] F190 — Autosave/conflict integration tests
+- [x] F181 — Debounced autosave with saving/saved indicator
+- [x] F182 — Conflict detection on stale rev with merge prompt
+- [x] F183 — Revision history panel with timeline slider
+- [x] F184 — Side-by-side revision diff view
+- [x] F185 — One-click restore from history panel
+- [x] F186 — Local draft recovery from unexpected tab close (localStorage)
+- [~] F187 — Undo/redo depth beyond editor default, persisted per session (deferred: CM default history + draft recovery cover it)
+- [x] F188 — "Unsaved changes" navigation guard
+- [x] F189 — Save status in command palette + keyboard force-save
+- [x] F190 — Autosave/conflict integration tests
 
 ### Power Features (F191–F200)
 
-- [ ] F191 — Quick capture modal (global hotkey) creating note in default notebook
-- [ ] F192 — Note templates v0: new-note-from-template picker
-- [ ] F193 — Word count + reading time in status bar
-- [ ] F194 — Focus mode: hide all chrome, typewriter scrolling
-- [ ] F195 — Note export: single note → .md file download
-- [ ] F196 — Copy note as markdown / as rendered HTML
-- [ ] F197 — Note info panel: created, updated, counts, backlinks stub
-- [ ] F198 — Keyboard shortcut cheat-sheet overlay (?)
-- [ ] F199 — Command palette actions for every note operation
-- [ ] F200 — Day-2 retro note in `docs/devlog/day-02.md`
+- [x] F191 — Quick capture modal (global hotkey) creating note in default notebook
+- [x] F192 — Note templates v0: new-note-from-template picker
+- [x] F193 — Word count + reading time in status bar
+- [x] F194 — Focus mode: hide all chrome, typewriter scrolling (typewriter scrolling deferred)
+- [x] F195 — Note export: single note → .md file download
+- [x] F196 — Copy note as markdown / as rendered HTML
+- [x] F197 — Note info panel: created, updated, counts, backlinks stub
+- [x] F198 — Keyboard shortcut cheat-sheet overlay (?)
+- [x] F199 — Command palette actions for every note operation
+- [x] F200 — Day-2 retro note in `docs/devlog/day-02.md`
 
 ---
 

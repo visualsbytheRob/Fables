@@ -44,6 +44,8 @@ export interface MarkdownEditorProps {
   onUpload?: UploadHandler;
   placeholder?: string;
   autoFocus?: boolean;
+  /** Caller-supplied extensions (tag autocomplete, extra keymaps — F153/F189). */
+  extraExtensions?: Extension[];
 }
 
 const CODE_BLOCK_LANGUAGES = ['', 'js', 'ts', 'python', 'rust', 'sql', 'bash', 'json', 'css'];
@@ -92,6 +94,7 @@ export function MarkdownEditor({
   onUpload,
   placeholder,
   autoFocus = false,
+  extraExtensions,
 }: MarkdownEditorProps) {
   const cmRef = useRef<ReactCodeMirrorRef>(null);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -112,8 +115,9 @@ export function MarkdownEditor({
       }),
       ...(settings.softWrap ? [EditorView.lineWrapping] : []),
       ...(onUpload ? [fileUploadExtension(onUpload)] : []),
+      ...(extraExtensions ?? []),
     ],
-    [settings, onUpload],
+    [settings, onUpload, extraExtensions],
   );
 
   const run = (command: StateCommand) => {

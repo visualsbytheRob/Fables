@@ -1,24 +1,30 @@
 import { Suspense, lazy } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   BookOpen,
   CalendarDays,
   CommandPalette,
   FileText,
   Network,
+  Paperclip,
   ThemeProvider,
   ToastProvider,
   type PaletteCommand,
 } from '@fables/ui';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
-import { fetchHealth } from './api/client.js';
+import { CommandRegistryProvider, useRegisteredCommands } from './commands/registry.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
+import { CheatSheet } from './notes/CheatSheet.js';
+import { QuickCapture } from './notes/QuickCapture.js';
 import { PlaygroundPage } from './pages/Playground.js';
 
-// Code-split the editor stack (CodeMirror + markdown pipeline) off the main chunk.
-const EditorDemo = lazy(() =>
-  import('./pages/EditorDemo.js').then((m) => ({ default: m.EditorDemo })),
+// Code-split the notes experience (CodeMirror + markdown pipeline) off the main chunk.
+const NotesPage = lazy(() =>
+  import('./notes/NotesPage.js').then((m) => ({ default: m.NotesPage })),
+);
+const AttachmentsPage = lazy(() =>
+  import('./pages/Attachments.js').then((m) => ({ default: m.AttachmentsPage })),
 );
 
 const queryClient = new QueryClient({
@@ -29,6 +35,7 @@ const queryClient = new QueryClient({
 
 function Shell() {
   const navigate = useNavigate();
+  const registered = useRegisteredCommands();
   const commands: PaletteCommand[] = [
     { id: 'notes', label: 'Go to Notes', keywords: 'home', run: () => navigate('/') },
     {
@@ -40,11 +47,18 @@ function Shell() {
     { id: 'graph', label: 'Go to Graph', keywords: 'links network', run: () => navigate('/graph') },
     { id: 'today', label: 'Open Today', keywords: 'daily journal', run: () => navigate('/today') },
     {
+      id: 'attachments',
+      label: 'Go to Attachments',
+      keywords: 'files uploads',
+      run: () => navigate('/attachments'),
+    },
+    {
       id: 'playground',
       label: 'UI Playground',
       keywords: 'design system',
       run: () => navigate('/playground'),
     },
+    ...registered,
   ];
 
   return (
@@ -63,30 +77,16 @@ function Shell() {
         <NavLink to="/today">
           <CalendarDays size={16} /> Today
         </NavLink>
+        <NavLink to="/attachments">
+          <Paperclip size={16} /> Files
+        </NavLink>
       </nav>
       <main className="main">
         <Outlet />
       </main>
       <CommandPalette commands={commands} />
-    </div>
-  );
-}
-
-function HomePage() {
-  const health = useQuery({ queryKey: ['health'], queryFn: fetchHealth });
-  return (
-    <div>
-      <h1>Notes</h1>
-      {health.isPending && <Skeleton height={20} width={280} />}
-      {health.isError && <p>Server unreachable — is `pnpm dev` running?</p>}
-      {health.data && (
-        <p>
-          Connected to Fables v{health.data.version} — db {health.data.db}.
-        </p>
-      )}
-      <Suspense fallback={<Skeleton height={320} />}>
-        <EditorDemo />
-      </Suspense>
+      <QuickCapture onCreated={(id) => navigate(`/notes/${id}`)} />
+      <CheatSheet />
     </div>
   );
 }
@@ -98,22 +98,30 @@ const Placeholder = ({ title, day }: { title: string; day: number }) => (
   </div>
 );
 
+const lazyPage = (page: React.ReactNode) => (
+  <Suspense fallback={<Skeleton height={320} />}>{page}</Suspense>
+);
+
 export function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider>
         <ToastProvider>
           <QueryClientProvider client={queryClient}>
-            <Routes>
-              <Route element={<Shell />}>
-                <Route index element={<HomePage />} />
-                <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
-                <Route path="graph" element={<Placeholder title="Graph" day={3} />} />
-                <Route path="today" element={<Placeholder title="Today" day={3} />} />
-                <Route path="playground" element={<PlaygroundPage />} />
-                <Route path="*" element={<Placeholder title="Not found" day={1} />} />
-              </Route>
-            </Routes>
+            <CommandRegistryProvider>
+              <Routes>
+                <Route element={<Shell />}>
+                  <Route index element={lazyPage(<NotesPage />)} />
+                  <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
+                  <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
+                  <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
+                  <Route path="graph" element={<Placeholder title="Graph" day={3} />} />
+                  <Route path="today" element={<Placeholder title="Today" day={3} />} />
+                  <Route path="playground" element={<PlaygroundPage />} />
+                  <Route path="*" element={<Placeholder title="Not found" day={1} />} />
+                </Route>
+              </Routes>
+            </CommandRegistryProvider>
           </QueryClientProvider>
         </ToastProvider>
       </ThemeProvider>

@@ -7,8 +7,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -79,6 +78,22 @@ body {
   50% {
     opacity: 1;
   }
+}
+
+/* Focus mode (F194): hide app chrome, center the writing column. */
+body.focus-mode .sidebar {
+  display: none;
+}
+
+body.focus-mode .shell {
+  grid-template-columns: 1fr;
+}
+
+body.focus-mode .main {
+  padding: var(--space-4) var(--space-6);
+  max-width: 980px;
+  margin-inline: auto;
+  width: 100%;
 }
 
 .error-fallback {

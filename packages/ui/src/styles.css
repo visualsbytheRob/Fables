@@ -166,6 +166,62 @@
   padding: var(--space-3);
 }
 
+/* ===== Menus, badges, kbd (Day 2 notes UI) ===== */
+.ui-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 180px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-1);
+}
+.ui-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: var(--text-sm);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.ui-menu__item:hover {
+  background: var(--bg-hover);
+}
+.ui-menu__item--danger {
+  color: var(--danger);
+}
+.ui-menu__sep {
+  height: 1px;
+  background: var(--border);
+  margin: var(--space-1) 0;
+}
+.ui-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  border-radius: 999px;
+  padding: 0 var(--space-2);
+  min-width: 18px;
+  justify-content: center;
+}
+.ui-kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--text-xs);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1px 6px;
+}
+
 /* ===== Toasts (F075) ===== */
 .ui-toasts {
   position: fixed;

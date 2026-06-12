@@ -32,7 +32,16 @@ export interface MarkdownPreviewProps {
   /** Called with the 1-based source line of a clicked task checkbox (F134). */
   onToggleTask?: (line: number) => void;
   className?: string;
+  /** Open a lightbox when an image is clicked (F166). */
+  onImageClick?: (src: string, alt: string) => void;
+  /** Render attachment links as inline PDF/audio players (F167/F168). */
+  richMedia?: boolean;
 }
+
+const AUDIO_EXT_RE = /\.(mp3|m4a|wav|ogg|oga|flac|aac)$/i;
+
+/** True for links pointing at the attachments endpoint. */
+const isAttachmentHref = (href: string): boolean => href.startsWith('/api/v1/attachments/');
 
 function textOf(children: ReactNode): string {
   if (children == null || typeof children === 'boolean') return '';
@@ -76,6 +85,8 @@ export function MarkdownPreview({
   settings = defaultPreviewSettings,
   onToggleTask,
   className,
+  onImageClick,
+  richMedia = false,
 }: MarkdownPreviewProps) {
   // highlight.js and KaTeX dominate the bundle, so both rehype plugins are
   // loaded lazily; the preview renders unhighlighted/plain until they arrive
@@ -155,6 +166,43 @@ export function MarkdownPreview({
           </li>
         );
       },
+      // Image lightbox hook (F166).
+      img({ node: _node, ...props }) {
+        if (!onImageClick) return <img {...props} />;
+        return (
+          <img
+            {...props}
+            className="md-preview__img--clickable"
+            onClick={() => onImageClick(String(props.src ?? ''), String(props.alt ?? ''))}
+          />
+        );
+      },
+      // Attachment-aware links (F167/F168): PDFs embed inline, audio gets a player.
+      a({ node: _node, children, ...props }) {
+        const href = String(props.href ?? '');
+        const label = textOf(children);
+        if (richMedia && isAttachmentHref(href)) {
+          if (AUDIO_EXT_RE.test(label)) {
+            return (
+              <span className="md-audio">
+                <audio controls src={href} aria-label={label} />
+                <a {...props}>{children}</a>
+              </span>
+            );
+          }
+          if (/\.pdf$/i.test(label)) {
+            return (
+              <span className="md-pdf">
+                <object data={href} type="application/pdf" aria-label={label}>
+                  <a {...props}>{children}</a>
+                </object>
+                <a {...props}>{children}</a>
+              </span>
+            );
+          }
+        }
+        return <a {...props}>{children}</a>;
+      },
       // Mermaid fences (F137, deferred): render the source plus a stub note
       // when the setting is on — the mermaid dependency is not installed yet.
       pre({ node: _node, children, ...rest }) {
@@ -173,7 +221,7 @@ export function MarkdownPreview({
         return <pre {...rest}>{children}</pre>;
       },
     }),
-    [onToggleTask, settings.mermaid],
+    [onToggleTask, settings.mermaid, onImageClick, richMedia],
   );
 
   return (
