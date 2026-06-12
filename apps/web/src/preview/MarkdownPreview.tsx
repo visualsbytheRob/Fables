@@ -1,7 +1,8 @@
 /**
  * MarkdownPreview (F131–F137): sanitized remark/rehype pipeline with GFM,
  * highlighted code blocks, interactive task lists, footnotes, optional KaTeX
- * math, and heading anchor links.
+ * math, mermaid diagrams, live ```fql query embeds (F283–F289), and heading
+ * anchor links.
  */
 import { isValidElement, useEffect, useMemo, useState } from 'react';
 import type { HTMLAttributes, ReactNode } from 'react';
@@ -16,6 +17,8 @@ import {
   WIKILINK_HREF_PREFIX,
   type Wikilink,
 } from '../links/wikilinks.js';
+import { MermaidDiagram } from './Mermaid.js';
+import { QueryEmbed, type QueryEmbedHandlers } from './QueryEmbed.js';
 import { previewSchema } from './sanitize.js';
 import { slugify } from './toc.js';
 import './preview.css';
@@ -32,10 +35,7 @@ export interface WikilinkHandlers {
 export interface PreviewSettings {
   /** Render $…$ / $$…$$ via KaTeX (F136). */
   math: boolean;
-  /**
-   * Mermaid diagrams (F137) — deferred: the mermaid dependency is not
-   * installed yet, so enabling this only renders a friendly stub note.
-   */
+  /** Render ```mermaid fences as diagrams (F137); the library loads lazily. */
   mermaid: boolean;
 }
 
@@ -53,7 +53,18 @@ export interface MarkdownPreviewProps {
   richMedia?: boolean;
   /** Enable `[[wikilink]]` rendering + click-through (F204/F206). */
   wikilinks?: WikilinkHandlers;
+  /** Enable live ```fql query embed blocks (F283–F285). */
+  fqlEmbeds?: QueryEmbedHandlers;
+  /**
+   * Recursion guard (F289): embeds render only at depth 0 (the note itself).
+   * Result-body excerpts re-enter the preview at depth 1, where any nested
+   * fql fence renders as plain code instead of running another query.
+   */
+  embedDepth?: number;
 }
+
+/** Embeds never render past this depth — see `embedDepth` (F289). */
+export const MAX_EMBED_DEPTH = 1;
 
 const AUDIO_EXT_RE = /\.(mp3|m4a|wav|ogg|oga|flac|aac)$/i;
 
@@ -87,12 +98,18 @@ function heading(Tag: HeadingTag) {
   };
 }
 
-function isMermaidCode(child: ReactNode): boolean {
-  return (
-    isValidElement<{ className?: string }>(child) &&
-    typeof child.props.className === 'string' &&
-    child.props.className.split(' ').includes('language-mermaid')
-  );
+/** Language of a fenced code block's <code> child, when tagged. */
+function codeChildLanguage(child: ReactNode): string | null {
+  if (!isValidElement<{ className?: string }>(child)) return null;
+  const className = typeof child.props.className === 'string' ? child.props.className : '';
+  const lang = className.split(' ').find((c) => c.startsWith('language-'));
+  return lang ? lang.slice('language-'.length) : null;
+}
+
+/** Raw text content of a fenced code block's <code> child. */
+function codeChildText(child: ReactNode): string {
+  if (!isValidElement<{ children?: ReactNode }>(child)) return '';
+  return textOf(child.props.children);
 }
 
 type RehypePlugin = NonNullable<Options['rehypePlugins']>[number];
@@ -105,6 +122,8 @@ export function MarkdownPreview({
   onImageClick,
   richMedia = false,
   wikilinks,
+  fqlEmbeds,
+  embedDepth = 0,
 }: MarkdownPreviewProps) {
   // highlight.js and KaTeX dominate the bundle, so both rehype plugins are
   // loaded lazily; the preview renders unhighlighted/plain until they arrive
@@ -243,25 +262,42 @@ export function MarkdownPreview({
         }
         return <a {...props}>{children}</a>;
       },
-      // Mermaid fences (F137, deferred): render the source plus a stub note
-      // when the setting is on — the mermaid dependency is not installed yet.
+      // Special code fences: ```mermaid diagrams (F137) and live ```fql query
+      // embeds (F283–F285) with the depth/recursion guard (F289).
       pre({ node: _node, children, ...rest }) {
         const first = Array.isArray(children) ? children[0] : children;
-        if (settings.mermaid && isMermaidCode(first)) {
+        const lang = codeChildLanguage(first);
+        if (lang === 'mermaid' && settings.mermaid) {
+          return <MermaidDiagram code={codeChildText(first).trim()} />;
+        }
+        if (lang === 'fql' && fqlEmbeds) {
+          if (embedDepth >= MAX_EMBED_DEPTH) {
+            return (
+              <div className="fql-embed fql-embed--guard">
+                <p role="note">Nested query embeds are not rendered (depth limit).</p>
+                <pre {...rest}>{children}</pre>
+              </div>
+            );
+          }
           return (
-            <div className="md-mermaid-stub">
-              <p role="note">
-                Mermaid rendering is not available yet (F137 deferred — dependency not installed).
-                Showing the diagram source:
-              </p>
-              <pre {...rest}>{children}</pre>
-            </div>
+            <QueryEmbed
+              content={codeChildText(first)}
+              handlers={fqlEmbeds}
+              renderNoteBody={(body) => (
+                <MarkdownPreview
+                  source={body}
+                  settings={settings}
+                  fqlEmbeds={fqlEmbeds}
+                  embedDepth={embedDepth + 1}
+                />
+              )}
+            />
           );
         }
         return <pre {...rest}>{children}</pre>;
       },
     }),
-    [onToggleTask, settings.mermaid, onImageClick, richMedia, wikilinks],
+    [onToggleTask, settings, onImageClick, richMedia, wikilinks, fqlEmbeds, embedDepth],
   );
 
   // Rewrite [[wikilinks]] into markdown links the pipeline understands; the

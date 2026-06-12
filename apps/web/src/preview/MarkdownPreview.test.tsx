@@ -1,7 +1,15 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MarkdownPreview, defaultPreviewSettings } from './MarkdownPreview.js';
+
+// Mermaid renders via real SVG measurement APIs jsdom lacks; mock the lazy
+// module so F137 tests drive the success and failure paths deterministically.
+const mermaidMock = vi.hoisted(() => ({
+  initialize: vi.fn(),
+  render: vi.fn(),
+}));
+vi.mock('mermaid', () => ({ default: mermaidMock }));
 import { TableOfContents } from './TableOfContents.js';
 import { extractHeadings, slugify } from './toc.js';
 import { toggleTaskAtLine } from './tasks.js';
@@ -113,14 +121,59 @@ describe('math behind a setting (F136)', () => {
   });
 });
 
-describe('mermaid stub (F137 — deferred)', () => {
-  it('renders a clear note instead of a diagram when enabled', () => {
-    const md = '```mermaid\ngraph TD; A-->B;\n```';
+describe('mermaid rendering behind a setting (F137)', () => {
+  const md = '```mermaid\ngraph TD; A-->B;\n```';
+
+  beforeEach(() => {
+    mermaidMock.initialize.mockReset();
+    mermaidMock.render.mockReset();
+    delete document.documentElement.dataset.theme;
+  });
+
+  it('leaves the fence as plain code when disabled', () => {
+    const { container } = render(<MarkdownPreview source={md} />);
+    expect(container.querySelector('[data-testid="mermaid-diagram"]')).toBeNull();
+    expect(container.querySelector('pre code')?.textContent).toContain('graph TD');
+  });
+
+  it('renders a simple flowchart to SVG when enabled (lazily loaded)', async () => {
+    mermaidMock.render.mockResolvedValue({ svg: '<svg role="img"><g>A→B</g></svg>' });
     const { container } = render(
       <MarkdownPreview source={md} settings={{ ...defaultPreviewSettings, mermaid: true }} />,
     );
-    expect(container.querySelector('.md-mermaid-stub')?.textContent).toContain('F137 deferred');
-    expect(container.textContent).toContain('graph TD');
+    await waitFor(() =>
+      expect(container.querySelector('[data-testid="mermaid-diagram"] svg')).not.toBeNull(),
+    );
+    expect(mermaidMock.render).toHaveBeenCalledWith(
+      expect.stringMatching(/^mmd-/),
+      'graph TD; A-->B;',
+    );
+    // Theme-aware: dark by default in this app.
+    expect(mermaidMock.initialize).toHaveBeenCalledWith(expect.objectContaining({ theme: 'dark' }));
+  });
+
+  it('follows the light theme when the document says so', async () => {
+    document.documentElement.dataset.theme = 'light';
+    mermaidMock.render.mockResolvedValue({ svg: '<svg></svg>' });
+    render(<MarkdownPreview source={md} settings={{ ...defaultPreviewSettings, mermaid: true }} />);
+    await waitFor(() =>
+      expect(mermaidMock.initialize).toHaveBeenCalledWith(
+        expect.objectContaining({ theme: 'default' }),
+      ),
+    );
+  });
+
+  it('falls back to an error note plus the source for invalid diagrams', async () => {
+    mermaidMock.render.mockRejectedValue(new Error('Parse error on line 1'));
+    const { container } = render(
+      <MarkdownPreview
+        source={'```mermaid\nnot a diagram\n```'}
+        settings={{ ...defaultPreviewSettings, mermaid: true }}
+      />,
+    );
+    await waitFor(() => expect(container.querySelector('.md-mermaid--error')).not.toBeNull());
+    expect(container.textContent).toContain('Parse error on line 1');
+    expect(container.textContent).toContain('not a diagram');
   });
 });
 

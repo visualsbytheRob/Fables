@@ -6,10 +6,13 @@ import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tansta
 import {
   attachmentsApi,
   graphApi,
+  importApi,
   linksApi,
   notebooksApi,
   notesApi,
+  queryApi,
   revisionsApi,
+  savedQueriesApi,
   tagsApi,
   trashApi,
   type GraphFilterParams,
@@ -39,6 +42,11 @@ export const queryKeys = {
   localGraph: (noteId: string, hops: number, filter: GraphFilterParams) =>
     ['graph', 'local', noteId, hops, filter] as const,
   allGraphs: ['graph'] as const,
+  fqlQuery: (q: string) => ['fql', 'query', q] as const,
+  fqlEmbed: (q: string, limit: number) => ['fql', 'embed', q, limit] as const,
+  allFql: ['fql'] as const,
+  savedQueries: ['saved-queries'] as const,
+  importJob: (id: string) => ['import-job', id] as const,
 };
 
 /** Everything note-related that a write may touch. */
@@ -52,6 +60,7 @@ export function useInvalidateNotes() {
     void qc.invalidateQueries({ queryKey: queryKeys.allLinks });
     void qc.invalidateQueries({ queryKey: queryKeys.allMentions });
     void qc.invalidateQueries({ queryKey: queryKeys.allGraphs });
+    void qc.invalidateQueries({ queryKey: queryKeys.allFql });
     if (noteId !== undefined) {
       void qc.invalidateQueries({ queryKey: queryKeys.note(noteId) });
       void qc.invalidateQueries({ queryKey: queryKeys.revisions(noteId) });
@@ -297,5 +306,84 @@ export function useDeleteAttachment() {
   return useMutation({
     mutationFn: attachmentsApi.remove,
     onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.attachments }),
+  });
+}
+
+/* ===== FQL + saved queries (F278–F290) ===== */
+
+/** Runs an FQL query for the note-list pane (F278); paginates like notes. */
+export function useFqlQuery(q: string | null) {
+  return useInfiniteQuery({
+    queryKey: queryKeys.fqlQuery(q ?? ''),
+    queryFn: ({ pageParam }) =>
+      queryApi.run(q as string, {
+        limit: PAGE_SIZE,
+        ...(pageParam !== '' ? { cursor: pageParam } : {}),
+      }),
+    initialPageParam: '',
+    getNextPageParam: (last) => last.page.nextCursor ?? undefined,
+    enabled: q !== null && q.trim() !== '',
+    retry: false,
+  });
+}
+
+/**
+ * Embed-block query (F283/F285): cached for a minute so a dashboard note full
+ * of embeds doesn't hammer the server on every preview re-render; the embed's
+ * refresh control calls `refetch`, and note writes invalidate ['fql'].
+ */
+export function useFqlEmbed(q: string, limit: number, enabled = true) {
+  return useQuery({
+    queryKey: queryKeys.fqlEmbed(q, limit),
+    queryFn: () => queryApi.run(q, { limit }),
+    staleTime: 60_000,
+    enabled,
+    retry: false,
+  });
+}
+
+export function useSavedQueries() {
+  return useQuery({ queryKey: queryKeys.savedQueries, queryFn: savedQueriesApi.list });
+}
+
+export function useCreateSavedQuery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: savedQueriesApi.create,
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.savedQueries }),
+  });
+}
+
+export function usePatchSavedQuery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: Parameters<typeof savedQueriesApi.patch>[1];
+    }) => savedQueriesApi.patch(id, patch),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.savedQueries }),
+  });
+}
+
+export function useDeleteSavedQuery() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: savedQueriesApi.remove,
+    onSuccess: () => void qc.invalidateQueries({ queryKey: queryKeys.savedQueries }),
+  });
+}
+
+/* ===== Import jobs (F297) ===== */
+
+/** Polls an import job once a second while it's running. */
+export function useImportJob(id: string | null) {
+  return useQuery({
+    queryKey: queryKeys.importJob(id ?? 'none'),
+    queryFn: () => importApi.job(id as string),
+    enabled: id !== null,
+    refetchInterval: (query) => (query.state.data?.status === 'running' ? 1000 : false),
   });
 }

@@ -1,14 +1,5 @@
 import { useState } from 'react';
-import {
-  Button,
-  Dialog,
-  Input,
-  Select,
-  Textarea,
-  Tooltip,
-  useTheme,
-  useToast,
-} from '@fables/ui';
+import { Button, Dialog, Input, Select, Textarea, Tooltip, useTheme, useToast } from '@fables/ui';
 
 /** Visual QA: every UI primitive on one page (F080). */
 export function PlaygroundPage() {

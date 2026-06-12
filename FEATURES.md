@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 3 nearly complete: F101–F300 done except F278, F282–F290, F297 (query/saved-query/import UI) and F137. 377 tests green. Next: those UI gaps, then Day 4 (Forge DSL).
+**Status:** F001–F300 COMPLETE (300/300 Tier-1 days 1–3) + 422 tests green. Day 4 Forge DSL compiler lane in flight. Next: F301.
 
 ---
 
@@ -204,7 +204,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F134 — Task list checkboxes toggleable from preview (writes back to source)
 - [x] F135 — Footnotes and definition list support
 - [x] F136 — Math rendering (KaTeX) behind a setting
-- [~] F137 — Mermaid diagram rendering behind a setting (deferred: mermaid dep not installed; setting stubbed)
+- [x] F137 — Mermaid diagram rendering behind a setting
 - [x] F138 — Heading anchor links + in-note table of contents component
 - [x] F139 — Split view: editor | live preview with synced scroll
 - [x] F140 — Rendering snapshot tests for the full pipeline
@@ -391,22 +391,22 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F275 — Field queries: title:, body:, has:attachment, linksto:[[note]]
 - [x] F276 — Date math: `updated:>7d`, `created:2026-06`
 - [x] F277 — Sort directives: `sort:updated desc`
-- [ ] F278 — FQL query bar UI with syntax highlighting + completion
+- [x] F278 — FQL query bar UI with syntax highlighting + completion
 - [x] F279 — FQL error recovery: partial results with warning chips
 - [x] F280 — FQL test suite: parser cases + SQL output snapshots
 
 ### Saved Queries & Embeds (F281–F290)
 
 - [x] F281 — Saved query CRUD: name, FQL string, icon
-- [ ] F282 — Saved queries section in sidebar acting as smart folders
-- [ ] F283 — Query embed block in notes: ```fql fenced block renders live results
-- [ ] F284 — Embed result rendering: list, table, count modes
-- [ ] F285 — Embed refresh policy + manual refresh control
-- [ ] F286 — Dashboard note pattern: a note made of query embeds
-- [ ] F287 — Saved query pinning to top bar
-- [ ] F288 — Query result export (markdown table)
-- [ ] F289 — Embed depth/recursion guards
-- [ ] F290 — Saved query + embed integration tests
+- [x] F282 — Saved queries section in sidebar acting as smart folders
+- [x] F283 — Query embed block in notes: ```fql fenced block renders live results
+- [x] F284 — Embed result rendering: list, table, count modes
+- [x] F285 — Embed refresh policy + manual refresh control
+- [x] F286 — Dashboard note pattern: a note made of query embeds
+- [x] F287 — Saved query pinning to top bar
+- [x] F288 — Query result export (markdown table)
+- [x] F289 — Embed depth/recursion guards
+- [x] F290 — Saved query + embed integration tests
 
 ### Import & Export (F291–F300)
 
@@ -416,7 +416,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F294 — Import dry-run report before committing
 - [x] F295 — Full vault export: notebooks → folders of .md + attachments
 - [x] F296 — Export fidelity: round-trip import(export(x)) preserves links
-- [ ] F297 — Import progress UI with per-file error reporting
+- [x] F297 — Import progress UI with per-file error reporting
 - [x] F298 — Duplicate handling strategy on import (skip/rename/merge)
 - [x] F299 — CLI import command for huge vaults (`pnpm fables import <dir>`)
 - [x] F300 — Day-3 retro note in `docs/devlog/day-03.md`

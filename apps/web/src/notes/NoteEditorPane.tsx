@@ -44,6 +44,8 @@ import { wikilinkAutocomplete } from '../editor/wikilinkAutocomplete.js';
 import { wikilinkClickExtension } from '../editor/wikilinkClick.js';
 import { buildTitleIndex, resolveTitle } from '../links/wikilinks.js';
 import { MarkdownPreview, type WikilinkHandlers } from '../preview/MarkdownPreview.js';
+import type { QueryEmbedHandlers } from '../preview/QueryEmbed.js';
+import { loadPreviewSettings, savePreviewSettings } from '../preview/settings.js';
 import { SplitView } from '../preview/SplitView.js';
 import { toggleTaskAtLine } from '../preview/tasks.js';
 import { BacklinksPanel } from './BacklinksPanel.js';
@@ -100,6 +102,7 @@ export function NoteEditorPane({
   const [showInsertTemplate, setShowInsertTemplate] = useState(false);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [editorSettings] = useState(loadEditorSettings);
+  const [previewSettings, setPreviewSettings] = useState(loadPreviewSettings);
   const autosave = useAutosave(note);
   const patchNote = usePatchNote();
   const createNote = useCreateNote();
@@ -189,6 +192,24 @@ export function NoteEditorPane({
     }),
     [titleIndex, navigate, openTarget, flush],
   );
+
+  // Live ```fql embeds in the preview (F283–F286): result clicks navigate.
+  const fqlEmbedHandlers = useMemo<QueryEmbedHandlers>(
+    () => ({
+      onOpenNote: (noteId) => {
+        void flush().finally(() => navigate(`/notes/${noteId}`));
+      },
+    }),
+    [flush, navigate],
+  );
+
+  const togglePreviewSetting = useCallback((key: 'math' | 'mermaid') => {
+    setPreviewSettings((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      savePreviewSettings(next);
+      return next;
+    });
+  }, []);
 
   // Open-at-position (F215): /notes/:id?pos=N scrolls the editor to the
   // offset once CodeMirror has mounted, then strips the param.
@@ -373,6 +394,18 @@ export function NoteEditorPane({
       keywords: 'zen distraction',
       run: onToggleFocusMode,
     },
+    {
+      id: 'toggle-mermaid',
+      label: `${previewSettings.mermaid ? 'Disable' : 'Enable'} Mermaid diagrams (preview)`,
+      keywords: 'diagram flowchart chart graphviz',
+      run: () => togglePreviewSetting('mermaid'),
+    },
+    {
+      id: 'toggle-math',
+      label: `${previewSettings.math ? 'Disable' : 'Enable'} math rendering (preview)`,
+      keywords: 'katex latex equations',
+      run: () => togglePreviewSetting('math'),
+    },
   ]);
 
   const crumbs = breadcrumb(roots, note.notebookId);
@@ -502,10 +535,12 @@ export function NoteEditorPane({
           preview={
             <MarkdownPreview
               source={body}
+              settings={previewSettings}
               onToggleTask={onToggleTask}
               richMedia
               onImageClick={(src, alt) => setLightbox({ src, alt })}
               wikilinks={wikilinkHandlers}
+              fqlEmbeds={fqlEmbedHandlers}
             />
           }
         />

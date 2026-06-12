@@ -9,6 +9,7 @@ import {
   Paperclip,
   ThemeProvider,
   ToastProvider,
+  Upload,
   type PaletteCommand,
 } from '@fables/ui';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
@@ -34,6 +35,9 @@ const TodayPage = lazy(() =>
 );
 const TemplatesPage = lazy(() =>
   import('./templates/TemplatesPage.js').then((m) => ({ default: m.TemplatesPage })),
+);
+const ImportPage = lazy(() =>
+  import('./pages/ImportPage.js').then((m) => ({ default: m.ImportPage })),
 );
 
 const queryClient = new QueryClient({
@@ -68,6 +72,12 @@ function Shell() {
       run: () => navigate('/attachments'),
     },
     {
+      id: 'import',
+      label: 'Import notes…',
+      keywords: 'markdown obsidian vault migrate',
+      run: () => navigate('/import'),
+    },
+    {
       id: 'playground',
       label: 'UI Playground',
       keywords: 'design system',
@@ -94,6 +104,9 @@ function Shell() {
         </NavLink>
         <NavLink to="/attachments">
           <Paperclip size={16} /> Files
+        </NavLink>
+        <NavLink to="/import">
+          <Upload size={16} /> Import
         </NavLink>
       </nav>
       <main className="main">
@@ -133,6 +146,7 @@ export function App() {
                   <Route path="graph" element={lazyPage(<GraphPage />)} />
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />
+                  <Route path="import" element={lazyPage(<ImportPage />)} />
                   <Route path="playground" element={<PlaygroundPage />} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>

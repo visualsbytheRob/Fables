@@ -6,19 +6,24 @@
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button, FilePlus2, useToast } from '@fables/ui';
-import type { Note } from '../api/client.js';
+import type { Note, SavedQuery } from '../api/client.js';
 import {
   useAttachments,
   useCreateNote,
   useDeleteNote,
   useDuplicateNote,
+  useFqlQuery,
   useNote,
   useNotesInfinite,
   usePatchNote,
   useNotebookTree,
+  useSavedQueries,
 } from '../api/hooks.js';
 import { useRegisterCommands } from '../commands/registry.js';
 import { Skeleton } from '../components/Skeleton.js';
+import { QueryBar } from '../query/QueryBar.js';
+import { QueryResultsList } from '../query/QueryResultsList.js';
+import { SavedQueriesSection } from '../query/SavedQueriesSection.js';
 import { NoteList } from './NoteList.js';
 import { NotebookTree } from './NotebookTree.js';
 import { allNodes } from './notebookTreeModel.js';
@@ -62,6 +67,12 @@ export function NotesPage() {
   const [showTemplates, setShowTemplates] = useState(false);
   const flushRef = useRef<(() => Promise<void>) | null>(null);
 
+  // FQL query bar (F278): a non-empty active query swaps the note list for
+  // query results; saved queries (F282) run through the same path.
+  const [fqlDraft, setFqlDraft] = useState('');
+  const [activeFql, setActiveFql] = useState<string | null>(null);
+  const [activeSavedId, setActiveSavedId] = useState<string | null>(null);
+
   const tree = useNotebookTree();
   const roots = useMemo(() => tree.data ?? [], [tree.data]);
   const notesQuery = useNotesInfinite({
@@ -70,6 +81,8 @@ export function NotesPage() {
   });
   const note = useNote(selectedNoteId);
   const attachments = useAttachments();
+  const fqlResults = useFqlQuery(activeFql);
+  const savedQueries = useSavedQueries();
   const createNote = useCreateNote();
   const patchNote = usePatchNote();
   const deleteNote = useDeleteNote();
@@ -78,6 +91,31 @@ export function NotesPage() {
   const notes = useMemo(
     () => (notesQuery.data?.pages ?? []).flatMap((p) => p.data),
     [notesQuery.data],
+  );
+
+  const fqlNotes = useMemo(
+    () => (fqlResults.data?.pages ?? []).flatMap((p) => p.data),
+    [fqlResults.data],
+  );
+  const fqlWarnings = fqlResults.data?.pages[0]?.warnings ?? [];
+  const fqlError = fqlResults.isError ? fqlResults.error.message : null;
+
+  const runFql = useCallback((q: string, savedId: string | null = null) => {
+    setActiveFql(q === '' ? null : q);
+    setActiveSavedId(q === '' ? null : savedId);
+  }, []);
+
+  const runSavedQuery = useCallback(
+    (saved: SavedQuery) => {
+      setFqlDraft(saved.fql);
+      runFql(saved.fql, saved.id);
+    },
+    [runFql],
+  );
+
+  const pinnedSaved = useMemo(
+    () => (savedQueries.data ?? []).filter((s) => s.pinned),
+    [savedQueries.data],
   );
 
   // Tag filter (F155): AND/OR over body hashtags.
@@ -233,30 +271,73 @@ export function NotesPage() {
             onNewNote={(id) => newNote(id)}
           />
           <TagSection filter={tagFilter} onFilterChange={setTagFilter} />
+          <SavedQueriesSection
+            onRun={runSavedQuery}
+            activeId={activeSavedId}
+            currentFql={fqlDraft}
+          />
         </aside>
       )}
 
       {!focusMode && (
         <section className="notes-page__list" aria-label="Notes">
-          <NoteList
-            notes={filteredNotes}
-            roots={roots}
-            selectedNoteId={selectedNoteId}
-            onOpen={openNote}
-            recents={recents}
-            sort={sort}
-            onSortChange={(s) => {
-              setSort(s);
-              saveSort(s);
-            }}
-            query={query}
-            onQueryChange={setQuery}
-            attachmentNoteIds={attachmentNoteIds}
-            attachmentsOnly={attachmentsOnly}
-            onAttachmentsOnlyChange={setAttachmentsOnly}
-            hasMore={notesQuery.hasNextPage ?? false}
-            onLoadMore={() => void notesQuery.fetchNextPage()}
+          {pinnedSaved.length > 0 && (
+            <div className="fql-pinned" role="toolbar" aria-label="Pinned queries">
+              {pinnedSaved.map((saved) => (
+                <button
+                  key={saved.id}
+                  type="button"
+                  className={`fql-pinned__chip${
+                    saved.id === activeSavedId ? ' fql-pinned__chip--active' : ''
+                  }`}
+                  title={saved.fql}
+                  onClick={() => runSavedQuery(saved)}
+                >
+                  <span aria-hidden>{saved.icon ?? '🔍'}</span>
+                  {saved.name}
+                </button>
+              ))}
+            </div>
+          )}
+          <QueryBar
+            value={fqlDraft}
+            onChange={setFqlDraft}
+            onRun={(q) => runFql(q)}
+            activeQuery={activeFql}
+            warnings={fqlWarnings}
+            error={fqlError}
           />
+          {activeFql !== null && (
+            <QueryResultsList
+              notes={fqlNotes}
+              selectedNoteId={selectedNoteId}
+              onOpen={openNote}
+              isLoading={fqlResults.isLoading}
+              hasMore={fqlResults.hasNextPage ?? false}
+              onLoadMore={() => void fqlResults.fetchNextPage()}
+            />
+          )}
+          {activeFql === null && (
+            <NoteList
+              notes={filteredNotes}
+              roots={roots}
+              selectedNoteId={selectedNoteId}
+              onOpen={openNote}
+              recents={recents}
+              sort={sort}
+              onSortChange={(s) => {
+                setSort(s);
+                saveSort(s);
+              }}
+              query={query}
+              onQueryChange={setQuery}
+              attachmentNoteIds={attachmentNoteIds}
+              attachmentsOnly={attachmentsOnly}
+              onAttachmentsOnlyChange={setAttachmentsOnly}
+              hasMore={notesQuery.hasNextPage ?? false}
+              onLoadMore={() => void notesQuery.fetchNextPage()}
+            />
+          )}
         </section>
       )}
 

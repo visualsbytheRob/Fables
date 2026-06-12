@@ -375,6 +375,130 @@ export const graphApi = {
 /** Public URL an attachment streams from (img src / link href). */
 export const attachmentUrl = (id: string): string => `/api/v1/attachments/${id}`;
 
+/* ===== FQL queries (F271–F290) ===== */
+
+/** Paginated note results plus partial-parse warnings (F279). */
+export interface FqlQueryResult {
+  data: Note[];
+  page: Page;
+  warnings: string[];
+}
+
+export interface FqlValidation {
+  valid: boolean;
+  warnings: string[];
+  error?: { message: string; position: number | null };
+}
+
+async function requestFql(path: string): Promise<FqlQueryResult> {
+  const res = await fetch(`/api/v1${path}`, { headers: { 'content-type': 'application/json' } });
+  const body = (await res.json()) as {
+    data?: Note[];
+    page?: Page;
+    warnings?: string[];
+    error?: ApiError;
+  };
+  if (!res.ok || body.error) {
+    throw new ApiRequestError(
+      res.status,
+      body.error ?? { code: 'INTERNAL', message: 'unknown error', details: null },
+    );
+  }
+  return {
+    data: body.data ?? [],
+    page: body.page ?? { nextCursor: null, limit: 0 },
+    warnings: body.warnings ?? [],
+  };
+}
+
+export const queryApi = {
+  run: (q: string, params: { limit?: number; cursor?: string } = {}) =>
+    requestFql(`/query${qs({ q, ...params })}`),
+  validate: (q: string) => api.post<FqlValidation>('/query/validate', { q }),
+  /** Raw markdown table of the full result set (F288). */
+  exportMarkdown: async (q: string): Promise<string> => {
+    const res = await fetch(`/api/v1/query/export${qs({ q })}`);
+    if (!res.ok) {
+      throw new ApiRequestError(res.status, {
+        code: 'INTERNAL',
+        message: 'export failed',
+        details: null,
+      });
+    }
+    return res.text();
+  },
+};
+
+/* ===== Saved queries (F281–F287) ===== */
+
+export interface SavedQuery {
+  id: string;
+  name: string;
+  fql: string;
+  icon: string | null;
+  pinned: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export const savedQueriesApi = {
+  list: () => api.get<SavedQuery[]>('/saved-queries'),
+  create: (input: { name: string; fql: string; icon?: string | null; pinned?: boolean }) =>
+    api.post<SavedQuery>('/saved-queries', input),
+  patch: (
+    id: string,
+    patch: { name?: string; fql?: string; icon?: string | null; pinned?: boolean },
+  ) => api.patch<SavedQuery>(`/saved-queries/${id}`, patch),
+  remove: (id: string) => api.delete<{ id: string; deleted: boolean }>(`/saved-queries/${id}`),
+  results: (id: string, params: { limit?: number; cursor?: string } = {}) =>
+    requestFql(`/saved-queries/${id}/results${qs({ ...params })}`),
+};
+
+/* ===== Import (F291–F298) ===== */
+
+export interface ScanFileReport {
+  path: string;
+  title: string;
+  attachments: number;
+  collision: boolean;
+}
+
+export interface ScanReport {
+  path: string;
+  files: ScanFileReport[];
+  totals: { files: number; attachments: number; collisions: number };
+}
+
+export interface ImportFileError {
+  file: string;
+  message: string;
+}
+
+export interface ImportJob {
+  id: string;
+  path: string;
+  status: 'running' | 'done' | 'failed';
+  total: number;
+  processed: number;
+  imported: number;
+  merged: number;
+  renamed: number;
+  skipped: number;
+  attachments: number;
+  errors: ImportFileError[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ImportCollisionMode = 'skip' | 'rename' | 'merge';
+
+export const importApi = {
+  scan: (path: string) => api.post<ScanReport>('/import/scan', { path }),
+  run: (input: { path: string; notebookId?: string; collisions: ImportCollisionMode }) =>
+    api.post<ImportJob>('/import/run', input),
+  job: (id: string) => api.get<ImportJob>(`/import/jobs/${id}`),
+};
+
 export const attachmentsApi = {
   list: (params: { limit?: number; cursor?: string } = {}) =>
     api.getPaged<Attachment>(`/attachments${qs({ ...params })}`),

@@ -20,31 +20,35 @@ describe('force simulation (F241/F250)', () => {
     expect(seen.size).toBe(500);
   });
 
-  it('survives 10 ticks at 5k synthetic nodes with no NaN (perf fixture)', { timeout: 30_000 }, () => {
-    const n = 5000;
-    const nodes = Array.from({ length: n }, (_, i) => ({ id: `n${i}`, degree: (i % 7) + 1 }));
-    // Ring + chords: every node has edges, communities overlap.
-    const edges = [
-      ...ring(n),
-      ...Array.from({ length: n / 2 }, (_, i) => ({
-        source: `n${i}`,
-        target: `n${(i * 13 + 7) % n}`,
-        weight: 2,
-      })),
-    ];
-    const sim = createSimulation(nodes, edges);
-    const startedAt = Date.now();
-    for (let i = 0; i < 10; i += 1) sim.tick();
-    const elapsed = Date.now() - startedAt;
-    for (const node of sim.nodes) {
-      expect(Number.isFinite(node.x)).toBe(true);
-      expect(Number.isFinite(node.y)).toBe(true);
-      expect(Number.isFinite(node.vx)).toBe(true);
-      expect(Number.isFinite(node.vy)).toBe(true);
-    }
-    // Sanity perf bound — generous so CI noise never flakes it.
-    expect(elapsed).toBeLessThan(10_000);
-  });
+  it(
+    'survives 10 ticks at 5k synthetic nodes with no NaN (perf fixture)',
+    { timeout: 30_000 },
+    () => {
+      const n = 5000;
+      const nodes = Array.from({ length: n }, (_, i) => ({ id: `n${i}`, degree: (i % 7) + 1 }));
+      // Ring + chords: every node has edges, communities overlap.
+      const edges = [
+        ...ring(n),
+        ...Array.from({ length: n / 2 }, (_, i) => ({
+          source: `n${i}`,
+          target: `n${(i * 13 + 7) % n}`,
+          weight: 2,
+        })),
+      ];
+      const sim = createSimulation(nodes, edges);
+      const startedAt = Date.now();
+      for (let i = 0; i < 10; i += 1) sim.tick();
+      const elapsed = Date.now() - startedAt;
+      for (const node of sim.nodes) {
+        expect(Number.isFinite(node.x)).toBe(true);
+        expect(Number.isFinite(node.y)).toBe(true);
+        expect(Number.isFinite(node.vx)).toBe(true);
+        expect(Number.isFinite(node.vy)).toBe(true);
+      }
+      // Sanity perf bound — generous so CI noise never flakes it.
+      expect(elapsed).toBeLessThan(10_000);
+    },
+  );
 
   it('converges: alpha decays to settled and energy dies down', () => {
     const nodes = Array.from({ length: 30 }, (_, i) => ({ id: `n${i}`, degree: 2 }));

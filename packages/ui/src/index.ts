@@ -41,6 +41,10 @@ export {
   Copy,
   Download,
   FilePlus2,
+  // Day 3: query bar, embeds, import UI (F278–F297)
+  AlertTriangle,
+  RefreshCw,
+  Upload,
   // Day 3: graph, journal, templates (F241–F270)
   Flame,
   Folder,

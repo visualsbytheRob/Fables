@@ -1,0 +1,220 @@
+/* FQL query bar, warning chips, saved-query sidebar + pinned chips (F278–F288). */
+
+.fql-bar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.fql-bar__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.fql-bar__icon {
+  color: var(--text-dim);
+  flex: none;
+}
+
+.fql-bar__editor {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+/* The highlight layer mirrors the input exactly; the input's text is
+   transparent so the colored tokens below show through. */
+.fql-bar__hl,
+.fql-bar__input {
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: var(--text-sm);
+  line-height: 30px;
+  padding: 0 var(--space-2);
+  white-space: pre;
+  box-sizing: border-box;
+  width: 100%;
+  height: 30px;
+}
+
+.fql-bar__hl {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+}
+
+.fql-bar__input {
+  position: relative;
+  display: block;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: transparent;
+  caret-color: var(--text);
+}
+
+.fql-bar__input::placeholder {
+  color: var(--text-dim);
+}
+
+.fql-bar__input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* When the input is empty the placeholder must be visible (no overlay text). */
+.fql-bar__input:placeholder-shown {
+  color: var(--text-dim);
+}
+
+.fql-tok--field {
+  color: var(--code-keyword);
+}
+
+.fql-tok--value {
+  color: var(--code-string);
+}
+
+.fql-tok--phrase {
+  color: var(--code-string);
+}
+
+.fql-tok--operator {
+  color: var(--code-literal);
+  font-weight: 600;
+}
+
+.fql-tok--paren {
+  color: var(--code-attr);
+}
+
+.fql-tok--text,
+.fql-tok--ws {
+  color: var(--text);
+}
+
+.fql-bar__menu {
+  position: absolute;
+  top: 34px;
+  left: 20px;
+  right: 0;
+  z-index: 30;
+  margin: 0;
+  padding: var(--space-1);
+  list-style: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+  max-height: 240px;
+  overflow-y: auto;
+}
+
+.fql-bar__option {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: var(--text-sm);
+}
+
+.fql-bar__option--selected,
+.fql-bar__option:hover {
+  background: var(--bg-hover);
+}
+
+.fql-bar__hint {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+/* Warning / error chips (F279) */
+.fql-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.fql-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px var(--space-2);
+}
+
+.fql-chip--error {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.fql-chip__dismiss {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+}
+
+.fql-chip__dismiss:hover {
+  color: var(--text);
+}
+
+/* Pinned saved-query chips above the query bar (F287) */
+.fql-pinned {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.fql-pinned__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 2px var(--space-2);
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+
+.fql-pinned__chip:hover {
+  background: var(--bg-hover);
+}
+
+.fql-pinned__chip--active {
+  background: var(--bg-active);
+  border-color: var(--accent);
+}
+
+.fql-results__more {
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  padding: var(--space-2);
+}
+
+/* Saved queries section reuses .tag-section row styles (notes.css). */
+.saved-queries {
+  display: flex;
+  flex-direction: column;
+}

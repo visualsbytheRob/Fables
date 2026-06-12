@@ -1,0 +1,104 @@
+/* Import progress UI (F297). */
+
+.import-page {
+  max-width: 880px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.import-page h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.import-page h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.import-page__field {
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+
+.import-page__field--grow {
+  flex: 1;
+}
+
+.import-page__hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.import-page__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.import-page__totals {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.import-page__scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.import-page__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.import-page__table th,
+.import-page__table td {
+  text-align: left;
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--border);
+}
+
+.import-page__table th {
+  position: sticky;
+  top: 0;
+  background: var(--bg-panel);
+}
+
+.import-page__bar {
+  width: 100%;
+  height: 10px;
+  accent-color: var(--accent);
+}
+
+.import-page__errors {
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+}
+
+.import-page__errors h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0 0 var(--space-2);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.import-page__errors ul {
+  margin: 0;
+  padding-left: var(--space-4);
+  font-size: var(--text-sm);
+}

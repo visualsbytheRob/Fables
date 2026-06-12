@@ -90,6 +90,9 @@ export function mockFetchRoutes(routes: FetchRoute[]): { calls: FetchCall[] } {
         ok: status < 400,
         status,
         json: () => Promise.resolve(route.body),
+        // Raw-text endpoints (e.g. /query/export): string bodies pass through.
+        text: () =>
+          Promise.resolve(typeof route.body === 'string' ? route.body : JSON.stringify(route.body)),
       } as Response;
     }),
   );
