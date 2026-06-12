@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 2 in progress. F101–F140 done (F137 deferred). 170 tests. Next: F141 (notebook UI) + Day 3 server lane.
+**Status:** Day 2-3 parallel. F101–F140 + Day 3 server lane (F201–F240 minus 6 UI halves) done. Web lane F141–F200 in flight. Next: merge web lane, then Day 3 UI.
 
 ---
 
@@ -293,55 +293,55 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Wikilinks (F201–F210)
 
-- [ ] F201 — `[[wikilink]]` syntax parsing in note bodies
-- [ ] F202 — Link table maintenance on note save (source, target, position)
+- [x] F201 — `[[wikilink]]` syntax parsing in note bodies
+- [x] F202 — Link table maintenance on note save (source, target, position)
 - [ ] F203 — Wikilink autocomplete in editor on `[[` trigger
 - [ ] F204 — Click-to-navigate wikilinks in preview and editor
-- [ ] F205 — `[[link|alias]]` display alias support
-- [ ] F206 — Broken link styling + create-on-click for missing targets
-- [ ] F207 — Heading-level links `[[note#heading]]`
-- [ ] F208 — Block-level links `[[note^blockid]]` with block ID generation
-- [ ] F209 — Link rename propagation when a note title changes
-- [ ] F210 — Wikilink parser test suite (nesting, escapes, unicode)
+- [x] F205 — `[[link|alias]]` display alias support
+- [x] F206 — Broken link styling + create-on-click for missing targets
+- [x] F207 — Heading-level links `[[note#heading]]`
+- [x] F208 — Block-level links `[[note^blockid]]` with block ID generation
+- [x] F209 — Link rename propagation when a note title changes
+- [x] F210 — Wikilink parser test suite (nesting, escapes, unicode)
 
 ### Backlinks (F211–F220)
 
-- [ ] F211 — Backlinks API: incoming links for a note with context snippets
+- [x] F211 — Backlinks API: incoming links for a note with context snippets
 - [ ] F212 — Backlinks panel in note view grouped by source note
-- [ ] F213 — Context snippet extraction around each backlink mention
-- [ ] F214 — Backlink count badge on note list items
+- [x] F213 — Context snippet extraction around each backlink mention
+- [x] F214 — Backlink count badge on note list items
 - [ ] F215 — Click backlink snippet → open source at exact position
-- [ ] F216 — Backlinks for headings and blocks, not just whole notes
-- [ ] F217 — Backlinks sort: by recency, by source notebook
+- [x] F216 — Backlinks for headings and blocks, not just whole notes
+- [x] F217 — Backlinks sort: by recency, by source notebook
 - [ ] F218 — Backlinks panel collapse state persistence
-- [ ] F219 — Link integrity job: detect and report orphaned link rows
-- [ ] F220 — Backlinks API tests including snippet boundaries
+- [x] F219 — Link integrity job: detect and report orphaned link rows
+- [x] F220 — Backlinks API tests including snippet boundaries
 
 ### Unlinked Mentions (F221–F230)
 
-- [ ] F221 — Unlinked mention detection: note titles appearing as plain text elsewhere
-- [ ] F222 — Mention index updated incrementally on save
+- [x] F221 — Unlinked mention detection: note titles appearing as plain text elsewhere
+- [x] F222 — Mention index updated incrementally on save
 - [ ] F223 — Unlinked mentions section in backlinks panel
-- [ ] F224 — One-click "link this mention" converting text to wikilink
-- [ ] F225 — Bulk "link all mentions" action with preview
-- [ ] F226 — Alias-aware mention detection (entity aliases match too)
-- [ ] F227 — Case sensitivity + word-boundary rules with settings
-- [ ] F228 — Mention scan performance budget: incremental, never full-table on save
-- [ ] F229 — Exclusion rules (code blocks, URLs don't count as mentions)
-- [ ] F230 — Mention detection test suite
+- [x] F224 — One-click "link this mention" converting text to wikilink
+- [x] F225 — Bulk "link all mentions" action with preview
+- [x] F226 — Alias-aware mention detection (entity aliases match too)
+- [x] F227 — Case sensitivity + word-boundary rules with settings
+- [x] F228 — Mention scan performance budget: incremental, never full-table on save
+- [x] F229 — Exclusion rules (code blocks, URLs don't count as mentions)
+- [x] F230 — Mention detection test suite
 
 ### Graph Data API (F231–F240)
 
-- [ ] F231 — Graph endpoint: nodes (notes/entities/stories) + edges (links)
-- [ ] F232 — Graph filtering params: notebooks, tags, types, date range
-- [ ] F233 — Local graph endpoint: n-hop neighborhood around one note
-- [ ] F234 — Node degree + cluster metadata computed server-side
-- [ ] F235 — Graph response caching with invalidation on link changes
-- [ ] F236 — Orphan node detection (no links in or out)
-- [ ] F237 — Edge weighting by link count between same pair
-- [ ] F238 — Graph export endpoint (JSON, GraphML)
-- [ ] F239 — Community detection (simple label propagation) for cluster coloring
-- [ ] F240 — Graph API tests on seeded fixtures
+- [x] F231 — Graph endpoint: nodes (notes/entities/stories) + edges (links)
+- [x] F232 — Graph filtering params: notebooks, tags, types, date range
+- [x] F233 — Local graph endpoint: n-hop neighborhood around one note
+- [x] F234 — Node degree + cluster metadata computed server-side
+- [x] F235 — Graph response caching with invalidation on link changes
+- [x] F236 — Orphan node detection (no links in or out)
+- [x] F237 — Edge weighting by link count between same pair
+- [x] F238 — Graph export endpoint (JSON, GraphML)
+- [x] F239 — Community detection (simple label propagation) for cluster coloring
+- [x] F240 — Graph API tests on seeded fixtures
 
 ### Graph View UI (F241–F250)
 

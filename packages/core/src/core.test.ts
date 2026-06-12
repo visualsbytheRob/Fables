@@ -123,7 +123,9 @@ describe('schemas', () => {
   });
 
   it('rejects malformed ids and tag names', () => {
-    expect(tagSchema.safeParse({ id: 'tag_short', name: 'x', color: null, createdAt: now }).success).toBe(false);
+    expect(
+      tagSchema.safeParse({ id: 'tag_short', name: 'x', color: null, createdAt: now }).success,
+    ).toBe(false);
     expect(
       tagSchema.safeParse({ id: newEntityId(), name: 'has space', color: null, createdAt: now })
         .success,

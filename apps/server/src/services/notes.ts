@@ -1,17 +1,21 @@
 import {
   AppError,
+  fencedRanges,
   notFound,
+  rewriteWikilinkTargets,
   validation,
   type Note,
   type NotebookId,
   type NoteId,
 } from '@fables/core';
 import { withTransaction, type Db } from '../db/connection.js';
+import { linksRepo } from '../db/repos/links.js';
 import { notebooksRepo } from '../db/repos/notebooks.js';
 import { notesRepo } from '../db/repos/notes.js';
 import { revisionsRepo } from '../db/repos/revisions.js';
 import { tagsRepo } from '../db/repos/tags.js';
 import { extractHashtags } from '../lib/hashtags.js';
+import { onTitleChanged, syncNoteLinks } from './links.js';
 
 /** Note size guard (F118): bodies past this are rejected with PAYLOAD_TOO_LARGE. */
 export const MAX_NOTE_BODY_BYTES = 1024 * 1024;
@@ -39,6 +43,31 @@ function snapshotHead(db: Db, note: Note): void {
   if (revisions.snapshot(note)) revisions.prune(note.id);
 }
 
+/** Characters a wikilink target can never contain — such titles can't be linked to. */
+const UNLINKABLE_TITLE_RE = /[[\]|#^\n]/;
+
+/**
+ * Title rename propagation (F209): rewrites `[[old title]]` → `[[new title]]`
+ * in every live note that links here, bumping each source's rev (and revision
+ * snapshot) via `applyServerEdit`. Sources whose links can't be rewritten
+ * (empty or unlinkable new title) are re-synced instead so their rows break.
+ */
+function propagateTitleRename(db: Db, noteId: NoteId, from: string, to: string): void {
+  const rewritable = to !== '' && !UNLINKABLE_TITLE_RE.test(to);
+  for (const sourceId of linksRepo(db).sourceIdsLinkingTo(noteId)) {
+    const source = notesRepo(db).get(sourceId);
+    if (!source) continue;
+    if (rewritable) {
+      const next = rewriteWikilinkTargets(source.body, from, to);
+      if (next !== source.body) {
+        applyServerEdit(db, sourceId, { body: next });
+        continue;
+      }
+    }
+    syncNoteLinks(db, source); // re-resolve rows against the renamed title
+  }
+}
+
 export function createNote(
   db: Db,
   input: { notebookId: NotebookId; title?: string; body?: string },
@@ -49,6 +78,8 @@ export function createNote(
     const note = notesRepo(db).create(input);
     snapshotHead(db, note);
     syncNoteTags(db, note);
+    syncNoteLinks(db, note);
+    if (note.title !== '') onTitleChanged(db, note);
     return note;
   });
 }
@@ -64,9 +95,21 @@ export function updateNote(
     if (patch.notebookId !== undefined && !notebooksRepo(db).get(patch.notebookId)) {
       throw notFound('Notebook', patch.notebookId);
     }
+    const before = notesRepo(db).get(id);
+    if (!before) throw notFound('Note', id);
     const note = notesRepo(db).update(id, expectedRev, patch);
     snapshotHead(db, note);
     syncNoteTags(db, note);
+    if (patch.title !== undefined && patch.title !== before.title) {
+      // Propagate before resyncing our own rows: a self-link must still be
+      // resolvable (and rewritable) under the old title.
+      propagateTitleRename(db, id, before.title, note.title);
+      const fresh = notesRepo(db).get(id)!; // self-links may have rewritten our body
+      syncNoteLinks(db, fresh);
+      onTitleChanged(db, fresh);
+      return fresh;
+    }
+    syncNoteLinks(db, note);
     return note;
   });
 }
@@ -96,7 +139,48 @@ export function duplicateNote(db: Db, id: NoteId): Note {
     });
     tagsRepo(db).copyNoteTags(source.id, copy.id);
     snapshotHead(db, copy);
+    syncNoteLinks(db, copy);
+    if (copy.title !== '') onTitleChanged(db, copy);
     return copy;
+  });
+}
+
+const BLOCK_ID_SUFFIX_RE = /\s\^([A-Za-z0-9-]+)\s*$/;
+
+const randomBlockId = (): string => crypto.randomUUID().replace(/-/g, '').slice(0, 6);
+
+/**
+ * Mints a stable `^blockid` for one line of a note (F208). Idempotent: a line
+ * that already carries a block id returns it without editing; otherwise the
+ * id is appended and persisted as a server edit (rev bump + snapshot).
+ */
+export function mintBlockId(
+  db: Db,
+  id: NoteId,
+  line: number,
+): { blockId: string; line: number; created: boolean; note: Note } {
+  return withTransaction(db, () => {
+    const note = notesRepo(db).get(id);
+    if (!note) throw notFound('Note', id);
+    const lines = note.body.split('\n');
+    const text = lines[line];
+    if (text === undefined) {
+      throw validation('line is out of range', { line, lineCount: lines.length });
+    }
+    if (text.trim() === '') throw validation('cannot mint a block id on a blank line', { line });
+    const lineStart = lines.slice(0, line).reduce((n, l) => n + l.length + 1, 0);
+    if (fencedRanges(note.body).some((r) => lineStart >= r.start && lineStart < r.end)) {
+      throw validation('cannot mint a block id inside a code fence', { line });
+    }
+
+    const existing = BLOCK_ID_SUFFIX_RE.exec(text);
+    if (existing) return { blockId: existing[1]!, line, created: false, note };
+
+    let blockId = randomBlockId();
+    while (note.body.includes(`^${blockId}`)) blockId = randomBlockId();
+    lines[line] = `${text.replace(/\s+$/, '')} ^${blockId}`;
+    const updated = applyServerEdit(db, id, { body: lines.join('\n') });
+    return { blockId, line, created: true, note: updated };
   });
 }
 

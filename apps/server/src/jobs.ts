@@ -1,6 +1,7 @@
 import type { FastifyBaseLogger } from 'fastify';
 import { gcAttachments } from './attachments/store.js';
 import type { Db } from './db/connection.js';
+import { linksRepo } from './db/repos/links.js';
 import { notesRepo } from './db/repos/notes.js';
 import { tagsRepo } from './db/repos/tags.js';
 
@@ -15,10 +16,12 @@ export function purgeExpiredTrash(db: Db, now: Date = new Date()): number {
   return notesRepo(db).purgeTrashed({ olderThan: cutoff });
 }
 
-/** Boot-time maintenance: trash auto-purge, orphan tag cleanup, attachment GC. */
+/** Boot-time maintenance: trash auto-purge, orphan tags, link integrity, attachment GC. */
 export function runBootJobs(db: Db, dataDir: string, log: FastifyBaseLogger): void {
   const purgedNotes = purgeExpiredTrash(db);
   const orphanTags = tagsRepo(db).cleanupOrphans();
+  // Link integrity (F219): rows orphaned by hard-deleted notes are swept here.
+  const links = linksRepo(db).cleanupOrphans();
   const attachments = gcAttachments(db, dataDir);
-  log.info({ purgedNotes, orphanTags, attachments }, 'boot maintenance complete');
+  log.info({ purgedNotes, orphanTags, links, attachments }, 'boot maintenance complete');
 }

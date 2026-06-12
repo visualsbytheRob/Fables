@@ -6,6 +6,7 @@ import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { notesRepo } from '../db/repos/notes.js';
 import { tagsRepo } from '../db/repos/tags.js';
+import { invalidateGraphCache } from '../services/graph.js';
 import { bulkNotes, createNote, duplicateNote, updateNote } from '../services/notes.js';
 import { parseTagName } from '../services/tags.js';
 
@@ -130,7 +131,10 @@ export const notesRoutes: FastifyPluginAsync = async (app) => {
     const repo = notesRepo(app.db);
     const note = repo.get(id as NoteId);
     if (!note) throw notFound('Note', id);
-    if (note.trashedAt === null) repo.trash(id as NoteId); // idempotent: re-deleting is a no-op
+    if (note.trashedAt === null) {
+      repo.trash(id as NoteId); // idempotent: re-deleting is a no-op
+      invalidateGraphCache(app.db); // trashed notes drop out of the graph (F235)
+    }
     return { data: repo.get(id as NoteId) };
   });
 
@@ -141,6 +145,7 @@ export const notesRoutes: FastifyPluginAsync = async (app) => {
     if (!note) throw notFound('Note', id);
     if (note.trashedAt === null) throw conflict('note is not in the trash', { id });
     repo.restore(id as NoteId);
+    invalidateGraphCache(app.db); // restored notes rejoin the graph (F235)
     return { data: repo.get(id as NoteId) };
   });
 

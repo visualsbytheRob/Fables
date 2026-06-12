@@ -1,7 +1,9 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { attachmentsRoutes } from './attachments.js';
 import { debugRoutes } from './debug.js';
+import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
+import { linksRoutes } from './links.js';
 import { notebooksRoutes } from './notebooks.js';
 import { notesRoutes } from './notes.js';
 import { revisionsRoutes } from './revisions.js';
@@ -13,6 +15,8 @@ export const routes: FastifyPluginAsync[] = [
   healthRoutes,
   debugRoutes,
   notesRoutes,
+  linksRoutes,
+  graphRoutes,
   revisionsRoutes,
   trashRoutes,
   notebooksRoutes,

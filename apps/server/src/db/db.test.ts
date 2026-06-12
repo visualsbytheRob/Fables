@@ -21,6 +21,7 @@ describe('migrations', () => {
       '002-stories',
       '003-note-revisions',
       '004-attachments',
+      '005-links',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
