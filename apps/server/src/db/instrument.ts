@@ -17,7 +17,10 @@ export function instrumentDb(db: Db, log: FastifyBaseLogger, thresholdMs = SLOW_
         const result = original(...args);
         const ms = performance.now() - start;
         if (ms > thresholdMs) {
-          log.warn({ sql: sql.replace(/\s+/g, ' ').trim().slice(0, 200), ms: Math.round(ms * 10) / 10 }, 'slow query');
+          log.warn(
+            { sql: sql.replace(/\s+/g, ' ').trim().slice(0, 200), ms: Math.round(ms * 10) / 10 },
+            'slow query',
+          );
         }
         return result;
       };

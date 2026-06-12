@@ -12,6 +12,7 @@ import type { AppConfig } from './config.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
+import { runBootJobs } from './jobs.js';
 import { buildLoggerOptions } from './logging.js';
 import { configRoutes } from './routes/config.js';
 import { routes } from './routes/index.js';
@@ -19,6 +20,8 @@ import { routes } from './routes/index.js';
 declare module 'fastify' {
   interface FastifyInstance {
     db: Db;
+    /** Root of on-disk storage (attachments live under `<dataDir>/attachments`). */
+    dataDir: string;
   }
 }
 
@@ -40,15 +43,22 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
     logger: buildLoggerOptions(config) as { level: string },
     genReqId: () => crypto.randomUUID(),
     disableRequestLogging: config.env === 'test',
+    // Above the JSON-body ceiling our own 1 MB note-body guard enforces (F118).
+    bodyLimit: 8 * 1024 * 1024,
   });
 
   const db = instrumentDb(openDb(config.env === 'test' ? ':memory:' : config.dataDir), app.log);
   const { applied } = migrate(db);
   if (applied.length > 0) app.log.info({ applied }, 'database migrations applied');
   app.decorate('db', db);
+  app.decorate('dataDir', config.dataDir);
   app.addHook('onClose', () => {
     db.close();
   });
+
+  // Boot maintenance: trash auto-purge (F107), orphan tags (F159), attachment GC (F164).
+  // Skipped in tests: the in-memory db must never drive deletions in a real dataDir.
+  if (config.env !== 'test') runBootJobs(db, config.dataDir, app.log);
 
   await app.register(cors, {
     // Single-user app on a tailnet: allow the ts.net origin and localhost dev ports.
@@ -74,6 +84,11 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
         .status(HTTP_STATUS[error.code])
         .send({ error: { code: error.code, message: error.message, details: error.details } });
     }
+    if ((error as { statusCode?: number }).statusCode === 413) {
+      return reply.status(413).send({
+        error: { code: 'PAYLOAD_TOO_LARGE', message: 'request body too large', details: null },
+      });
+    }
     request.log.error({ err: error }, 'unhandled error');
     return reply
       .status(500)
@@ -82,7 +97,11 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
 
   app.setNotFoundHandler((request, reply) => {
     reply.status(404).send({
-      error: { code: 'NOT_FOUND', message: `no route for ${request.method} ${request.url}`, details: null },
+      error: {
+        code: 'NOT_FOUND',
+        message: `no route for ${request.method} ${request.url}`,
+        details: null,
+      },
     });
   });
 

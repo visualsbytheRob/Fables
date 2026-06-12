@@ -3,11 +3,20 @@ import {
   newNoteId,
   notFound,
   nowIso,
+  validation,
   type Note,
   type NotebookId,
   type NoteId,
 } from '@fables/core';
 import type { Db } from '../connection.js';
+
+export type NoteSort = 'updated' | 'created' | 'title';
+
+const ORDERINGS: Record<NoteSort, { column: keyof Row & string; dir: 'ASC' | 'DESC' }> = {
+  updated: { column: 'updated_at', dir: 'DESC' },
+  created: { column: 'created_at', dir: 'DESC' },
+  title: { column: 'title', dir: 'ASC' },
+};
 
 interface Row {
   id: string;
@@ -98,16 +107,84 @@ export function notesRepo(db: Db) {
 
     trash(id: NoteId): void {
       const changed = db
-        .prepare('UPDATE notes SET trashed_at = ?, rev = rev + 1 WHERE id = ? AND trashed_at IS NULL')
+        .prepare(
+          'UPDATE notes SET trashed_at = ?, rev = rev + 1 WHERE id = ? AND trashed_at IS NULL',
+        )
         .run(nowIso(), id).changes;
       if (changed === 0) throw notFound('Note', id);
     },
 
     restore(id: NoteId): void {
       const changed = db
-        .prepare('UPDATE notes SET trashed_at = NULL, rev = rev + 1 WHERE id = ? AND trashed_at IS NOT NULL')
+        .prepare(
+          'UPDATE notes SET trashed_at = NULL, rev = rev + 1 WHERE id = ? AND trashed_at IS NOT NULL',
+        )
         .run(id).changes;
       if (changed === 0) throw notFound('Note', id);
+    },
+
+    /**
+     * Keyset-paginated listing of live notes (F103). `fetch` is the row count to
+     * return (callers pass `limit + 1` for next-page detection); `cursor` is the
+     * id of the last row of the previous page.
+     */
+    list(opts: {
+      sort: NoteSort;
+      fetch: number;
+      cursor: string | null;
+      notebookId?: NotebookId;
+    }): Note[] {
+      const { column, dir } = ORDERINGS[opts.sort];
+      const where: string[] = ['trashed_at IS NULL'];
+      const args: unknown[] = [];
+      if (opts.notebookId !== undefined) {
+        where.push('notebook_id = ?');
+        args.push(opts.notebookId);
+      }
+      if (opts.cursor !== null) {
+        const row = db.prepare('SELECT * FROM notes WHERE id = ?').get(opts.cursor) as
+          | Row
+          | undefined;
+        if (!row) throw validation('unknown cursor', { cursor: opts.cursor });
+        const cmp = dir === 'DESC' ? '<' : '>';
+        where.push(`(${column} ${cmp} ? OR (${column} = ? AND id ${cmp} ?))`);
+        args.push(row[column], row[column], row.id);
+      }
+      const sql = `SELECT * FROM notes WHERE ${where.join(' AND ')}
+                   ORDER BY ${column} ${dir}, id ${dir} LIMIT ?`;
+      return (db.prepare(sql).all(...args, opts.fetch) as Row[]).map(toNote);
+    },
+
+    /** Trash listing (F107), newest-trashed first, same cursor convention as `list`. */
+    listTrashed(opts: { fetch: number; cursor: string | null }): Note[] {
+      const where: string[] = ['trashed_at IS NOT NULL'];
+      const args: unknown[] = [];
+      if (opts.cursor !== null) {
+        const row = db.prepare('SELECT * FROM notes WHERE id = ?').get(opts.cursor) as
+          | Row
+          | undefined;
+        if (!row || row.trashed_at === null)
+          throw validation('unknown cursor', { cursor: opts.cursor });
+        where.push('(trashed_at < ? OR (trashed_at = ? AND id < ?))');
+        args.push(row.trashed_at, row.trashed_at, row.id);
+      }
+      const sql = `SELECT * FROM notes WHERE ${where.join(' AND ')}
+                   ORDER BY trashed_at DESC, id DESC LIMIT ?`;
+      return (db.prepare(sql).all(...args, opts.fetch) as Row[]).map(toNote);
+    },
+
+    /**
+     * Hard-deletes trashed notes (F107). With `olderThan` only notes trashed
+     * before that ISO timestamp are purged; without it the whole trash empties.
+     * Revisions and tag links cascade; attachments lose their note link.
+     */
+    purgeTrashed(opts: { olderThan?: string } = {}): number {
+      if (opts.olderThan !== undefined) {
+        return db
+          .prepare('DELETE FROM notes WHERE trashed_at IS NOT NULL AND trashed_at < ?')
+          .run(opts.olderThan).changes;
+      }
+      return db.prepare('DELETE FROM notes WHERE trashed_at IS NOT NULL').run().changes;
     },
 
     listByNotebook(notebookId: NotebookId, opts: { includeTrashed?: boolean } = {}): Note[] {

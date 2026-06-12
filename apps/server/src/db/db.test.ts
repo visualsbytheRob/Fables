@@ -16,7 +16,12 @@ function freshDb() {
 describe('migrations', () => {
   it('applies all migrations once, then is a no-op', () => {
     const db = openDb(':memory:');
-    expect(migrate(db).applied).toEqual(['001-notes', '002-stories']);
+    expect(migrate(db).applied).toEqual([
+      '001-notes',
+      '002-stories',
+      '003-note-revisions',
+      '004-attachments',
+    ]);
     expect(migrate(db).applied).toEqual([]);
   });
 

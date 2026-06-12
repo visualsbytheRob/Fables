@@ -159,29 +159,29 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Note CRUD API (F101–F110)
 
-- [ ] F101 — `POST /notes` create with title, body, notebook
-- [ ] F102 — `GET /notes/:id` fetch single note with metadata
-- [ ] F103 — `GET /notes` list with pagination, sort (updated/created/title)
-- [ ] F104 — `PATCH /notes/:id` partial update with optimistic concurrency (rev check)
-- [ ] F105 — `DELETE /notes/:id` soft delete to trash
-- [ ] F106 — `POST /notes/:id/restore` from trash
-- [ ] F107 — Trash auto-purge policy (30 days) with manual empty endpoint
-- [ ] F108 — Duplicate note endpoint preserving tags and notebook
-- [ ] F109 — Bulk operations endpoint: move, tag, delete multiple notes
-- [ ] F110 — CRUD integration tests covering happy paths and conflict cases
+- [x] F101 — `POST /notes` create with title, body, notebook
+- [x] F102 — `GET /notes/:id` fetch single note with metadata
+- [x] F103 — `GET /notes` list with pagination, sort (updated/created/title)
+- [x] F104 — `PATCH /notes/:id` partial update with optimistic concurrency (rev check)
+- [x] F105 — `DELETE /notes/:id` soft delete to trash
+- [x] F106 — `POST /notes/:id/restore` from trash
+- [x] F107 — Trash auto-purge policy (30 days) with manual empty endpoint
+- [x] F108 — Duplicate note endpoint preserving tags and notebook
+- [x] F109 — Bulk operations endpoint: move, tag, delete multiple notes
+- [x] F110 — CRUD integration tests covering happy paths and conflict cases
 
 ### Note Storage & Versioning (F111–F120)
 
-- [ ] F111 — Note revision table: append-only snapshots on save
-- [ ] F112 — Revision pruning policy (keep all <24h, daily afterward)
-- [ ] F113 — `GET /notes/:id/revisions` list endpoint
-- [ ] F114 — `GET /notes/:id/revisions/:rev` fetch specific revision
-- [ ] F115 — Restore-to-revision endpoint creating a new head revision
-- [ ] F116 — Content hashing to skip no-op revisions
-- [ ] F117 — Word/character count stored per revision
-- [ ] F118 — Note size guard with friendly error past limit
-- [ ] F119 — Revision diff computation (server-side, word-level)
-- [ ] F120 — Versioning unit tests including pruning edge cases
+- [x] F111 — Note revision table: append-only snapshots on save
+- [x] F112 — Revision pruning policy (keep all <24h, daily afterward)
+- [x] F113 — `GET /notes/:id/revisions` list endpoint
+- [x] F114 — `GET /notes/:id/revisions/:rev` fetch specific revision
+- [x] F115 — Restore-to-revision endpoint creating a new head revision
+- [x] F116 — Content hashing to skip no-op revisions
+- [x] F117 — Word/character count stored per revision
+- [x] F118 — Note size guard with friendly error past limit
+- [x] F119 — Revision diff computation (server-side, word-level)
+- [x] F120 — Versioning unit tests including pruning edge cases
 
 ### Markdown Editor (F121–F130)
 
