@@ -33,8 +33,38 @@ export interface EntityMutation {
   field: string;
   oldValue: unknown;
   newValue: unknown;
+  /** 'effect' for VM writes, 'revert' for restore-from-audit rows (F683). */
+  kind: 'effect' | 'revert';
+  /** True when the write landed in a sandbox overlay, not a live entity (F686). */
+  sandbox: boolean;
   at: string;
 }
+
+interface MutationRow {
+  id: string;
+  story_id: string;
+  playthrough_id: string;
+  entity_id: string;
+  field: string;
+  old_value: string | null;
+  new_value: string | null;
+  kind: string;
+  sandbox: number;
+  at: string;
+}
+
+const toMutation = (r: MutationRow): EntityMutation => ({
+  id: r.id,
+  storyId: r.story_id as StoryId,
+  playthroughId: r.playthrough_id,
+  entityId: r.entity_id as EntityId,
+  field: r.field,
+  oldValue: r.old_value === null ? null : (JSON.parse(r.old_value) as unknown),
+  newValue: r.new_value === null ? null : (JSON.parse(r.new_value) as unknown),
+  kind: r.kind as EntityMutation['kind'],
+  sandbox: r.sandbox === 1,
+  at: r.at,
+});
 
 export interface EffectEvent {
   id: string;
@@ -161,10 +191,12 @@ export function codexRepo(db: Db) {
       field: string;
       oldValue: unknown;
       newValue: unknown;
+      kind?: EntityMutation['kind'];
+      sandbox?: boolean;
     }): void {
       db.prepare(
-        `INSERT INTO entity_mutations (id, story_id, playthrough_id, entity_id, field, old_value, new_value, at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO entity_mutations (id, story_id, playthrough_id, entity_id, field, old_value, new_value, kind, sandbox, at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       ).run(
         newId('mut'),
         input.storyId,
@@ -173,6 +205,8 @@ export function codexRepo(db: Db) {
         input.field,
         JSON.stringify(input.oldValue ?? null),
         JSON.stringify(input.newValue ?? null),
+        input.kind ?? 'effect',
+        input.sandbox === true ? 1 : 0,
         nowIso(),
       );
     },
@@ -183,52 +217,81 @@ export function codexRepo(db: Db) {
           `SELECT * FROM entity_mutations
            WHERE story_id = ? AND playthrough_id = ? ORDER BY at, rowid`,
         )
-        .all(storyId, playthroughId) as {
-        id: string;
-        story_id: string;
-        playthrough_id: string;
-        entity_id: string;
-        field: string;
-        old_value: string | null;
-        new_value: string | null;
-        at: string;
-      }[];
-      return rows.map((r) => ({
-        id: r.id,
-        storyId: r.story_id as StoryId,
-        playthroughId: r.playthrough_id,
-        entityId: r.entity_id as EntityId,
-        field: r.field,
-        oldValue: r.old_value === null ? null : (JSON.parse(r.old_value) as unknown),
-        newValue: r.new_value === null ? null : (JSON.parse(r.new_value) as unknown),
-        at: r.at,
-      }));
+        .all(storyId, playthroughId) as MutationRow[];
+      return rows.map(toMutation);
     },
 
-    /** Mutation history for one entity across all stories (world inspector). */
-    listMutationsForEntity(entityId: EntityId): EntityMutation[] {
+    /**
+     * Mutation history for one entity across all stories (world inspector),
+     * with optional playthrough/field filters (F682).
+     */
+    listMutationsForEntity(
+      entityId: EntityId,
+      filter: { playthroughId?: string; field?: string } = {},
+    ): EntityMutation[] {
+      const where: string[] = ['entity_id = ?'];
+      const args: unknown[] = [entityId];
+      if (filter.playthroughId !== undefined) {
+        where.push('playthrough_id = ?');
+        args.push(filter.playthroughId);
+      }
+      if (filter.field !== undefined) {
+        where.push('field = ?');
+        args.push(filter.field);
+      }
       const rows = db
-        .prepare('SELECT * FROM entity_mutations WHERE entity_id = ? ORDER BY at, rowid')
-        .all(entityId) as {
-        id: string;
-        story_id: string;
-        playthrough_id: string;
+        .prepare(
+          `SELECT * FROM entity_mutations WHERE ${where.join(' AND ')} ORDER BY at, rowid`,
+        )
+        .all(...args) as MutationRow[];
+      return rows.map(toMutation);
+    },
+
+    /**
+     * Per-entity summary of live story writes — drives the world dashboard's
+     * "story-mutated" flags (F681). Reverts and sandbox rows are excluded.
+     */
+    mutatedFieldSummary(): Map<
+      EntityId,
+      Record<string, { count: number; lastAt: string; storyIds: StoryId[] }>
+    > {
+      const rows = db
+        .prepare(
+          `SELECT entity_id, field, story_id, COUNT(*) AS n, MAX(at) AS last_at
+           FROM entity_mutations
+           WHERE kind = 'effect' AND sandbox = 0
+           GROUP BY entity_id, field, story_id
+           ORDER BY entity_id, field, story_id`,
+        )
+        .all() as {
         entity_id: string;
         field: string;
-        old_value: string | null;
-        new_value: string | null;
-        at: string;
+        story_id: string;
+        n: number;
+        last_at: string;
       }[];
-      return rows.map((r) => ({
-        id: r.id,
-        storyId: r.story_id as StoryId,
-        playthroughId: r.playthrough_id,
-        entityId: r.entity_id as EntityId,
-        field: r.field,
-        oldValue: r.old_value === null ? null : (JSON.parse(r.old_value) as unknown),
-        newValue: r.new_value === null ? null : (JSON.parse(r.new_value) as unknown),
-        at: r.at,
-      }));
+      const summary = new Map<
+        EntityId,
+        Record<string, { count: number; lastAt: string; storyIds: StoryId[] }>
+      >();
+      for (const row of rows) {
+        const entityId = row.entity_id as EntityId;
+        let fields = summary.get(entityId);
+        if (!fields) {
+          fields = {};
+          summary.set(entityId, fields);
+        }
+        const entry = (fields[row.field] ??= { count: 0, lastAt: row.last_at, storyIds: [] });
+        entry.count += row.n;
+        if (row.last_at > entry.lastAt) entry.lastAt = row.last_at;
+        entry.storyIds.push(row.story_id as StoryId);
+      }
+      return summary;
+    },
+
+    /** Retention policy (F690): drops audit rows older than the cutoff. */
+    pruneMutations(olderThanIso: string): number {
+      return db.prepare('DELETE FROM entity_mutations WHERE at < ?').run(olderThanIso).changes;
     },
 
     // ── effect audit + idempotency (F638, F640) ─────────────────────────────

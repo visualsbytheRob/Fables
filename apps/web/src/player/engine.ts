@@ -12,13 +12,14 @@ import type {
   ChoiceView,
   IrProgram,
   Story,
+  StoryHost,
   StorySaveState,
   TranscriptEntry,
 } from '@fables/forge-vm';
 import { compileBuffers } from '../stories/playtest/engine.js';
 import type { ProgramBuild } from '../stories/playtest/engine.js';
 import type { StorySettings } from '../stories/api.js';
-import { classifyTags, parseSegments, slugify } from './tags.js';
+import { classifyTags, parseSegments, slugify, stripMarkers } from './tags.js';
 import type { Segment, TextEffect } from './tags.js';
 
 /** Compile the story project for play — same compiler as the playtest pane. */
@@ -61,7 +62,7 @@ export function blocksFrom(entries: readonly TranscriptEntry[]): PlayerBlock[] {
       blocks.push({
         key: `c${i}`,
         kind: 'choice',
-        text: entry.text,
+        text: stripMarkers(entry.text),
         effects: [],
         scene,
         segments: [],
@@ -101,8 +102,8 @@ export function currentScene(blocks: readonly PlayerBlock[]): string | null {
 /* ── session lifecycle ─────────────────────────────────────────────────── */
 
 /** Start a fresh run and play to the first stop. */
-export function startSession(program: IrProgram, seed: number): Story {
-  const story = createStory(program, { seed });
+export function startSession(program: IrProgram, seed: number, host?: StoryHost): Story {
+  const story = createStory(program, { seed, ...(host !== undefined ? { host } : {}) });
   story.continue();
   return story;
 }
@@ -112,9 +113,12 @@ export function startSession(program: IrProgram, seed: number): Story {
  * a save against changed bytecode throws `SaveError`, and the player offers
  * a restart instead of silently corrupting the playthrough.
  */
-export function resumeSession(program: IrProgram, state: unknown): Story {
+export function resumeSession(program: IrProgram, state: unknown, host?: StoryHost): Story {
   validateSaveShape(state);
-  const story = createStory(program, { seed: state.seed });
+  const story = createStory(program, {
+    seed: state.seed,
+    ...(host !== undefined ? { host } : {}),
+  });
   story.loadState(state);
   if (story.status === 'running' && story.canContinue) story.continue();
   return story;
@@ -129,8 +133,8 @@ export function chooseAndContinue(story: Story, index: number): void {
 }
 
 /** Rewind to just before the history entry at `turn` (F562, via F464). */
-export function rewindTo(story: Story, turn: number): Story {
-  const rewound = rewindStory(story, turn);
+export function rewindTo(story: Story, turn: number, host?: StoryHost): Story {
+  const rewound = rewindStory(story, turn, host !== undefined ? { host } : {});
   return rewound;
 }
 
@@ -159,7 +163,8 @@ export function endingOf(entries: readonly TranscriptEntry[]): EndingInfo {
   for (let i = entries.length - 1; i >= 0; i--) {
     const entry = entries[i];
     if (entry !== undefined && entry.kind === 'text' && entry.text.trim() !== '') {
-      return { id: slugify(entry.text), label: entry.text.slice(0, 48) };
+      const text = stripMarkers(entry.text);
+      return { id: slugify(text), label: text.slice(0, 48) };
     }
   }
   return { id: 'the-end', label: 'The End' };
@@ -207,7 +212,7 @@ export function statValues(
 export function plainTranscript(entries: readonly TranscriptEntry[]): string {
   return entries
     .filter((e) => e.text.trim() !== '')
-    .map((e) => (e.kind === 'choice' ? `> ${e.text}` : e.text))
+    .map((e) => stripMarkers(e.kind === 'choice' ? `> ${e.text}` : e.text))
     .join('\n');
 }
 

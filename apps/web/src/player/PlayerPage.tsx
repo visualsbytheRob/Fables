@@ -389,7 +389,7 @@ function Player({
     }
     const texts = paraBlocks.map((b) =>
       b.segments
-        .map((s) => (s.kind === 'text' ? s.text : s.alt))
+        .map((s) => (s.kind === 'image' ? s.alt : s.text))
         .join(' ')
         .trim(),
     );

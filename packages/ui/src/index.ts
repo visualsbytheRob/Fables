@@ -80,4 +80,14 @@ export {
   Share2,
   Square,
   Volume2,
+  // Day 7: entities, codex, lore & annotations (F601–F700)
+  BookMarked,
+  Compass,
+  Flag,
+  Highlighter,
+  MapPin,
+  Package,
+  Shapes,
+  Sparkles,
+  Users,
 } from 'lucide-react';

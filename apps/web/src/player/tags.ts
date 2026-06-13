@@ -70,13 +70,48 @@ export function classifyTags(tags: readonly string[] | undefined): ClassifiedTag
 /** A prose run or an inline image extracted from a paragraph (F547). */
 export type Segment =
   | { readonly kind: 'text'; readonly text: string }
-  | { readonly kind: 'image'; readonly alt: string; readonly src: string };
+  | { readonly kind: 'image'; readonly alt: string; readonly src: string }
+  /** A tappable entity name surfaced by the VM host (F623 web half). */
+  | { readonly kind: 'entity'; readonly name: string; readonly text: string }
+  /** A tappable `[[note]]` lore link surfaced by the VM host (F621). */
+  | { readonly kind: 'lore'; readonly title: string; readonly text: string };
+
+/* ── host markers (F621/F623) ──────────────────────────────────────────────
+ * The player's VM host wraps entity displays and note references in private-
+ * use sentinels so the renderer can make them tappable without ever showing
+ * marker characters to the reader. Authors cannot type these from a story. */
+
+export const ENTITY_OPEN = '\uE000';
+export const ENTITY_SEP = '\uE001';
+export const ENTITY_CLOSE = '\uE002';
+export const LORE_OPEN = '\uE003';
+export const LORE_CLOSE = '\uE004';
+
+/** Wrap an entity display for the renderer (host `resolveEntityDisplay`). */
+export const markEntity = (name: string, display: string): string =>
+  `${ENTITY_OPEN}${name}${ENTITY_SEP}${display}${ENTITY_CLOSE}`;
+
+/** Wrap a note title for the renderer (host `resolveNote`). */
+export const markLore = (title: string): string => `${LORE_OPEN}${title}${LORE_CLOSE}`;
+
+const MARKER_RE = new RegExp(
+  `${ENTITY_OPEN}([^${ENTITY_SEP}]*)${ENTITY_SEP}([^${ENTITY_CLOSE}]*)${ENTITY_CLOSE}` +
+    `|${LORE_OPEN}([^${LORE_CLOSE}]*)${LORE_CLOSE}`,
+  'g',
+);
+
+/** Replace host markers with their plain display text (transcripts, TTS, choices). */
+export function stripMarkers(text: string): string {
+  MARKER_RE.lastIndex = 0;
+  return text.replace(MARKER_RE, (_m, _name, display, title) =>
+    typeof title === 'string' ? title : (display ?? ''),
+  );
+}
 
 const IMAGE_RE = /!\[([^\]]*)\]\(([^)\s]+)\)/g;
 
-/** Split paragraph text into prose + inline-image segments (F547). */
-export function parseSegments(text: string): Segment[] {
-  const segments: Segment[] = [];
+/** Split a marker-free prose run into text + inline-image segments (F547). */
+function parseProse(text: string, segments: Segment[]): void {
   let last = 0;
   for (const match of text.matchAll(IMAGE_RE)) {
     const at = match.index;
@@ -84,9 +119,26 @@ export function parseSegments(text: string): Segment[] {
     segments.push({ kind: 'image', alt: match[1] ?? '', src: match[2] ?? '' });
     last = at + match[0].length;
   }
-  if (last < text.length || segments.length === 0) {
-    segments.push({ kind: 'text', text: text.slice(last) });
+  if (last < text.length) segments.push({ kind: 'text', text: text.slice(last) });
+}
+
+/** Split paragraph text into prose / image / entity / lore segments. */
+export function parseSegments(text: string): Segment[] {
+  const segments: Segment[] = [];
+  let last = 0;
+  MARKER_RE.lastIndex = 0;
+  for (const match of text.matchAll(MARKER_RE)) {
+    const at = match.index;
+    if (at > last) parseProse(text.slice(last, at), segments);
+    if (typeof match[3] === 'string') {
+      segments.push({ kind: 'lore', title: match[3], text: match[3] });
+    } else {
+      segments.push({ kind: 'entity', name: match[1] ?? '', text: match[2] ?? '' });
+    }
+    last = at + match[0].length;
   }
+  if (last < text.length) parseProse(text.slice(last), segments);
+  if (segments.length === 0) segments.push({ kind: 'text', text });
   return segments;
 }
 
