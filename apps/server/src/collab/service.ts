@@ -72,6 +72,8 @@ interface Peer {
   socket: WebSocket;
   /** clientID reported by the remote Yjs doc (discovered via awareness). */
   awarenessClientId: number | null;
+  /** Access level: 'edit' allows sending updates; 'read' is view-only. */
+  accessLevel: 'read' | 'edit';
 }
 
 // ── Room ──────────────────────────────────────────────────────────────────────
@@ -241,10 +243,15 @@ export class CollabService {
 
   // ── Peer lifecycle ──────────────────────────────────────────────────────────
 
-  handleConnection(socket: WebSocket, docId: string, noteBody?: string): void {
+  handleConnection(
+    socket: WebSocket,
+    docId: string,
+    noteBody?: string,
+    accessLevel: 'read' | 'edit' = 'edit',
+  ): void {
     const room = this.getOrCreateRoom(docId, noteBody);
     const peerId = crypto.randomUUID();
-    const peer: Peer = { id: peerId, socket, awarenessClientId: null };
+    const peer: Peer = { id: peerId, socket, awarenessClientId: null, accessLevel };
     room.peers.set(peerId, peer);
     this.updateRoomMetrics(docId, room.peers.size);
 
@@ -263,6 +270,20 @@ export class CollabService {
 
     socket.on('message', (raw: Buffer | ArrayBuffer | Buffer[]) => {
       const data = toUint8Array(raw);
+
+      // Read-only peers may not send sync updates (only awareness/step1 are allowed)
+      if (peer.accessLevel === 'read') {
+        // Peek at message type — allow SyncStep1 (0x00, 0x00) and awareness (0x01)
+        // but reject SyncStep2 (0x00, 0x01) and Update (0x00, 0x02)
+        const msgType = data[0];
+        const syncSubType = data[1];
+        if (msgType === 0 && (syncSubType === 1 || syncSubType === 2)) {
+          // Silently drop — read-only share token cannot push updates
+          this.log.debug({ peerId, docId }, 'read-only peer attempted to push update, rejected');
+          return;
+        }
+      }
+
       const decoded = decodeMessage(data, room.doc, room.awareness, peerId);
 
       // Discover peer's awareness clientId from the first awareness message

@@ -35,6 +35,7 @@ describe('migrations', () => {
       '016-plugins',
       '017-plugin-distribution',
       '018-crdt',
+      '019-shares',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

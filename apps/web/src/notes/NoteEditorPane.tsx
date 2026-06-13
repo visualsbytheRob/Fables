@@ -8,7 +8,7 @@
  * in-note find (F714, Day 8), related notes panel (F751–F760, Day 8), and
  * real-time collaboration via CRDT (F1111–F1140, Epic 12).
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
@@ -19,6 +19,7 @@ import {
   Info,
   Link2,
   Maximize2,
+  MessageSquare,
   Minimize2,
   Pin,
   PinOff,
@@ -67,7 +68,15 @@ import { useAutosave } from './useAutosave.js';
 import { useCollabExtensions } from '../collab/useCollabExtensions.js';
 import { CollabToggle } from '../collab/CollabToggle.js';
 import { PresenceAvatars } from '../collab/PresenceAvatars.js';
+import type { CommentsStore } from '../collab/comments.js';
+import type { CommentsHandle } from '../collab/useComments.js';
 import '../collab/collab.css';
+import '../collab/comments.css';
+
+// Lazy-loaded collab panels (stay off the initial chunk; yjs off initial bundle)
+const CommentsPanel = lazy(() =>
+  import('../collab/CommentsPanel.js').then((m) => ({ default: m.CommentsPanel })),
+);
 
 const STATUS_LABEL: Record<string, string> = {
   idle: '',
@@ -77,6 +86,24 @@ const STATUS_LABEL: Record<string, string> = {
   conflict: 'Conflict!',
   error: 'Save failed — retrying on next edit',
 };
+
+/** Build a CommentsHandle from a store for use in CommentsPanel. */
+function buildCommentsHandle(store: CommentsStore, docKey: string): CommentsHandle {
+  return {
+    comments: store.getForDoc(docKey),
+    store,
+    addComment: (params) => store.addComment({ docKey, ...params }),
+    resolve: (id) => store.resolve(id),
+    unresolve: (id) => store.unresolve(id),
+    deleteComment: (id) => store.deleteComment(id),
+    addReply: (cid, r) => store.addReply(cid, r),
+    toggleReaction: (cid, e, cId) => store.toggleReaction(cid, e, cId),
+    acceptSuggestion: (cid, t, d) => store.acceptSuggestion(cid, t, d),
+    rejectSuggestion: (id) => store.rejectSuggestion(id),
+    search: (q, o) => store.search(q, { docKey, ...o }),
+    exportAsMarkdown: () => store.exportAsMarkdown(docKey),
+  };
+}
 
 export interface NoteEditorPaneProps {
   note: NoteWithTags;
@@ -106,6 +133,7 @@ export function NoteEditorPane({
   );
   const [showHistory, setShowHistory] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const [showBacklinks, setShowBacklinks] = useState(() => loadBacklinksPanel().open);
   const [showInNoteFind, setShowInNoteFind] = useState(false);
   const [showRelated, setShowRelated] = useState(false);
@@ -123,6 +151,18 @@ export function NoteEditorPane({
 
   // F1111–F1140: Real-time collaboration (lazy-loaded; yjs stays off the initial chunk).
   const collab = useCollabExtensions(note.id);
+
+  // F1161–F1170: Comments panel handle (eager, local store; upgrades to Y.Doc store when collab is on).
+  // We keep a plain CommentsStore in a ref that survives re-renders.
+  const commentsStoreRef = useRef<CommentsStore | null>(null);
+  const [, setCommentsTick] = useState(0);
+  useEffect(() => {
+    void import('../collab/comments.js').then(({ CommentsStore }) => {
+      commentsStoreRef.current = new CommentsStore(null);
+      const unsub = commentsStoreRef.current.subscribe(() => setCommentsTick((t) => t + 1));
+      return () => unsub();
+    });
+  }, [note.id]);
 
   // Latest content for callbacks/commands without re-binding.
   const contentRef = useRef({ title, body });
@@ -486,6 +526,14 @@ export function NoteEditorPane({
                 <History size={14} />
               </Button>
               <Button
+                title="Comments (F1161)"
+                aria-label="Toggle comments panel"
+                aria-pressed={showComments}
+                onClick={() => setShowComments((v) => !v)}
+              >
+                <MessageSquare size={14} />
+              </Button>
+              <Button
                 title="Backlinks & connections"
                 aria-label="Backlinks"
                 aria-pressed={showBacklinks}
@@ -604,15 +652,22 @@ export function NoteEditorPane({
         />
       )}
 
-      {showRelated && (
-        <RelatedPanel note={note} onClose={() => setShowRelated(false)} />
-      )}
+      {showRelated && <RelatedPanel note={note} onClose={() => setShowRelated(false)} />}
 
-      <InNoteFind
-        body={body}
-        open={showInNoteFind}
-        onClose={() => setShowInNoteFind(false)}
-      />
+      {/* F1161–F1170: Comments panel (lazy). The store is in commentsStoreRef;
+          we pass a stable handle built from it. */}
+      {showComments && commentsStoreRef.current ? (
+        <Suspense fallback={null}>
+          <CommentsPanel
+            handle={buildCommentsHandle(commentsStoreRef.current, note.id)}
+            clientId={0}
+            authorName={collab.identity.name}
+            onClose={() => setShowComments(false)}
+          />
+        </Suspense>
+      ) : null}
+
+      <InNoteFind body={body} open={showInNoteFind} onClose={() => setShowInNoteFind(false)} />
 
       <TemplatePicker
         open={showInsertTemplate}

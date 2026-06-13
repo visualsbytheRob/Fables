@@ -133,3 +133,33 @@ export type { Doc as YDoc } from 'yjs';
 
 // Re-export awareness protocol utilities needed by the server collab service
 export { encodeAwarenessUpdate, applyAwarenessUpdate } from 'y-protocols/awareness';
+
+// CRDT structured data (F1181–F1190)
+export {
+  ENTITY_FIELDS_KEY,
+  NOTEBOOK_TREE_KEY,
+  ENTITY_TAGS_KEY,
+  SAVE_SLOTS_KEY,
+  getEntityFieldsMap,
+  setEntityField,
+  setEntityFields,
+  getEntityFields,
+  seedEntityFields,
+  getNotebookTreeMap,
+  upsertTreeNode,
+  moveTreeNode,
+  removeTreeNode,
+  detectAndBreakCycles,
+  getNotebookTree,
+  getTagsMap,
+  addTag,
+  removeTag,
+  getTags,
+  getSaveSlotsMap,
+  writeSaveSlot,
+  deleteSaveSlot,
+  getSaveSlots,
+  createStructuredDoc,
+  mergeStructuredDocs,
+} from './crdt-struct.js';
+export type { TreeNode, SaveSlotEntry } from './crdt-struct.js';

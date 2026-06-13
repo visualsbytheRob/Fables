@@ -137,4 +137,10 @@ export {
   PackagePlus,
   PackageX,
   RefreshCcw,
+  // Epic 12: Collaboration — comments, history, chat (F1151–F1180)
+  MessageSquare,
+  GitBranch,
+  CheckSquare,
+  Clock,
+  AtSign,
 } from 'lucide-react';
