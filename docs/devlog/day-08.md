@@ -55,15 +55,29 @@ was rebuilt clean from scratch, testing-first, and shipped.
 2. **Agents build directly:** agents implement features directly rather than delegating to
    sub-agents, keeping work localized and reducing coordination overhead.
 
+## Completed: Document Ingestion & Voice (F761–F790)
+
+The ingestion wave is now **fully complete**. PDF/EPUB/HTML document extraction, the web clipper
+for URL articles, and Whisper.cpp voice transcription all shipped with graceful degradation:
+
+- **PDF/EPUB/HTML ingestion** (F761–F770): text extraction with OCR fallback (tesseract-wasm)
+  for scanned documents, page-anchored citations, auto-tagging, FTS indexing, and safe file-size
+  handling.
+- **Web clipper** (F771–F780): bookmarklet + iOS share-sheet integration, clipped articles land
+  in an inbox notebook, with duplicate detection and failure recovery for paywalled pages.
+- **Voice capture** (F781–F790): MediaRecorder for voice memos saved as attachments, Whisper.cpp
+  integration for local transcription, audio player with transcript follow-along, and quick-capture
+  voice-to-daily-note shortcut. All gracefully degrade if Whisper binary is unavailable.
+
+---
+
 ## Deferred (next wave)
 
 **F721–F750 (embeddings + hybrid search):** the local-intelligence layer is building now
 (sentence-transformer embeddings, vector store, hybrid RRF ranking, fallback chain for
 no-deps scenarios). Pure-JS fallback ensures graceful degradation when native models unavailable.
 
-**F761–F790 (ingestion + audio):** document pipelines (PDF/EPUB extraction, web clipper,
-Whisper transcription) are a later wave.
-
 ---
 
-**Final:** 1,461 tests green. 706/2000 features complete. Next: F721 (embeddings).
+**Final:** 1,461 tests green. 766/2000 features complete. Day 8 (F701–F800) is fully shipped.
+Next: F801 (PWA & offline).
