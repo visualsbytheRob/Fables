@@ -2,6 +2,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { analyticsRoutes } from './analytics.js';
 import { attachmentsRoutes } from './attachments.js';
 import { pluginsRoutes } from './plugins.js';
+import { pluginsDistributionRoutes } from './plugins-distribution.js';
 import { backupRoutes } from './backup.js';
 import { upgradeRoutes } from './upgrade.js';
 import { clipRoutes } from './clip.js';
@@ -72,4 +73,5 @@ export const routes: FastifyPluginAsync[] = [
   analyticsRoutes,
   upgradeRoutes,
   pluginsRoutes,
+  pluginsDistributionRoutes,
 ];

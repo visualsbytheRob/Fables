@@ -80,6 +80,24 @@ export async function createBackupArchive(
       }
     }
 
+    // 2b. Gather installed plugin directories (F1094).
+    const pluginsDir = path.join(dataDir, 'plugins');
+    const pluginFiles: { relPath: string; absPath: string }[] = [];
+    if (fs.existsSync(pluginsDir)) {
+      for (const pluginId of fs.readdirSync(pluginsDir)) {
+        const pluginPath = path.join(pluginsDir, pluginId);
+        if (!fs.statSync(pluginPath).isDirectory()) continue;
+        for (const file of fs.readdirSync(pluginPath)) {
+          const filePath = path.join(pluginPath, file);
+          if (!fs.statSync(filePath).isFile()) continue;
+          pluginFiles.push({
+            relPath: `plugins/${pluginId}/${file}`,
+            absPath: filePath,
+          });
+        }
+      }
+    }
+
     // 3. Build the manifest.
     const manifest: BackupManifest = {
       version: 1,
@@ -88,7 +106,9 @@ export async function createBackupArchive(
       dbChecksum,
       attachmentCount: attachFiles.length,
       totalSizeBytes:
-        dbBytes.byteLength + attachFiles.reduce((s, f) => s + fs.statSync(f.absPath).size, 0),
+        dbBytes.byteLength +
+        attachFiles.reduce((s, f) => s + fs.statSync(f.absPath).size, 0) +
+        pluginFiles.reduce((s, f) => s + fs.statSync(f.absPath).size, 0),
     };
 
     // 4. Assemble the zip.
@@ -100,6 +120,10 @@ export async function createBackupArchive(
       'fables.sqlite': [new Uint8Array(dbBytes), { level: 0 }], // SQLite is already compressed
     };
     for (const { relPath, absPath } of attachFiles) {
+      files[relPath] = [new Uint8Array(fs.readFileSync(absPath)), { level: 0 }];
+    }
+    // Include plugin files in the backup (F1094)
+    for (const { relPath, absPath } of pluginFiles) {
       files[relPath] = [new Uint8Array(fs.readFileSync(absPath)), { level: 0 }];
     }
 

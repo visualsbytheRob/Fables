@@ -37,6 +37,7 @@ declare module 'fastify' {
 
 const idParamsSchema = z.object({ id: z.string().min(1) });
 const notebookParamsSchema = z.object({ id: z.string().min(1), notebookId: z.string().min(1) });
+const deleteQuerySchema = z.object({ purgeData: z.string().optional() });
 
 const installBodySchema = z.object({
   /** Absolute path to a plugin directory containing manifest.json */
@@ -217,9 +218,12 @@ export const pluginsRoutes: FastifyPluginAsync = async (app) => {
     return { data: { id: plugin.id, installed: true } };
   });
 
-  /** Uninstall a plugin (F1096). */
+  /** Uninstall a plugin (F1096). ?purgeData=true also removes all plugin data. */
   app.delete('/plugins/:id', async (req) => {
     const { id } = parseWith(idParamsSchema, req.params, 'params');
+    const query = parseWith(deleteQuerySchema, (req as { query?: unknown }).query ?? {}, 'query');
+    const purgeData = query.purgeData === 'true' || query.purgeData === '1';
+
     const plugin = repo().get(id);
     if (!plugin) throw notFound('Plugin', id);
 
@@ -228,8 +232,20 @@ export const pluginsRoutes: FastifyPluginAsync = async (app) => {
       await app.plugins.disable(id).catch(() => {});
     }
 
+    if (purgeData) {
+      // Remove all plugin data before deleting the record
+      repo().purgePluginData(id);
+    }
+
     repo().delete(id);
-    return { data: { id, uninstalled: true } };
+
+    // Remove plugin directory if present
+    const pluginDirPath = path.join(app.dataDir, 'plugins', id);
+    if (fs.existsSync(pluginDirPath)) {
+      fs.rmSync(pluginDirPath, { recursive: true });
+    }
+
+    return { data: { id, uninstalled: true, dataPurged: purgeData } };
   });
 
   /** Capability audit trail (F1018, F1065). */
