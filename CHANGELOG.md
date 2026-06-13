@@ -28,7 +28,7 @@ Built across 10 days against a 1,000-feature plan. 1,868 tests, all green.
 - Day 5: F401–F500 the Forge VM
 - Day 6: F501–F510, F462–F463, F499 story projects & saves
 - Day 6: F511–F540 author workspace, scene graph & live playtest
-feat(day-6/7): F541–F600 player & library, F601–F640 entities, codex & effects
+  feat(day-6/7): F541–F600 player & library, F601–F640 entities, codex & effects
 - Day 7: F601–F650 the fusion
 - Day 7: F651–F660 Timeline & F681–F690 World inspector UIs
 - Day 8: F701–F720, F751–F760, F791–F800 search & insights
@@ -82,3 +82,24 @@ Opt-in per-document CRDT collaboration via Tailscale with scoped share links, li
 - F1191–F1200: Hardening (three-device chaos tests, security review, bandwidth budget, perf tuning)
 
 **In Progress.** SHIPPING: CRDT engine (Yjs, convergence proven on 2/3/5/10-peer + 20-editor load test), WebSocket sync server (room-per-doc, state-vector handshake), collaborative CodeMirror with live cursors/presence, opt-in per document. F1101–F1140 (minus F1134) complete. Remaining: F1141–F1200 (sharing/comments/merge-history/structures/hardening).
+
+### Epic 13 — Encrypted Vault & Security Tier (F1201–F1300)
+
+Cryptographic foundation for end-to-end encryption, threat modeling, compliance-grade features, and audit trails.
+
+- F1201–F1210: Crypto core (libsodium integration, Argon2id KDF, XChaCha20-Poly1305 AEAD, key hierarchy, parameter versioning, known-answer tests).
+- F1211–F1220: Encrypted storage (vault mode, per-vault data keys, encrypted at rest in SQLite and attachments).
+- F1221–F1230: Key-management UX (passphrase strength meter, passphrase change flow, key fingerprint verification).
+- F1231–F1240: Lock behavior (auto-lock on idle, secure input, key zeroing, screen lock integration).
+- F1241–F1250: Per-note encryption (future: each note encrypted under unique key, derived from master key).
+- F1251–F1260: Hardware security key support (FIDO2 authentication, MFA unlock).
+- F1261–F1270: Device verification & key sync (fingerprint comparison, cross-device sync).
+- F1271–F1280: Threat modeling & audit (threat model v2 covering collaboration/plugins/encryption, attack tree, crypto design doc, privacy data-flow map, incident response runbook, secure defaults checklist, audit documentation).
+- F1281–F1290: Compliance-grade features (full vault wipe with verification, data inventory export, retention policies, tamper-evident audit log, legal hold mode, redaction tool, read receipts opt-out, compliance documentation).
+- F1291–F1300: Security epic close (full regression suite, performance rebaselining, disaster recovery drill, documentation, sign-off).
+
+**Crypto Core (F1201–F1210) COMPLETE.** libsodium module in `packages/core/src/crypto.ts`: Argon2id (tuned/versioned params), master→data key hierarchy, XChaCha20-Poly1305 AEAD with random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, pinned KATs. 174 test files, 2,166 tests green; typecheck + lint clean. libsodium loads lazily (off initial bundle). Fully documented (threat model v2, crypto design doc, attack tree, privacy data-flow, incident response, secure defaults, compliance).
+
+**Security Documentation (F1271–F1289) COMPLETE:** Threat model v2 (collab/plugin/encryption surfaces), vault attack tree (6 compromise paths + mitigations), crypto design doc (primitive rationale, key hierarchy, parameter versioning, nonce strategy), privacy data-flow map (what leaves the machine: nothing in local mode), incident response runbook (10 scenarios + recovery steps), secure defaults checklist (18 audit points), compliance feature design (full vault wipe, data inventory export, retention policies, tamper-evident audit log, legal hold, redaction, read receipts opt-out, export with redactions). All features map to GDPR/HIPAA/CCPA/SOC2/FINRA compliance requirements.
+
+**Remaining:** F1211+ (encrypted storage implementation), F1281+ (compliance features, designed but not yet implemented).

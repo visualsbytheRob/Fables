@@ -1729,16 +1729,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Threat Modeling & Audit (F1271–F1280)
 
-- [ ] F1271 — Threat model v2 covering collab, plugins, encryption
-- [ ] F1272 — Attack tree for vault compromise paths
+- [x] F1271 — Threat model v2 covering collab, plugins, encryption
+- [x] F1272 — Attack tree for vault compromise paths
 - [ ] F1273 — Plugin permission escalation analysis
 - [ ] F1274 — Self-audit checklist run + findings fixed
-- [ ] F1275 — Crypto design doc for external review
-- [ ] F1276 — Privacy data-flow map (what leaves the machine: nothing)
-- [ ] F1277 — Incident response runbook (corruption, key loss, device theft)
-- [ ] F1278 — Secure defaults review (everything safe out of the box)
+- [x] F1275 — Crypto design doc for external review
+- [x] F1276 — Privacy data-flow map (what leaves the machine: nothing)
+- [x] F1277 — Incident response runbook (corruption, key loss, device theft)
+- [x] F1278 — Secure defaults review (everything safe out of the box)
 - [ ] F1279 — Penetration test scenarios as e2e suite
-- [ ] F1280 — Audit documentation set
+- [x] F1280 — Audit documentation set
 
 ### Compliance-Grade Features (F1281–F1290)
 
@@ -1750,7 +1750,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1286 — Legal hold mode (freeze deletions)
 - [ ] F1287 — Redaction tool (true content removal from history)
 - [ ] F1288 — Export with redactions applied
-- [ ] F1289 — Compliance feature documentation
+- [x] F1289 — Compliance feature documentation
 - [ ] F1290 — Compliance feature tests
 
 ### Security Epic Close (F1291–F1300)
