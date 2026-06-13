@@ -1,5 +1,6 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { attachmentsRoutes } from './attachments.js';
+import { clipRoutes } from './clip.js';
 import { codexRoutes } from './codex.js';
 import { crossrefRoutes } from './crossref.js';
 import { debugRoutes } from './debug.js';
@@ -9,6 +10,7 @@ import { entitiesRoutes } from './entities.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
 import { importExportRoutes } from './import-export.js';
+import { ingestRoutes } from './ingest.js';
 import { insightsRoutes } from './insights.js';
 import { knowledgeRoutes } from './knowledge.js';
 import { linksRoutes } from './links.js';
@@ -24,6 +26,7 @@ import { storySavesRoutes } from './story-saves.js';
 import { tagsRoutes } from './tags.js';
 import { timelineRoutes } from './timeline.js';
 import { transclusionRoutes } from './transclusion.js';
+import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
 
@@ -56,4 +59,7 @@ export const routes: FastifyPluginAsync[] = [
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
+  ingestRoutes,
+  clipRoutes,
+  transcribeRoutes,
 ];

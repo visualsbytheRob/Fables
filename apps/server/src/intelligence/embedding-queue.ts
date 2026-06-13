@@ -81,6 +81,10 @@ export class EmbeddingQueue {
           await new Promise<void>((r) => setImmediate(r));
         }
       }
+    } catch {
+      // Graceful: swallow errors (e.g. DB closed during test teardown) —
+      // the queue will be empty after the app closes.
+      this.queue.clear();
     } finally {
       this.processing = false;
       this.lastProcessedAt = new Date().toISOString();

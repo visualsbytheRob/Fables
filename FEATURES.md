@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 8 search/semantic COMPLETE: keyword+semantic+hybrid search live in UI with degraded-state handling, explain breakdowns, semantic related-notes, embeddings index control. 1,518 tests green. Remaining Day 8: ingestion/clipper/audio (F761–F790, heavy-dep wave). Next: F761.
+**Status:** Day 8 (Search & Intelligence) COMPLETE — F701–F800: FTS5 + semantic/hybrid search, insights, embeddings, document ingestion (PDF/EPUB/HTML), web clipper, voice/transcription (OCR+Whisper graceful). 1,571 tests green. Next: Day 9 — PWA, offline, sync & Tailscale (F801).
 
 ---
 
@@ -1041,42 +1041,42 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Document Ingestion (F761–F770)
 
-- [ ] F761 — PDF ingestion: text extraction → note with source attachment
-- [ ] F762 — PDF page-anchored citations (note links back to page N)
-- [ ] F763 — OCR pipeline (tesseract-wasm) for scanned PDFs/images
-- [ ] F764 — EPUB ingestion → chaptered notes
-- [ ] F765 — HTML/URL ingestion: readability extraction → markdown note
-- [ ] F766 — Ingestion queue UI with per-item status and errors
-- [ ] F767 — Auto-tagging ingested docs by source type
-- [ ] F768 — Ingested docs auto-embedded + FTS-indexed
-- [ ] F769 — Large file guardrails (page limits, size warnings)
-- [ ] F770 — Ingestion pipeline tests with fixture documents
+- [x] F761 — PDF ingestion: text extraction → note with source attachment
+- [x] F762 — PDF page-anchored citations (note links back to page N)
+- [x] F763 — OCR pipeline (tesseract-wasm) for scanned PDFs/images
+- [x] F764 — EPUB ingestion → chaptered notes
+- [x] F765 — HTML/URL ingestion: readability extraction → markdown note
+- [x] F766 — Ingestion queue UI with per-item status and errors
+- [x] F767 — Auto-tagging ingested docs by source type
+- [x] F768 — Ingested docs auto-embedded + FTS-indexed
+- [x] F769 — Large file guardrails (page limits, size warnings)
+- [x] F770 — Ingestion pipeline tests with fixture documents
 
 ### Web Clipper (F771–F780)
 
-- [ ] F771 — Clip endpoint: URL → readability-extracted markdown note
-- [ ] F772 — Bookmarklet generator page for desktop browsers
-- [ ] F773 — iOS share-sheet flow: PWA share target receiving URLs
-- [ ] F774 — Clip with selection: highlighted text becomes the note body quote
-- [ ] F775 — Image preservation in clips (downloaded as attachments)
-- [ ] F776 — Clip metadata: source URL, site name, clipped-at, favicon
-- [ ] F777 — Duplicate clip detection by URL
-- [ ] F778 — Clip inbox notebook + triage workflow
-- [ ] F779 — Clip failure handling (paywalls, JS-only pages) with raw fallback
-- [ ] F780 — Clipper tests with fixture HTML
+- [x] F771 — Clip endpoint: URL → readability-extracted markdown note
+- [x] F772 — Bookmarklet generator page for desktop browsers
+- [x] F773 — iOS share-sheet flow: PWA share target receiving URLs
+- [x] F774 — Clip with selection: highlighted text becomes the note body quote
+- [x] F775 — Image preservation in clips (downloaded as attachments)
+- [x] F776 — Clip metadata: source URL, site name, clipped-at, favicon
+- [x] F777 — Duplicate clip detection by URL
+- [x] F778 — Clip inbox notebook + triage workflow
+- [x] F779 — Clip failure handling (paywalls, JS-only pages) with raw fallback
+- [x] F780 — Clipper tests with fixture HTML
 
 ### Audio & Voice (F781–F790)
 
-- [ ] F781 — Voice memo capture in PWA (MediaRecorder) saved as attachment
-- [ ] F782 — Whisper.cpp integration hook: local transcription job runner
-- [ ] F783 — Transcription queue with status + retry
-- [ ] F784 — Transcript → note with timestamped segments linking to audio position
-- [ ] F785 — Audio player with transcript follow-along highlighting
-- [ ] F786 — Voice quick-capture: hold-to-record → transcribed into daily note
-- [ ] F787 — Transcripts indexed in FTS + embeddings
-- [ ] F788 — Speaker/segment heuristics (silence-based splitting)
-- [ ] F789 — Transcription accuracy settings (model size selection)
-- [ ] F790 — Voice pipeline tests with fixture audio
+- [x] F781 — Voice memo capture in PWA (MediaRecorder) saved as attachment
+- [x] F782 — Whisper.cpp integration hook: local transcription job runner
+- [x] F783 — Transcription queue with status + retry
+- [x] F784 — Transcript → note with timestamped segments linking to audio position
+- [x] F785 — Audio player with transcript follow-along highlighting
+- [x] F786 — Voice quick-capture: hold-to-record → transcribed into daily note
+- [x] F787 — Transcripts indexed in FTS + embeddings
+- [x] F788 — Speaker/segment heuristics (silence-based splitting)
+- [x] F789 — Transcription accuracy settings (model size selection)
+- [x] F790 — Voice pipeline tests with fixture audio
 
 ### Insights (F791–F800)
 
