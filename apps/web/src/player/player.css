@@ -1,0 +1,559 @@
+/* Story player (F541–F560): phone-first, distraction-free reading surface.
+   All player presentation is scoped under .player-surface and driven by the
+   --pl-* token set so typography themes (F551) are pure token swaps. */
+
+.player-surface {
+  --pl-bg: #faf6ee;
+  --pl-text: #2b2417;
+  --pl-dim: #8a8070;
+  --pl-accent: #6d3fd4;
+  --pl-font: Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --pl-choice-bg: #ffffff;
+  --pl-choice-border: #d8d0c0;
+  --pl-scene-hue: 230;
+  --pl-scene-strength: 0;
+
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background:
+    radial-gradient(
+      120% 70% at 50% 0%,
+      hsl(var(--pl-scene-hue) 60% 50% / var(--pl-scene-strength)),
+      transparent 70%
+    ),
+    var(--pl-bg);
+  color: var(--pl-text);
+  font-family: var(--pl-font);
+  transition: background 0.8s ease;
+  -webkit-font-smoothing: antialiased;
+}
+.player-surface[data-scene] {
+  --pl-scene-strength: 0.14;
+}
+
+/* ── typography themes (F551) ─────────────────────────────────────────── */
+.player-surface[data-player-theme='parchment'] {
+  --pl-bg: #f3e6c9;
+  --pl-text: #4a3722;
+  --pl-dim: #93805f;
+  --pl-accent: #8a5a18;
+  --pl-font: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --pl-choice-bg: #faf0da;
+  --pl-choice-border: #cdb88c;
+}
+.player-surface[data-player-theme='terminal'] {
+  --pl-bg: #0a120c;
+  --pl-text: #5bf08b;
+  --pl-dim: #2e7a4a;
+  --pl-accent: #9dff86;
+  --pl-font: 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace;
+  --pl-choice-bg: #0f1d13;
+  --pl-choice-border: #1d4a2c;
+}
+.player-surface[data-player-theme='dark'] {
+  --pl-bg: #14111c;
+  --pl-text: #ddd6e8;
+  --pl-dim: #837a96;
+  --pl-accent: #b08fff;
+  --pl-font: Georgia, 'Iowan Old Style', serif;
+  --pl-choice-bg: #1e1929;
+  --pl-choice-border: #36304a;
+}
+
+/* ── reading column (F558): tuned for ~390px phones up to desktop ─────── */
+.player-stream {
+  max-width: 39rem;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top, 0px) + 56px) 20px
+    calc(env(safe-area-inset-bottom, 0px) + 48px);
+  font-size: var(--pl-size, 18px);
+  line-height: var(--pl-leading, 1.6);
+}
+@media (min-width: 900px) {
+  .player-stream {
+    max-width: 44rem;
+    padding-top: 72px;
+  }
+}
+
+.player-para {
+  margin: 0 0 0.9em;
+  animation: player-enter 0.45s ease both;
+  overflow-wrap: anywhere;
+}
+.player-para img {
+  display: block;
+  max-width: 100%;
+  border-radius: 10px;
+  margin: 0.6em 0;
+}
+.player-echo {
+  color: var(--pl-dim);
+  font-style: italic;
+  margin: 0 0 0.9em;
+  animation: player-enter 0.45s ease both;
+}
+.player-echo::before {
+  content: '➤ ';
+  color: var(--pl-accent);
+}
+
+/* paragraph effects (F557) */
+.player-para.fx-whisper {
+  color: var(--pl-dim);
+  font-style: italic;
+  letter-spacing: 0.04em;
+  font-size: 0.92em;
+}
+.player-para.fx-emphasis {
+  font-weight: 700;
+  font-size: 1.08em;
+}
+.player-para.fx-shake {
+  animation:
+    player-enter 0.45s ease both,
+    player-shake 0.5s linear 0.1s 1;
+}
+
+/* chapter title cards (F556) */
+.player-chapter {
+  margin: 1.8em 0;
+  padding: 1.4em 0.5em;
+  text-align: center;
+  font-size: 1.35em;
+  font-variant: small-caps;
+  letter-spacing: 0.12em;
+  border-top: 1px solid var(--pl-choice-border);
+  border-bottom: 1px solid var(--pl-choice-border);
+  animation: player-enter 0.7s ease both;
+}
+
+/* tts highlight (F598) */
+.player-para.tts-active {
+  background: hsl(var(--pl-scene-hue, 230) 70% 50% / 0.16);
+  border-radius: 6px;
+  outline: 4px solid hsl(var(--pl-scene-hue, 230) 70% 50% / 0.16);
+}
+
+/* ── choices (F543/F554): thumb-sized, animated, reduced-motion aware ── */
+.player-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 1.4em;
+}
+.player-choice {
+  min-height: 48px;
+  padding: 12px 16px;
+  font: inherit;
+  font-size: 1em;
+  text-align: left;
+  color: var(--pl-text);
+  background: var(--pl-choice-bg);
+  border: 1.5px solid var(--pl-choice-border);
+  border-radius: 12px;
+  cursor: pointer;
+  animation: player-choice-in 0.3s ease both;
+  touch-action: manipulation;
+}
+.player-choice:nth-child(2) {
+  animation-delay: 0.07s;
+}
+.player-choice:nth-child(3) {
+  animation-delay: 0.14s;
+}
+.player-choice:nth-child(n + 4) {
+  animation-delay: 0.21s;
+}
+.player-choice:hover,
+.player-choice:focus-visible {
+  border-color: var(--pl-accent);
+  outline: none;
+}
+.player-choice:active {
+  transform: scale(0.985);
+}
+
+/* ── stat bars (F546) ─────────────────────────────────────────────────── */
+.player-stats {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  max-width: 39rem;
+  margin: 0 auto;
+  padding: 6px 20px;
+  font-size: 13px;
+  color: var(--pl-dim);
+}
+.player-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.player-stat-bar {
+  width: 64px;
+  height: 7px;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--pl-dim) 25%, transparent);
+  overflow: hidden;
+}
+.player-stat-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--pl-accent);
+  border-radius: 99px;
+  transition: width 0.4s ease;
+}
+
+/* ── top chrome ───────────────────────────────────────────────────────── */
+.player-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+  pointer-events: none;
+}
+.player-topbar > * {
+  pointer-events: auto;
+}
+.player-iconbtn {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--pl-dim);
+  background: color-mix(in srgb, var(--pl-bg) 80%, transparent);
+  border: 1px solid var(--pl-choice-border);
+  border-radius: 12px;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+.player-iconbtn:hover,
+.player-iconbtn:focus-visible {
+  color: var(--pl-text);
+  border-color: var(--pl-accent);
+  outline: none;
+}
+
+/* ── sheets & drawers (F545/F561) ─────────────────────────────────────── */
+.player-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: rgba(8, 6, 14, 0.45);
+}
+.player-sheet-panel {
+  max-height: 82vh;
+  overflow-y: auto;
+  background: var(--pl-bg);
+  color: var(--pl-text);
+  border-radius: 18px 18px 0 0;
+  padding: 16px 20px calc(env(safe-area-inset-bottom, 0px) + 20px);
+  animation: player-sheet-in 0.25s ease both;
+  font-family: var(--pl-font);
+}
+.player-sheet-panel h3 {
+  margin: 4px 0 12px;
+  font-size: 17px;
+}
+.player-sheet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 10px;
+}
+.player-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--pl-text);
+  background: var(--pl-choice-bg);
+  border: 1px solid var(--pl-choice-border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.player-menu-item:hover,
+.player-menu-item:focus-visible {
+  border-color: var(--pl-accent);
+  outline: none;
+}
+.player-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--pl-choice-border) 60%, transparent);
+}
+.player-row-main {
+  flex: 1;
+  min-width: 0;
+}
+.player-row-main small {
+  display: block;
+  color: var(--pl-dim);
+}
+
+/* theme gallery (F559) */
+.player-theme-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  min-height: 84px;
+  font-family: var(--pl-font);
+  font-size: 14px;
+  background: var(--pl-bg);
+  color: var(--pl-text);
+  border: 2px solid var(--pl-choice-border);
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: left;
+}
+.player-theme-swatch[aria-pressed='true'] {
+  border-color: var(--pl-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--pl-accent) 40%, transparent);
+}
+.player-theme-swatch .swatch-sample {
+  font-size: 12px;
+  color: var(--pl-dim);
+}
+
+/* settings sliders */
+.player-setting {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 0;
+}
+.player-setting label {
+  font-size: 13px;
+  color: var(--pl-dim);
+}
+.player-setting input[type='range'] {
+  width: 100%;
+  accent-color: var(--pl-accent);
+}
+.player-setting select,
+.player-setting input[type='text'] {
+  font: inherit;
+  font-size: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--pl-choice-border);
+  background: var(--pl-choice-bg);
+  color: var(--pl-text);
+}
+
+/* ── entry flow / end screen (F544/F567/F568) ─────────────────────────── */
+.player-gate {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 48px 24px;
+  text-align: center;
+}
+.player-gate h1 {
+  font-size: 1.8em;
+  margin: 0;
+}
+.player-gate .player-gate-sub {
+  color: var(--pl-dim);
+  max-width: 32rem;
+}
+.player-gate-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(100%, 320px);
+  margin-top: 10px;
+}
+.player-end {
+  margin-top: 2.5em;
+  padding-top: 1.5em;
+  border-top: 1px solid var(--pl-choice-border);
+  text-align: center;
+  animation: player-enter 0.6s ease both;
+}
+.player-end h2 {
+  font-variant: small-caps;
+  letter-spacing: 0.18em;
+}
+.player-progressbar {
+  height: 8px;
+  max-width: 280px;
+  margin: 8px auto;
+  border-radius: 99px;
+  background: color-mix(in srgb, var(--pl-dim) 25%, transparent);
+  overflow: hidden;
+}
+.player-progressbar > span {
+  display: block;
+  height: 100%;
+  background: var(--pl-accent);
+}
+.player-endings {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 12px 0;
+}
+.player-ending-chip {
+  padding: 4px 12px;
+  border-radius: 99px;
+  border: 1px solid var(--pl-choice-border);
+  font-size: 13px;
+}
+.player-ending-chip.undiscovered {
+  color: var(--pl-dim);
+  border-style: dashed;
+}
+
+/* ── transcript overlay + comparison (F565/F569/F587) ─────────────────── */
+.player-transcript {
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+.player-compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  font-size: 13px;
+}
+.player-compare .cmp-col {
+  min-width: 0;
+}
+.player-compare .cmp-line {
+  padding: 1px 6px;
+  border-radius: 4px;
+  overflow-wrap: anywhere;
+}
+.player-compare .cmp-line.del {
+  background: rgba(255, 100, 100, 0.18);
+}
+.player-compare .cmp-line.add {
+  background: rgba(80, 200, 120, 0.18);
+}
+.player-compare .cmp-line.pad {
+  visibility: hidden;
+}
+
+/* runtime errors (F548) */
+.player-error {
+  margin: 1.5em 0;
+  padding: 14px 16px;
+  border: 1.5px solid #c43c3c;
+  border-radius: 12px;
+  background: rgba(196, 60, 60, 0.08);
+  color: inherit;
+  font-size: 0.92em;
+}
+.player-error code {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.85em;
+  opacity: 0.8;
+  overflow-wrap: anywhere;
+}
+
+/* ── animations (reduced-motion aware, F554/F599) ─────────────────────── */
+@keyframes player-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes player-choice-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes player-sheet-in {
+  from {
+    transform: translateY(40px);
+    opacity: 0.4;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes player-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-3px);
+  }
+  40%,
+  60% {
+    transform: translateX(3px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player-surface *,
+  .player-surface {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── print stylesheet for transcripts (F587) ──────────────────────────── */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .player-print-area,
+  .player-print-area * {
+    visibility: visible;
+  }
+  .player-print-area {
+    position: absolute;
+    inset: 0;
+    padding: 0;
+    background: #fff;
+    color: #000;
+    font-family: Georgia, serif;
+  }
+}

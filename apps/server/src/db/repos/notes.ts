@@ -194,6 +194,17 @@ export function notesRepo(db: Db) {
       return (db.prepare(sql).all(notebookId) as Row[]).map(toNote);
     },
 
+    /** Oldest live note with this exact title in a notebook — daily-note lookup (F631). */
+    findLiveByTitle(notebookId: NotebookId, title: string): Note | null {
+      const row = db
+        .prepare(
+          `SELECT * FROM notes WHERE notebook_id = ? AND title = ? AND trashed_at IS NULL
+           ORDER BY id LIMIT 1`,
+        )
+        .get(notebookId, title) as Row | undefined;
+      return row ? toNote(row) : null;
+    },
+
     count(): number {
       return (db.prepare('SELECT COUNT(*) AS n FROM notes').get() as { n: number }).n;
     },

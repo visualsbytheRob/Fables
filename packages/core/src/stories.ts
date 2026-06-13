@@ -40,6 +40,37 @@ export interface Entity {
   updatedAt: string;
 }
 
+/* ── Entity type schemas (F601/F602) — additive companions to Entity ────── */
+
+export const ENTITY_TYPES = ['character', 'place', 'item', 'faction', 'custom'] as const;
+
+/** Scalar shape of one structured entity field. Mirrors forge-dsl's ForgeType. */
+export type EntityFieldType = 'number' | 'string' | 'bool' | 'list';
+
+/** One field definition inside a per-type entity schema (F602/F608). */
+export interface EntityFieldDef {
+  name: string;
+  fieldType: EntityFieldType;
+  /** Applied when the field is absent on create. */
+  default?: number | string | boolean | unknown[] | undefined;
+  required?: boolean | undefined;
+}
+
+/** A typed relationship slot (ally-of, located-in, …) creating relation links (F606). */
+export interface EntityRelationDef {
+  name: string;
+  /** Restricts targets to one entity type; null allows any. */
+  targetType: EntityType | null;
+}
+
+/** The user-editable schema for one entity type (F602/F609). */
+export interface EntityTypeSchema {
+  type: EntityType;
+  fields: EntityFieldDef[];
+  relations: EntityRelationDef[];
+  updatedAt: string;
+}
+
 export type LinkKind = 'wikilink' | 'mention' | 'binding' | 'relation';
 export type LinkableType = 'note' | 'entity' | 'story' | 'scene';
 

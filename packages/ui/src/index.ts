@@ -68,4 +68,16 @@ export {
   Regex,
   Smartphone,
   Wand2,
+  // Day 6: story player + library (F541–F600)
+  BarChart3,
+  Bookmark,
+  GitCompare,
+  LogOut,
+  Menu,
+  Printer,
+  Save,
+  ScrollText,
+  Share2,
+  Square,
+  Volume2,
 } from 'lucide-react';

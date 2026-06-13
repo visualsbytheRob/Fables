@@ -77,13 +77,9 @@ export function storySavesRepo(db: Db) {
         .get(storyId, name) as Row | undefined;
       const now = nowIso();
       if (existing) {
-        db.prepare('UPDATE story_saves SET state = ?, turn = ?, scene = ?, updated_at = ? WHERE id = ?').run(
-          JSON.stringify(state),
-          state.turn,
-          sceneOf(state),
-          now,
-          existing.id,
-        );
+        db.prepare(
+          'UPDATE story_saves SET state = ?, turn = ?, scene = ?, updated_at = ? WHERE id = ?',
+        ).run(JSON.stringify(state), state.turn, sceneOf(state), now, existing.id);
         return { save: this.mustGet(storyId, existing.id), created: false };
       }
       const id = `sav_${crypto.randomUUID()}`;
@@ -133,9 +129,7 @@ export function storySavesRepo(db: Db) {
       const rows = (
         kind === undefined
           ? db
-              .prepare(
-                'SELECT * FROM story_saves WHERE story_id = ? ORDER BY rowid DESC',
-              )
+              .prepare('SELECT * FROM story_saves WHERE story_id = ? ORDER BY rowid DESC')
               .all(storyId)
           : db
               .prepare(

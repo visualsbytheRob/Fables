@@ -39,6 +39,7 @@ const settingsSchema = z.object({
   theme: z.string().max(64).nullable().optional(),
   seedMode: z.enum(['fixed', 'random']).optional(),
   seed: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER).optional(),
+  journalOptOut: z.boolean().optional(),
 });
 
 const idParamsSchema = z.object({ id: z.string().min(1) });

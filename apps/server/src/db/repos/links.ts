@@ -23,7 +23,10 @@ export interface Link {
   createdAt: string;
 }
 
-export type NewLink = Omit<Link, 'id' | 'createdAt' | 'sourceType' | 'sourceId' | 'targetType'>;
+export type NewLink = Omit<Link, 'id' | 'createdAt' | 'sourceType' | 'sourceId' | 'targetType'> & {
+  /** Mentions can target entities as well as notes (F605); defaults to 'note'. */
+  targetType?: 'note' | 'entity';
+};
 
 interface Row {
   id: string;
@@ -113,7 +116,7 @@ export function linksRepo(db: Db) {
       const insert = db.prepare(
         `INSERT INTO links (id, kind, source_type, source_id, target_type, target_id,
                             target_title, target_heading, target_block, position, length, broken, created_at)
-         VALUES (?, ?, 'note', ?, 'note', ?, ?, ?, ?, ?, ?, ?, ?)`,
+         VALUES (?, ?, 'note', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       );
       const now = nowIso();
       for (const row of rows) {
@@ -121,6 +124,7 @@ export function linksRepo(db: Db) {
           newLinkId(),
           row.kind,
           sourceId,
+          row.targetType ?? 'note',
           row.targetId,
           row.targetTitle,
           row.targetHeading,
@@ -155,8 +159,8 @@ export function linksRepo(db: Db) {
       return rows.map(toLink);
     },
 
-    /** Incoming links of one kind with live source-note context, newest source first (F211, F217). */
-    incoming(targetId: NoteId, kind: LinkKind): IncomingLink[] {
+    /** Incoming links of one kind with live source-note context, newest source first (F211, F217). Targets may be notes or entities (F605). */
+    incoming(targetId: string, kind: LinkKind): IncomingLink[] {
       const rows = db.prepare(INCOMING_SQL).all(kind, targetId) as (Row & SourceColumns)[];
       return rows.map(toIncoming);
     },
@@ -207,12 +211,19 @@ export function linksRepo(db: Db) {
            AND target_id NOT IN (SELECT id FROM notes)`,
         )
         .run().changes;
-      const removedMentions = db
-        .prepare(
-          `DELETE FROM links WHERE kind = 'mention' AND target_type = 'note'
-           AND target_id NOT IN (SELECT id FROM notes)`,
-        )
-        .run().changes;
+      const removedMentions =
+        db
+          .prepare(
+            `DELETE FROM links WHERE kind = 'mention' AND target_type = 'note'
+             AND target_id NOT IN (SELECT id FROM notes)`,
+          )
+          .run().changes +
+        db
+          .prepare(
+            `DELETE FROM links WHERE kind = 'mention' AND target_type = 'entity'
+             AND target_id NOT IN (SELECT id FROM entities)`,
+          )
+          .run().changes;
       return { removedSources, brokenTargets, removedMentions };
     },
 

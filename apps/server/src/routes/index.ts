@@ -1,6 +1,9 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { attachmentsRoutes } from './attachments.js';
+import { codexRoutes } from './codex.js';
 import { debugRoutes } from './debug.js';
+import { effectsRoutes } from './effects.js';
+import { entitiesRoutes } from './entities.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
 import { importExportRoutes } from './import-export.js';
@@ -34,4 +37,7 @@ export const routes: FastifyPluginAsync[] = [
   storiesRoutes,
   storyFilesRoutes,
   storySavesRoutes,
+  entitiesRoutes,
+  codexRoutes,
+  effectsRoutes,
 ];

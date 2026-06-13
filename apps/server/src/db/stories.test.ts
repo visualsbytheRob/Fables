@@ -4,12 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { buildStory } from '../stories/build.js';
 import { openDb } from './connection.js';
 import { migrate } from './migrate.js';
-import {
-  DEFAULT_SETTINGS,
-  mergeSettings,
-  storiesRepo,
-  type StoriesRepo,
-} from './repos/stories.js';
+import { DEFAULT_SETTINGS, mergeSettings, storiesRepo, type StoriesRepo } from './repos/stories.js';
 import { AUTOSAVE_RING_SIZE, storySavesRepo } from './repos/story-saves.js';
 
 /** Repo-level coverage for the story project model (F510). */
@@ -41,6 +36,7 @@ describe('stories repo (F510)', () => {
       theme: null,
       seedMode: 'random',
       seed: 5,
+      journalOptOut: false,
     });
   });
 

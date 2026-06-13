@@ -26,6 +26,8 @@ export interface StorySettings {
   seedMode: SeedMode;
   /** Seed used when seedMode is 'fixed'. */
   seed: number;
+  /** Privacy toggle (F639): true blocks @journal() effects from writing to daily notes. */
+  journalOptOut: boolean;
 }
 
 export const DEFAULT_SETTINGS: StorySettings = {
@@ -33,6 +35,7 @@ export const DEFAULT_SETTINGS: StorySettings = {
   theme: null,
   seedMode: 'random',
   seed: 1,
+  journalOptOut: false,
 };
 
 /** Partial settings update — absent fields keep their current value. */
@@ -41,6 +44,7 @@ export interface StorySettingsPatch {
   theme?: string | null | undefined;
   seedMode?: SeedMode | undefined;
   seed?: number | undefined;
+  journalOptOut?: boolean | undefined;
 }
 
 export function mergeSettings(base: StorySettings, patch: StorySettingsPatch = {}): StorySettings {
@@ -52,6 +56,7 @@ export function mergeSettings(base: StorySettings, patch: StorySettingsPatch = {
     theme: patch.theme !== undefined ? patch.theme : base.theme,
     seedMode: patch.seedMode ?? base.seedMode,
     seed: patch.seed ?? base.seed,
+    journalOptOut: patch.journalOptOut ?? base.journalOptOut,
   };
 }
 
@@ -137,6 +142,7 @@ function parseSettings(raw: string): StorySettings {
     theme: parsed.theme ?? null,
     seedMode: parsed.seedMode ?? DEFAULT_SETTINGS.seedMode,
     seed: parsed.seed ?? DEFAULT_SETTINGS.seed,
+    journalOptOut: parsed.journalOptOut ?? false,
   };
 }
 

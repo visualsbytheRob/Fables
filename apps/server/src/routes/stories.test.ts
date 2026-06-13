@@ -99,6 +99,7 @@ describe('story settings (F507)', () => {
       theme: null,
       seedMode: 'fixed',
       seed: 42,
+      journalOptOut: false,
     });
   });
 

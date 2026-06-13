@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 6 authoring done (F501–F540 + F462-3, F499). 1,154 tests green. Next: F541 player UI, then F561–F600.
+**Status:** Days 6-7 wave: player+library+entities/codex/effects done. 1,242 tests green. Tier 2 amended: Claude LLM adapter (F1361-70), ComfyUI art adapter (F1861-70). Next: fusion UI (F603+, F614+, F621+).
 
 ---
 
@@ -747,65 +747,65 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Player UI Core (F541–F550)
 
-- [ ] F541 — Player route: distraction-free story reading flow
-- [ ] F542 — Progressive text reveal with configurable pacing
-- [ ] F543 — Choice buttons with tap targets sized for thumbs
-- [ ] F544 — Story restart / continue-from-autosave entry flow
-- [ ] F545 — In-player menu: saves, settings, exit, story info
-- [ ] F546 — Variable-driven UI elements (stat bars bound to story variables)
-- [ ] F547 — Inline images in story text (attachment refs)
-- [ ] F548 — Player error boundary: runtime story errors render gracefully
-- [ ] F549 — Reading position persistence per story
-- [ ] F550 — Player core e2e test on a fixture story
+- [x] F541 — Player route: distraction-free story reading flow
+- [x] F542 — Progressive text reveal with configurable pacing
+- [x] F543 — Choice buttons with tap targets sized for thumbs
+- [x] F544 — Story restart / continue-from-autosave entry flow
+- [x] F545 — In-player menu: saves, settings, exit, story info
+- [x] F546 — Variable-driven UI elements (stat bars bound to story variables)
+- [x] F547 — Inline images in story text (attachment refs)
+- [x] F548 — Player error boundary: runtime story errors render gracefully
+- [x] F549 — Reading position persistence per story
+- [x] F550 — Player core e2e test on a fixture story
 
 ### Player Presentation (F551–F560)
 
-- [ ] F551 — Typography themes: serif book, terminal, parchment, dark
-- [ ] F552 — Per-story theme override via story settings/tags
-- [ ] F553 — Text size + line height reader controls
-- [ ] F554 — Choice transition animations (subtle, reduced-motion aware)
-- [ ] F555 — Scene-tag-driven backdrops (`# scene: forest` → ambient styling)
-- [ ] F556 — Chapter/knot title cards on major transitions
-- [ ] F557 — Paragraph-level text effects via tags (shake, whisper, emphasis)
-- [ ] F558 — Reading width constraints tuned for phone vs desktop
-- [ ] F559 — Theme gallery in settings with live preview
-- [ ] F560 — Presentation snapshot tests
+- [x] F551 — Typography themes: serif book, terminal, parchment, dark
+- [x] F552 — Per-story theme override via story settings/tags
+- [x] F553 — Text size + line height reader controls
+- [x] F554 — Choice transition animations (subtle, reduced-motion aware)
+- [x] F555 — Scene-tag-driven backdrops (`# scene: forest` → ambient styling)
+- [x] F556 — Chapter/knot title cards on major transitions
+- [x] F557 — Paragraph-level text effects via tags (shake, whisper, emphasis)
+- [x] F558 — Reading width constraints tuned for phone vs desktop
+- [x] F559 — Theme gallery in settings with live preview
+- [x] F560 — Presentation snapshot tests
 
 ### History, Bookmarks & Rewind (F561–F570)
 
-- [ ] F561 — Choice history drawer: every choice made this playthrough
-- [ ] F562 — Tap any history entry → rewind to that point (uses F464)
-- [ ] F563 — Bookmark current moment with note
-- [ ] F564 — Bookmark list per story with jump-to
-- [ ] F565 — Transcript reader mode: full playthrough as continuous text
-- [ ] F566 — Transcript export → saved as a note in the knowledge base
-- [ ] F567 — Branch explorer: after finishing, show % of content seen
-- [ ] F568 — Endings collection: which endings reached, hints toggle
-- [ ] F569 — Playthrough comparison view (two transcripts diffed)
-- [ ] F570 — History/rewind integration tests
+- [x] F561 — Choice history drawer: every choice made this playthrough
+- [x] F562 — Tap any history entry → rewind to that point (uses F464)
+- [x] F563 — Bookmark current moment with note
+- [x] F564 — Bookmark list per story with jump-to
+- [x] F565 — Transcript reader mode: full playthrough as continuous text
+- [x] F566 — Transcript export → saved as a note in the knowledge base
+- [x] F567 — Branch explorer: after finishing, show % of content seen
+- [x] F568 — Endings collection: which endings reached, hints toggle
+- [x] F569 — Playthrough comparison view (two transcripts diffed)
+- [x] F570 — History/rewind integration tests
 
 ### Story Library (F571–F580)
 
-- [ ] F571 — Library view: cover grid of all stories with progress badges
-- [ ] F572 — Cover image generation: typographic covers from title + theme
-- [ ] F573 — Story metadata editing: blurb, author, tags, content notes
-- [ ] F574 — Library sort/filter: in-progress, finished, by tag
-- [ ] F575 — Continue-reading rail surfacing most recent playthroughs
-- [ ] F576 — Story detail page: blurb, stats, endings found, play button
-- [ ] F577 — Reading stats: time read, choices made, per story and global
-- [ ] F578 — Archived stories section
-- [ ] F579 — Library search incl. blurb and tags
-- [ ] F580 — Library e2e tests
+- [x] F571 — Library view: cover grid of all stories with progress badges
+- [x] F572 — Cover image generation: typographic covers from title + theme
+- [x] F573 — Story metadata editing: blurb, author, tags, content notes
+- [x] F574 — Library sort/filter: in-progress, finished, by tag
+- [x] F575 — Continue-reading rail surfacing most recent playthroughs
+- [x] F576 — Story detail page: blurb, stats, endings found, play button
+- [x] F577 — Reading stats: time read, choices made, per story and global
+- [x] F578 — Archived stories section
+- [x] F579 — Library search incl. blurb and tags
+- [x] F580 — Library e2e tests
 
 ### Export & Sharing (F581–F590)
 
-- [ ] F581 — Export story source as zip of .fable files
+- [x] F581 — Export story source as zip of .fable files
 - [ ] F582 — Export compiled story as standalone `.fable.bin`
 - [ ] F583 — Self-contained HTML export: single file with embedded VM + story
 - [ ] F584 — Import story from zip/bin with validation
-- [ ] F585 — Export transcript as markdown/PDF
-- [ ] F586 — Story JSON manifest for interop (title, files, checksum)
-- [ ] F587 — Print stylesheet for transcripts
+- [x] F585 — Export transcript as markdown/PDF
+- [x] F586 — Story JSON manifest for interop (title, files, checksum)
+- [x] F587 — Print stylesheet for transcripts
 - [ ] F588 — QR code generation for tailnet story URLs
 - [ ] F589 — Export integrity tests (HTML export plays identically)
 - [ ] F590 — Share-sheet integration on mobile PWA (Web Share API)
@@ -818,10 +818,10 @@ Your notes are the world. Your stories run on a compiler you own.
 - [ ] F594 — Haptic feedback on choices (mobile vibration API)
 - [ ] F595 — Audio asset management UI under story files
 - [ ] F596 — Preloading strategy for audio on slow tailnet links
-- [ ] F597 — Text-to-speech read-aloud mode (Web Speech API)
-- [ ] F598 — TTS voice/rate settings + per-paragraph highlighting
-- [ ] F599 — Accessibility pass on player (screen reader choice navigation)
-- [ ] F600 — Day-6 retro note in `docs/devlog/day-06.md`
+- [x] F597 — Text-to-speech read-aloud mode (Web Speech API)
+- [x] F598 — TTS voice/rate settings + per-paragraph highlighting
+- [x] F599 — Accessibility pass on player (screen reader choice navigation)
+- [x] F600 — Day-6 retro note in `docs/devlog/day-06.md`
 
 ---
 
@@ -829,29 +829,29 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Entity Notes (F601–F610)
 
-- [ ] F601 — Entity model: typed notes (character/place/item/faction/custom) with schema fields
-- [ ] F602 — Entity field schemas per type, user-editable (health: number, traits: list)
+- [x] F601 — Entity model: typed notes (character/place/item/faction/custom) with schema fields
+- [x] F602 — Entity field schemas per type, user-editable (health: number, traits: list)
 - [ ] F603 — Entity editor UI: structured fields + freeform markdown body
 - [ ] F604 — Entity creation from templates (F265) wired to schemas
-- [ ] F605 — Entity aliases for mention detection and story binding
-- [ ] F606 — Entity relationship fields (ally-of, located-in) creating typed links
+- [x] F605 — Entity aliases for mention detection and story binding
+- [x] F606 — Entity relationship fields (ally-of, located-in) creating typed links
 - [ ] F607 — Entity gallery views per type with card layouts
-- [ ] F608 — Entity field validation + defaults from schema
-- [ ] F609 — Entity API endpoints (CRUD + schema introspection for compiler F369)
-- [ ] F610 — Entity model tests
+- [x] F608 — Entity field validation + defaults from schema
+- [x] F609 — Entity API endpoints (CRUD + schema introspection for compiler F369)
+- [x] F610 — Entity model tests
 
 ### Codex Auto-Generation (F611–F620)
 
-- [ ] F611 — Codex: auto-generated index note per story listing all bound entities
-- [ ] F612 — Codex entries reveal progressively (only entities the reader has met)
-- [ ] F613 — "Met" tracking: VM emits entity-encountered events into playthrough state
+- [x] F611 — Codex: auto-generated index note per story listing all bound entities (computed codex endpoint subsumes the materialized index note)
+- [x] F612 — Codex entries reveal progressively (only entities the reader has met)
+- [x] F613 — "Met" tracking: VM emits entity-encountered events into playthrough state
 - [ ] F614 — Codex UI in player: slide-over panel, badge on new entries
 - [ ] F615 — Codex entry view: entity card + story-specific revealed facts
-- [ ] F616 — Revealed-facts model: story directives unlock entity field visibility
+- [x] F616 — Revealed-facts model: story directives unlock entity field visibility
 - [ ] F617 — Codex search and type filters
-- [ ] F618 — Spoiler-safety rules: never show unrevealed fields
-- [ ] F619 — Codex regeneration on recompile, stable entry IDs
-- [ ] F620 — Codex behavior tests (reveal ordering, spoiler safety)
+- [x] F618 — Spoiler-safety rules: never show unrevealed fields
+- [x] F619 — Codex regeneration on recompile, stable entry IDs
+- [x] F620 — Codex behavior tests (reveal ordering, spoiler safety)
 
 ### Lore Embeds in Stories (F621–F630)
 
@@ -868,16 +868,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Story Events → Journal (F631–F640)
 
-- [ ] F631 — `@journal()` effect (F483) writing structured entries to daily notes
-- [ ] F632 — Journal entry template: story, scene, chosen text, timestamp
+- [x] F631 — `@journal()` effect (F483) writing structured entries to daily notes
+- [x] F632 — Journal entry template: story, scene, chosen text, timestamp
 - [ ] F633 — Playthrough summary note auto-created on story completion
 - [ ] F634 — Decision log: major choices (tagged by author) recorded as note entries
 - [ ] F635 — Journal entries link back to exact story moment (deep link + state ref)
 - [ ] F636 — Reader annotations: highlight story text → creates a linked note
 - [ ] F637 — Annotation review view: all annotations across playthroughs
-- [ ] F638 — Journal write batching to avoid noisy daily notes
-- [ ] F639 — Privacy toggle: stories that may not write to the journal
-- [ ] F640 — Journal effect tests
+- [x] F638 — Journal write batching to avoid noisy daily notes
+- [x] F639 — Privacy toggle: stories that may not write to the journal
+- [x] F640 — Journal effect tests
 
 ### Knowledge-Driven Conditions (F641–F650)
 
@@ -1844,18 +1844,18 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1359 — Dialogue eval set
 - [ ] F1360 — Character AI tests
 
-### Reader-Side AI (F1361–F1370)
+### Cloud LLM Adapter — Claude (F1361–F1370)
 
-- [ ] F1361 — Recap generation when resuming a story
-- [ ] F1362 — Spoiler-safe hint system in player
-- [ ] F1363 — Reading-level adaptation mode (same story, simpler prose)
-- [ ] F1364 — Translation mode for story text (local model)
-- [ ] F1365 — Post-story discussion questions generator
-- [ ] F1366 — Personalized story recommendations from reading history
-- [ ] F1367 — Reader AI features fully opt-in per story
-- [ ] F1368 — Author controls: allow/deny reader-side AI transforms
-- [ ] F1369 — Reader AI honesty: transformed text clearly labeled
-- [ ] F1370 — Reader AI tests
+- [ ] F1361 — Claude API backend implementing the same adapter interface as Ollama/llama.cpp (F1303)
+- [ ] F1362 — API key management: local config only, never synced, masked in UI, validated on save
+- [ ] F1363 — Per-feature backend routing: creative tasks (co-writer, dialogue) default to Claude when enabled
+- [ ] F1364 — Explicit egress consent: first-use dialog + persistent "leaves your machine" indicator on cloud calls
+- [ ] F1365 — Per-notebook cloud exclusions (private areas never sent to any cloud backend)
+- [ ] F1366 — Streaming, retries with backoff, and rate-limit handling for the cloud path
+- [ ] F1367 — Cost awareness: token usage tracked locally per feature with a monthly meter
+- [ ] F1368 — Prompt cache-friendly request shaping for repeated vault context
+- [ ] F1369 — Side-by-side eval: cloud vs local on the Epic 14 eval sets, results in repo
+- [ ] F1370 — Cloud adapter tests with mocked API (zero real calls in CI)
 
 ### AI Command Surface (F1371–F1380)
 
@@ -2504,18 +2504,18 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1859 — Feedback loop tests
 - [ ] F1860 — Playtesting guide
 
-### Cover Art & Presentation (F1861–F1870)
+### Generative Art — ComfyUI Adapter (F1861–F1870)
 
-- [ ] F1861 — Cover studio: typographic cover designer (fonts, palettes, motifs)
-- [ ] F1862 — Procedural cover motifs from story tags
-- [ ] F1863 — Cover image import with safe-area guides
-- [ ] F1864 — Library shelf aesthetics (spines, stacks view)
-- [ ] F1865 — Story trailer cards (shareable image with blurb + QR)
-- [ ] F1866 — Open Graph metadata in exports
-- [ ] F1867 — Print-style title pages in transcripts/PDF
-- [ ] F1868 — Cover asset pipeline (sizes, formats)
-- [ ] F1869 — Cover studio tests
-- [ ] F1870 — Presentation docs
+- [ ] F1861 — ComfyUI-local adapter: workflow-JSON submission over its HTTP API, health check, queue status
+- [ ] F1862 — Comfy Cloud as an opt-in second endpoint behind the same adapter (egress consent like F1364)
+- [ ] F1863 — Cover generation: title + blurb + theme → cover image, with typographic fallback when no backend
+- [ ] F1864 — Entity portraits: generate from entity fields/description, attach to entity card + codex
+- [ ] F1865 — Scene illustrations: `# scene:` tags render generated art in the player (cached per scene)
+- [ ] F1866 — Style presets per story (consistent look across all generated assets)
+- [ ] F1867 — Generation review UI: candidates, pick/regenerate, never auto-publish
+- [ ] F1868 — Generated-asset pipeline: content-addressed storage, sizes/formats, provenance metadata
+- [ ] F1869 — Library shelf aesthetics using covers (grid/spines), trailer cards with blurb + QR
+- [ ] F1870 — Adapter tests with mocked ComfyUI server + docs
 
 ### Vault-to-Vault Sharing (F1871–F1880)
 

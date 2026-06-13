@@ -8,12 +8,29 @@ import { api } from '../api/client.js';
 
 export type StoryStatus = 'draft' | 'valid' | 'broken';
 
+/** Cover + player presentation settings persisted per story (F507/F552). */
+export interface StorySettings {
+  cover: { color: string | null; emoji: string | null };
+  theme: string | null;
+  seedMode: 'fixed' | 'random';
+  seed: number;
+}
+
+export interface StorySettingsPatch {
+  cover?: { color?: string | null; emoji?: string | null };
+  theme?: string | null;
+  seedMode?: 'fixed' | 'random';
+  seed?: number;
+}
+
 export interface StoryProject {
   id: string;
   title: string;
   description: string;
   entryFile: string;
   status: StoryStatus;
+  settings?: StorySettings;
+  isTemplate?: boolean;
   errorCount?: number;
   warningCount?: number;
   builtAt?: string | null;
@@ -44,8 +61,15 @@ export const storiesApi = {
   get: (id: string) => api.get<StoryProject>(`/stories/${id}`),
   create: (input: { title: string; description?: string }) =>
     api.post<StoryProject>('/stories', input),
-  patch: (id: string, patch: { title?: string; description?: string; entryFile?: string }) =>
-    api.patch<StoryProject>(`/stories/${id}`, patch),
+  patch: (
+    id: string,
+    patch: {
+      title?: string;
+      description?: string;
+      entryFile?: string;
+      settings?: StorySettingsPatch;
+    },
+  ) => api.patch<StoryProject>(`/stories/${id}`, patch),
   /** Deletion is title-confirmed server-side: saves and releases cascade with it. */
   remove: (id: string, confirmTitle: string) =>
     api.delete<{ id: string; deleted: boolean }>(

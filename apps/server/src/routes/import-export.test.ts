@@ -64,9 +64,7 @@ async function runImport(
   throw new Error('import job never finished');
 }
 
-async function allNotes(
-  app: FastifyInstance,
-): Promise<
+async function allNotes(app: FastifyInstance): Promise<
   {
     id: string;
     title: string;

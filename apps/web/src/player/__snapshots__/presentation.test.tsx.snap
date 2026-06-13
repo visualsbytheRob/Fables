@@ -1,0 +1,173 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`player presentation (F551–F560) > renders the dark theme surface (F551) 1`] = `
+<div
+  aria-live="polite"
+  data-testid="player-stream"
+>
+  <div
+    aria-level="2"
+    class="player-chapter"
+    role="heading"
+  >
+    Below
+  </div>
+  <p
+    class="player-para"
+  >
+    <span>
+      Dripping dark.
+    </span>
+  </p>
+  <p
+    class="player-para fx-whisper"
+  >
+    <span>
+      A whisper coils.
+    </span>
+  </p>
+  <p
+    class="player-para fx-shake"
+  >
+    <span>
+      The walls TREMBLE.
+    </span>
+  </p>
+  <p
+    class="player-para fx-emphasis"
+  >
+    <span>
+      It matters.
+    </span>
+  </p>
+</div>
+`;
+
+exports[`player presentation (F551–F560) > renders the parchment theme surface (F551) 1`] = `
+<div
+  aria-live="polite"
+  data-testid="player-stream"
+>
+  <div
+    aria-level="2"
+    class="player-chapter"
+    role="heading"
+  >
+    Below
+  </div>
+  <p
+    class="player-para"
+  >
+    <span>
+      Dripping dark.
+    </span>
+  </p>
+  <p
+    class="player-para fx-whisper"
+  >
+    <span>
+      A whisper coils.
+    </span>
+  </p>
+  <p
+    class="player-para fx-shake"
+  >
+    <span>
+      The walls TREMBLE.
+    </span>
+  </p>
+  <p
+    class="player-para fx-emphasis"
+  >
+    <span>
+      It matters.
+    </span>
+  </p>
+</div>
+`;
+
+exports[`player presentation (F551–F560) > renders the serif theme surface (F551) 1`] = `
+<div
+  aria-live="polite"
+  data-testid="player-stream"
+>
+  <div
+    aria-level="2"
+    class="player-chapter"
+    role="heading"
+  >
+    Below
+  </div>
+  <p
+    class="player-para"
+  >
+    <span>
+      Dripping dark.
+    </span>
+  </p>
+  <p
+    class="player-para fx-whisper"
+  >
+    <span>
+      A whisper coils.
+    </span>
+  </p>
+  <p
+    class="player-para fx-shake"
+  >
+    <span>
+      The walls TREMBLE.
+    </span>
+  </p>
+  <p
+    class="player-para fx-emphasis"
+  >
+    <span>
+      It matters.
+    </span>
+  </p>
+</div>
+`;
+
+exports[`player presentation (F551–F560) > renders the terminal theme surface (F551) 1`] = `
+<div
+  aria-live="polite"
+  data-testid="player-stream"
+>
+  <div
+    aria-level="2"
+    class="player-chapter"
+    role="heading"
+  >
+    Below
+  </div>
+  <p
+    class="player-para"
+  >
+    <span>
+      Dripping dark.
+    </span>
+  </p>
+  <p
+    class="player-para fx-whisper"
+  >
+    <span>
+      A whisper coils.
+    </span>
+  </p>
+  <p
+    class="player-para fx-shake"
+  >
+    <span>
+      The walls TREMBLE.
+    </span>
+  </p>
+  <p
+    class="player-para fx-emphasis"
+  >
+    <span>
+      It matters.
+    </span>
+  </p>
+</div>
+`;

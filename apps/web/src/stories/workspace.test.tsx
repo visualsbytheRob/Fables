@@ -184,9 +184,9 @@ describe('story library (F511)', () => {
         </ThemeProvider>
       </MemoryRouter>,
     );
-    await waitFor(() => expect(screen.getByText('The Night-Wood')).toBeTruthy());
-    expect(screen.getByText('Broken Tale')).toBeTruthy();
-    expect(screen.getByText('compiles')).toBeTruthy();
-    expect(screen.getByText('3 errors')).toBeTruthy();
+    await waitFor(() => expect(screen.getAllByText('The Night-Wood').length).toBeGreaterThan(0));
+    expect(screen.getAllByText('Broken Tale').length).toBeGreaterThan(0);
+    // the library is reader-centric (F571): progress badges, not compile status
+    expect(screen.getAllByText('unread').length).toBeGreaterThan(0);
   });
 });

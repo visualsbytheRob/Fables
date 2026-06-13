@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { compile, parse } from '@fables/forge-dsl';
-import type { FileProvider, Severity } from '@fables/forge-dsl';
+import type { FileProvider, KnowledgeResolver, Severity } from '@fables/forge-dsl';
 
 /**
  * Compile-on-save pipeline (F504/F505) and INCLUDE-path integrity (F503).
@@ -70,8 +70,15 @@ export function sceneFileProvider(files: ReadonlyMap<string, string>): FileProvi
   };
 }
 
-/** Compile a story project: entry file + provider over all its files. */
-export function buildStory(entryFile: string, files: ReadonlyMap<string, string>): BuildOutcome {
+/**
+ * Compile a story project: entry file + provider over all its files. Passing
+ * a knowledge resolver turns on `@entity`/`[[note]]` binding checks (F369/F609).
+ */
+export function buildStory(
+  entryFile: string,
+  files: ReadonlyMap<string, string>,
+  knowledge?: KnowledgeResolver,
+): BuildOutcome {
   const entrySource = files.get(entryFile);
   if (entrySource === undefined) {
     return {
@@ -93,6 +100,7 @@ export function buildStory(entryFile: string, files: ReadonlyMap<string, string>
   const result = compile(entrySource, {
     fileName: entryFile,
     files: sceneFileProvider(files),
+    ...(knowledge !== undefined ? { knowledge } : {}),
   });
   const diagnostics: StoredDiagnostic[] = result.diagnostics.map((d) => ({
     severity: d.severity,

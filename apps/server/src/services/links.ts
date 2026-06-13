@@ -1,5 +1,6 @@
-import { parseWikilinks, type Note, type NoteId } from '@fables/core';
+import { parseWikilinks, type Entity, type Note, type NoteId } from '@fables/core';
 import type { Db } from '../db/connection.js';
+import { entitiesRepo } from '../db/repos/entities.js';
 import { linksRepo, type NewLink } from '../db/repos/links.js';
 import { notesRepo } from '../db/repos/notes.js';
 import { detectMentions, MIN_NAME_LENGTH, type MentionCandidate } from '../lib/mentions.js';
@@ -25,11 +26,17 @@ export function buildTitlesIndex(db: Db): Map<string, NoteId> {
 }
 
 function mentionCandidates(db: Db, excludeId: NoteId): MentionCandidate[] {
-  // Entities will contribute `{ id, names: [name, ...aliases] }` here later (F226).
-  return notesRepo(db)
+  // Notes by title, plus entities by name + aliases (F605/F226).
+  const noteCandidates = notesRepo(db)
     .listTitles()
     .filter((n) => n.id !== excludeId)
     .map((n) => ({ id: n.id, names: [n.title] }));
+  // An entity's own backing note never "mentions" it — exclude it, like self-titles.
+  const entityCandidates = entitiesRepo(db)
+    .listAll()
+    .filter((e) => e.noteId !== excludeId)
+    .map((e) => ({ id: e.id, names: [e.name, ...e.aliases] }));
+  return [...noteCandidates, ...entityCandidates];
 }
 
 function wikilinkRows(note: Note, titles: Map<string, NoteId>): NewLink[] {
@@ -52,6 +59,7 @@ function wikilinkRows(note: Note, titles: Map<string, NoteId>): NewLink[] {
 function mentionRows(db: Db, note: Note): NewLink[] {
   return detectMentions(note.body, mentionCandidates(db, note.id)).map((hit) => ({
     kind: 'mention' as const,
+    targetType: hit.id.startsWith('ent_') ? ('entity' as const) : ('note' as const),
     targetId: hit.id,
     targetTitle: hit.name.toLowerCase(),
     targetHeading: null,
@@ -94,6 +102,38 @@ export function onTitleChanged(db: Db, note: Note): void {
       if (sourceId === note.id) continue;
       const source = notes.get(sourceId);
       if (source) links.replaceForSource(sourceId, 'mention', mentionRows(db, source));
+    }
+  }
+  invalidateGraphCache(db);
+}
+
+/**
+ * Incoming-side maintenance when an entity is created or its name/aliases
+ * change (F605): drop stale mention rows targeting the entity, then recompute
+ * mentions for candidate source notes found via the same bounded substring
+ * prefilter `onTitleChanged` uses. Pass the pre-change names too so renames
+ * clear hits on the old spelling.
+ */
+export function onEntityNamesChanged(db: Db, entity: Entity, previousNames: string[] = []): void {
+  const links = linksRepo(db);
+  const notes = notesRepo(db);
+  db.prepare(
+    `DELETE FROM links WHERE kind = 'mention' AND target_type = 'entity' AND target_id = ?`,
+  ).run(entity.id);
+
+  const names = new Set(
+    [entity.name, ...entity.aliases, ...previousNames]
+      .map((n) => n.toLowerCase())
+      .filter((n) => n.length >= MIN_NAME_LENGTH),
+  );
+  const sourceIds = new Set<NoteId>();
+  for (const name of names) {
+    for (const sourceId of notes.idsWithBodyContaining(name)) sourceIds.add(sourceId);
+  }
+  for (const sourceId of sourceIds) {
+    const source = notes.get(sourceId);
+    if (source && source.trashedAt === null) {
+      links.replaceForSource(sourceId, 'mention', mentionRows(db, source));
     }
   }
   invalidateGraphCache(db);

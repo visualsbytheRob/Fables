@@ -54,7 +54,12 @@ describe('save slots (F462)', () => {
     });
     expect(created.statusCode).toBe(201);
     const slot = created.json().data;
-    expect(slot).toMatchObject({ kind: 'slot', name: 'before the fork', turn: 1, scene: 'crossroads' });
+    expect(slot).toMatchObject({
+      kind: 'slot',
+      name: 'before the fork',
+      turn: 1,
+      scene: 'crossroads',
+    });
     expect(slot.id).toMatch(/^sav_/);
     expect(slot.state).toBeUndefined(); // metadata envelope, state via GET one
 

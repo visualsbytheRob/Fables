@@ -1,13 +1,18 @@
 import type { StoryId } from '@fables/core';
 import type { Db } from '../db/connection.js';
 import { storiesRepo, type StoryRecord } from '../db/repos/stories.js';
+import { knowledgeResolver } from '../services/entities.js';
 import { buildStory, type BuildOutcome } from './build.js';
 
-/** Compile a story from its current files and persist the outcome (F504). */
+/**
+ * Compile a story from its current files and persist the outcome (F504).
+ * Compiles against the live knowledge base, so `@entity` references and
+ * `[[note]]` references validate against real entities/notes (F369/F609).
+ */
 export function recompileStory(db: Db, storyId: StoryId): BuildOutcome {
   const repo = storiesRepo(db);
   const story = repo.mustGet(storyId);
-  const outcome = buildStory(story.entryFile, repo.fileMap(storyId));
+  const outcome = buildStory(story.entryFile, repo.fileMap(storyId), knowledgeResolver(db));
   repo.setBuild(storyId, outcome);
   return outcome;
 }

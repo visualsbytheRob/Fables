@@ -51,6 +51,13 @@ const StoriesPage = lazy(() =>
 const StoryEditPage = lazy(() =>
   import('./stories/StoryEditPage.js').then((m) => ({ default: m.StoryEditPage })),
 );
+const StoryDetailPage = lazy(() =>
+  import('./stories/StoryDetailPage.js').then((m) => ({ default: m.StoryDetailPage })),
+);
+// The player (Day 6, F541–F600) carries the forge compiler + VM: own chunk.
+const PlayerPage = lazy(() =>
+  import('./player/PlayerPage.js').then((m) => ({ default: m.PlayerPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -161,7 +168,9 @@ export function App() {
                   <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
                   <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
                   <Route path="stories" element={lazyPage(<StoriesPage />)} />
+                  <Route path="stories/:storyId" element={lazyPage(<StoryDetailPage />)} />
                   <Route path="stories/:storyId/edit" element={lazyPage(<StoryEditPage />)} />
+                  <Route path="stories/:storyId/play" element={lazyPage(<PlayerPage />)} />
                   <Route path="graph" element={lazyPage(<GraphPage />)} />
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />

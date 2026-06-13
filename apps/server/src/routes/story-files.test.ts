@@ -44,7 +44,10 @@ async function projectWithInclude() {
 }
 
 async function getFile(storyId: string, fileId: string) {
-  const res = await app.inject({ method: 'GET', url: `/api/v1/stories/${storyId}/files/${fileId}` });
+  const res = await app.inject({
+    method: 'GET',
+    url: `/api/v1/stories/${storyId}/files/${fileId}`,
+  });
   expect(res.statusCode).toBe(200);
   return res.json().data;
 }
@@ -132,7 +135,7 @@ describe('rename + INCLUDE integrity (F503)', () => {
     expect(main.source).not.toContain('INCLUDE chapters/one.fable');
   });
 
-  it('rewrites the renamed file\'s own includes when it changes directory', async () => {
+  it("rewrites the renamed file's own includes when it changes directory", async () => {
     const { story, chapterId } = await projectWithInclude();
     await app.inject({
       method: 'POST',

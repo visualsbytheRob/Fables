@@ -25,13 +25,19 @@ const fileParamsSchema = z.object({ id: z.string().min(1), fileId: z.string().mi
 
 const createBodySchema = z.object({
   path: fablePathSchema,
-  source: z.string().max(1024 * 1024).optional(),
+  source: z
+    .string()
+    .max(1024 * 1024)
+    .optional(),
 });
 
 const patchBodySchema = z
   .object({
     path: fablePathSchema.optional(),
-    source: z.string().max(1024 * 1024).optional(),
+    source: z
+      .string()
+      .max(1024 * 1024)
+      .optional(),
   })
   .refine((b) => b.path !== undefined || b.source !== undefined, {
     message: 'provide path and/or source',
@@ -110,47 +116,49 @@ export const storyFilesRoutes: FastifyPluginAsync = async (app) => {
   app.patch('/stories/:id/files/:fileId', async (request) => {
     const { id, fileId } = parseWith(fileParamsSchema, request.params, 'params');
     const body = parseWith(patchBodySchema, request.body, 'body');
-    const result = withTransaction(app.db, (): {
-      file: StoryFile;
-      build: BuildOutcome;
-      rewrittenFiles: string[];
-    } => {
-      const story = repo().mustGet(id as StoryId);
-      const current = repo().getFile(story.id, fileId as SceneId);
-      if (!current) throw notFound('Story file', fileId);
+    const result = withTransaction(
+      app.db,
+      (): {
+        file: StoryFile;
+        build: BuildOutcome;
+        rewrittenFiles: string[];
+      } => {
+        const story = repo().mustGet(id as StoryId);
+        const current = repo().getFile(story.id, fileId as SceneId);
+        if (!current) throw notFound('Story file', fileId);
 
-      const newPath =
-        body.path !== undefined ? normalizeProjectPath(body.path) : current.path;
-      const renaming = newPath !== current.path;
+        const newPath = body.path !== undefined ? normalizeProjectPath(body.path) : current.path;
+        const renaming = newPath !== current.path;
 
-      // Project view with the incoming source applied — rename rewrites must
-      // run against what is about to be saved, not what was saved before.
-      const files = repo().fileMap(story.id);
-      if (body.source !== undefined) files.set(current.path, body.source);
+        // Project view with the incoming source applied — rename rewrites must
+        // run against what is about to be saved, not what was saved before.
+        const files = repo().fileMap(story.id);
+        if (body.source !== undefined) files.set(current.path, body.source);
 
-      let rewrittenFiles: string[] = [];
-      let ownSource = files.get(current.path) as string;
-      if (renaming) {
-        const rewritten = rewriteIncludesForRename(files, current.path, newPath);
-        const own = rewritten.get(current.path);
-        if (own !== undefined) {
-          ownSource = own;
-          rewritten.delete(current.path);
+        let rewrittenFiles: string[] = [];
+        let ownSource = files.get(current.path) as string;
+        if (renaming) {
+          const rewritten = rewriteIncludesForRename(files, current.path, newPath);
+          const own = rewritten.get(current.path);
+          if (own !== undefined) {
+            ownSource = own;
+            rewritten.delete(current.path);
+          }
+          rewrittenFiles = [...rewritten.keys()].sort();
+          repo().setFileSources(story.id, rewritten);
         }
-        rewrittenFiles = [...rewritten.keys()].sort();
-        repo().setFileSources(story.id, rewritten);
-      }
 
-      const file = repo().updateFile(story.id, current.id, {
-        path: newPath,
-        source: ownSource,
-      });
-      // Renaming the entry file follows it (F503/F507).
-      if (renaming && story.entryFile === current.path) {
-        repo().update(story.id, { entryFile: newPath });
-      }
-      return { file, build: recompileStory(app.db, story.id), rewrittenFiles };
-    });
+        const file = repo().updateFile(story.id, current.id, {
+          path: newPath,
+          source: ownSource,
+        });
+        // Renaming the entry file follows it (F503/F507).
+        if (renaming && story.entryFile === current.path) {
+          repo().update(story.id, { entryFile: newPath });
+        }
+        return { file, build: recompileStory(app.db, story.id), rewrittenFiles };
+      },
+    );
     return { data: result };
   });
 
@@ -178,7 +186,12 @@ export const storyFilesRoutes: FastifyPluginAsync = async (app) => {
         }
       }
       repo().deleteFile(story.id, file.id);
-      return { id: file.id, path: file.path, deleted: true, build: recompileStory(app.db, story.id) };
+      return {
+        id: file.id,
+        path: file.path,
+        deleted: true,
+        build: recompileStory(app.db, story.id),
+      };
     });
     return { data: result };
   });
