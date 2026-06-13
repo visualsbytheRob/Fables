@@ -8,6 +8,7 @@ import {
   embeddingsApi,
   graphApi,
   importApi,
+  ingestApi,
   insightsApi,
   linksApi,
   notebooksApi,
@@ -18,6 +19,7 @@ import {
   savedQueriesApi,
   searchApi,
   tagsApi,
+  transcribeApi,
   trashApi,
   type GraphFilterParams,
   type ListNotesParams,
@@ -487,6 +489,46 @@ export function useAcceptSuggestedLink() {
     onSuccess: () => {
       invalidate();
       void qc.invalidateQueries({ queryKey: ['insights', 'suggested-links'] });
+    },
+  });
+}
+
+/* ===== Ingest jobs (F766) ===== */
+
+export function useIngestJobs() {
+  return useQuery({
+    queryKey: ['ingest-jobs'],
+    queryFn: ingestApi.listJobs,
+    refetchInterval: (query) => {
+      const jobs = query.state.data ?? [];
+      return jobs.some((j) => j.status === 'pending' || j.status === 'running') ? 1500 : false;
+    },
+    staleTime: 5_000,
+  });
+}
+
+export function useIngestJob(id: string | null) {
+  return useQuery({
+    queryKey: ['ingest-job', id ?? 'none'],
+    queryFn: () => ingestApi.getJob(id as string),
+    enabled: id !== null,
+    refetchInterval: (query) => {
+      const s = query.state.data?.status;
+      return s === 'pending' || s === 'running' ? 1000 : false;
+    },
+  });
+}
+
+/* ===== Transcribe jobs (F781–F786) ===== */
+
+export function useTranscribeJob(id: string | null) {
+  return useQuery({
+    queryKey: ['transcribe-job', id ?? 'none'],
+    queryFn: () => transcribeApi.getJob(id as string),
+    enabled: id !== null,
+    refetchInterval: (query) => {
+      const s = query.state.data?.status;
+      return s === 'pending' || s === 'running' ? 1500 : false;
     },
   });
 }

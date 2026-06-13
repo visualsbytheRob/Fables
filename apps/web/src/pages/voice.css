@@ -1,0 +1,285 @@
+/* Voice memo capture + transcription (F781–F786). */
+
+.voice-page {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.voice-page h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.voice-page h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.voice-page__section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.voice-page__hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+/* ---- Voice recorder ---- */
+.voice-recorder {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.voice-recorder--unsupported {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+.voice-recorder__timer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-lg);
+  color: var(--danger);
+}
+
+.voice-recorder__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--danger);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* ---- Hold to record (F785) ---- */
+.hold-to-record {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-6);
+  border: 2px solid var(--border);
+  border-radius: 9999px;
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-size: var(--text-sm);
+  user-select: none;
+  touch-action: none;
+}
+
+.hold-to-record:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.hold-to-record--active {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+  transform: scale(1.05);
+}
+
+/* ---- Audio player (F784) ---- */
+.audio-player {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.audio-player__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.audio-player__play-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.audio-player__play-btn:hover {
+  background: var(--bg-hover);
+}
+
+.audio-player__time {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+
+.audio-player__transcript {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.audio-player__segment {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
+  cursor: pointer;
+  transition: background 0.1s;
+  border-radius: 2px;
+}
+
+.audio-player__segment:hover {
+  background: var(--bg-hover);
+}
+
+.audio-player__segment--active {
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--text);
+}
+
+.audio-player__seg-time {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-xs, 0.75rem);
+  width: 3.5em;
+}
+
+/* ---- Transcription status (F781/F786) ---- */
+.transcribe-status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+}
+
+.transcribe-status--loading,
+.transcribe-status--running {
+  color: var(--text-dim);
+}
+
+.transcribe-status--unavailable {
+  color: var(--text-dim);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+}
+
+.transcribe-status--failed {
+  color: var(--danger);
+}
+
+.transcribe-status--done {
+  color: var(--success, #22c55e);
+}
+
+.transcribe-status__link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.transcribe-status__link:hover {
+  text-decoration: underline;
+}
+
+/* ---- Recordings list ---- */
+.voice-page__recordings {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+}
+
+.voice-page__recording-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.voice-page__recording {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.voice-page__recording-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.voice-page__recording-label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.voice-page__recording-duration {
+  color: var(--text-dim);
+  font-weight: 400;
+  font-size: var(--text-xs, 0.75rem);
+}
+
+.voice-page__uploading {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--text-dim);
+}
+
+.voice-page__today-badge {
+  margin-left: auto;
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  padding: 2px var(--space-2);
+  border-radius: 9999px;
+}
+
+/* Shared spin animation */
+.voice-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

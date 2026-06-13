@@ -2,11 +2,14 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Activity,
+  BookmarkPlus,
   BookOpen,
   CalendarDays,
   CommandPalette,
+  FileInput,
   FileText,
   History,
+  Mic,
   Network,
   Package,
   Paperclip,
@@ -80,6 +83,16 @@ const WorldPage = lazy(() =>
 const InsightsPage = lazy(() =>
   import('./insights/InsightsPage.js').then((m) => ({ default: m.InsightsPage })),
 );
+// Day 8: Ingestion (F766), Clipper (F771–F773), Voice (F781–F786) — own chunks.
+const IngestPage = lazy(() =>
+  import('./pages/IngestPage.js').then((m) => ({ default: m.IngestPage })),
+);
+const ClipPage = lazy(() =>
+  import('./pages/ClipPage.js').then((m) => ({ default: m.ClipPage })),
+);
+const VoicePage = lazy(() =>
+  import('./pages/VoicePage.js').then((m) => ({ default: m.VoicePage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -139,6 +152,24 @@ function Shell() {
       run: () => navigate('/import'),
     },
     {
+      id: 'ingest',
+      label: 'Ingest document…',
+      keywords: 'pdf epub html document ingestion',
+      run: () => navigate('/ingest'),
+    },
+    {
+      id: 'clip',
+      label: 'Clip a web page…',
+      keywords: 'clip web url bookmarklet',
+      run: () => navigate('/clip'),
+    },
+    {
+      id: 'voice',
+      label: 'Voice memos…',
+      keywords: 'record audio transcribe microphone',
+      run: () => navigate('/voice'),
+    },
+    {
       id: 'playground',
       label: 'UI Playground',
       keywords: 'design system',
@@ -196,6 +227,15 @@ function Shell() {
         </NavLink>
         <NavLink to="/import">
           <Upload size={16} /> Import
+        </NavLink>
+        <NavLink to="/ingest">
+          <FileInput size={16} /> Ingest
+        </NavLink>
+        <NavLink to="/clip">
+          <BookmarkPlus size={16} /> Clip
+        </NavLink>
+        <NavLink to="/voice">
+          <Mic size={16} /> Voice
         </NavLink>
         <NavLink to="/insights">
           <Activity size={16} /> Insights
@@ -258,6 +298,9 @@ export function App() {
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />
                   <Route path="import" element={lazyPage(<ImportPage />)} />
+                  <Route path="ingest" element={lazyPage(<IngestPage />)} />
+                  <Route path="clip" element={lazyPage(<ClipPage />)} />
+                  <Route path="voice" element={lazyPage(<VoicePage />)} />
                   <Route path="playground" element={<PlaygroundPage />} />
                   <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
                   <Route path="insights" element={lazyPage(<InsightsPage />)} />

@@ -1,0 +1,147 @@
+/* Document ingestion queue UI (F766). */
+
+.ingest-page {
+  max-width: 760px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ingest-page h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.ingest-page h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.ingest-page__hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+/* Drop zone */
+.ingest-page__dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-6) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.ingest-page__dropzone:hover,
+.ingest-page__dropzone--over {
+  border-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.ingest-page__dropzone p {
+  margin: 0;
+}
+
+.ingest-page__dropzone-icon {
+  opacity: 0.4;
+}
+
+/* URL section */
+.ingest-page__url-input {
+  flex: 1;
+}
+
+/* Job list */
+.ingest-page__job-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ingest-page__job {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.ingest-page__job[data-status='done'] {
+  border-color: var(--success, #22c55e);
+}
+
+.ingest-page__job[data-status='failed'] {
+  border-color: var(--danger);
+}
+
+.ingest-page__job-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ingest-page__job-time {
+  margin-left: auto;
+  color: var(--text-dim);
+  font-size: var(--text-xs, 0.75rem);
+}
+
+.ingest-page__spin {
+  animation: spin 1s linear infinite;
+  color: var(--accent);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ingest-page__done {
+  color: var(--success, #22c55e);
+}
+
+.ingest-page__fail {
+  color: var(--danger);
+}
+
+.ingest-page__bar {
+  width: 100%;
+  height: 6px;
+  accent-color: var(--accent);
+}
+
+.ingest-page__note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.ingest-page__note-link:hover {
+  text-decoration: underline;
+}
+
+.ingest-page__job-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--danger);
+}

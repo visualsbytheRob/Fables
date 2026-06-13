@@ -1,0 +1,142 @@
+/* Web clipper UI (F771–F773). */
+
+.clip-page {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.clip-page h1 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.clip-page h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.clip-page__field {
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+
+.clip-page__hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+
+.clip-page__duplicate {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warning, #f59e0b) 15%, transparent);
+  border: 1px solid var(--warning, #f59e0b);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.clip-page__success {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--success, #22c55e) 12%, transparent);
+  border: 1px solid var(--success, #22c55e);
+  font-size: var(--text-sm);
+  color: var(--text);
+}
+
+.clip-page__note-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.clip-page__note-link:hover {
+  text-decoration: underline;
+}
+
+.clip-page__error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin: 0;
+  color: var(--danger);
+  font-size: var(--text-sm);
+}
+
+/* Bookmarklet (F772) */
+.clip-page__bookmarklet-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.clip-page__bookmarklet-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: var(--accent);
+  text-decoration: none;
+  font-size: var(--text-sm);
+  cursor: grab;
+  white-space: nowrap;
+}
+
+.clip-page__bookmarklet-link:hover {
+  background: var(--bg-hover);
+}
+
+.clip-page__bookmarklet-code {
+  flex: 1;
+  overflow: hidden;
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--text-dim);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Share-target card (F773) */
+.clip-page__share-instructions {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.clip-page__share-instructions p {
+  margin: 0;
+}
+
+.clip-page__share-instructions ol {
+  margin: 0;
+  padding-left: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}

@@ -111,4 +111,16 @@ export {
   TrendingUp,
   Unlink,
   Zap,
+  // Day 8: ingestion + clipper + voice (F766, F771–F773, F781–F786)
+  BookmarkPlus,
+  Clipboard,
+  FileInput,
+  Mic,
+  MicOff,
+  Pause,
+  PauseCircle,
+  PlayCircle,
+  StopCircle,
+  Volume1,
+  WifiOff,
 } from 'lucide-react';

@@ -764,6 +764,78 @@ export const embeddingsApi = {
     request<{ message: string; provider: string }>('/embeddings/backfill', { method: 'POST' }),
 };
 
+/* ===== Ingest (F761–F770) ===== */
+
+export type IngestSourceType = 'pdf' | 'epub' | 'html' | 'url';
+export type IngestJobStatus = 'pending' | 'running' | 'done' | 'failed';
+
+export interface IngestJob {
+  id: string;
+  sourceType: IngestSourceType;
+  status: IngestJobStatus;
+  progress: number; // 0–100
+  error: string | null;
+  noteId: string | null;
+  createdAt: string;
+}
+
+export const ingestApi = {
+  /** POST multipart file OR JSON {url}; returns {jobId} */
+  submitFile: async (file: File): Promise<{ jobId: string }> => {
+    const form = new FormData();
+    form.append('file', file, file.name);
+    const res = await fetch('/api/v1/ingest', { method: 'POST', body: form });
+    return parse<{ jobId: string }>(res);
+  },
+  submitUrl: (url: string): Promise<{ jobId: string }> =>
+    request<{ jobId: string }>('/ingest', {
+      method: 'POST',
+      body: JSON.stringify({ url }),
+    }),
+  listJobs: (): Promise<IngestJob[]> => api.get<IngestJob[]>('/ingest/jobs'),
+  getJob: (id: string): Promise<IngestJob> => api.get<IngestJob>(`/ingest/jobs/${id}`),
+};
+
+/* ===== Clip (F771–F773) ===== */
+
+export interface ClipResult {
+  note: Note;
+  duplicate?: boolean;
+}
+
+export const clipApi = {
+  clip: (url: string, selection?: string): Promise<ClipResult> =>
+    api.post<ClipResult>('/clip', { url, ...(selection !== undefined ? { selection } : {}) }),
+};
+
+/* ===== Transcribe (F781–F786) ===== */
+
+export type TranscribeJobStatus = 'pending' | 'running' | 'done' | 'failed';
+
+export interface TranscriptSegment {
+  start: number; // seconds
+  end: number;
+  text: string;
+}
+
+export interface TranscribeJob {
+  id: string;
+  status: TranscribeJobStatus;
+  transcriptNoteId: string | null;
+  available: boolean;
+  error: string | null;
+}
+
+export const transcribeApi = {
+  submit: async (audio: Blob, filename = 'recording.webm'): Promise<{ jobId: string }> => {
+    const form = new FormData();
+    form.append('audio', audio, filename);
+    const res = await fetch('/api/v1/transcribe', { method: 'POST', body: form });
+    return parse<{ jobId: string }>(res);
+  },
+  getJob: (id: string): Promise<TranscribeJob> => api.get<TranscribeJob>(`/transcribe/jobs/${id}`),
+};
+
 /* ===== Insights (F791–F800) ===== */
 
 export interface InsightsOverview {
