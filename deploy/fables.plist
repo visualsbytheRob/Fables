@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  launchd plist for Fables (F993 — macOS run-on-boot)
+
+  Installation:
+    1. Copy this file to ~/Library/LaunchAgents/com.fables.server.plist
+    2. Edit ProgramArguments and EnvironmentVariables to match your setup.
+    3. launchctl load ~/Library/LaunchAgents/com.fables.server.plist
+    4. launchctl start com.fables.server
+
+  To stop:
+    launchctl stop com.fables.server
+
+  To disable autostart:
+    launchctl unload ~/Library/LaunchAgents/com.fables.server.plist
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.fables.server</string>
+
+  <key>ProgramArguments</key>
+  <array>
+    <!-- Adjust to your node path: `which node` -->
+    <string>/usr/local/bin/node</string>
+    <!-- Adjust to your Fables install path -->
+    <string>/Users/YOUR_USERNAME/fables/apps/server/dist/server.js</string>
+  </array>
+
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>NODE_ENV</key>
+    <string>production</string>
+    <key>PORT</key>
+    <string>4870</string>
+    <key>LOG_LEVEL</key>
+    <string>info</string>
+    <!-- DATA_DIR defaults to ~/.fables. Override here if needed. -->
+    <!-- <key>DATA_DIR</key> <string>/Users/YOUR_USERNAME/.fables</string> -->
+  </dict>
+
+  <key>WorkingDirectory</key>
+  <string>/Users/YOUR_USERNAME/fables</string>
+
+  <!-- Run on login -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Restart on crash -->
+  <key>KeepAlive</key>
+  <dict>
+    <key>Crashed</key>
+    <true/>
+  </dict>
+
+  <!-- Log files -->
+  <key>StandardOutPath</key>
+  <string>/Users/YOUR_USERNAME/.fables/logs/fables-stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/YOUR_USERNAME/.fables/logs/fables-stderr.log</string>
+</dict>
+</plist>

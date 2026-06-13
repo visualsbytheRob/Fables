@@ -1,0 +1,50 @@
+# systemd service unit for Fables (F993)
+#
+# Installation:
+#   1. Copy this file to /etc/systemd/system/fables.service
+#   2. Edit WorkingDirectory, ExecStart, and User to match your setup.
+#   3. sudo systemctl daemon-reload
+#   4. sudo systemctl enable --now fables
+#
+# The server binds to 127.0.0.1:4870 by default; use `tailscale serve`
+# to expose it over the tailnet.
+
+[Unit]
+Description=Fables — Personal Knowledge OS + Interactive Fiction Engine
+Documentation=https://github.com/robmcd/fables
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=YOUR_USERNAME
+Group=YOUR_USERNAME
+
+WorkingDirectory=/home/YOUR_USERNAME/fables
+
+# Production start command. Adjust path if installed elsewhere.
+ExecStart=/usr/bin/node /home/YOUR_USERNAME/fables/apps/server/dist/server.js
+
+# Environment overrides (keep secrets out of this file — use a .env drop-in):
+Environment=NODE_ENV=production
+Environment=PORT=4870
+Environment=LOG_LEVEL=info
+# DATA_DIR defaults to ~/.fables — override here if needed:
+# Environment=DATA_DIR=/home/YOUR_USERNAME/.fables
+
+# Optional: load secrets from a drop-in env file (not committed to git).
+# EnvironmentFile=/home/YOUR_USERNAME/fables/.env
+
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/home/YOUR_USERNAME/.fables
+
+[Install]
+WantedBy=multi-user.target

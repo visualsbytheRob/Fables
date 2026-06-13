@@ -20,6 +20,8 @@
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r run typecheck",
     "doctor": "node scripts/doctor.mjs",
+    "start": "node apps/server/dist/server.js",
+    "upgrade-fables": "node scripts/upgrade-fables.mjs",
     "test:coverage": "vitest run --coverage",
     "prepare": "simple-git-hooks"
   },

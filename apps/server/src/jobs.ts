@@ -4,6 +4,7 @@ import type { Db } from './db/connection.js';
 import { linksRepo } from './db/repos/links.js';
 import { notesRepo } from './db/repos/notes.js';
 import { tagsRepo } from './db/repos/tags.js';
+import { scheduleBackupJob } from './services/backup.js';
 import { pruneMutationAudit } from './services/world.js';
 
 /** Trash retention (F107): notes trashed longer than this are purged on boot. */
@@ -30,4 +31,7 @@ export function runBootJobs(db: Db, dataDir: string, log: FastifyBaseLogger): vo
     { purgedNotes, orphanTags, links, attachments, prunedMutations },
     'boot maintenance complete',
   );
+
+  // Schedule nightly backup job (F951). First run 5 minutes after boot.
+  scheduleBackupJob(db, dataDir, log);
 }

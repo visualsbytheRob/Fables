@@ -20,12 +20,30 @@ import { sha256Hex } from '../lib/hash.js';
 /** Upload limit (F165). */
 export const MAX_ATTACHMENT_BYTES = 25 * 1024 * 1024;
 
-/** Allowlist (F165): images, PDF, audio, and plain-text formats. */
+/** Allowlist (F165/F948): images, PDF, audio, and safe plain-text formats only.
+ *  Explicitly blocks text/html and text/javascript to prevent XSS via upload.
+ */
 export function isAllowedMime(mime: string): boolean {
+  // Deny list takes priority — block executable/scriptable MIME types first.
+  const blocked = [
+    'text/html',
+    'text/javascript',
+    'text/x-javascript',
+    'application/javascript',
+    'application/x-javascript',
+    'application/x-executable',
+    'application/x-sh',
+    'application/x-shellscript',
+    'application/x-csh',
+    'application/x-python',
+    'application/octet-stream',
+  ];
+  if (blocked.includes(mime)) return false;
+
   return (
     mime.startsWith('image/') ||
     mime.startsWith('audio/') ||
-    mime.startsWith('text/') ||
+    (mime.startsWith('text/') && !mime.includes('javascript') && !mime.includes('html')) ||
     mime === 'application/pdf'
   );
 }

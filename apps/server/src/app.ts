@@ -17,6 +17,8 @@ import { runBootJobs } from './jobs.js';
 import { buildLoggerOptions } from './logging.js';
 import { configRoutes } from './routes/config.js';
 import { routes } from './routes/index.js';
+import { assertSchemaCompatible } from './routes/upgrade.js';
+import { registerSecurityHeaders, registerTokenAuth } from './security.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -53,6 +55,8 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   const db = instrumentDb(openDb(config.env === 'test' ? ':memory:' : config.dataDir), app.log);
   const { applied } = migrate(db);
   if (applied.length > 0) app.log.info({ applied }, 'database migrations applied');
+  // Downgrade protection (F965): refuse to open a DB created by a newer binary.
+  assertSchemaCompatible(db);
   app.decorate('db', db);
   app.decorate('dataDir', config.dataDir);
   const intel = createIntelligenceService(db, process.env['FABLES_EMBEDDING_MODEL']);
@@ -77,6 +81,12 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
     max: 600,
     timeWindow: '1 minute',
   });
+
+  // Security headers (F947) — CSP, X-Content-Type-Options, frame-ancestors.
+  registerSecurityHeaders(app);
+
+  // Optional token auth (F886/F949) — off when FABLES_TOKEN is unset.
+  registerTokenAuth(app, process.env['FABLES_TOKEN']);
 
   // API version negotiation (F086): clients can pin via x-fables-api-version.
   app.addHook('onSend', async (_request, reply) => {
