@@ -1,0 +1,216 @@
+/* ====================================================================
+   Collab UI styles (F1111–F1140)
+   ==================================================================== */
+
+/* ---- CollabToggle ---- */
+
+.collab-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--fg-muted);
+  cursor: pointer;
+  line-height: 1.6;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.collab-toggle:hover {
+  background: var(--bg-subtle);
+  color: var(--fg);
+}
+
+.collab-toggle__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fg-muted);
+  flex-shrink: 0;
+  transition: background 0.2s;
+}
+
+.collab-toggle--connecting .collab-toggle__dot {
+  background: #e0a95c;
+  animation: collab-pulse 1s ease-in-out infinite;
+}
+
+.collab-toggle--live {
+  border-color: #5cb85c;
+  color: #5cb85c;
+}
+
+.collab-toggle--live .collab-toggle__dot {
+  background: #5cb85c;
+}
+
+.collab-toggle--offline .collab-toggle__dot,
+.collab-toggle--error .collab-toggle__dot {
+  background: #e05c5c;
+}
+
+@keyframes collab-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* ---- PresenceAvatars (F1132) ---- */
+
+.presence-avatars {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse; /* stack overlaps right-to-left */
+  gap: 0;
+}
+
+.presence-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  margin-left: -6px;
+  cursor: default;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+.presence-avatar--idle {
+  opacity: 0.45;
+}
+
+.presence-avatar--overflow {
+  background: var(--bg-subtle);
+  color: var(--fg-muted);
+  font-size: 9px;
+}
+
+/* ---- Remote cursors (yCollab/yRemoteSelections) ---- */
+
+/* yCollab generates CSS variables per-peer via data attributes;
+   these selectors ensure they display correctly in the Fables theme. */
+
+.cm-ySelectionInfo {
+  position: absolute;
+  top: -1.4em;
+  padding: 0 3px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-radius: 3px;
+  pointer-events: none;
+  opacity: 0.85;
+  z-index: 10;
+}
+
+/* ---- VaultPresence (F1133) ---- */
+
+.vault-presence {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fg-muted);
+  padding: 2px 6px;
+}
+
+.vault-presence__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5cb85c;
+  flex-shrink: 0;
+  animation: collab-pulse 2s ease-in-out infinite;
+}
+
+/* ---- PresenceSettings (F1136/F1137) ---- */
+
+.presence-settings {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 260px;
+}
+
+.presence-settings__title {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.presence-settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.presence-settings__field input {
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg-input);
+  color: var(--fg);
+  font-size: 13px;
+}
+
+.presence-settings__colors {
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 12px;
+}
+
+.presence-settings__swatch-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.presence-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.presence-swatch:hover {
+  transform: scale(1.15);
+}
+
+.presence-swatch--selected {
+  border-color: var(--fg);
+}
+
+.presence-settings__privacy {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.presence-settings__privacy input {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.presence-settings__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}

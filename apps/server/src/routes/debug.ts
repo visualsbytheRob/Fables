@@ -11,6 +11,7 @@ export const debugRoutes: FastifyPluginAsync = async (app) => {
     const count = (table: string) =>
       (app.db.prepare(`SELECT COUNT(*) AS n FROM ${table}`).get() as { n: number }).n;
     const mem = process.memoryUsage();
+    const collabStats = app.collab.getRoomStats();
     return {
       data: {
         uptimeSeconds: Math.floor((Date.now() - startedAt) / 1000),
@@ -22,6 +23,7 @@ export const debugRoutes: FastifyPluginAsync = async (app) => {
           entities: count('entities'),
           links: count('links'),
         },
+        collab: collabStats,
         memory: { rssBytes: mem.rss, heapUsedBytes: mem.heapUsed },
         logLevel: app.log.level,
       },

@@ -32,6 +32,7 @@ import { tagsRoutes } from './tags.js';
 import { timelineRoutes } from './timeline.js';
 import { transclusionRoutes } from './transclusion.js';
 import { syncRoutes } from './sync.js';
+import { collabRoutes } from './collab.js';
 import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
@@ -69,6 +70,7 @@ export const routes: FastifyPluginAsync[] = [
   clipRoutes,
   transcribeRoutes,
   syncRoutes,
+  collabRoutes,
   backupRoutes,
   analyticsRoutes,
   upgradeRoutes,

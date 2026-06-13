@@ -100,3 +100,36 @@ export type { CompactionInput } from './compaction.js';
 
 // Checksum
 export { computeChecksum, buildChecksum, compareChecksums } from './checksum.js';
+
+// CRDT core (F1101–F1110)
+export {
+  CRDT_SCHEMA_VERSION,
+  CRDT_COMPACTION_THRESHOLD,
+  MSG_SYNC,
+  MSG_AWARENESS,
+  createNoteDoc,
+  getNoteText,
+  encodeDocState,
+  encodeDocStateVector,
+  applyDocUpdate,
+  diffUpdate,
+  mergeUpdates,
+  compactUpdates,
+  seedDocFromBody,
+  extractBody,
+  encodeSyncStep1,
+  encodeSyncStep2,
+  encodeUpdate,
+  encodeAwarenessMsg,
+  encodeAwarenessBinary,
+  decodeMessage,
+  createAwareness,
+  removeAwarenessClients,
+  migrateCrdtDoc,
+  Y,
+} from './crdt.js';
+export type { CrdtDocRow, DecodedMessage, Awareness } from './crdt.js';
+export type { Doc as YDoc } from 'yjs';
+
+// Re-export awareness protocol utilities needed by the server collab service
+export { encodeAwarenessUpdate, applyAwarenessUpdate } from 'y-protocols/awareness';

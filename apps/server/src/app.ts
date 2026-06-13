@@ -6,9 +6,11 @@ import cors from '@fastify/cors';
 import etag from '@fastify/etag';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
+import fastifyWebsocket from '@fastify/websocket';
 import { isAppError, type ErrorCode } from '@fables/core';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
+import { CollabService } from './collab/service.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -30,6 +32,8 @@ declare module 'fastify' {
     intel: IntelligenceService;
     /** Plugin runtime registry (undefined until boot jobs complete). */
     plugins?: PluginRegistry;
+    /** CRDT collaboration service: room management, awareness relay, persistence. */
+    collab: CollabService;
   }
 }
 
@@ -64,13 +68,22 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   app.decorate('dataDir', config.dataDir);
   const intel = createIntelligenceService(db, process.env['FABLES_EMBEDDING_MODEL']);
   app.decorate('intel', intel);
-  app.addHook('onClose', () => {
+
+  // Collab service (F1121–F1140)
+  const collab = new CollabService(db, app.log);
+  app.decorate('collab', collab);
+
+  app.addHook('onClose', async () => {
+    await collab.shutdown();
     db.close();
   });
 
   // Boot maintenance: trash auto-purge (F107), orphan tags (F159), attachment GC (F164).
   // Skipped in tests: the in-memory db must never drive deletions in a real dataDir.
   if (config.env !== 'test') runBootJobs(db, config.dataDir, app.log);
+
+  // WebSocket support for collab (F1121)
+  await app.register(fastifyWebsocket);
 
   await app.register(cors, {
     // Single-user app on a tailnet: allow the ts.net origin and localhost dev ports.

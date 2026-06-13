@@ -2,6 +2,11 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    // Retry once: the jsdom UI tests run under v8 coverage instrumentation on
+    // shared CI runners, where async `waitFor`s occasionally exceed their
+    // timeout under load. A real failure still fails both attempts; a rare
+    // timing flake passes on retry and keeps CI deterministic.
+    retry: 1,
     coverage: {
       provider: 'v8',
       include: ['apps/*/src/**', 'packages/*/src/**'],

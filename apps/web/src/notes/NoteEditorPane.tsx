@@ -5,7 +5,8 @@
  * breadcrumbs (F148), status bar (F193), focus mode (F194), export/copy
  * (F195/F196), info panel (F197), pin (F178), attachment upload (F161/F127),
  * tag autocomplete (F153), an image lightbox (F166),
- * in-note find (F714, Day 8), and related notes panel (F751–F760, Day 8).
+ * in-note find (F714, Day 8), related notes panel (F751–F760, Day 8), and
+ * real-time collaboration via CRDT (F1111–F1140, Epic 12).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -63,6 +64,10 @@ import { tagAutocomplete } from './tagAutocomplete.js';
 import { TemplatePicker } from './TemplatePicker.js';
 import { readingTimeMinutes, wordCount } from './text.js';
 import { useAutosave } from './useAutosave.js';
+import { useCollabExtensions } from '../collab/useCollabExtensions.js';
+import { CollabToggle } from '../collab/CollabToggle.js';
+import { PresenceAvatars } from '../collab/PresenceAvatars.js';
+import '../collab/collab.css';
 
 const STATUS_LABEL: Record<string, string> = {
   idle: '',
@@ -115,6 +120,9 @@ export function NoteEditorPane({
   const tags = useTags();
   const noteIndex = useNoteIndex();
   const viewRef = useRef<EditorView | null>(null);
+
+  // F1111–F1140: Real-time collaboration (lazy-loaded; yjs stays off the initial chunk).
+  const collab = useCollabExtensions(note.id);
 
   // Latest content for callbacks/commands without re-binding.
   const contentRef = useRef({ title, body });
@@ -305,8 +313,10 @@ export function NoteEditorPane({
           },
         ]),
       ),
+      // F1111–F1116: collab extensions (empty array when collab is off)
+      ...collab.extensions,
     ],
-    [],
+    [collab.extensions],
   );
 
   const onUpload = useCallback(
@@ -458,6 +468,9 @@ export function NoteEditorPane({
               ))}
             </nav>
             <div className="ui-row" style={{ gap: 'var(--space-1)' }}>
+              {/* F1132/F1119: presence avatars + collab toggle */}
+              <PresenceAvatars peers={collab.peers} />
+              <CollabToggle collab={collab} />
               <Button
                 title={note.pinned ? 'Unpin' : 'Pin'}
                 aria-label="Pin note"
