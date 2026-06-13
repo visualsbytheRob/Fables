@@ -8,6 +8,8 @@ import {
   assertSnapshotName,
   createWorldSnapshot,
   diffSnapshots,
+  exportWorld,
+  importWorld,
   revertEntity,
   worldDashboard,
 } from '../services/world.js';
@@ -27,6 +29,17 @@ const revertBodySchema = z.object({
   field: z.string().min(1).max(100).optional(),
 });
 const snapshotBodySchema = z.object({ name: z.string().min(1).max(200) });
+const importBodySchema = z.object({
+  version: z.number().int().positive(),
+  entities: z.array(
+    z.object({
+      id: z.string().min(1),
+      type: z.string().min(1),
+      name: z.string().min(1),
+      fields: z.record(z.string(), z.unknown()),
+    }),
+  ),
+});
 
 registerRoute({
   method: 'GET',
@@ -68,6 +81,17 @@ registerRoute({
   summary: 'Field-level diff between two world snapshots',
   params: diffParamsSchema,
 });
+registerRoute({
+  method: 'GET',
+  path: '/world/export',
+  summary: 'Export every entity’s id/type/name/fields as a portable JSON payload',
+});
+registerRoute({
+  method: 'POST',
+  path: '/world/import',
+  summary: 'Import a world export, upserting fields for known entity ids (skips unknown)',
+  body: importBodySchema,
+});
 
 export const worldRoutes: FastifyPluginAsync = async (app) => {
   app.get('/world', async () => {
@@ -108,5 +132,14 @@ export const worldRoutes: FastifyPluginAsync = async (app) => {
   app.get('/world/snapshots/:a/diff/:b', async (request) => {
     const { a, b } = parseWith(diffParamsSchema, request.params, 'params');
     return { data: diffSnapshots(app.db, a, b) };
+  });
+
+  app.get('/world/export', async () => {
+    return { data: exportWorld(app.db) };
+  });
+
+  app.post('/world/import', async (request) => {
+    const body = parseWith(importBodySchema, request.body, 'body');
+    return { data: importWorld(app.db, body) };
   });
 };

@@ -1,0 +1,189 @@
+/* Timeline view (F651, F653, F654, F656, F658): a vertical day-grouped activity
+   feed with type-filter chips, a zoom control, and an export action. Styling
+   uses the shared design tokens so it sits cleanly alongside the other pages. */
+
+.timeline-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  max-width: 760px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── controls bar ──────────────────────────────────────────────────────── */
+.timeline-page__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: var(--space-2) 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.timeline-page__chips,
+.timeline-page__zoom {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.timeline-page__export {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.timeline-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--text-xs);
+  cursor: pointer;
+}
+.timeline-chip:hover {
+  background: var(--bg-hover);
+}
+.timeline-chip--on {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.timeline-zoom {
+  padding: 3px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--text-xs);
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.timeline-zoom:hover {
+  background: var(--bg-hover);
+}
+.timeline-zoom--on {
+  color: var(--text);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.timeline-page__hint {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  padding: var(--space-4) 0;
+}
+
+/* ── feed ──────────────────────────────────────────────────────────────── */
+.timeline-feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.timeline-day__heading {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text-dim);
+  position: sticky;
+  top: 44px;
+}
+
+.timeline-day__events {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 4px);
+  border-left: 2px solid var(--border);
+  padding-left: var(--space-3);
+}
+
+.timeline-row {
+  margin: 0;
+}
+
+.timeline-row__link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md, 6px);
+  color: var(--text);
+  text-decoration: none;
+}
+.timeline-row__link:hover {
+  background: var(--bg-hover);
+}
+
+.timeline-row__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: var(--bg-panel);
+}
+.timeline-row__icon--notes {
+  color: var(--accent);
+}
+.timeline-row__icon--stories {
+  color: #c08a3e;
+}
+.timeline-row__icon--playthroughs {
+  color: #3dd68c;
+}
+
+.timeline-row__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.timeline-row__title {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.timeline-row__event {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+.timeline-row__time {
+  flex: 0 0 auto;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── load more ─────────────────────────────────────────────────────────── */
+.timeline-page__more {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-4) 0 var(--space-6);
+}

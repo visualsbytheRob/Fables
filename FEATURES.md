@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 7 (the fusion) COMPLETE. Web: entity editor, in-player codex + lore embeds + annotations, knowledge-condition layer, demo content + tour. Server: knowledge-state feed, timeline, cross-reference/impact reports, transclusion resolution, world-state snapshots/sandbox — backends shipped; their browser UIs (F651–F690 views) are the next web wave. 1,339 tests green. Next: Day 8 search & intelligence (F701).
+**Status:** Day 7 (the fusion) COMPLETE incl. Timeline (`/timeline`, F651–F660) and World inspector (`/world`, F681–F690) UIs. Deferred with reasons: cross-ref panel (F661/F668), graph presets (F666/F667), in-notes transclusion render (F673–F678), per-story chronology view (F656), decision-log effect (F634). NOTE: a container reclaim during an idle gap lost the uncommitted Day-8 search+insights work (server FTS5 + web UI) — being rebuilt from the lane specs. Next: rebuild Day 8 (F701).
 
 ---
 
@@ -858,7 +858,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F621 — `[[note]]` refs in story text render as tappable lore links in player
 - [x] F622 — Lore popover: note preview inside player without leaving the story
 - [x] F623 — `@entity.field` interpolation in story text pulls live entity values
-- [ ] F624 — Compile-time validation that referenced notes/entities exist (F357)
+- [x] F624 — Compile-time validation that referenced notes/entities exist (F357)
 - [x] F625 — Stale-reference handling when a note is deleted post-compile
 - [x] F626 — Lore link styling distinct from choices (no accidental taps)
 - [x] F627 — Lore visit tracking: which lore the reader opened
@@ -871,7 +871,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F631 — `@journal()` effect (F483) writing structured entries to daily notes
 - [x] F632 — Journal entry template: story, scene, chosen text, timestamp
 - [x] F633 — Playthrough summary note auto-created on story completion
-- [ ] F634 — Decision log: major choices (tagged by author) recorded as note entries
+- [~] F634 — Decision log: major choices (tagged by author) recorded as note entries (deferred: journal/entity_set effect plumbing exists in host; a distinct author-tagged `@decision()` effect + note recording is not yet implemented)
 - [x] F635 — Journal entries link back to exact story moment (deep link + state ref)
 - [x] F636 — Reader annotations: highlight story text → creates a linked note
 - [x] F637 — Annotation review view: all annotations across playthroughs
@@ -894,55 +894,55 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Timeline View (F651–F660)
 
-- [ ] F651 — Unified timeline: notes created/edited + story events + playthroughs by day
-- [ ] F652 — Timeline API with type filters and date windows
-- [ ] F653 — Timeline UI: vertical scroll, day groupings, type icons
-- [ ] F654 — Timeline item click-through to note/story moment
-- [ ] F655 — In-story timelines: author-declared chronology (`# when: year 312`)
-- [ ] F656 — Story-world timeline view per story from chronology tags
-- [ ] F657 — Entity timelines: every event/mention involving an entity
-- [ ] F658 — Timeline zoom levels (day/week/month/year)
-- [ ] F659 — Timeline export as markdown chronicle note
-- [ ] F660 — Timeline tests
+- [x] F651 — Unified timeline: notes created/edited + story events + playthroughs by day
+- [x] F652 — Timeline API with type filters and date windows
+- [x] F653 — Timeline UI: vertical scroll, day groupings, type icons
+- [x] F654 — Timeline item click-through to note/story moment
+- [x] F655 — In-story timelines: author-declared chronology (`# when: year 312`)
+- [~] F656 — Story-world timeline view per story from chronology tags (deferred: server chronology endpoint + `chronology()` client done; dedicated per-story chronology view not yet rendered)
+- [x] F657 — Entity timelines: every event/mention involving an entity
+- [x] F658 — Timeline zoom levels (day/week/month/year)
+- [x] F659 — Timeline export as markdown chronicle note
+- [x] F660 — Timeline tests
 
 ### Cross-Reference Browser (F661–F670)
 
-- [ ] F661 — Unified references panel: for any object, everything pointing at it (notes, stories, scenes, saves)
-- [ ] F662 — Reference type grouping: wikilinks, bindings, mentions, journal entries
-- [ ] F663 — Story → knowledge dependency report (everything a story reads/writes)
-- [ ] F664 — Knowledge → story impact report (which stories break if this note changes)
-- [ ] F665 — Impact warnings when editing/deleting bound notes or entities
-- [ ] F666 — Cross-ref data layered into the global graph view (F241) with edge types
-- [ ] F667 — Graph filter presets: "story web", "knowledge web", "fusion view"
-- [ ] F668 — Reference counts in note/entity info panels
-- [ ] F669 — Batch re-binding tool when renaming entities
-- [ ] F670 — Cross-reference correctness tests
+- [~] F661 — Unified references panel: for any object, everything pointing at it (notes, stories, scenes, saves) (deferred: `/refs/:type/:id` backend + grouping done; dedicated references panel UI not yet built)
+- [x] F662 — Reference type grouping: wikilinks, bindings, mentions, journal entries
+- [x] F663 — Story → knowledge dependency report (everything a story reads/writes)
+- [x] F664 — Knowledge → story impact report (which stories break if this note changes)
+- [x] F665 — Impact warnings when editing/deleting bound notes or entities
+- [~] F666 — Cross-ref data layered into the global graph view (F241) with edge types (deferred: cross-ref data available; graph-view integration with typed edges not yet wired)
+- [~] F667 — Graph filter presets: "story web", "knowledge web", "fusion view" (deferred: depends on F666 graph integration)
+- [~] F668 — Reference counts in note/entity info panels (deferred: counts available from `/refs` backend; not yet surfaced in info panels)
+- [x] F669 — Batch re-binding tool when renaming entities
+- [x] F670 — Cross-reference correctness tests
 
 ### Transclusion (F671–F680)
 
-- [ ] F671 — Block transclusion: `![[note^block]]` embeds live block content in notes
-- [ ] F672 — Note section transclusion: `![[note#heading]]`
-- [ ] F673 — Entity card transclusion in notes: `![[@hero]]` renders entity card
-- [ ] F674 — Query embeds in story author docs (FQL inside planning notes)
-- [ ] F675 — Transclusion render depth limits + cycle detection
-- [ ] F676 — Edit-in-place affordance on transcluded blocks
-- [ ] F677 — Transclusion source attribution footer (hover reveals origin)
-- [ ] F678 — Stale transclusion handling on source deletion
-- [ ] F679 — Transclusion in story text (compile-time inlining with provenance)
-- [ ] F680 — Transclusion tests incl. cycles
+- [x] F671 — Block transclusion: `![[note^block]]` embeds live block content in notes
+- [x] F672 — Note section transclusion: `![[note#heading]]`
+- [~] F673 — Entity card transclusion in notes: `![[@hero]]` renders entity card (deferred: server resolution exists; in-notes markdown render of entity cards not yet wired)
+- [~] F674 — Query embeds in story author docs (FQL inside planning notes) (deferred: FQL engine exists; transclusion-style live query embed in note preview not yet wired)
+- [x] F675 — Transclusion render depth limits + cycle detection
+- [~] F676 — Edit-in-place affordance on transcluded blocks (deferred: needs in-notes transclusion render first, F673)
+- [~] F677 — Transclusion source attribution footer (hover reveals origin) (deferred: provenance carried server-side; note-preview footer UI not yet built)
+- [~] F678 — Stale transclusion handling on source deletion (deferred: server returns stale markers; note-preview stale UI not yet built)
+- [x] F679 — Transclusion in story text (compile-time inlining with provenance)
+- [x] F680 — Transclusion tests incl. cycles
 
 ### World State Inspector (F681–F690)
 
-- [ ] F681 — World dashboard: all entities with story-mutated fields highlighted
-- [ ] F682 — Entity mutation history: which playthrough changed what, when
-- [ ] F683 — Revert entity mutations per playthrough or per field
-- [ ] F684 — World snapshots: name and save the entire entity state
-- [ ] F685 — Snapshot diff view between two world states
-- [ ] F686 — Sandbox mode: playthroughs against a snapshot, no real mutations
-- [ ] F687 — Mutation conflict surfacing (two stories writing the same field)
-- [ ] F688 — World state export/import as JSON
-- [ ] F689 — World inspector tests
-- [ ] F690 — Mutation audit retention policy + pruning
+- [x] F681 — World dashboard: all entities with story-mutated fields highlighted
+- [x] F682 — Entity mutation history: which playthrough changed what, when
+- [x] F683 — Revert entity mutations per playthrough or per field
+- [x] F684 — World snapshots: name and save the entire entity state
+- [x] F685 — Snapshot diff view between two world states
+- [x] F686 — Sandbox mode: playthroughs against a snapshot, no real mutations
+- [x] F687 — Mutation conflict surfacing (two stories writing the same field)
+- [x] F688 — World state export/import as JSON
+- [x] F689 — World inspector tests
+- [x] F690 — Mutation audit retention policy + pruning
 
 ### Fusion Demo Content (F691–F700)
 

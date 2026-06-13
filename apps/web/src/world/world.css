@@ -1,0 +1,329 @@
+/* World-state inspector (Day 7, F681–F688). Mirrors entities.css conventions. */
+
+.world-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 980px;
+}
+.world-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.world-head h1 {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ── tabs ──────────────────────────────────────────────────────────────── */
+.world-tabs {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.world-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.world-tabs button:hover {
+  background: var(--bg-hover);
+}
+.world-tabs button.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--bg-active);
+}
+
+.world-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  padding: var(--space-3);
+}
+.world-section > h2 {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: 0 0 var(--space-3);
+}
+.world-empty {
+  color: var(--text-dim);
+  margin: var(--space-3) 0;
+}
+.world-hint {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+/* ── dashboard rows (F681/F682) ────────────────────────────────────────── */
+.world-entities {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.world-entity {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+.world-entity.mutated {
+  border-color: var(--accent);
+}
+.world-entity-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: none;
+  border: 0;
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.world-entity-head:hover {
+  background: var(--bg-hover);
+}
+.world-entity-name {
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+.world-entity-type {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.world-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--bg-active);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+.world-entity-body {
+  padding: var(--space-3);
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.world-fields {
+  display: grid;
+  grid-template-columns: minmax(120px, 200px) 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  align-items: center;
+  font-size: var(--text-sm);
+}
+.world-field-name {
+  color: var(--text-dim);
+  font-family: ui-monospace, monospace;
+}
+.world-field-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.world-field-value.mutated {
+  color: var(--accent);
+  font-weight: 600;
+}
+.world-field-meta {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ── mutation history (F682) ───────────────────────────────────────────── */
+.world-muts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.world-mut {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: baseline;
+  padding: 2px 0;
+}
+.world-mut-kind {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+  width: 48px;
+  flex: none;
+}
+.world-mut-kind.revert {
+  color: var(--danger);
+}
+.world-mut-field {
+  font-family: ui-monospace, monospace;
+}
+.world-mut-change {
+  color: var(--text-dim);
+}
+.world-mut-at {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+/* ── revert (F683) ─────────────────────────────────────────────────────── */
+.world-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ── snapshots + diff (F684/F685) ──────────────────────────────────────── */
+.world-snap-create {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+.world-snaps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.world-snap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.world-snap-name {
+  font-weight: 600;
+  flex: 1;
+  min-width: 0;
+}
+.world-snap-meta {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+.world-snap-pick {
+  display: inline-flex;
+  gap: 4px;
+}
+.world-snap-pick button {
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.world-snap-pick button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--bg-active);
+}
+
+.world-diff {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+}
+.world-diff-row {
+  display: grid;
+  grid-template-columns: 16px minmax(120px, 1fr) minmax(80px, 1fr) 16px minmax(80px, 1fr);
+  gap: var(--space-2);
+  align-items: center;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius);
+}
+.world-diff-added {
+  background: color-mix(in srgb, var(--success, #2e7d32) 12%, transparent);
+}
+.world-diff-removed {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+.world-diff-changed {
+  background: var(--bg-hover);
+}
+.world-diff-entity {
+  color: var(--text-dim);
+  font-family: ui-monospace, monospace;
+}
+.world-diff-a {
+  color: var(--text-dim);
+  text-decoration: line-through;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.world-diff-b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── conflicts (F687) ──────────────────────────────────────────────────── */
+.world-conflict {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: var(--space-2);
+}
+.world-conflict-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+.world-conflict-field {
+  font-family: ui-monospace, monospace;
+  font-weight: 600;
+}
+.world-conflict-stories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+/* ── export / import (F688) ────────────────────────────────────────────── */
+.world-io {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.world-io-result {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}

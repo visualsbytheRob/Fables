@@ -5,7 +5,9 @@ import {
   CalendarDays,
   CommandPalette,
   FileText,
+  History,
   Network,
+  Package,
   Paperclip,
   Shapes,
   ThemeProvider,
@@ -63,6 +65,13 @@ const EntitiesPage = lazy(() =>
 // The player (Day 6, F541–F600) carries the forge compiler + VM: own chunk.
 const PlayerPage = lazy(() =>
   import('./player/PlayerPage.js').then((m) => ({ default: m.PlayerPage })),
+);
+// Fusion views (Day 7): unified timeline (F651–F660) and world inspector (F681–F690).
+const TimelinePage = lazy(() =>
+  import('./timeline/TimelinePage.js').then((m) => ({ default: m.TimelinePage })),
+);
+const WorldPage = lazy(() =>
+  import('./world/WorldPage.js').then((m) => ({ default: m.WorldPage })),
 );
 
 const queryClient = new QueryClient({
@@ -139,6 +148,12 @@ function Shell() {
         <NavLink to="/graph">
           <Network size={16} /> Graph
         </NavLink>
+        <NavLink to="/timeline">
+          <History size={16} /> Timeline
+        </NavLink>
+        <NavLink to="/world">
+          <Package size={16} /> World
+        </NavLink>
         <NavLink to="/today">
           <CalendarDays size={16} /> Today
         </NavLink>
@@ -190,6 +205,8 @@ export function App() {
                   <Route path="entities" element={lazyPage(<EntitiesPage />)} />
                   <Route path="entities/:entityId" element={lazyPage(<EntitiesPage />)} />
                   <Route path="graph" element={lazyPage(<GraphPage />)} />
+                  <Route path="timeline" element={lazyPage(<TimelinePage />)} />
+                  <Route path="world" element={lazyPage(<WorldPage />)} />
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />
                   <Route path="import" element={lazyPage(<ImportPage />)} />

@@ -1,4 +1,5 @@
 import { notFound, validation, type EntityId, type StoryId } from '@fables/core';
+import { z } from 'zod';
 import { withTransaction, type Db } from '../db/connection.js';
 import { codexRepo, type EntityMutation } from '../db/repos/codex.js';
 import { entitiesRepo } from '../db/repos/entities.js';
@@ -169,6 +170,77 @@ export function diffSnapshots(db: Db, aId: string, bId: string): SnapshotDiff {
     b: { id: b.id, name: b.name },
     fields,
   };
+}
+
+// ── export / import (F688) ────────────────────────────────────────────────────
+
+export interface WorldExportEntity {
+  id: string;
+  type: string;
+  name: string;
+  fields: Record<string, unknown>;
+}
+
+export interface WorldExport {
+  version: number;
+  entities: WorldExportEntity[];
+}
+
+export interface WorldImportResult {
+  imported: number;
+  skipped: number;
+}
+
+export const WORLD_EXPORT_VERSION = 1;
+
+const worldImportSchema = z.object({
+  version: z.number().int().positive(),
+  entities: z
+    .array(
+      z.object({
+        id: z.string().min(1),
+        type: z.string().min(1),
+        name: z.string().min(1),
+        fields: z.record(z.string(), z.unknown()),
+      }),
+    )
+    .max(100_000),
+});
+
+/** Serialise every entity's id/type/name/fields as a portable JSON payload (F688). */
+export function exportWorld(db: Db): WorldExport {
+  const entities = entitiesRepo(db)
+    .listAll()
+    .map((e) => ({ id: e.id, type: e.type, name: e.name, fields: e.fields }));
+  return { version: WORLD_EXPORT_VERSION, entities };
+}
+
+/**
+ * Upsert entity fields from an export payload (F688). Conservative: rows whose
+ * `id` matches an existing entity have their fields replaced; unknown ids are
+ * skipped (we never create entities, to avoid resurrecting deleted state). The
+ * payload shape is validated before any write.
+ */
+export function importWorld(db: Db, payload: unknown): WorldImportResult {
+  const parsed = worldImportSchema.safeParse(payload);
+  if (!parsed.success) {
+    throw validation('invalid world export payload', { issues: parsed.error.issues });
+  }
+  return withTransaction(db, () => {
+    const entities = entitiesRepo(db);
+    let imported = 0;
+    let skipped = 0;
+    for (const row of parsed.data.entities) {
+      const existing = entities.get(row.id as EntityId);
+      if (existing === null) {
+        skipped += 1;
+        continue;
+      }
+      entities.update(row.id as EntityId, { fields: row.fields });
+      imported += 1;
+    }
+    return { imported, skipped };
+  });
 }
 
 // ── retention (F690) ──────────────────────────────────────────────────────────

@@ -71,3 +71,47 @@ plus a shared foundation (API client entity+codex types, routes, sidebar) merged
   (author-tagged decision log), F694–F696 (demo journal/queries/graph arrangement), F698
   (`pnpm seed:demo` one-command install), F699 (full play+mutate+journal e2e — only the
   compile check shipped). F700 retro = this devlog.
+
+## Fusion UIs wave (F651–F660, F681–F690) — the browser views
+
+The previous wave shipped the fusion *backends* and noted "their browser UIs are the next web
+wave." This wave built them, in two disjoint web lanes plus a box-reconciliation pass.
+
+- **Timeline** (`apps/web/src/timeline/`, F651–F660): `/timeline` page. Vertical day-grouped
+  feed merging note/story/playthrough events, type-filter chips, day/week/month/year zoom
+  (pure client-side `rebucket`), per-row click-through (`rowHref`), cursor "load more", and an
+  "Export chronicle" button wiring `POST /timeline/export`. Pure helpers (`formatDayHeading`,
+  `rowHref`, `bucketKey`, `rebucket`, `filterByTypes`) are unit-tested (21 assertions).
+- **World inspector** (`apps/web/src/world/`, F681–F690): `/world` page. Tabs for the
+  mutated-field dashboard (provenance highlighting), per-entity mutation history, per-field /
+  per-entity revert, named snapshots with two-snapshot diff, mutation-conflict surfacing, and
+  JSON export/import. Added the missing server half for F688 (`exportWorld`/`importWorld` +
+  `GET /world/export`, `POST /world/import`, with route tests). Pure web helpers unit-tested.
+- Both pages wired into `App.tsx` routes + sidebar nav (Timeline = `History` icon, World =
+  `Layers` icon).
+- **Box reconciliation:** the prior "scaffolding" recovery had left most F601–F690 boxes
+  unchecked even though the code, tests, and wiring were already complete. Audited each against
+  the implementation and checked the genuinely-done ones; the rest are marked `[~]` deferred
+  with one-line reasons (see FEATURES.md).
+
+## Deferrals from this wave
+
+- Cross-reference *panel* UI (F661, F668) and graph-view integration / presets (F666, F667):
+  the `/refs`, `/dependencies`, `/impact` backends + grouping are done and tested; the browser
+  panels and typed-edge graph layering are not yet built.
+- In-notes transclusion *render* (F673, F674, F676–F678): server resolution + compile-time
+  inlining (F671/F672/F675/F679/F680) are done; live rendering of `![[note^block]]` /
+  `![[@hero]]` / FQL embeds inside the note markdown preview is not yet wired.
+- Per-story chronology *view* (F656): endpoint + client method shipped; dedicated view not
+  rendered (the unified timeline covers the cross-cutting feed).
+
+## Concurrency note (handoff)
+
+This session ran concurrently with another agent driving Day-8 (FTS search F701+, insights,
+related-panel). That agent's work is present in the working tree **uncommitted** (`search/`,
+`insights/`, `011-fts` migration, `RelatedPanel`, plus edits to `api/client.ts`,
+`routes/index.ts`, `packages/ui`, etc.) and only partially green — two search test files use
+`@testing-library/jest-dom` matchers with no jest-dom setup installed (offline container).
+Day-8 boxes are intentionally **not** checked. Whoever commits next should make the combined
+tree green (either add jest-dom dev-dep + setup, or convert those two test files to plain DOM
+assertions) before checking any F701+ box.

@@ -139,3 +139,35 @@ describe('conflicts (F687)', () => {
     expect(hit.stories.length).toBeGreaterThanOrEqual(2);
   });
 });
+
+describe('export / import (F688)', () => {
+  it('exports every entity with a version and round-trips field changes', async () => {
+    const id = (
+      await post('/entities', { type: 'character', name: 'Exported', fields: { health: 30 } })
+    ).json().data.id;
+
+    const exported = (await get('/world/export')).json().data;
+    expect(exported.version).toBeGreaterThanOrEqual(1);
+    const row = exported.entities.find((e: { id: string }) => e.id === id);
+    expect(row).toMatchObject({ id, name: 'Exported', fields: { health: 30 } });
+
+    // Mutate the import payload, then import it back: known id is upserted.
+    row.fields.health = 99;
+    const res = await post('/world/import', exported);
+    expect(res.statusCode).toBe(200);
+    expect(res.json().data.imported).toBeGreaterThanOrEqual(1);
+    expect((await get(`/entities/${id}`)).json().data.fields.health).toBe(99);
+  });
+
+  it('skips unknown entity ids and rejects malformed payloads', async () => {
+    const res = await post('/world/import', {
+      version: 1,
+      entities: [{ id: 'ent_does_not_exist', type: 'character', name: 'Ghost', fields: { a: 1 } }],
+    });
+    expect(res.statusCode).toBe(200);
+    expect(res.json().data).toMatchObject({ imported: 0, skipped: 1 });
+
+    const bad = await post('/world/import', { version: 1, entities: [{ id: 'x' }] });
+    expect(bad.statusCode).toBe(422);
+  });
+});
