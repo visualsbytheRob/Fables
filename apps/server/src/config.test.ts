@@ -47,3 +47,17 @@ describe('config precedence', () => {
     expect(c.logLevel).toBe('fatal');
   });
 });
+
+describe('bare loadConfig()', () => {
+  it('reads process.env when called with no arguments (regression)', () => {
+    const prev = process.env.PORT;
+    process.env.PORT = '4871';
+    try {
+      // configFile defaults to cwd lookup; PORT must come through from process.env
+      expect(loadConfig().port).toBe(4871);
+    } finally {
+      if (prev === undefined) delete process.env.PORT;
+      else process.env.PORT = prev;
+    }
+  });
+});

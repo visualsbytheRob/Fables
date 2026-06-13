@@ -43,6 +43,14 @@ const ImportPage = lazy(() =>
 const ForgePlaygroundPage = lazy(() =>
   import('./forge/ForgePlayground.js').then((m) => ({ default: m.ForgePlaygroundPage })),
 );
+// Story authoring (Day 6): library is light, the workspace pulls the whole
+// editor + compiler + VM stack — both stay off the main chunk.
+const StoriesPage = lazy(() =>
+  import('./stories/StoriesPage.js').then((m) => ({ default: m.StoriesPage })),
+);
+const StoryEditPage = lazy(() =>
+  import('./stories/StoryEditPage.js').then((m) => ({ default: m.StoryEditPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -152,7 +160,8 @@ export function App() {
                   <Route index element={lazyPage(<NotesPage />)} />
                   <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
                   <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
-                  <Route path="stories" element={<Placeholder title="Stories" day={6} />} />
+                  <Route path="stories" element={lazyPage(<StoriesPage />)} />
+                  <Route path="stories/:storyId/edit" element={lazyPage(<StoryEditPage />)} />
                   <Route path="graph" element={lazyPage(<GraphPage />)} />
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />

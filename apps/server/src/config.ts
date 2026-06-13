@@ -99,11 +99,15 @@ export interface LoadConfigOptions {
 
 /** Precedence: CLI flags > environment > fables.config.json > defaults. */
 export function loadConfig(options: LoadConfigOptions | NodeJS.ProcessEnv = {}): AppConfig {
-  // Back-compat: loadConfig(processEnvLike) treats a plain object as env.
+  // Back-compat: loadConfig(processEnvLike) treats a non-empty plain object as
+  // env. A bare loadConfig() must fall through to process.env — wrapping the
+  // default {} as the env silently disabled all environment configuration.
   const opts: LoadConfigOptions =
     'env' in options || 'argv' in options || 'configFile' in options
       ? (options as LoadConfigOptions)
-      : { env: options as NodeJS.ProcessEnv };
+      : Object.keys(options).length === 0
+        ? {}
+        : { env: options as NodeJS.ProcessEnv };
 
   const env = opts.env ?? process.env;
   const argv = opts.argv ?? process.argv.slice(2);

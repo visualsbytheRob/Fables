@@ -62,4 +62,10 @@ export {
   RotateCcw,
   Tag as TagIcon,
   Trash2,
+  // Day 6: story authoring workspace (F511–F540)
+  FileCode2,
+  Play,
+  Regex,
+  Smartphone,
+  Wand2,
 } from 'lucide-react';

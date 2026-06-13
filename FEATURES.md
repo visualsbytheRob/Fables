@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 6 server lane done (F501–F510 + F462-3, F499). 1,088 tests green. Web author-workspace lane (F511–F540) in flight. Next after: F541 player.
+**Status:** Day 6 authoring done (F501–F540 + F462-3, F499). 1,154 tests green. Next: F541 player UI, then F561–F600.
 
 ---
 
@@ -708,42 +708,42 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Author Editor UX (F511–F520)
 
-- [ ] F511 — Story workspace route: file tree + editor + preview three-pane
-- [ ] F512 — Multi-tab editing of story files
-- [ ] F513 — Compile status bar: errors/warnings count, click-to-jump
-- [ ] F514 — Problems panel listing all diagnostics across files
-- [ ] F515 — Quick-fix actions for common diagnostics (create missing knot, etc.)
-- [ ] F516 — Story-wide search and replace across .fable files
-- [ ] F517 — Snippet insertion palette (choice block, knot, conditional)
-- [ ] F518 — Editor split view: two files side by side
-- [ ] F519 — Autosave + dirty indicators per file tab
-- [ ] F520 — Author workspace e2e test (edit → compile → error → fix)
+- [x] F511 — Story workspace route: file tree + editor + preview three-pane
+- [x] F512 — Multi-tab editing of story files
+- [x] F513 — Compile status bar: errors/warnings count, click-to-jump
+- [x] F514 — Problems panel listing all diagnostics across files
+- [x] F515 — Quick-fix actions for common diagnostics (create missing knot, etc.)
+- [x] F516 — Story-wide search and replace across .fable files
+- [x] F517 — Snippet insertion palette (choice block, knot, conditional)
+- [x] F518 — Editor split view: two files side by side
+- [x] F519 — Autosave + dirty indicators per file tab
+- [x] F520 — Author workspace e2e test (edit → compile → error → fix)
 
 ### Scene Graph Visualization (F521–F530)
 
-- [ ] F521 — Story flow graph: knots as nodes, diverts as edges (from IR)
-- [ ] F522 — Graph layout: layered/dagre for narrative flow direction
-- [ ] F523 — Node badges: choice count, word count, visit-tracking flags
-- [ ] F524 — Click node → open knot in editor at line
-- [ ] F525 — Unreachable knot highlighting in red
-- [ ] F526 — Dead-end detection highlighting (no way to END)
-- [ ] F527 — Path highlighting: trace all routes between two knots
-- [ ] F528 — Story stats panel: word count, branch factor, depth, endings count
-- [ ] F529 — Graph export as SVG/PNG for planning docs
-- [ ] F530 — Scene graph tests on fixture stories
+- [x] F521 — Story flow graph: knots as nodes, diverts as edges (from IR)
+- [x] F522 — Graph layout: layered/dagre for narrative flow direction
+- [x] F523 — Node badges: choice count, word count, visit-tracking flags
+- [x] F524 — Click node → open knot in editor at line
+- [x] F525 — Unreachable knot highlighting in red
+- [x] F526 — Dead-end detection highlighting (no way to END)
+- [x] F527 — Path highlighting: trace all routes between two knots
+- [x] F528 — Story stats panel: word count, branch factor, depth, endings count
+- [x] F529 — Graph export as SVG/PNG for planning docs
+- [x] F530 — Scene graph tests on fixture stories
 
 ### Live Playtest Pane (F531–F540)
 
-- [ ] F531 — Playtest pane running compiled story beside the editor
-- [ ] F532 — Hot reload: recompile + smart restart preserving choice path when valid
-- [ ] F533 — Replay-from-history after edits (re-applies prior choices)
-- [ ] F534 — Jump-to-knot playtesting (start from any knot with state editor)
-- [ ] F535 — State editor: set variables before/at any point in playtest
-- [ ] F536 — Choice path recorder: save a path as a named test scenario
-- [ ] F537 — Scenario runner: replay saved paths after changes, diff transcripts
-- [ ] F538 — Playtest transcript view with per-line source attribution
-- [ ] F539 — Mobile preview frame (iPhone viewport simulation)
-- [ ] F540 — Playtest pane integration tests
+- [x] F531 — Playtest pane running compiled story beside the editor
+- [x] F532 — Hot reload: recompile + smart restart preserving choice path when valid
+- [x] F533 — Replay-from-history after edits (re-applies prior choices)
+- [x] F534 — Jump-to-knot playtesting (start from any knot with state editor)
+- [x] F535 — State editor: set variables before/at any point in playtest
+- [x] F536 — Choice path recorder: save a path as a named test scenario
+- [x] F537 — Scenario runner: replay saved paths after changes, diff transcripts
+- [x] F538 — Playtest transcript view with per-line source attribution
+- [x] F539 — Mobile preview frame (iPhone viewport simulation)
+- [x] F540 — Playtest pane integration tests
 
 ### Player UI Core (F541–F550)
 
