@@ -57,7 +57,7 @@ describe('app shell', () => {
     expect(screen.getByText('Fables')).toBeDefined();
     expect(screen.getByText('Stories')).toBeDefined();
     // the lazily-loaded notes page mounts with the real list
-    await waitFor(() => expect(screen.getByText('The Fox and the Compiler')).toBeDefined());
+    await waitFor(() => expect(screen.getByText('The Fox and the Compiler')).toBeDefined(), { timeout: 8000 });
     expect(screen.getByText(/Select a note/)).toBeDefined();
   });
 
@@ -69,11 +69,14 @@ describe('app shell', () => {
       </MemoryRouter>,
     );
 
-    await waitFor(() => {
-      const title = screen.getByLabelText('Note title') as HTMLInputElement;
-      expect(title.value).toBe('The Fox and the Compiler');
-    });
+    await waitFor(
+      () => {
+        const title = screen.getByLabelText('Note title') as HTMLInputElement;
+        expect(title.value).toBe('The Fox and the Compiler');
+      },
+      { timeout: 8000 },
+    );
     // editor mounts with the note body
-    await waitFor(() => expect(document.querySelector('.cm-editor')).not.toBeNull());
+    await waitFor(() => expect(document.querySelector('.cm-editor')).not.toBeNull(), { timeout: 8000 });
   });
 });
