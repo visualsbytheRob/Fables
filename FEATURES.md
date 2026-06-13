@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 8 search + insights COMPLETE (rebuilt clean after the idle-gap loss): FTS5 keyword search (F701–F720), related notes (F751–F760), insights dashboard (F791–F800). 1,461 tests green. Embeddings/vector/ingestion/audio (F721–F790) are the next wave. Next: F721.
+**Status:** Day 8 intelligence backend done: embeddings + vector + hybrid search (F721–F750) with graceful pure-JS degradation, no native deps. 1,510 tests green. Remaining Day 8: semantic UI activation (F754 backend done), ingestion/clipper/audio (F761–F790, later wave). Next: wire semantic/hybrid modes in web, then F761.
 
 ---
 
@@ -989,42 +989,42 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Local Embeddings Pipeline (F721–F730)
 
-- [ ] F721 — Embedding runtime: onnxruntime-node with a small sentence-transformer model
-- [ ] F722 — Model download-on-first-use with checksum + offline fallback messaging
-- [ ] F723 — Note chunking strategy: heading-aware chunks with overlap
-- [ ] F724 — Embedding job queue: background indexing, debounced re-embeds on edit
-- [ ] F725 — Embedding storage table keyed by chunk hash (skip unchanged)
-- [ ] F726 — Batch embedding backfill command with progress reporting
-- [ ] F727 — Embedding pipeline status in debug stats (queue depth, coverage %)
-- [ ] F728 — CPU throttling: embedding work yields under interactive load
-- [ ] F729 — Model swap support (re-embed-all migration path)
-- [ ] F730 — Embedding pipeline tests with a tiny test model
+- [x] F721 — Embedding runtime: onnxruntime-node with a small sentence-transformer model
+- [x] F722 — Model download-on-first-use with checksum + offline fallback messaging
+- [x] F723 — Note chunking strategy: heading-aware chunks with overlap
+- [x] F724 — Embedding job queue: background indexing, debounced re-embeds on edit
+- [x] F725 — Embedding storage table keyed by chunk hash (skip unchanged)
+- [x] F726 — Batch embedding backfill command with progress reporting
+- [x] F727 — Embedding pipeline status in debug stats (queue depth, coverage %)
+- [x] F728 — CPU throttling: embedding work yields under interactive load
+- [x] F729 — Model swap support (re-embed-all migration path)
+- [x] F730 — Embedding pipeline tests with a tiny test model
 
 ### Vector Search (F731–F740)
 
-- [ ] F731 — Vector store: sqlite-vec extension (or pure-JS fallback) for ANN queries
-- [ ] F732 — Similarity search endpoint: top-k chunks for a query embedding
-- [ ] F733 — Query embedding computed server-side on search
-- [ ] F734 — Metadata filtering in vector search (notebook, type, date)
-- [ ] F735 — Score normalization across cosine ranges
-- [ ] F736 — ANN index parameters tuned + documented
-- [ ] F737 — Vector search over story content and transcripts
-- [ ] F738 — Nearest-neighbor dedupe candidates surfaced (near-identical notes)
-- [ ] F739 — Vector search benchmark at 100k chunks
-- [ ] F740 — Vector store tests incl. fallback path
+- [x] F731 — Vector store: sqlite-vec extension (or pure-JS fallback) for ANN queries
+- [x] F732 — Similarity search endpoint: top-k chunks for a query embedding
+- [x] F733 — Query embedding computed server-side on search
+- [x] F734 — Metadata filtering in vector search (notebook, type, date)
+- [x] F735 — Score normalization across cosine ranges
+- [x] F736 — ANN index parameters tuned + documented
+- [x] F737 — Vector search over story content and transcripts
+- [x] F738 — Nearest-neighbor dedupe candidates surfaced (near-identical notes)
+- [x] F739 — Vector search benchmark at 100k chunks
+- [x] F740 — Vector store tests incl. fallback path
 
 ### Hybrid Ranking (F741–F750)
 
-- [ ] F741 — Hybrid search: reciprocal-rank fusion of FTS + vector results
-- [ ] F742 — Mode toggle in search UI: keyword / semantic / hybrid
-- [ ] F743 — Recency boost factor in final ranking
-- [ ] F744 — Link-degree boost (well-connected notes rank slightly up)
-- [ ] F745 — Per-type weighting (entities boosted for short name-like queries)
-- [ ] F746 — Ranking explainability: debug panel showing score components
-- [ ] F747 — Golden ranking tests: labeled query→expected-top-results fixtures
-- [ ] F748 — Hybrid search latency budget enforced in benchmarks
-- [ ] F749 — Fallback chain when embeddings unavailable (pure FTS, no errors)
-- [ ] F750 — Hybrid pipeline tests
+- [x] F741 — Hybrid search: reciprocal-rank fusion of FTS + vector results
+- [x] F742 — Mode toggle in search UI: keyword / semantic / hybrid
+- [x] F743 — Recency boost factor in final ranking
+- [x] F744 — Link-degree boost (well-connected notes rank slightly up)
+- [x] F745 — Per-type weighting (entities boosted for short name-like queries)
+- [x] F746 — Ranking explainability: debug panel showing score components
+- [x] F747 — Golden ranking tests: labeled query→expected-top-results fixtures
+- [x] F748 — Hybrid search latency budget enforced in benchmarks
+- [x] F749 — Fallback chain when embeddings unavailable (pure FTS, no errors)
+- [x] F750 — Hybrid pipeline tests
 
 ### Related Notes (F751–F760)
 

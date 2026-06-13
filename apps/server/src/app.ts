@@ -12,6 +12,7 @@ import type { AppConfig } from './config.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
+import { createIntelligenceService, type IntelligenceService } from './intelligence/index.js';
 import { runBootJobs } from './jobs.js';
 import { buildLoggerOptions } from './logging.js';
 import { configRoutes } from './routes/config.js';
@@ -22,6 +23,8 @@ declare module 'fastify' {
     db: Db;
     /** Root of on-disk storage (attachments live under `<dataDir>/attachments`). */
     dataDir: string;
+    /** Local intelligence: embeddings + vector search + hybrid ranking. */
+    intel: IntelligenceService;
   }
 }
 
@@ -52,6 +55,8 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   if (applied.length > 0) app.log.info({ applied }, 'database migrations applied');
   app.decorate('db', db);
   app.decorate('dataDir', config.dataDir);
+  const intel = createIntelligenceService(db, process.env['FABLES_EMBEDDING_MODEL']);
+  app.decorate('intel', intel);
   app.addHook('onClose', () => {
     db.close();
   });

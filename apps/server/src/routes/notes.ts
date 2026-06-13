@@ -85,6 +85,16 @@ registerRoute({
   summary: 'Bulk move/tag/delete notes',
   body: bulkBodySchema,
 });
+registerRoute({
+  method: 'GET',
+  path: '/notes/:id/related/semantic',
+  summary: 'Semantic nearest-neighbor notes for the given note (F751 backend)',
+  params: idParamsSchema,
+});
+
+const relatedSemanticQuerySchema = z.object({
+  limit: z.coerce.number().int().min(1).max(50).default(10),
+});
 
 export const notesRoutes: FastifyPluginAsync = async (app) => {
   app.post('/notes', async (request, reply) => {
@@ -167,6 +177,55 @@ export const notesRoutes: FastifyPluginAsync = async (app) => {
     const copy = duplicateNote(app.db, id as NoteId);
     reply.status(201);
     return { data: copy };
+  });
+
+  /**
+   * GET /notes/:id/related/semantic?limit=10
+   *
+   * Returns semantic nearest-neighbors for the given note — the web RelatedPanel
+   * "coming soon" section consumes this.
+   *
+   * Response:
+   *   { data: { noteId, degraded, results: [{ id, title, score, snippet, sourceType }] } }
+   *
+   * degraded=true when no embeddings exist; falls back to link-based neighbors.
+   */
+  app.get('/notes/:id/related/semantic', async (request) => {
+    const { id } = parseWith(idParamsSchema, request.params, 'params');
+    const { limit } = parseWith(relatedSemanticQuerySchema, request.query, 'query');
+    const note = notesRepo(app.db).get(id as NoteId);
+    if (!note) throw notFound('Note', id);
+
+    const { embeddingsRepo } = await import('../db/repos/embeddings.js');
+    const hasEmbeddings = embeddingsRepo(app.db).totalChunks() > 0;
+
+    if (!hasEmbeddings) {
+      // Graceful degradation: return link-based neighbors
+      const linkNeighbors = app.db
+        .prepare(
+          `SELECT DISTINCT
+             CASE WHEN l.source_id = ? THEN l.target_id ELSE l.source_id END AS related_id
+           FROM links l
+           WHERE l.kind = 'wikilink'
+             AND (l.source_id = ? OR l.target_id = ?)
+             AND CASE WHEN l.source_id = ? THEN l.target_id ELSE l.source_id END != ?
+           LIMIT ?`,
+        )
+        .all(id, id, id, id, id, limit) as { related_id: string }[];
+
+      const results = linkNeighbors
+        .map(({ related_id }) => {
+          const n = notesRepo(app.db).get(related_id as NoteId);
+          if (!n || n.trashedAt !== null) return null;
+          return { id: n.id, title: n.title, score: 0.5, snippet: n.body.slice(0, 120), sourceType: 'note' };
+        })
+        .filter(Boolean);
+
+      return { data: { noteId: id, degraded: true, results } };
+    }
+
+    const results = await app.intel.store.relatedNotes(id, limit);
+    return { data: { noteId: id, degraded: false, results } };
   });
 
   app.post('/notes/bulk', async (request) => {

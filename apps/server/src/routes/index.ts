@@ -4,6 +4,7 @@ import { codexRoutes } from './codex.js';
 import { crossrefRoutes } from './crossref.js';
 import { debugRoutes } from './debug.js';
 import { effectsRoutes } from './effects.js';
+import { embeddingsRoutes } from './embeddings.js';
 import { entitiesRoutes } from './entities.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
@@ -53,5 +54,6 @@ export const routes: FastifyPluginAsync[] = [
   transclusionRoutes,
   worldRoutes,
   searchRoutes,
+  embeddingsRoutes,
   insightsRoutes,
 ];

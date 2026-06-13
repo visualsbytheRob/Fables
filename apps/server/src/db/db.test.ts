@@ -28,6 +28,7 @@ describe('migrations', () => {
       '009-entities',
       '010-world',
       '011-fts',
+      '012-embeddings',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
