@@ -1,0 +1,165 @@
+/* F971–F980: Local analytics dashboard styles */
+
+.analytics-dashboard {
+  padding: var(--space-5);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.analytics-privacy {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-5);
+  color: var(--text-dim);
+}
+
+.analytics-section {
+  margin-bottom: var(--space-6);
+}
+
+.analytics-section__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  margin: 0 0 var(--space-3);
+  color: var(--text);
+}
+
+.analytics-section--actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.analytics-empty {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+/* Hourly chart */
+.analytics-hourly {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 80px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.analytics-hour-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.analytics-hour-bar__fill {
+  width: 100%;
+  background: var(--accent);
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  min-height: 2px;
+  transition: height 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .analytics-hour-bar__fill {
+    transition: none;
+  }
+}
+
+.analytics-hour-bar__label {
+  position: absolute;
+  bottom: -18px;
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+/* Tables */
+.analytics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.analytics-table__th {
+  text-align: left;
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text-dim);
+  font-weight: 600;
+}
+
+.analytics-table__th--num {
+  text-align: right;
+}
+
+.analytics-table__row:hover {
+  background: var(--bg-hover);
+}
+
+.analytics-table__row--error {
+  color: var(--danger);
+}
+
+.analytics-table__cell {
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+
+.analytics-table__cell--feature,
+.analytics-table__cell--msg {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--text-xs);
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.analytics-table__cell--num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.analytics-table__cell--date {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+
+.analytics-table__stack {
+  padding: 0 var(--space-3) var(--space-2);
+}
+
+.analytics-table__stack pre {
+  font-size: var(--text-xs);
+  color: var(--danger);
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2);
+  overflow-x: auto;
+  margin: 0;
+}
+
+.analytics-expand-btn {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: var(--text-xs);
+  padding: 1px 6px;
+  line-height: 1;
+}
+
+.analytics-expand-btn:hover {
+  background: var(--bg-hover);
+}

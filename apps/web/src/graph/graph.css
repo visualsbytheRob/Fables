@@ -1,4 +1,12 @@
-/* Graph view (F241–F250) */
+/* Graph view (F241–F250, F929) */
+/*
+ * F929 — Frame-rate target: 60fps at 2k nodes.
+ * The canvas force simulation runs requestAnimationFrame; heavy layouts are
+ * throttled by pausing simulation when the tab is hidden. The will-change hint
+ * below lets the browser composite the canvas on the GPU.
+ * For real FPS profiling use Chrome DevTools Performance tab with
+ * `pnpm dev` and a seeded 2k-node vault.
+ */
 
 .graph-page {
   display: flex;
@@ -87,6 +95,8 @@
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
+  /* F929: GPU compositing hint for smooth 60fps force-directed animation */
+  will-change: transform;
 }
 
 .graph-page__empty {

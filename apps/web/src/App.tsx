@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   Activity,
+  BarChart2,
   BookmarkPlus,
   BookOpen,
   CalendarDays,
@@ -14,6 +15,7 @@ import {
   Package,
   Paperclip,
   Search,
+  Settings,
   Shapes,
   ThemeProvider,
   ToastProvider,
@@ -105,6 +107,13 @@ const VoicePage = lazy(() =>
 // Day 9: PWA install instructions (F804)
 const InstallPage = lazy(() =>
   import('./pwa/InstallPage.js').then((m) => ({ default: m.InstallPage })),
+);
+// Day 10: Local analytics dashboard (F971–F980) and Settings page (F997)
+const AnalyticsPage = lazy(() =>
+  import('./analytics/AnalyticsPage.js').then((m) => ({ default: m.AnalyticsPage })),
+);
+const SettingsPage = lazy(() =>
+  import('./settings/SettingsPage.js').then((m) => ({ default: m.SettingsPage })),
 );
 
 const queryClient = new QueryClient({
@@ -222,15 +231,29 @@ function Shell() {
       keywords: 'pwa install home screen ios',
       run: () => navigate('/install'),
     },
+    {
+      id: 'analytics',
+      label: 'Local Analytics…',
+      keywords: 'usage stats counters performance errors',
+      run: () => navigate('/analytics'),
+    },
+    {
+      id: 'settings',
+      label: 'Settings',
+      keywords: 'theme preferences notifications analytics a11y',
+      run: () => navigate('/settings'),
+    },
     ...registered,
   ];
 
   return (
     <div className="shell">
-      <nav className="sidebar">
-        <div className="brand">Fables</div>
-        <NavLink to="/" end>
-          <FileText size={16} /> Notes
+      {/* F933 — skip-to-content link for keyboard/screen reader users */}
+      <a href="#main-content" className="skip-link">Skip to content</a>
+      <nav className="sidebar" aria-label="Main navigation">
+        <div className="brand" aria-hidden="true">Fables</div>
+        <NavLink to="/" end aria-label="Notes">
+          <FileText size={16} aria-hidden="true" /> Notes
         </NavLink>
         <NavLink to="/stories">
           <BookOpen size={16} /> Stories
@@ -265,8 +288,14 @@ function Shell() {
         <NavLink to="/voice">
           <Mic size={16} /> Voice
         </NavLink>
-        <NavLink to="/insights">
-          <Activity size={16} /> Insights
+        <NavLink to="/insights" aria-label="Insights">
+          <Activity size={16} aria-hidden="true" /> Insights
+        </NavLink>
+        <NavLink to="/analytics" aria-label="Local Analytics">
+          <BarChart2 size={16} aria-hidden="true" /> Analytics
+        </NavLink>
+        <NavLink to="/settings" aria-label="Settings">
+          <Settings size={16} aria-hidden="true" /> Settings
         </NavLink>
         <div className="spacer" />
         <button
@@ -279,7 +308,7 @@ function Shell() {
           <Search size={16} /> Search
         </button>
       </nav>
-      <main className="main">
+      <main id="main-content" className="main">
         <Outlet />
       </main>
       <CommandPalette commands={commands} />
@@ -348,6 +377,9 @@ export function App() {
                   <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
                   <Route path="insights" element={lazyPage(<InsightsPage />)} />
                   <Route path="install" element={lazyPage(<InstallPage />)} />
+                  {/* Day 10: analytics + settings (F971–F980, F997) */}
+                  <Route path="analytics" element={lazyPage(<AnalyticsPage />)} />
+                  <Route path="settings" element={lazyPage(<SettingsPage />)} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>
               </Routes>
