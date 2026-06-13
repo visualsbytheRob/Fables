@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** 🏁 TIER 1 COMPLETE — Fables v1.0. Knowledge OS + Forge story engine + fusion + offline PWA + sync, all shipping. Production build/start verified end-to-end (node dist/server.js serves live). 1,868 tests green. ~961/1000 Tier-1 boxes; the rest honestly deferred (browser e2e/axe/Stryker/CI-nightly/VitePress/GitHub-release — need infra outside this build env). Next: Tier 2 epics (F1001+) — plugins, CRDT collab, encryption, Claude + ComfyUI adapters.
+**Status:** 🏁 TIER 1 COMPLETE — Fables v1.0 (Knowledge OS + Forge engine + fusion + offline PWA + sync). CI restored to green after reverting a packaging change that broke typecheck (workspace .ts exports vs production node). Honest deferral: F991/F992 single-process production start needs server bundling; `pnpm dev` works. 1,868 tests green. Next: Tier 2 (F1001+).
 
 ---
 
@@ -1348,8 +1348,8 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Release & Ship (F991–F1000)
 
-- [x] F991 — Production build pipeline: single `pnpm build` → `dist/` runnable artifact
-- [x] F992 — `pnpm start` production mode: one process serving API + web + docs
+- [~] F991 — Production build pipeline (deferred: pnpm build emits dist, but a single runnable artifact needs server bundling — tsc keeps .ts workspace imports, esbuild breaks pino transports; dev path works)
+- [~] F992 — pnpm start production mode (deferred: needs the server bundler above; `pnpm dev` is the working documented path)
 - [x] F993 — systemd unit + launchd plist templates for run-on-boot
 - [x] F994 — Install script: clone → build → doctor → serve, fully guided
 - [ ] F995 — Version 1.0.0 tag + generated changelog from commit history

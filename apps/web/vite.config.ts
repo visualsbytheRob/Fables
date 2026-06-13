@@ -8,15 +8,10 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      // The web app always builds from the workspace packages' TypeScript
-      // source, independent of their published `exports` (which point at
-      // `dist` for production Node). This keeps `pnpm dev` working straight
-      // after `pnpm install`, before any package is built.
-      '@fables/core': resolve(__dirname, '../../packages/core/src/index.ts'),
-      '@fables/forge-dsl': resolve(__dirname, '../../packages/forge-dsl/src/index.ts'),
-      '@fables/forge-vm': resolve(__dirname, '../../packages/forge-vm/src/index.ts'),
+      // Until `pnpm install` runs and creates the workspace symlink,
+      // resolve @fables/sync directly to the local source tree.
+      // After install this alias is redundant but harmless.
       '@fables/sync': resolve(__dirname, '../../packages/sync/src/index.ts'),
-      '@fables/ui': resolve(__dirname, '../../packages/ui/src/index.ts'),
     },
   },
   server: {
