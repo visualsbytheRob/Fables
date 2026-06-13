@@ -50,6 +50,7 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 
 - **[Architecture](architecture.md)** — System overview: monorepo structure, data model, server and web app, offline-first sync, fusion layer. Read this first.
 - **[Plugin Architecture Concepts](plugins/concepts.md)** — The Fables plugin system design (Tier 2). What plugins are, how they work, the security model, and what they can do.
+- **[Real-Time Collaboration Concepts](collaboration/concepts.md)** — Fables collaboration design (Tier 2): CRDTs and Yjs, shared editing, WebSocket rooms, presence, comments, and how it fits the local-first model.
 
 ---
 
@@ -61,7 +62,9 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 
 ## Build Logs & Retrospectives
 
-**Follow the daily progress of Fables development (Tier 1 — the core Knowledge OS + Forge engine).**
+**Follow the daily progress of Fables development.**
+
+### Tier 1 — Core Knowledge OS + Forge Engine (Days 1–10)
 
 - **[Day 1: Foundation & Monorepo](devlog/day-01.md)**
 - **[Day 2: Notes Core](devlog/day-02.md)**
@@ -74,6 +77,10 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 - **[Day 9: PWA, Offline, Sync & Tailscale](devlog/day-09.md)**
 - **[Day 10: Hardening, Tests, Perf & Ship](devlog/day-10.md)**
 - **[Tier 1 Retrospective](devlog/tier-1-retrospective.md)** — Lessons learned building 1,000 features in 10 days.
+
+### Tier 2 — Stretch Epics
+
+- **[Epic 11: Plugin & Extension Architecture](devlog/epic-11.md)** — Sandboxed worker-thread plugins with capability model, SDK, and distribution pipeline.
 
 ---
 
