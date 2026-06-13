@@ -10,6 +10,9 @@ import { notesRoutes } from './notes.js';
 import { queryRoutes } from './query.js';
 import { revisionsRoutes } from './revisions.js';
 import { savedQueriesRoutes } from './saved-queries.js';
+import { storiesRoutes } from './stories.js';
+import { storyFilesRoutes } from './story-files.js';
+import { storySavesRoutes } from './story-saves.js';
 import { tagsRoutes } from './tags.js';
 import { trashRoutes } from './trash.js';
 
@@ -28,4 +31,7 @@ export const routes: FastifyPluginAsync[] = [
   queryRoutes,
   savedQueriesRoutes,
   importExportRoutes,
+  storiesRoutes,
+  storyFilesRoutes,
+  storySavesRoutes,
 ];

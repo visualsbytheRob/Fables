@@ -24,6 +24,7 @@ describe('migrations', () => {
       '005-links',
       '006-saved-queries',
       '007-import-jobs',
+      '008-story-projects',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

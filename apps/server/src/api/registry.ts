@@ -6,7 +6,7 @@ import type { z } from 'zod';
  * source of truth instead of duplicating types by hand.
  */
 export interface RouteSchema {
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   path: string;
   summary: string;
   params?: z.ZodType;

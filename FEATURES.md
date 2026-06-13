@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 5 VM core done (F401–F500 minus integration halves: F462-3, F467-8, F480, F494, F497, F499). 1,053 tests green. Next: Day 6 story authoring + player (F501).
+**Status:** Day 6 server lane done (F501–F510 + F462-3, F499). 1,088 tests green. Web author-workspace lane (F511–F540) in flight. Next after: F541 player.
 
 ---
 
@@ -640,8 +640,8 @@ Your notes are the world. Your stories run on a compiler you own.
 ### Saves & Snapshots (F461–F470)
 
 - [x] F461 — Save slot model: named snapshots of VM state + story metadata
-- [ ] F462 — Save/load API endpoints per story per user
-- [ ] F463 — Autosave on every choice with ring buffer of last N
+- [x] F462 — Save/load API endpoints per story per user
+- [x] F463 — Autosave on every choice with ring buffer of last N
 - [x] F464 — Rewind: restore to any point in choice history
 - [x] F465 — Save migration when story is recompiled (best-effort, with report)
 - [x] F466 — Transcript log: full text + choices made, exportable
@@ -686,7 +686,7 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F496 — Time-travel: jump to any prior turn in debug session
 - [ ] F497 — `forge run` CLI: play a story in the terminal
 - [x] F498 — `forge test` CLI: assert-script format for story unit tests
-- [ ] F499 — VM performance benchmark suite (ops/sec, GC pressure)
+- [x] F499 — VM performance benchmark suite (ops/sec, GC pressure)
 - [x] F500 — Day-5 retro note in `docs/devlog/day-05.md`
 
 ---
@@ -695,16 +695,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Story Project Model (F501–F510)
 
-- [ ] F501 — Story CRUD API: title, description, cover, entry file
-- [ ] F502 — Multi-file story projects: .fable files tree per story
-- [ ] F503 — Story file CRUD with rename + include-path integrity
-- [ ] F504 — Compile-on-save pipeline with diagnostics persisted per story
-- [ ] F505 — Story build status model: draft/valid/broken with error counts
-- [ ] F506 — Story versioning: tagged releases of compiled bytecode
-- [ ] F507 — Story settings: entry point, theme, PRNG seed mode
-- [ ] F508 — Story duplication + template stories
-- [ ] F509 — Story deletion with save-data warning flow
-- [ ] F510 — Story project API tests
+- [x] F501 — Story CRUD API: title, description, cover, entry file
+- [x] F502 — Multi-file story projects: .fable files tree per story
+- [x] F503 — Story file CRUD with rename + include-path integrity
+- [x] F504 — Compile-on-save pipeline with diagnostics persisted per story
+- [x] F505 — Story build status model: draft/valid/broken with error counts
+- [x] F506 — Story versioning: tagged releases of compiled bytecode
+- [x] F507 — Story settings: entry point, theme, PRNG seed mode
+- [x] F508 — Story duplication + template stories
+- [x] F509 — Story deletion with save-data warning flow
+- [x] F510 — Story project API tests
 
 ### Author Editor UX (F511–F520)
 
