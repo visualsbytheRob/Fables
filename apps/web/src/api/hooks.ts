@@ -7,12 +7,14 @@ import {
   attachmentsApi,
   graphApi,
   importApi,
+  insightsApi,
   linksApi,
   notebooksApi,
   notesApi,
   queryApi,
   revisionsApi,
   savedQueriesApi,
+  searchApi,
   tagsApi,
   trashApi,
   type GraphFilterParams,
@@ -20,6 +22,7 @@ import {
   type Note,
   type NotePatch,
   type NoteSort,
+  type SearchParams,
 } from './client.js';
 
 export const queryKeys = {
@@ -385,5 +388,114 @@ export function useImportJob(id: string | null) {
     queryFn: () => importApi.job(id as string),
     enabled: id !== null,
     refetchInterval: (query) => (query.state.data?.status === 'running' ? 1000 : false),
+  });
+}
+
+/* ===== Search (F711–F720) ===== */
+
+export function useSearch(params: SearchParams | null) {
+  return useQuery({
+    queryKey: ['search', params],
+    queryFn: () => searchApi.search(params as SearchParams),
+    enabled: params !== null && params.q.trim().length > 0,
+    staleTime: 15_000,
+  });
+}
+
+/* ===== Insights (F791–F800) ===== */
+
+export function useInsightsOverview() {
+  return useQuery({
+    queryKey: ['insights', 'overview'],
+    queryFn: insightsApi.overview,
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsGrowth(from: string, to: string) {
+  return useQuery({
+    queryKey: ['insights', 'growth', from, to],
+    queryFn: () => insightsApi.growth(from, to),
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsStreaks() {
+  return useQuery({
+    queryKey: ['insights', 'streaks'],
+    queryFn: insightsApi.streaks,
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsStale(limit = 20) {
+  return useQuery({
+    queryKey: ['insights', 'stale', limit],
+    queryFn: () => insightsApi.stale(limit),
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsSuggestedLinks(limit = 20) {
+  return useQuery({
+    queryKey: ['insights', 'suggested-links', limit],
+    queryFn: () => insightsApi.suggestedLinks(limit),
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsReading() {
+  return useQuery({
+    queryKey: ['insights', 'reading'],
+    queryFn: insightsApi.reading,
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsDeadEnds() {
+  return useQuery({
+    queryKey: ['insights', 'dead-ends'],
+    queryFn: insightsApi.deadEnds,
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsHealth() {
+  return useQuery({
+    queryKey: ['insights', 'health'],
+    queryFn: insightsApi.health,
+    staleTime: 60_000,
+  });
+}
+
+export function useInsightsDigest() {
+  const invalidate = useInvalidateNotes();
+  return useMutation({
+    mutationFn: insightsApi.digest,
+    onSuccess: () => invalidate(),
+  });
+}
+
+export function useAcceptSuggestedLink() {
+  const invalidate = useInvalidateNotes();
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ noteId, input }: { noteId: string; input: { mentionId?: string; all?: boolean } }) =>
+      linksApi.convertMentions(noteId, input),
+    onSuccess: () => {
+      invalidate();
+      void qc.invalidateQueries({ queryKey: ['insights', 'suggested-links'] });
+    },
+  });
+}
+
+/* ===== Related notes (F751–F760) ===== */
+
+export function useRelatedByLinks(noteId: string | null, enabled = true) {
+  return useQuery({
+    queryKey: ['related', 'links', noteId ?? 'none'],
+    queryFn: () => graphApi.local(noteId as string, 2),
+    enabled: noteId !== null && enabled,
+    staleTime: 30_000,
   });
 }

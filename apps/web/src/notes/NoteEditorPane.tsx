@@ -4,7 +4,8 @@
  * revision history (F183–F185), draft recovery (F186), force-save (F189),
  * breadcrumbs (F148), status bar (F193), focus mode (F194), export/copy
  * (F195/F196), info panel (F197), pin (F178), attachment upload (F161/F127),
- * tag autocomplete (F153), and an image lightbox (F166).
+ * tag autocomplete (F153), an image lightbox (F166),
+ * in-note find (F714, Day 8), and related notes panel (F751–F760, Day 8).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -49,6 +50,8 @@ import { loadPreviewSettings, savePreviewSettings } from '../preview/settings.js
 import { SplitView } from '../preview/SplitView.js';
 import { toggleTaskAtLine } from '../preview/tasks.js';
 import { BacklinksPanel } from './BacklinksPanel.js';
+import { InNoteFind } from '../search/InNoteFind.js';
+import { RelatedPanel } from '../related/RelatedPanel.js';
 import { ConflictDialog } from './ConflictDialog.js';
 import { recoverableDraft, clearDraft, type Draft } from './drafts.js';
 import { copyAsHtml, copyText, downloadMarkdown, noteToMarkdown } from './exporters.js';
@@ -99,6 +102,8 @@ export function NoteEditorPane({
   const [showHistory, setShowHistory] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
   const [showBacklinks, setShowBacklinks] = useState(() => loadBacklinksPanel().open);
+  const [showInNoteFind, setShowInNoteFind] = useState(false);
+  const [showRelated, setShowRelated] = useState(false);
   const [showInsertTemplate, setShowInsertTemplate] = useState(false);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [editorSettings] = useState(loadEditorSettings);
@@ -139,6 +144,11 @@ export function NoteEditorPane({
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
         e.preventDefault();
         void flush();
+      }
+      // In-note find: ⌘F / Ctrl+F (F714) — but not ⌘⇧F which opens global search
+      if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setShowInNoteFind((v) => !v);
       }
     };
     window.addEventListener('keydown', onKey);
@@ -406,6 +416,18 @@ export function NoteEditorPane({
       keywords: 'katex latex equations',
       run: () => togglePreviewSetting('math'),
     },
+    {
+      id: 'in-note-find',
+      label: 'Find in note (⌘F)',
+      keywords: 'find search text locate',
+      run: () => setShowInNoteFind((v) => !v),
+    },
+    {
+      id: 'related-panel',
+      label: showRelated ? 'Hide related notes' : 'Show related notes',
+      keywords: 'related suggestions similar',
+      run: () => setShowRelated((v) => !v),
+    },
   ]);
 
   const crumbs = breadcrumb(roots, note.notebookId);
@@ -415,7 +437,8 @@ export function NoteEditorPane({
     <div
       className={`note-pane${showHistory ? ' note-pane--history' : ''}${
         showBacklinks ? ' note-pane--connections' : ''
-      }`}
+      }${showRelated ? ' note-pane--related' : ''}`}
+      style={{ position: 'relative' }}
     >
       <div className="note-pane__main">
         {!focusMode && (
@@ -567,6 +590,16 @@ export function NoteEditorPane({
           onClose={toggleBacklinks}
         />
       )}
+
+      {showRelated && (
+        <RelatedPanel note={note} onClose={() => setShowRelated(false)} />
+      )}
+
+      <InNoteFind
+        body={body}
+        open={showInNoteFind}
+        onClose={() => setShowInNoteFind(false)}
+      />
 
       <TemplatePicker
         open={showInsertTemplate}

@@ -1,6 +1,7 @@
-import { Suspense, lazy } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
+  Activity,
   BookOpen,
   CalendarDays,
   CommandPalette,
@@ -9,6 +10,7 @@ import {
   Network,
   Package,
   Paperclip,
+  Search,
   Shapes,
   ThemeProvider,
   ToastProvider,
@@ -21,6 +23,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
 import { CheatSheet } from './notes/CheatSheet.js';
 import { QuickCapture } from './notes/QuickCapture.js';
+import { SearchOverlay } from './search/SearchOverlay.js';
 import { Tour } from './onboarding/Tour.js';
 import { PlaygroundPage } from './pages/Playground.js';
 
@@ -73,6 +76,10 @@ const TimelinePage = lazy(() =>
 const WorldPage = lazy(() =>
   import('./world/WorldPage.js').then((m) => ({ default: m.WorldPage })),
 );
+// Day 8: Insights (F791–F800) — own chunk (SVG charts + multiple queries).
+const InsightsPage = lazy(() =>
+  import('./insights/InsightsPage.js').then((m) => ({ default: m.InsightsPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,6 +90,20 @@ const queryClient = new QueryClient({
 function Shell() {
   const navigate = useNavigate();
   const registered = useRegisteredCommands();
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Global search hotkeys: ⌘⇧F / Ctrl+Shift+F (F711)
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.shiftKey && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        setSearchOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   const commands: PaletteCommand[] = [
     { id: 'notes', label: 'Go to Notes', keywords: 'home', run: () => navigate('/') },
     {
@@ -129,6 +150,19 @@ function Shell() {
       keywords: 'fable dsl editor compiler',
       run: () => navigate('/forge-playground'),
     },
+    // Day 8 (F711, F791)
+    {
+      id: 'search',
+      label: 'Search vault (⌘⇧F)',
+      keywords: 'find query global',
+      run: () => setSearchOpen(true),
+    },
+    {
+      id: 'insights',
+      label: 'Go to Insights',
+      keywords: 'analytics stats health vault intelligence',
+      run: () => navigate('/insights'),
+    },
     ...registered,
   ];
 
@@ -163,6 +197,19 @@ function Shell() {
         <NavLink to="/import">
           <Upload size={16} /> Import
         </NavLink>
+        <NavLink to="/insights">
+          <Activity size={16} /> Insights
+        </NavLink>
+        <div className="spacer" />
+        <button
+          type="button"
+          className="sidebar-search-btn"
+          onClick={() => setSearchOpen(true)}
+          title="Search vault (⌘⇧F)"
+          aria-label="Open search"
+        >
+          <Search size={16} /> Search
+        </button>
       </nav>
       <main className="main">
         <Outlet />
@@ -171,6 +218,7 @@ function Shell() {
       <QuickCapture onCreated={(id) => navigate(`/notes/${id}`)} />
       <CheatSheet />
       <Tour />
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </div>
   );
 }
@@ -212,6 +260,7 @@ export function App() {
                   <Route path="import" element={lazyPage(<ImportPage />)} />
                   <Route path="playground" element={<PlaygroundPage />} />
                   <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
+                  <Route path="insights" element={lazyPage(<InsightsPage />)} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>
               </Routes>

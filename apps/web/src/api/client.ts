@@ -637,3 +637,149 @@ export const attachmentsApi = {
     return parse<Attachment>(res);
   },
 };
+
+/* ===== Search (F711–F720) ===== */
+
+export interface SearchHighlight {
+  start: number;
+  end: number;
+}
+
+export interface SearchResult {
+  id: string;
+  title: string;
+  snippet: string;
+  highlights: SearchHighlight[];
+  score: number;
+}
+
+export interface SearchGroup {
+  type: string;
+  total: number;
+  results: SearchResult[];
+}
+
+export type SearchMode = 'keyword' | 'semantic' | 'hybrid';
+
+export interface SearchData {
+  mode: SearchMode;
+  query: string;
+  groups: SearchGroup[];
+}
+
+export interface SearchResponse {
+  data: SearchData;
+  page: Page;
+}
+
+export interface SearchParams {
+  q: string;
+  types?: string;
+  limit?: number;
+  cursor?: string;
+}
+
+async function requestSearch(params: SearchParams): Promise<SearchResponse> {
+  const res = await fetch(`/api/v1/search${qs({ ...params })}`, {
+    headers: { 'content-type': 'application/json' },
+  });
+  const body = (await res.json()) as { data?: SearchData; page?: Page; error?: ApiError };
+  if (!res.ok || body.error) {
+    throw new ApiRequestError(
+      res.status,
+      body.error ?? { code: 'INTERNAL', message: 'unknown error', details: null },
+    );
+  }
+  return {
+    data: body.data ?? { mode: 'keyword', query: params.q, groups: [] },
+    page: body.page ?? { nextCursor: null, limit: 0 },
+  };
+}
+
+export const searchApi = {
+  search: (params: SearchParams) => requestSearch(params),
+};
+
+/* ===== Insights (F791–F800) ===== */
+
+export interface InsightsOverview {
+  notes: number;
+  notebooks: number;
+  entities: number;
+  stories: number;
+  links: number;
+  orphans: number;
+  wordsTotal: number;
+}
+
+export interface GrowthDay {
+  date: string;
+  notes: number;
+  links: number;
+  words: number;
+}
+
+export interface HeatmapDay {
+  date: string;
+  count: number;
+}
+
+export interface InsightsStreaks {
+  currentStreak: number;
+  longestStreak: number;
+  heatmap: HeatmapDay[];
+}
+
+export interface StaleNote {
+  id: string;
+  title: string;
+  updatedAt: string;
+  daysSinceUpdate: number;
+}
+
+export interface SuggestedLink {
+  id: string;
+  sourceId: string;
+  sourceTitle: string;
+  targetId: string;
+  targetTitle: string;
+  score: number;
+}
+
+export interface ReadingNote {
+  id: string;
+  title: string;
+  wordCount: number;
+  readingMinutes: number;
+}
+
+export interface DeadEndNote {
+  id: string;
+  title: string;
+  updatedAt: string;
+}
+
+export interface HealthCheckItem {
+  id: string;
+  label: string;
+  ok: boolean;
+}
+
+export interface VaultHealth {
+  score: number;
+  checklist: HealthCheckItem[];
+}
+
+export const insightsApi = {
+  overview: () => api.get<InsightsOverview>('/insights/overview'),
+  growth: (from: string, to: string) =>
+    api.get<GrowthDay[]>(`/insights/growth${qs({ from, to })}`),
+  streaks: () => api.get<InsightsStreaks>('/insights/streaks'),
+  stale: (limit = 20) => api.get<StaleNote[]>(`/insights/stale${qs({ limit })}`),
+  suggestedLinks: (limit = 20) =>
+    api.get<SuggestedLink[]>(`/insights/suggested-links${qs({ limit })}`),
+  reading: () => api.get<ReadingNote[]>('/insights/reading'),
+  deadEnds: () => api.get<DeadEndNote[]>('/insights/dead-ends'),
+  health: () => api.get<VaultHealth>('/insights/health'),
+  digest: () => api.post<Note>('/insights/digest'),
+};

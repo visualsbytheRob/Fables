@@ -1,0 +1,37 @@
+/* In-note find bar (F714) */
+.in-note-find {
+  position: absolute;
+  top: var(--space-3);
+  right: var(--space-4);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: var(--space-2) var(--space-3);
+}
+
+.in-note-find__icon {
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.in-note-find__input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-family: inherit;
+  width: 180px;
+}
+
+.in-note-find__count {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  min-width: 36px;
+  text-align: center;
+}

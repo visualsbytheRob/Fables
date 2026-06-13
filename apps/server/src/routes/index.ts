@@ -8,6 +8,7 @@ import { entitiesRoutes } from './entities.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
 import { importExportRoutes } from './import-export.js';
+import { insightsRoutes } from './insights.js';
 import { knowledgeRoutes } from './knowledge.js';
 import { linksRoutes } from './links.js';
 import { notebooksRoutes } from './notebooks.js';
@@ -15,6 +16,7 @@ import { notesRoutes } from './notes.js';
 import { queryRoutes } from './query.js';
 import { revisionsRoutes } from './revisions.js';
 import { savedQueriesRoutes } from './saved-queries.js';
+import { searchRoutes } from './search.js';
 import { storiesRoutes } from './stories.js';
 import { storyFilesRoutes } from './story-files.js';
 import { storySavesRoutes } from './story-saves.js';
@@ -50,4 +52,6 @@ export const routes: FastifyPluginAsync[] = [
   crossrefRoutes,
   transclusionRoutes,
   worldRoutes,
+  searchRoutes,
+  insightsRoutes,
 ];

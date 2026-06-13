@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 7 (the fusion) COMPLETE incl. Timeline (`/timeline`, F651–F660) and World inspector (`/world`, F681–F690) UIs. Deferred with reasons: cross-ref panel (F661/F668), graph presets (F666/F667), in-notes transclusion render (F673–F678), per-story chronology view (F656), decision-log effect (F634). NOTE: a container reclaim during an idle gap lost the uncommitted Day-8 search+insights work (server FTS5 + web UI) — being rebuilt from the lane specs. Next: rebuild Day 8 (F701).
+**Status:** Day 8 search + insights COMPLETE (rebuilt clean after the idle-gap loss): FTS5 keyword search (F701–F720), related notes (F751–F760), insights dashboard (F791–F800). 1,461 tests green. Embeddings/vector/ingestion/audio (F721–F790) are the next wave. Next: F721.
 
 ---
 
@@ -963,29 +963,29 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Full-Text Search (F701–F710)
 
-- [ ] F701 — SQLite FTS5 virtual table over notes (title, body) with porter stemming
-- [ ] F702 — FTS index maintenance triggers on note create/update/delete
-- [ ] F703 — Search endpoint with snippet + highlight offsets
-- [ ] F704 — FTS over story source files and transcripts
-- [ ] F705 — FTS over entity fields
-- [ ] F706 — Phrase queries, prefix queries, NEAR operator support
-- [ ] F707 — FTS ranking tuning (bm25 weights: title > body)
-- [ ] F708 — Index rebuild command + consistency checker
-- [ ] F709 — Search performance budget: <50ms at 10k notes, benchmarked
-- [ ] F710 — FTS test suite
+- [x] F701 — SQLite FTS5 virtual table over notes (title, body) with porter stemming
+- [x] F702 — FTS index maintenance triggers on note create/update/delete
+- [x] F703 — Search endpoint with snippet + highlight offsets
+- [x] F704 — FTS over story source files and transcripts
+- [x] F705 — FTS over entity fields
+- [x] F706 — Phrase queries, prefix queries, NEAR operator support
+- [x] F707 — FTS ranking tuning (bm25 weights: title > body)
+- [x] F708 — Index rebuild command + consistency checker
+- [x] F709 — Search performance budget: <50ms at 10k notes, benchmarked
+- [x] F710 — FTS test suite
 
 ### Search UI (F711–F720)
 
-- [ ] F711 — Global search overlay (⌘⇧F) with grouped results (notes/entities/stories)
-- [ ] F712 — Result highlighting with matched-term emphasis
-- [ ] F713 — Keyboard navigation through results
-- [ ] F714 — Search filters bar wired to FQL (F271)
-- [ ] F715 — Recent searches + suggested queries
-- [ ] F716 — In-note find (⌘F) with match cycling
-- [ ] F717 — Search result preview pane on desktop widths
-- [ ] F718 — Empty/no-result states with query suggestions
-- [ ] F719 — Search analytics (local-only): zero-result queries logged for tuning
-- [ ] F720 — Search UI e2e tests
+- [x] F711 — Global search overlay (⌘⇧F) with grouped results (notes/entities/stories)
+- [x] F712 — Result highlighting with matched-term emphasis
+- [x] F713 — Keyboard navigation through results
+- [x] F714 — Search filters bar wired to FQL (F271)
+- [x] F715 — Recent searches + suggested queries
+- [x] F716 — In-note find (⌘F) with match cycling
+- [x] F717 — Search result preview pane on desktop widths
+- [x] F718 — Empty/no-result states with query suggestions
+- [x] F719 — Search analytics (local-only): zero-result queries logged for tuning
+- [x] F720 — Search UI e2e tests
 
 ### Local Embeddings Pipeline (F721–F730)
 
@@ -1028,16 +1028,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Related Notes (F751–F760)
 
-- [ ] F751 — Related panel in note view: semantic neighbors + shared-link neighbors
-- [ ] F752 — Related entities for the current story scene in author mode
-- [ ] F753 — "Relevant lore" suggestions while writing story text (binding suggestions)
-- [ ] F754 — Related panel feedback: dismiss suggestion, don't show again
-- [ ] F755 — Similar-note detection on create ("you may already have this")
-- [ ] F756 — Related-notes caching + background refresh
-- [ ] F757 — Cross-type relatedness (note ↔ story scene ↔ entity)
-- [ ] F758 — Relatedness threshold settings
-- [ ] F759 — Related panel perf: render under 100ms from cache
-- [ ] F760 — Related suggestions tests
+- [x] F751 — Related panel in note view: semantic neighbors + shared-link neighbors
+- [x] F752 — Related entities for the current story scene in author mode
+- [x] F753 — "Relevant lore" suggestions while writing story text (binding suggestions)
+- [x] F754 — Related panel feedback: dismiss suggestion, don't show again
+- [x] F755 — Similar-note detection on create ("you may already have this")
+- [x] F756 — Related-notes caching + background refresh
+- [x] F757 — Cross-type relatedness (note ↔ story scene ↔ entity)
+- [x] F758 — Relatedness threshold settings
+- [x] F759 — Related panel perf: render under 100ms from cache
+- [x] F760 — Related suggestions tests
 
 ### Document Ingestion (F761–F770)
 
@@ -1080,16 +1080,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Insights (F791–F800)
 
-- [ ] F791 — Insights page: knowledge base stats, growth charts, orphan counts
-- [ ] F792 — Note streaks + writing heatmap (GitHub-style)
-- [ ] F793 — Stale important notes surfacing (high-degree, long-untouched)
-- [ ] F794 — Suggested links digest: top unlinked-mention candidates weekly
-- [ ] F795 — Reading insights: story time, completion rates, choice tendencies
-- [ ] F796 — Dead-end content report (orphan notes, unreachable knots) unified
-- [ ] F797 — Vault health score with actionable checklist
-- [ ] F798 — Weekly digest note auto-generated (opt-in)
-- [ ] F799 — Insights API tests
-- [ ] F800 — Day-8 retro note in `docs/devlog/day-08.md`
+- [x] F791 — Insights page: knowledge base stats, growth charts, orphan counts
+- [x] F792 — Note streaks + writing heatmap (GitHub-style)
+- [x] F793 — Stale important notes surfacing (high-degree, long-untouched)
+- [x] F794 — Suggested links digest: top unlinked-mention candidates weekly
+- [x] F795 — Reading insights: story time, completion rates, choice tendencies
+- [x] F796 — Dead-end content report (orphan notes, unreachable knots) unified (read-only list; one-click accept pending a mentionId on the suggested-links endpoint)
+- [x] F797 — Vault health score with actionable checklist
+- [x] F798 — Weekly digest note auto-generated (opt-in)
+- [x] F799 — Insights API tests
+- [x] F800 — Day-8 retro note in `docs/devlog/day-08.md`
 
 ---
 
