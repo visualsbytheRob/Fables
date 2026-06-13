@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "com.test.broken",
+  "version": "1.0.0",
+  "name": "Broken Plugin",
+  "description": "A plugin that crashes on load",
+  "entry": "entry.js",
+  "permissions": [],
+  "dependencies": []
+}

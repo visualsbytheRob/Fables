@@ -18,6 +18,7 @@
     "@fables/forge-dsl": "workspace:*",
     "@fables/forge-vm": "workspace:*",
     "@fables/sync": "workspace:*",
+    "@fables/plugin-sdk": "workspace:*",
     "@fastify/compress": "^9.0.0",
     "@fastify/cors": "^11.0.0",
     "@fastify/etag": "^6.1.0",

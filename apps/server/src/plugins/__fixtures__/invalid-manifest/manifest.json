@@ -1,0 +1,6 @@
+{
+  "schemaVersion": 1,
+  "id": "not a valid id with spaces!",
+  "version": "not-semver",
+  "name": "Bad Manifest"
+}

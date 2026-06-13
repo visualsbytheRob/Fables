@@ -13,6 +13,7 @@ import { migration012Embeddings } from './012-embeddings.js';
 import { migration013IngestJobs } from './013-ingest-jobs.js';
 import { migration014Sync } from './014-sync.js';
 import { migration015Analytics } from './015-analytics.js';
+import { migration016Plugins } from './016-plugins.js';
 
 export interface Migration {
   id: number;
@@ -37,4 +38,5 @@ export const migrations: Migration[] = [
   migration013IngestJobs,
   migration014Sync,
   migration015Analytics,
+  migration016Plugins,
 ];

@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "com.test.escape-attempt",
+  "version": "1.0.0",
+  "name": "Sandbox Escape Attempt",
+  "description": "Tries to access storage without permission — must be denied",
+  "entry": "entry.js",
+  "permissions": ["notes:read"],
+  "dependencies": []
+}

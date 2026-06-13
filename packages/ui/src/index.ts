@@ -123,4 +123,12 @@ export {
   StopCircle,
   Volume1,
   WifiOff,
+  // Epic 11: Plugin & Extension Architecture (F1041–F1090)
+  Blocks,
+  Puzzle,
+  ShieldCheck,
+  ShieldAlert,
+  Terminal,
+  Wrench,
+  PackageSearch,
 } from 'lucide-react';

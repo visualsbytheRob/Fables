@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** 🏁 TIER 1 COMPLETE — Fables v1.0 (Knowledge OS + Forge engine + fusion + offline PWA + sync). CI restored to green after reverting a packaging change that broke typecheck (workspace .ts exports vs production node). Honest deferral: F991/F992 single-process production start needs server bundling; `pnpm dev` works. 1,868 tests green. Next: Tier 2 (F1001+).
+**Status:** Tier 2 underway — Epic 11 (Plugin Architecture) core complete: sandboxed worker-thread runtime with capability security, plugin Notes/Story/VM/event APIs, /plugin-sdk, UI extension points, permission UX, dev kit, example plugins (F1001–F1090, minus noted deferrals). Distribution (F1091–F1100) is the next slice. 1,930 tests green. CI green. Next: F1091 (plugin distribution) + Epic 12 (CRDT collab).
 
 ---
 
@@ -1372,120 +1372,120 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Plugin Manifest & Loader (F1001–F1010)
 
-- [ ] F1001 — Plugin manifest spec: id, version, permissions, entry, UI contributions
-- [ ] F1002 — Plugin directory layout under `DATA_DIR/plugins/<id>`
-- [ ] F1003 — Manifest validation with versioned schema
-- [ ] F1004 — Plugin loader: discover, validate, register at boot
-- [ ] F1005 — Enable/disable plugins without restart
-- [ ] F1006 — Plugin dependency declarations + load ordering
-- [ ] F1007 — Semver compatibility checks against app version
-- [ ] F1008 — Broken plugin quarantine (load failure never breaks boot)
-- [ ] F1009 — Plugin registry persistence (installed, enabled, settings)
-- [ ] F1010 — Loader test suite with fixture plugins
+- [x] F1001 — Plugin manifest spec: id, version, permissions, entry, UI contributions
+- [x] F1002 — Plugin directory layout under `DATA_DIR/plugins/<id>`
+- [x] F1003 — Manifest validation with versioned schema
+- [x] F1004 — Plugin loader: discover, validate, register at boot
+- [x] F1005 — Enable/disable plugins without restart
+- [x] F1006 — Plugin dependency declarations + load ordering
+- [x] F1007 — Semver compatibility checks against app version
+- [x] F1008 — Broken plugin quarantine (load failure never breaks boot)
+- [x] F1009 — Plugin registry persistence (installed, enabled, settings)
+- [x] F1010 — Loader test suite with fixture plugins
 
 ### Sandboxed Runtime (F1011–F1020)
 
-- [ ] F1011 — Plugin code runs in isolated worker threads, never the main process
-- [ ] F1012 — Structured RPC bridge between host and plugin worker
-- [ ] F1013 — CPU/memory budgets per plugin with kill-on-exceed
-- [ ] F1014 — No filesystem/network access except via granted capability APIs
-- [ ] F1015 — Capability grant model bound to manifest permissions
-- [ ] F1016 — Plugin crash isolation + auto-restart with backoff
-- [ ] F1017 — Timeout handling on all plugin calls
-- [ ] F1018 — Audit log of capability use per plugin
-- [ ] F1019 — Sandbox escape test suite (adversarial fixtures)
-- [ ] F1020 — Runtime performance overhead benchmark
+- [x] F1011 — Plugin code runs in isolated worker threads, never the main process
+- [x] F1012 — Structured RPC bridge between host and plugin worker
+- [x] F1013 — CPU/memory budgets per plugin with kill-on-exceed
+- [x] F1014 — No filesystem/network access except via granted capability APIs
+- [x] F1015 — Capability grant model bound to manifest permissions
+- [x] F1016 — Plugin crash isolation + auto-restart with backoff
+- [x] F1017 — Timeout handling on all plugin calls
+- [x] F1018 — Audit log of capability use per plugin
+- [x] F1019 — Sandbox escape test suite (adversarial fixtures)
+- [~] F1020 — Runtime performance overhead benchmark (deferred: runtime perf benchmark needs a live worker (not meaningful in CI))
 
 ### Notes API for Plugins (F1021–F1030)
 
-- [ ] F1021 — Read API: query notes/tags/links with FQL from plugins
-- [ ] F1022 — Write API: create/update notes with attribution metadata
-- [ ] F1023 — Plugin-defined virtual notes (computed content)
-- [ ] F1024 — Markdown post-processor hook (transform rendered output)
-- [ ] F1025 — Custom block types registered by plugins (```myblock fences)
-- [ ] F1026 — Tag and metadata APIs
-- [ ] F1027 — Search extension hook (plugins add result sources)
-- [ ] F1028 — Rate limits + batching on plugin data access
-- [ ] F1029 — Change subscription API (watch note events)
-- [ ] F1030 — Notes API contract tests
+- [x] F1021 — Read API: query notes/tags/links with FQL from plugins
+- [x] F1022 — Write API: create/update notes with attribution metadata
+- [~] F1023 — Plugin-defined virtual notes (computed content) (deferred: plugin virtual notes need search-index integration — follow-up)
+- [x] F1024 — Markdown post-processor hook (transform rendered output)
+- [x] F1025 — Custom block types registered by plugins (```myblock fences)
+- [x] F1026 — Tag and metadata APIs
+- [x] F1027 — Search extension hook (plugins add result sources)
+- [x] F1028 — Rate limits + batching on plugin data access
+- [x] F1029 — Change subscription API (watch note events)
+- [x] F1030 — Notes API contract tests
 
 ### Story/VM API for Plugins (F1031–F1040)
 
-- [ ] F1031 — External function registration from plugins into the Forge VM
-- [ ] F1032 — Custom story effects contributed by plugins
-- [ ] F1033 — Compiler diagnostic contributions (custom lint rules)
-- [ ] F1034 — Story export format plugins
-- [ ] F1035 — Player UI overlays from plugins (stat widgets)
-- [ ] F1036 — VM state read access with story-scoped permission
-- [ ] F1037 — Pre/post choice hooks
-- [ ] F1038 — Plugin-provided stdlib extensions with namespacing
-- [ ] F1039 — Determinism guard: plugin functions declared pure vs effectful
-- [ ] F1040 — Story API contract tests
+- [x] F1031 — External function registration from plugins into the Forge VM
+- [x] F1032 — Custom story effects contributed by plugins
+- [~] F1033 — Compiler diagnostic contributions (custom lint rules) (deferred: compiler diagnostic contributions need forge-dsl integration — follow-up)
+- [x] F1034 — Story export format plugins
+- [~] F1035 — Player UI overlays from plugins (stat widgets) (deferred: plugin player-UI overlays — follow-up web work)
+- [x] F1036 — VM state read access with story-scoped permission
+- [x] F1037 — Pre/post choice hooks
+- [~] F1038 — Plugin-provided stdlib extensions with namespacing (deferred: plugin stdlib extensions need forge-vm internals — follow-up)
+- [x] F1039 — Determinism guard: plugin functions declared pure vs effectful
+- [x] F1040 — Story API contract tests
 
 ### UI Extension Points (F1041–F1050)
 
-- [ ] F1041 — Sidebar panel contribution API
-- [ ] F1042 — Command palette command contributions
-- [ ] F1043 — Note context-menu item contributions
-- [ ] F1044 — Editor toolbar button contributions
-- [ ] F1045 — Settings page sections per plugin
-- [ ] F1046 — Custom routes/pages registered by plugins
-- [ ] F1047 — Status bar item contributions
-- [ ] F1048 — Theme contributions (full token sets)
-- [ ] F1049 — UI contribution sandboxing (iframe/portal isolation)
-- [ ] F1050 — Extension point e2e tests
+- [x] F1041 — Sidebar panel contribution API
+- [x] F1042 — Command palette command contributions
+- [x] F1043 — Note context-menu item contributions
+- [x] F1044 — Editor toolbar button contributions
+- [x] F1045 — Settings page sections per plugin
+- [x] F1046 — Custom routes/pages registered by plugins
+- [x] F1047 — Status bar item contributions
+- [x] F1048 — Theme contributions (full token sets)
+- [x] F1049 — UI contribution sandboxing (iframe/portal isolation)
+- [x] F1050 — Extension point e2e tests
 
 ### Event Hooks & Filters (F1051–F1060)
 
-- [ ] F1051 — Typed event bus exposed to plugins (note.saved, story.completed…)
-- [ ] F1052 — Filter chains: plugins transform data in defined pipelines
-- [ ] F1053 — Hook priority + ordering controls
-- [ ] F1054 — Async hook support with timeout budgets
-- [ ] F1055 — Event replay protection (idempotency keys)
-- [ ] F1056 — Hook failure isolation (one bad filter never corrupts the chain)
-- [ ] F1057 — Event documentation generator from registry
-- [ ] F1058 — Hook performance profiler per plugin
-- [ ] F1059 — Wildcard subscriptions with permission gating
-- [ ] F1060 — Event system test suite
+- [x] F1051 — Typed event bus exposed to plugins (note.saved, story.completed…)
+- [x] F1052 — Filter chains: plugins transform data in defined pipelines
+- [x] F1053 — Hook priority + ordering controls
+- [x] F1054 — Async hook support with timeout budgets
+- [x] F1055 — Event replay protection (idempotency keys)
+- [x] F1056 — Hook failure isolation (one bad filter never corrupts the chain)
+- [x] F1057 — Event documentation generator from registry
+- [~] F1058 — Hook performance profiler per plugin (deferred: per-plugin perf profiler — follow-up)
+- [~] F1059 — Wildcard subscriptions with permission gating (deferred: wildcard event subscriptions — exact-match only for now)
+- [x] F1060 — Event system test suite
 
 ### Permissions & Settings UX (F1061–F1070)
 
-- [ ] F1061 — Install-time permission review screen
-- [ ] F1062 — Runtime permission prompts for escalations
-- [ ] F1063 — Per-plugin settings storage with schema-driven forms
-- [ ] F1064 — Permission revocation without uninstall
-- [ ] F1065 — Plugin detail page: permissions, resource use, audit trail
-- [ ] F1066 — Notebook-scoped data access grants
-- [ ] F1067 — Privacy labels (what data the plugin touches)
-- [ ] F1068 — Bulk plugin management UI
-- [ ] F1069 — Permission model documentation
-- [ ] F1070 — Permission enforcement tests
+- [x] F1061 — Install-time permission review screen
+- [x] F1062 — Runtime permission prompts for escalations
+- [x] F1063 — Per-plugin settings storage with schema-driven forms
+- [x] F1064 — Permission revocation without uninstall
+- [x] F1065 — Plugin detail page: permissions, resource use, audit trail
+- [x] F1066 — Notebook-scoped data access grants
+- [x] F1067 — Privacy labels (what data the plugin touches)
+- [x] F1068 — Bulk plugin management UI
+- [~] F1069 — Permission model documentation (deferred: plugin permission-model docs — docs follow-up)
+- [x] F1070 — Permission enforcement tests
 
 ### Plugin Dev Kit (F1071–F1080)
 
-- [ ] F1071 — `pnpm create-plugin` scaffold command
-- [ ] F1072 — Typed SDK package (@fables/plugin-sdk)
-- [ ] F1073 — Hot-reload during plugin development
-- [ ] F1074 — Plugin test harness with mock host
-- [ ] F1075 — Dev mode inspector (RPC traffic, events, perf)
-- [ ] F1076 — SDK documentation site section
-- [ ] F1077 — Plugin packaging command (.fplugin archive)
-- [ ] F1078 — Signature/checksum on packaged plugins
-- [ ] F1079 — Example-driven tutorial: build a word-count plugin
-- [ ] F1080 — SDK semver/compat test matrix
+- [x] F1071 — `pnpm create-plugin` scaffold command
+- [x] F1072 — Typed SDK package (@fables/plugin-sdk)
+- [x] F1073 — Hot-reload during plugin development
+- [x] F1074 — Plugin test harness with mock host
+- [x] F1075 — Dev mode inspector (RPC traffic, events, perf)
+- [x] F1076 — SDK documentation site section
+- [x] F1077 — Plugin packaging command (.fplugin archive)
+- [x] F1078 — Signature/checksum on packaged plugins
+- [x] F1079 — Example-driven tutorial: build a word-count plugin
+- [x] F1080 — SDK semver/compat test matrix
 
 ### Example Plugins (F1081–F1090)
 
-- [ ] F1081 — Word-count & writing-stats plugin
-- [ ] F1082 — Pomodoro/focus timer plugin with note logging
-- [ ] F1083 — Weather-in-daily-note plugin (network capability demo)
-- [ ] F1084 — Dice-roller story effect plugin (VM extension demo)
-- [ ] F1085 — Custom theme pack plugin
-- [ ] F1086 — Mood tracker with chart panel
-- [ ] F1087 — Readwise-style highlights importer plugin
-- [ ] F1088 — Story achievement system plugin
-- [ ] F1089 — Each example doubles as SDK integration test
-- [ ] F1090 — Example gallery page in docs
+- [x] F1081 — Word-count & writing-stats plugin
+- [x] F1082 — Pomodoro/focus timer plugin with note logging
+- [~] F1083 — Weather-in-daily-note plugin (network capability demo) (deferred: weather plugin needs network capability + a weather API — follow-up)
+- [~] F1084 — Dice-roller story effect plugin (VM extension demo) (deferred: dice-roller story-effect plugin — VM-side follow-up)
+- [x] F1085 — Custom theme pack plugin
+- [~] F1086 — Mood tracker with chart panel (deferred: mood-tracker chart plugin needs a charting dep — follow-up)
+- [~] F1087 — Readwise-style highlights importer plugin (deferred: highlights importer needs network + 3rd-party API — follow-up)
+- [~] F1088 — Story achievement system plugin (deferred: story achievement plugin — VM-side follow-up)
+- [x] F1089 — Each example doubles as SDK integration test
+- [x] F1090 — Example gallery page in docs
 
 ### Distribution (F1091–F1100)
 

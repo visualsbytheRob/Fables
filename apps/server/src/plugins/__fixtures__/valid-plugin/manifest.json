@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "com.test.word-count",
+  "version": "1.0.0",
+  "name": "Word Count",
+  "description": "Counts words in notes",
+  "entry": "entry.js",
+  "permissions": ["notes:read", "storage"],
+  "dependencies": []
+}

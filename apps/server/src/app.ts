@@ -14,6 +14,7 @@ import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
 import { createIntelligenceService, type IntelligenceService } from './intelligence/index.js';
 import { runBootJobs } from './jobs.js';
+import type { PluginRegistry } from './plugins/service.js';
 import { buildLoggerOptions } from './logging.js';
 import { configRoutes } from './routes/config.js';
 import { routes } from './routes/index.js';
@@ -27,6 +28,8 @@ declare module 'fastify' {
     dataDir: string;
     /** Local intelligence: embeddings + vector search + hybrid ranking. */
     intel: IntelligenceService;
+    /** Plugin runtime registry (undefined until boot jobs complete). */
+    plugins?: PluginRegistry;
   }
 }
 

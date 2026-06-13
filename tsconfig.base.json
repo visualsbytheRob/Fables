@@ -22,7 +22,8 @@
       "@fables/forge-dsl": ["./packages/forge-dsl/src/index.ts"],
       "@fables/forge-vm": ["./packages/forge-vm/src/index.ts"],
       "@fables/sync": ["./packages/sync/src/index.ts"],
-      "@fables/ui": ["./packages/ui/src/index.ts"]
+      "@fables/ui": ["./packages/ui/src/index.ts"],
+      "@fables/plugin-sdk": ["./packages/plugin-sdk/src/index.ts"]
     }
   }
 }

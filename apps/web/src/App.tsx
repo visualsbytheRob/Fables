@@ -14,6 +14,7 @@ import {
   Network,
   Package,
   Paperclip,
+  Puzzle,
   Search,
   Settings,
   Shapes,
@@ -24,6 +25,7 @@ import {
 } from '@fables/ui';
 import { NavLink, Outlet, Route, Routes, useNavigate } from 'react-router-dom';
 import { CommandRegistryProvider, useRegisteredCommands } from './commands/registry.js';
+import { PluginRegistryProvider, usePluginCommands } from './plugins/registry.js';
 import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
 import { CheatSheet } from './notes/CheatSheet.js';
@@ -115,6 +117,19 @@ const AnalyticsPage = lazy(() =>
 const SettingsPage = lazy(() =>
   import('./settings/SettingsPage.js').then((m) => ({ default: m.SettingsPage })),
 );
+// Tier 2 Epic 11: Plugin & Extension Architecture (F1041–F1090)
+const PluginsPage = lazy(() =>
+  import('./plugins/PluginsPage.js').then((m) => ({ default: m.PluginsPage })),
+);
+const PluginDetailPage = lazy(() =>
+  import('./plugins/PluginDetailPage.js').then((m) => ({ default: m.PluginDetailPage })),
+);
+const PluginDevKitPage = lazy(() =>
+  import('./plugins/PluginDevKitPage.js').then((m) => ({ default: m.PluginDevKitPage })),
+);
+const ExampleGalleryPage = lazy(() =>
+  import('./plugins/ExampleGalleryPage.js').then((m) => ({ default: m.ExampleGalleryPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -125,6 +140,7 @@ const queryClient = new QueryClient({
 function Shell() {
   const navigate = useNavigate();
   const registered = useRegisteredCommands();
+  const pluginCommands = usePluginCommands();
   const [searchOpen, setSearchOpen] = useState(false);
   const [conflictPanelOpen, setConflictPanelOpen] = useState(false);
 
@@ -243,7 +259,26 @@ function Shell() {
       keywords: 'theme preferences notifications analytics a11y',
       run: () => navigate('/settings'),
     },
+    {
+      id: 'plugins',
+      label: 'Manage Plugins',
+      keywords: 'extensions plugins install dev',
+      run: () => navigate('/plugins'),
+    },
+    {
+      id: 'plugins-gallery',
+      label: 'Plugin Gallery',
+      keywords: 'extensions examples',
+      run: () => navigate('/plugins/gallery'),
+    },
+    {
+      id: 'plugins-devkit',
+      label: 'Plugin Developer Kit',
+      keywords: 'plugin sdk dev build tutorial',
+      run: () => navigate('/plugins/devkit'),
+    },
     ...registered,
+    ...pluginCommands.map((r) => r.command),
   ];
 
   return (
@@ -296,6 +331,9 @@ function Shell() {
         </NavLink>
         <NavLink to="/settings" aria-label="Settings">
           <Settings size={16} aria-hidden="true" /> Settings
+        </NavLink>
+        <NavLink to="/plugins" aria-label="Plugins">
+          <Puzzle size={16} aria-hidden="true" /> Plugins
         </NavLink>
         <div className="spacer" />
         <button
@@ -353,6 +391,7 @@ export function App() {
         <ToastProvider>
           <QueryClientProvider client={queryClient}>
             <CommandRegistryProvider>
+              <PluginRegistryProvider>
               <Routes>
                 <Route element={<Shell />}>
                   <Route index element={lazyPage(<NotesPage />)} />
@@ -380,9 +419,15 @@ export function App() {
                   {/* Day 10: analytics + settings (F971–F980, F997) */}
                   <Route path="analytics" element={lazyPage(<AnalyticsPage />)} />
                   <Route path="settings" element={lazyPage(<SettingsPage />)} />
+                  {/* Tier 2 Epic 11: Plugin & Extension Architecture (F1041–F1090) */}
+                  <Route path="plugins" element={lazyPage(<PluginsPage />)} />
+                  <Route path="plugins/gallery" element={lazyPage(<ExampleGalleryPage />)} />
+                  <Route path="plugins/devkit" element={lazyPage(<PluginDevKitPage />)} />
+                  <Route path="plugins/:pluginId" element={lazyPage(<PluginDetailPage />)} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>
               </Routes>
+              </PluginRegistryProvider>
             </CommandRegistryProvider>
           </QueryClientProvider>
         </ToastProvider>

@@ -32,6 +32,7 @@ describe('migrations', () => {
       '013-ingest-jobs',
       '014-sync',
       '015-analytics',
+      '016-plugins',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
