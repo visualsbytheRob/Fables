@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.0",
+    "@types/libsodium-wrappers-sumo": "^0.8.2",
     "@vitest/coverage-v8": "^3.2.6",
     "eslint": "^9.39.0",
     "lint-staged": "^17.0.7",
@@ -48,5 +49,8 @@
   "lint-staged": {
     "*.{ts,tsx,mjs}": "eslint --fix",
     "*.{ts,tsx,mjs,css,md,json}": "prettier --write"
+  },
+  "dependencies": {
+    "libsodium-wrappers-sumo": "^0.8.4"
   }
 }
