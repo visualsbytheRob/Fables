@@ -12,6 +12,7 @@ import { useEffect, useState } from 'react';
 import { Button, Select } from '@fables/ui';
 import { deriveFingerprint } from './recoveryCodes.js';
 import { VaultPassphraseDialog } from './VaultPassphraseDialog.js';
+import { CreateView } from './VaultGate.js';
 import { useVaultLock, useVaultStatus } from './useVaultStatus.js';
 import { saveSessionMinutes, vaultStore } from './vaultStore.js';
 import { useVaultSession } from './useVaultSession.js';
@@ -45,11 +46,31 @@ export function VaultSettingsSection() {
   }, [statusData]);
 
   const isUnlocked = statusData?.status === 'unlocked';
+  const isAbsent = statusData?.status === 'absent';
+  const [creating, setCreating] = useState(false);
 
   const handleLock = async () => {
     await lockMutation.mutateAsync();
     vaultStore.markLocked();
   };
+
+  // No vault yet → opt-in entry point. The encrypted vault is off by default.
+  if (isAbsent) {
+    if (creating) {
+      return <CreateView onSuccess={() => setCreating(false)} />;
+    }
+    return (
+      <div className="vault-change-pp" style={{ gap: '1rem' }}>
+        <p style={{ margin: 0, fontSize: '0.875rem', color: 'var(--text-dim)' }}>
+          The encrypted vault is <strong>off</strong>. Turn it on to gate the app behind a
+          passphrase. Your passphrase is never stored — if you forget it, the data is unrecoverable.
+        </p>
+        <Button variant="primary" onClick={() => setCreating(true)}>
+          Create encrypted vault…
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <div className="vault-change-pp" style={{ gap: '1.25rem' }}>

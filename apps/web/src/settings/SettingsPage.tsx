@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Button, Select, useTheme } from '@fables/ui';
 import type { Theme } from '@fables/ui';
 import { isOptedOut, setOptOut } from '../analytics/analyticsStore.js';
+import { VaultSettingsSection } from '../vault/VaultSettingsSection.js';
 import './settings.css';
 
 // ──────────────────────────────────────────────
@@ -235,6 +236,15 @@ export function SettingsPage() {
           Focus styles, live regions, and reduced-motion support are always active. The
           &ldquo;Reduce motion&rdquo; toggle above overrides the system preference.
         </p>
+      </SettingsSection>
+
+      {/* Encrypted Vault (Epic 13) */}
+      <SettingsSection title="Encrypted Vault" id="settings-vault">
+        <p className="settings-desc">
+          Optionally gate the whole app behind a passphrase. Note content is encrypted at rest; your
+          passphrase is never stored. Forgetting it means the data is unrecoverable.
+        </p>
+        <VaultSettingsSection />
       </SettingsSection>
     </div>
   );

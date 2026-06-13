@@ -163,12 +163,12 @@ function UnlockView({ onSuccess, onSwitchToCreate }: UnlockViewProps) {
 
 interface CreateViewProps {
   onSuccess: () => void;
-  onSwitchToUnlock: () => void;
+  onSwitchToUnlock?: () => void;
 }
 
 type CreateStep = 'passphrase' | 'recovery';
 
-function CreateView({ onSuccess, onSwitchToUnlock }: CreateViewProps) {
+export function CreateView({ onSuccess, onSwitchToUnlock }: CreateViewProps) {
   const [step, setStep] = useState<CreateStep>('passphrase');
   const [passphrase, setPassphrase] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -343,42 +343,72 @@ function CreateView({ onSuccess, onSwitchToUnlock }: CreateViewProps) {
         </Button>
       </div>
 
-      <p className="vault-gate__secondary">
-        <button type="button" onClick={onSwitchToUnlock}>
-          Already have a vault? Unlock
-        </button>
-      </p>
+      {onSwitchToUnlock && (
+        <p className="vault-gate__secondary">
+          <button type="button" onClick={onSwitchToUnlock}>
+            Already have a vault? Unlock
+          </button>
+        </p>
+      )}
     </>
   );
 }
 
 // ─── Gate wrapper ────────────────────────────────────────────────────────────
 
-type GateMode = 'unlock' | 'create';
+/** localStorage hint so we can gate-on-load (no content flash) only for users
+ *  who actually have a vault — without it the gate stays transparent, which keeps
+ *  the app (and its tests) fully accessible when no vault is configured. */
+const VAULT_EXISTS_HINT = 'fables.vault.exists';
+function readVaultHint(): boolean {
+  try {
+    return localStorage.getItem(VAULT_EXISTS_HINT) === 'true';
+  } catch {
+    return false;
+  }
+}
+function writeVaultHint(exists: boolean): void {
+  try {
+    if (exists) localStorage.setItem(VAULT_EXISTS_HINT, 'true');
+    else localStorage.removeItem(VAULT_EXISTS_HINT);
+  } catch {
+    /* ignore */
+  }
+}
 
+/**
+ * Opt-in gate. The encrypted vault is a feature you turn on from Settings, so:
+ *   - no vault (status 'absent' or unknown) → render children (app works normally)
+ *   - status 'unlocked' (+ local session)   → render children
+ *   - status 'locked'                        → show ONLY the unlock screen; none
+ *                                              of the app's children are rendered
+ *                                              (F1233). Creation lives in Settings.
+ *
+ * While the status is still loading we only show the gate's spinner if a prior
+ * session recorded that a vault exists — otherwise the app renders immediately,
+ * so a machine with no vault never flashes a gate (and never blocks).
+ */
 export function VaultGate({ children }: { children: ReactNode }) {
   const { data: statusData, isLoading } = useVaultStatus();
   const { sessionStatus } = useVaultSession();
-  const [mode, setMode] = useState<GateMode>('unlock');
   const prevServerStatusRef = useRef<string | undefined>(undefined);
 
-  // When the server says absent, switch to create mode
+  // Sync server status into the in-memory store + the gate-on-load hint.
   useEffect(() => {
-    if (statusData?.status === 'absent') setMode('create');
-  }, [statusData?.status]);
-
-  // Sync server "unlocked" status into the in-memory store (tab refresh)
-  useEffect(() => {
-    if (statusData?.status === 'unlocked' && prevServerStatusRef.current !== 'unlocked') {
+    const status = statusData?.status;
+    if (status === 'unlocked' && prevServerStatusRef.current !== 'unlocked') {
       vaultStore.markUnlocked();
     }
-    prevServerStatusRef.current = statusData?.status;
+    if (status === 'locked' || status === 'unlocked') writeVaultHint(true);
+    else if (status === 'absent') writeVaultHint(false);
+    prevServerStatusRef.current = status;
   }, [statusData?.status]);
 
-  // App is accessible when server says unlocked AND local session is unlocked
-  const isUnlocked = statusData?.status === 'unlocked' && sessionStatus === 'unlocked';
+  const status = statusData?.status;
 
+  // Still loading: gate only if we know a vault exists; otherwise stay transparent.
   if (isLoading) {
+    if (!readVaultHint()) return <>{children}</>;
     return (
       <div className="vault-gate" aria-label="Loading vault status" role="status">
         <div className="vault-gate__card">
@@ -391,6 +421,14 @@ export function VaultGate({ children }: { children: ReactNode }) {
     );
   }
 
+  // No vault (absent or status couldn't be determined) → the app is fully usable.
+  if (status !== 'locked' && status !== 'unlocked') {
+    return <>{children}</>;
+  }
+
+  // A vault exists: accessible only when the server says unlocked AND the local
+  // session is unlocked (a fresh tab or an idle auto-lock re-shows the gate).
+  const isUnlocked = status === 'unlocked' && sessionStatus === 'unlocked';
   if (isUnlocked) {
     return <>{children}</>;
   }
@@ -400,21 +438,11 @@ export function VaultGate({ children }: { children: ReactNode }) {
       {/* F1233 — the children (sensitive app content) are NOT rendered when locked */}
       <div className="vault-gate" role="dialog" aria-modal="true" aria-label="Vault locked">
         <div className="vault-gate__card">
-          {mode === 'unlock' ? (
-            <UnlockView
-              onSuccess={() => {
-                /* vaultStore.markUnlocked already called in UnlockView */
-              }}
-              onSwitchToCreate={() => setMode('create')}
-            />
-          ) : (
-            <CreateView
-              onSuccess={() => {
-                /* vaultStore.markUnlocked already called in CreateView */
-              }}
-              onSwitchToUnlock={() => setMode('unlock')}
-            />
-          )}
+          <UnlockView
+            onSuccess={() => {
+              /* vaultStore.markUnlocked already called in UnlockView */
+            }}
+          />
         </div>
       </div>
     </>

@@ -40,6 +40,7 @@ import { BottomTabBar } from './mobile/BottomTabBar.js';
 import { useReconnectSync } from './offline/useReconnectSync.js';
 import { useSync } from './offline/useSync.js';
 import { ConflictReviewPanel } from './offline/ConflictReviewPanel.js';
+import { VaultGate } from './vault/VaultGate.js';
 import { scheduleJournalReminder } from './notifications/notificationStore.js';
 import './mobile/mobile.css';
 import './offline/offline.css';
@@ -299,9 +300,13 @@ function Shell() {
   return (
     <div className="shell">
       {/* F933 — skip-to-content link for keyboard/screen reader users */}
-      <a href="#main-content" className="skip-link">Skip to content</a>
+      <a href="#main-content" className="skip-link">
+        Skip to content
+      </a>
       <nav className="sidebar" aria-label="Main navigation">
-        <div className="brand" aria-hidden="true">Fables</div>
+        <div className="brand" aria-hidden="true">
+          Fables
+        </div>
         <NavLink to="/" end aria-label="Notes">
           <FileText size={16} aria-hidden="true" /> Notes
         </NavLink>
@@ -407,42 +412,44 @@ export function App() {
           <QueryClientProvider client={queryClient}>
             <CommandRegistryProvider>
               <PluginRegistryProvider>
-              <Routes>
-                <Route element={<Shell />}>
-                  <Route index element={lazyPage(<NotesPage />)} />
-                  <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
-                  <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
-                  <Route path="stories" element={lazyPage(<StoriesPage />)} />
-                  <Route path="stories/:storyId" element={lazyPage(<StoryDetailPage />)} />
-                  <Route path="stories/:storyId/edit" element={lazyPage(<StoryEditPage />)} />
-                  <Route path="stories/:storyId/play" element={lazyPage(<PlayerPage />)} />
-                  <Route path="entities" element={lazyPage(<EntitiesPage />)} />
-                  <Route path="entities/:entityId" element={lazyPage(<EntitiesPage />)} />
-                  <Route path="graph" element={lazyPage(<GraphPage />)} />
-                  <Route path="timeline" element={lazyPage(<TimelinePage />)} />
-                  <Route path="world" element={lazyPage(<WorldPage />)} />
-                  <Route path="today" element={lazyPage(<TodayPage />)} />
-                  <Route path="templates" element={lazyPage(<TemplatesPage />)} />
-                  <Route path="import" element={lazyPage(<ImportPage />)} />
-                  <Route path="ingest" element={lazyPage(<IngestPage />)} />
-                  <Route path="clip" element={lazyPage(<ClipPage />)} />
-                  <Route path="voice" element={lazyPage(<VoicePage />)} />
-                  <Route path="playground" element={<PlaygroundPage />} />
-                  <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
-                  <Route path="insights" element={lazyPage(<InsightsPage />)} />
-                  <Route path="install" element={lazyPage(<InstallPage />)} />
-                  {/* Day 10: analytics + settings (F971–F980, F997) */}
-                  <Route path="analytics" element={lazyPage(<AnalyticsPage />)} />
-                  <Route path="settings" element={lazyPage(<SettingsPage />)} />
-                  {/* Tier 2 Epic 11: Plugin & Extension Architecture (F1041–F1090) */}
-                  <Route path="plugins" element={lazyPage(<PluginsPage />)} />
-                  <Route path="plugins/install" element={lazyPage(<PluginInstallPage />)} />
-                  <Route path="plugins/gallery" element={lazyPage(<ExampleGalleryPage />)} />
-                  <Route path="plugins/devkit" element={lazyPage(<PluginDevKitPage />)} />
-                  <Route path="plugins/:pluginId" element={lazyPage(<PluginDetailPage />)} />
-                  <Route path="*" element={<Placeholder title="Not found" day={1} />} />
-                </Route>
-              </Routes>
+                <VaultGate>
+                  <Routes>
+                    <Route element={<Shell />}>
+                      <Route index element={lazyPage(<NotesPage />)} />
+                      <Route path="notes/:noteId" element={lazyPage(<NotesPage />)} />
+                      <Route path="attachments" element={lazyPage(<AttachmentsPage />)} />
+                      <Route path="stories" element={lazyPage(<StoriesPage />)} />
+                      <Route path="stories/:storyId" element={lazyPage(<StoryDetailPage />)} />
+                      <Route path="stories/:storyId/edit" element={lazyPage(<StoryEditPage />)} />
+                      <Route path="stories/:storyId/play" element={lazyPage(<PlayerPage />)} />
+                      <Route path="entities" element={lazyPage(<EntitiesPage />)} />
+                      <Route path="entities/:entityId" element={lazyPage(<EntitiesPage />)} />
+                      <Route path="graph" element={lazyPage(<GraphPage />)} />
+                      <Route path="timeline" element={lazyPage(<TimelinePage />)} />
+                      <Route path="world" element={lazyPage(<WorldPage />)} />
+                      <Route path="today" element={lazyPage(<TodayPage />)} />
+                      <Route path="templates" element={lazyPage(<TemplatesPage />)} />
+                      <Route path="import" element={lazyPage(<ImportPage />)} />
+                      <Route path="ingest" element={lazyPage(<IngestPage />)} />
+                      <Route path="clip" element={lazyPage(<ClipPage />)} />
+                      <Route path="voice" element={lazyPage(<VoicePage />)} />
+                      <Route path="playground" element={<PlaygroundPage />} />
+                      <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
+                      <Route path="insights" element={lazyPage(<InsightsPage />)} />
+                      <Route path="install" element={lazyPage(<InstallPage />)} />
+                      {/* Day 10: analytics + settings (F971–F980, F997) */}
+                      <Route path="analytics" element={lazyPage(<AnalyticsPage />)} />
+                      <Route path="settings" element={lazyPage(<SettingsPage />)} />
+                      {/* Tier 2 Epic 11: Plugin & Extension Architecture (F1041–F1090) */}
+                      <Route path="plugins" element={lazyPage(<PluginsPage />)} />
+                      <Route path="plugins/install" element={lazyPage(<PluginInstallPage />)} />
+                      <Route path="plugins/gallery" element={lazyPage(<ExampleGalleryPage />)} />
+                      <Route path="plugins/devkit" element={lazyPage(<PluginDevKitPage />)} />
+                      <Route path="plugins/:pluginId" element={lazyPage(<PluginDetailPage />)} />
+                      <Route path="*" element={<Placeholder title="Not found" day={1} />} />
+                    </Route>
+                  </Routes>
+                </VaultGate>
               </PluginRegistryProvider>
             </CommandRegistryProvider>
           </QueryClientProvider>

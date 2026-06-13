@@ -36,7 +36,7 @@ import {
 } from './backoff.js';
 import { generateRecoveryCodes, deriveFingerprint } from './recoveryCodes.js';
 import { vaultStore, loadSessionMinutes, saveSessionMinutes } from './vaultStore.js';
-import { VaultGate } from './VaultGate.js';
+import { VaultGate, CreateView } from './VaultGate.js';
 import { VaultPassphraseDialog } from './VaultPassphraseDialog.js';
 import { PanicLockButton } from './PanicLockButton.js';
 import * as vaultApiModule from './api.js';
@@ -263,7 +263,9 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     vaultStore.markLocked(false);
   });
 
-  it('shows loading state while status is being fetched', () => {
+  it('shows loading state while status is being fetched (for a known vault)', () => {
+    // A prior session recorded a vault; the gate must hold (no content flash, F1233).
+    localStorage.setItem('fables.vault.exists', 'true');
     vi.spyOn(vaultApiModule.vaultApi, 'status').mockReturnValue(
       new Promise(() => {}), // never resolves
     );
@@ -276,6 +278,19 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     expect(screen.getByText('Checking vault…')).toBeDefined();
     // Secret content is NOT rendered while loading (F1233)
     expect(screen.queryByText('Secret content')).toBeNull();
+  });
+
+  it('renders the app while loading when no vault hint is set (opt-in, no flash gate)', () => {
+    vi.spyOn(vaultApiModule.vaultApi, 'status').mockReturnValue(
+      new Promise(() => {}), // never resolves
+    );
+    render(
+      <VaultGate>
+        <div>Secret content</div>
+      </VaultGate>,
+      { wrapper },
+    );
+    expect(screen.getByText('Secret content')).toBeDefined();
   });
 
   it('shows unlock form when vault is locked (F1221)', async () => {
@@ -346,7 +361,7 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     expect(screen.queryByText('Secret content')).toBeNull();
   });
 
-  it('shows create form when vault is absent (F1222)', async () => {
+  it('is transparent (renders the app) when no vault exists — opt-in (F1233)', async () => {
     vi.spyOn(vaultApiModule.vaultApi, 'status').mockResolvedValue({ status: 'absent' });
     render(
       <VaultGate>
@@ -354,21 +369,15 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
       </VaultGate>,
       { wrapper },
     );
-    await waitFor(() => expect(screen.getByText(/create vault/i)).toBeDefined(), { timeout: 8000 });
-    expect(screen.queryByText('Secret content')).toBeNull();
-  });
-
-  it('shows recovery codes after passphrase entry (F1222)', async () => {
-    vi.spyOn(vaultApiModule.vaultApi, 'status').mockResolvedValue({ status: 'absent' });
-    render(
-      <VaultGate>
-        <div>Secret content</div>
-      </VaultGate>,
-      { wrapper },
-    );
-    await waitFor(() => expect(screen.getByLabelText('Passphrase')).toBeDefined(), {
+    // With no vault, the app is fully accessible; the gate does not force creation.
+    await waitFor(() => expect(screen.getByText('Secret content')).toBeDefined(), {
       timeout: 8000,
     });
+  });
+
+  // Vault creation moved out of the gate into Settings; CreateView is exercised directly.
+  it('CreateView shows recovery codes after passphrase entry (F1222)', async () => {
+    render(<CreateView onSuccess={() => {}} />, { wrapper });
     fireEvent.change(screen.getByLabelText('Passphrase'), {
       target: { value: 'my-passphrase' },
     });
@@ -379,21 +388,11 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     await waitFor(() => expect(screen.getByLabelText('Recovery codes')).toBeDefined(), {
       timeout: 8000,
     });
-    // Should display 8 codes
     expect(screen.getByLabelText('Recovery codes').children.length).toBe(8);
   });
 
-  it('shows permanent data loss warning (F1229)', async () => {
-    vi.spyOn(vaultApiModule.vaultApi, 'status').mockResolvedValue({ status: 'absent' });
-    render(
-      <VaultGate>
-        <div>Secret content</div>
-      </VaultGate>,
-      { wrapper },
-    );
-    await waitFor(() => expect(screen.getByLabelText('Passphrase')).toBeDefined(), {
-      timeout: 8000,
-    });
+  it('CreateView shows the permanent data loss warning (F1229)', async () => {
+    render(<CreateView onSuccess={() => {}} />, { wrapper });
     fireEvent.change(screen.getByLabelText('Passphrase'), {
       target: { value: 'my-passphrase' },
     });
@@ -406,18 +405,10 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     });
   });
 
-  it('creates vault and unlocks after acknowledging recovery codes (F1222)', async () => {
-    vi.spyOn(vaultApiModule.vaultApi, 'status').mockResolvedValue({ status: 'absent' });
+  it('CreateView creates the vault and calls onSuccess after acknowledging codes (F1222)', async () => {
     vi.spyOn(vaultApiModule.vaultApi, 'create').mockResolvedValue({ status: 'unlocked' });
-    render(
-      <VaultGate>
-        <div>Secret content</div>
-      </VaultGate>,
-      { wrapper },
-    );
-    await waitFor(() => expect(screen.getByLabelText('Passphrase')).toBeDefined(), {
-      timeout: 8000,
-    });
+    const onSuccess = vi.fn();
+    render(<CreateView onSuccess={onSuccess} />, { wrapper });
     fireEvent.change(screen.getByLabelText('Passphrase'), {
       target: { value: 'my-passphrase' },
     });
@@ -431,9 +422,7 @@ describe('VaultGate (F1221, F1222, F1229, F1233)', () => {
     );
     fireEvent.click(screen.getByLabelText('I have saved my recovery codes'));
     fireEvent.click(screen.getByRole('button', { name: /create vault/i }));
-    await waitFor(() => expect(screen.getByText('Secret content')).toBeDefined(), {
-      timeout: 8000,
-    });
+    await waitFor(() => expect(onSuccess).toHaveBeenCalled(), { timeout: 8000 });
   });
 
   it('locked state renders nothing sensitive (F1233)', async () => {
@@ -460,16 +449,14 @@ describe('VaultGate backoff after wrong attempts (F1226)', () => {
   it('disables the unlock button during lockout', async () => {
     vi.useRealTimers();
     // We need to trigger 2+ failures to get a lockout
-    const unlockMock = vi
-      .spyOn(vaultApiModule.vaultApi, 'unlock')
-      .mockRejectedValue(
-        Object.assign(new Error('Forbidden'), {
-          name: 'ApiRequestError',
-          status: 403,
-          code: 'FORBIDDEN',
-          details: null,
-        }),
-      );
+    const unlockMock = vi.spyOn(vaultApiModule.vaultApi, 'unlock').mockRejectedValue(
+      Object.assign(new Error('Forbidden'), {
+        name: 'ApiRequestError',
+        status: 403,
+        code: 'FORBIDDEN',
+        details: null,
+      }),
+    );
     vi.spyOn(vaultApiModule.vaultApi, 'status').mockResolvedValue({ status: 'locked' });
 
     render(
