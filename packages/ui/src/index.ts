@@ -131,4 +131,10 @@ export {
   Terminal,
   Wrench,
   PackageSearch,
+  // Epic 11 Tier 2: Plugin distribution UI (F1091–F1098)
+  ArrowDownToLine,
+  BadgeCheck,
+  PackagePlus,
+  PackageX,
+  RefreshCcw,
 } from 'lucide-react';

@@ -2,6 +2,9 @@
  * F1063 — Plugin management UI: list with enable/disable, per-plugin settings.
  * F1068 — Bulk plugin management.
  * F1061 — Permission review before enabling.
+ * F1094 — Update-available badge + compat-report-gated update flow.
+ * F1097 — Export plugin.
+ * F1098 — Uninstall with data-cleanup choice.
  *
  * Route: /plugins
  */
@@ -13,18 +16,55 @@ import {
   useEnablePlugin,
   useDisablePlugin,
   useInstallPlugin,
-  useUninstallPlugin,
+  useUninstallPluginWithPurge,
+  useApplyUpdate,
+  useExportPlugin,
+  useCompatReport,
 } from './hooks.js';
+import { useUpdateCheck } from './hooks.js';
 import { PermissionReviewDialog } from './PermissionReview.js';
+import { CompatReportDialog } from './CompatReportDialog.js';
+import { UninstallDialog } from './UninstallDialog.js';
 import type { PluginRecord } from './types.js';
+import type { CompatReport } from './client.js';
 import './plugins.css';
+
+// ─── Update badge (F1094) ─────────────────────────────────────────────────────
+
+function UpdateBadge({
+  pluginId,
+  onUpdateClick,
+}: {
+  pluginId: string;
+  onUpdateClick: (pluginId: string, availableVersion: string) => void;
+}) {
+  const { data: updateCheck } = useUpdateCheck(pluginId);
+  if (!updateCheck?.hasUpdate) return null;
+  return (
+    <button
+      type="button"
+      className="plugin-row__update-badge"
+      aria-label={`Update available: v${updateCheck.available}`}
+      onClick={(e) => {
+        e.stopPropagation();
+        onUpdateClick(pluginId, updateCheck.available);
+      }}
+    >
+      Update v{updateCheck.available}
+    </button>
+  );
+}
+
+// ─── Plugin row ───────────────────────────────────────────────────────────────
 
 interface PluginRowProps {
   plugin: PluginRecord;
   onEnable: (plugin: PluginRecord) => void;
   onDisable: (id: string) => void;
-  onUninstall: (id: string) => void;
+  onUninstall: (plugin: PluginRecord) => void;
   onViewDetail: (id: string) => void;
+  onUpdateClick: (id: string, version: string) => void;
+  onExport: (id: string) => void;
   selected: boolean;
   onSelect: (id: string, checked: boolean) => void;
 }
@@ -35,6 +75,8 @@ function PluginRow({
   onDisable,
   onUninstall,
   onViewDetail,
+  onUpdateClick,
+  onExport,
   selected,
   onSelect,
 }: PluginRowProps) {
@@ -66,6 +108,8 @@ function PluginRow({
           >
             {plugin.status}
           </span>
+          {/* F1094 — update badge */}
+          <UpdateBadge pluginId={plugin.id} onUpdateClick={onUpdateClick} />
         </div>
         {plugin.description && (
           <p className="plugin-row__description">{plugin.description}</p>
@@ -93,8 +137,12 @@ function PluginRow({
         <Button onClick={() => onViewDetail(plugin.id)} aria-label={`Details for ${plugin.name}`}>
           Details
         </Button>
+        {/* F1097 — export */}
+        <Button onClick={() => onExport(plugin.id)} aria-label={`Export ${plugin.name}`}>
+          Export
+        </Button>
         <Button
-          onClick={() => onUninstall(plugin.id)}
+          onClick={() => onUninstall(plugin)}
           aria-label={`Uninstall ${plugin.name}`}
         >
           Uninstall
@@ -104,6 +152,8 @@ function PluginRow({
   );
 }
 
+// ─── Main page ────────────────────────────────────────────────────────────────
+
 export function PluginsPage() {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -112,12 +162,23 @@ export function PluginsPage() {
   const enablePlugin = useEnablePlugin();
   const disablePlugin = useDisablePlugin();
   const installPlugin = useInstallPlugin();
-  const uninstallPlugin = useUninstallPlugin();
+  const uninstallPlugin = useUninstallPluginWithPurge();
+  const applyUpdate = useApplyUpdate();
+  const exportPlugin = useExportPlugin();
+  const compatReport = useCompatReport();
 
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [installSource, setInstallSource] = useState('');
   const [reviewPlugin, setReviewPlugin] = useState<PluginRecord | null>(null);
+
+  // F1094 update flow state
+  const [updateTarget, setUpdateTarget] = useState<{ id: string; version: string; name: string } | null>(null);
+  const [compatData, setCompatData] = useState<CompatReport | null>(null);
+  const [compatLoading, setCompatLoading] = useState(false);
+
+  // F1098 uninstall dialog state
+  const [uninstallTarget, setUninstallTarget] = useState<PluginRecord | null>(null);
 
   const filtered = plugins.filter(
     (p: PluginRecord) =>
@@ -181,6 +242,75 @@ export function PluginsPage() {
     setReviewPlugin(null);
   }
 
+  // F1094 — open compat report before updating
+  function handleUpdateClick(id: string, version: string) {
+    const plugin = plugins.find((p) => p.id === id);
+    if (!plugin) return;
+    setUpdateTarget({ id, version, name: plugin.name });
+    setCompatData(null);
+    setCompatLoading(true);
+    compatReport.mutate(
+      { id, version },
+      {
+        onSuccess: (data) => {
+          setCompatData(data);
+          setCompatLoading(false);
+        },
+        onError: () => {
+          setCompatLoading(false);
+        },
+      },
+    );
+  }
+
+  function handleUpdateConfirm() {
+    if (!updateTarget) return;
+    applyUpdate.mutate(updateTarget.id, {
+      onSuccess: () => {
+        toast(`${updateTarget.name} updated to v${updateTarget.version}`);
+        setUpdateTarget(null);
+        setCompatData(null);
+      },
+      onError: (err) => {
+        toast(`Update failed: ${err.message}`, 'error');
+        setUpdateTarget(null);
+        setCompatData(null);
+      },
+    });
+  }
+
+  // F1097 — export plugin
+  function handleExport(id: string) {
+    const plugin = plugins.find((p) => p.id === id);
+    exportPlugin.mutate(id, {
+      onSuccess: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${plugin?.id ?? id}.fplugin`;
+        a.click();
+        URL.revokeObjectURL(url);
+        toast(`Exported ${plugin?.name ?? id}`);
+      },
+      onError: (err) => toast(`Export failed: ${err.message}`, 'error'),
+    });
+  }
+
+  // F1098 — uninstall with purge choice
+  function handleUninstallConfirm(purgeData: boolean) {
+    if (!uninstallTarget) return;
+    const target = uninstallTarget;
+    setUninstallTarget(null);
+    uninstallPlugin.mutate(
+      { id: target.id, purgeData },
+      {
+        onSuccess: () =>
+          toast(purgeData ? `${target.name} uninstalled and data deleted` : `${target.name} uninstalled`),
+        onError: (err) => toast(`Uninstall failed: ${err.message}`, 'error'),
+      },
+    );
+  }
+
   return (
     <div className="plugins-page" role="main" aria-label="Plugin Management">
       <header className="plugins-page__header">
@@ -217,6 +347,9 @@ export function PluginsPage() {
             }}
           >
             Install
+          </Button>
+          <Button onClick={() => navigate('/plugins/install')}>
+            More install options
           </Button>
           <Button onClick={() => navigate('/plugins/gallery')}>Browse gallery</Button>
         </div>
@@ -281,13 +414,10 @@ export function PluginsPage() {
                     onError: (err) => toast(`Failed: ${err.message}`, 'error'),
                   });
                 }}
-                onUninstall={(id) => {
-                  uninstallPlugin.mutate(id, {
-                    onSuccess: () => toast('Plugin uninstalled'),
-                    onError: (err) => toast(`Failed: ${err.message}`, 'error'),
-                  });
-                }}
+                onUninstall={(p) => setUninstallTarget(p)}
                 onViewDetail={(id) => navigate(`/plugins/${id}`)}
+                onUpdateClick={handleUpdateClick}
+                onExport={handleExport}
                 selected={selected.has(plugin.id)}
                 onSelect={handleSelect}
               />
@@ -303,6 +433,35 @@ export function PluginsPage() {
           open={!!reviewPlugin}
           onAllow={handleReviewAllow}
           onDeny={() => setReviewPlugin(null)}
+        />
+      )}
+
+      {/* Compat report + update confirmation (F1094) */}
+      {updateTarget && (
+        <CompatReportDialog
+          open={!!updateTarget}
+          pluginName={updateTarget.name}
+          fromVersion={
+            plugins.find((p) => p.id === updateTarget.id)?.version ?? '?'
+          }
+          toVersion={updateTarget.version}
+          report={compatData}
+          isLoading={compatLoading}
+          onConfirm={handleUpdateConfirm}
+          onCancel={() => {
+            setUpdateTarget(null);
+            setCompatData(null);
+          }}
+        />
+      )}
+
+      {/* Uninstall with data-cleanup (F1098) */}
+      {uninstallTarget && (
+        <UninstallDialog
+          open={!!uninstallTarget}
+          pluginName={uninstallTarget.name}
+          onConfirm={handleUninstallConfirm}
+          onCancel={() => setUninstallTarget(null)}
         />
       )}
     </div>

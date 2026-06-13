@@ -734,6 +734,292 @@
   box-sizing: border-box;
 }
 
+/* ─── F1091–F1098 Distribution styles ───────────────── */
+
+/* Update badge on plugin row */
+.plugin-row__update-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.plugin-row__update-badge:hover {
+  background: #bfdbfe;
+}
+
+@media (prefers-color-scheme: dark) {
+  .plugin-row__update-badge { background: #1e3a5f; color: #93c5fd; }
+  .plugin-row__update-badge:hover { background: #1e40af; }
+}
+
+/* Install page tabs */
+.plugin-install-tabs {
+  display: flex;
+  gap: var(--space-1);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: var(--space-4);
+}
+
+.plugin-install-tab-btn {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.plugin-install-tab-btn--active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 500;
+}
+
+.plugin-install-tab-btn:hover:not(.plugin-install-tab-btn--active) {
+  color: var(--text);
+}
+
+/* Install tab panels */
+.plugin-install-tab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.plugin-install-tab__help {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.plugin-install-file-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.plugin-install-file-input {
+  font-size: var(--text-sm);
+}
+
+.plugin-install-file-name {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.plugin-install-url-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Untrusted source dialog */
+.plugin-untrusted-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.plugin-untrusted-dialog__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.plugin-untrusted-dialog__body {
+  font-size: var(--text-sm);
+  color: var(--text);
+  margin: 0;
+}
+
+.plugin-untrusted-dialog__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
+/* Catalog list */
+.plugin-catalog-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.plugin-catalog-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.plugin-catalog-item__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.plugin-catalog-item__name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.plugin-catalog-item__version {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+
+.plugin-catalog-item__desc {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin: 0;
+}
+
+/* Compat report dialog */
+.compat-report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 320px;
+}
+
+.compat-report__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.compat-report__subtitle {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin: -var(--space-2) 0 0;
+}
+
+.compat-report__loading {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.compat-report__safe {
+  font-size: var(--text-sm);
+  color: #22c55e;
+  margin: 0;
+}
+
+.compat-report__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.compat-report__section-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin: 0;
+}
+
+.compat-report__section-title--warn { color: #f59e0b; }
+.compat-report__section-title--danger { color: #ef4444; }
+
+.compat-report__list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.compat-report__item {
+  font-size: var(--text-xs);
+  font-family: var(--font-mono, monospace);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius);
+}
+
+.compat-report__item--warn { background: #fef3c7; color: #92400e; }
+.compat-report__item--danger { background: #fee2e2; color: #991b1b; }
+
+@media (prefers-color-scheme: dark) {
+  .compat-report__item--warn { background: #78350f; color: #fde68a; }
+  .compat-report__item--danger { background: #7f1d1d; color: #fca5a5; }
+}
+
+.compat-report__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Uninstall dialog */
+.uninstall-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 280px;
+}
+
+.uninstall-dialog__title {
+  font-size: var(--text-md);
+  font-weight: 600;
+  margin: 0;
+  color: var(--text);
+}
+
+.uninstall-dialog__body {
+  font-size: var(--text-sm);
+  color: var(--text);
+  margin: 0;
+}
+
+.uninstall-dialog__purge-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.uninstall-dialog__purge-warning {
+  font-size: var(--text-xs);
+  color: #ef4444;
+  margin: 0;
+  padding: var(--space-2);
+  background: #fee2e2;
+  border-radius: var(--radius);
+}
+
+@media (prefers-color-scheme: dark) {
+  .uninstall-dialog__purge-warning { background: #7f1d1d; color: #fca5a5; }
+}
+
+.uninstall-dialog__actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}
+
 /* ─── Dev kit page ───────────────────────────────────── */
 .plugin-devkit {
   max-width: 760px;

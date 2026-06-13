@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Tier 2 underway — Epic 11 (Plugin Architecture) core complete: sandboxed worker-thread runtime with capability security, plugin Notes/Story/VM/event APIs, /plugin-sdk, UI extension points, permission UX, dev kit, example plugins (F1001–F1090, minus noted deferrals). Distribution (F1091–F1100) is the next slice. 1,930 tests green. CI green. Next: F1091 (plugin distribution) + Epic 12 (CRDT collab).
+**Status:** Epic 11 (Plugin Architecture) COMPLETE — F1001–F1100 (minus noted [~] deferrals): sandboxed plugin runtime, host APIs, SDK, extension points, dev kit, examples, and distribution (.fplugin install/catalog/update/export with security tests). 1,977 tests green. CI green. Next: pre-install Yjs, then Epic 12 (real-time CRDT collaboration, F1101+).
 
 ---
 
@@ -1489,16 +1489,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Distribution (F1091–F1100)
 
-- [ ] F1091 — File-based install: drop .fplugin, app offers install
-- [ ] F1092 — Install from URL (tailnet/HTTPS) with checksum verification
-- [ ] F1093 — Update detection + one-click plugin updates
-- [ ] F1094 — Plugin export/backup with vault backups
-- [ ] F1095 — Compatibility report before update (API usage scan)
-- [ ] F1096 — Uninstall with data cleanup options
-- [ ] F1097 — Trusted-source allowlist
-- [ ] F1098 — Plugin catalog page (local registry of known plugins)
-- [ ] F1099 — Distribution security review
-- [ ] F1100 — Epic 11 retro devlog
+- [x] F1091 — File-based install: drop .fplugin, app offers install
+- [x] F1092 — Install from URL (tailnet/HTTPS) with checksum verification
+- [x] F1093 — Update detection + one-click plugin updates
+- [x] F1094 — Plugin export/backup with vault backups
+- [x] F1095 — Compatibility report before update (API usage scan)
+- [x] F1096 — Uninstall with data cleanup options
+- [x] F1097 — Trusted-source allowlist
+- [x] F1098 — Plugin catalog page (local registry of known plugins)
+- [x] F1099 — Distribution security review
+- [x] F1100 — Epic 11 retro devlog
 
 ## Epic 12 — Real-Time Collaboration & CRDT (F1101–F1200)
 

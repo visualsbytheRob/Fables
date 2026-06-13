@@ -130,6 +130,9 @@ const PluginDevKitPage = lazy(() =>
 const ExampleGalleryPage = lazy(() =>
   import('./plugins/ExampleGalleryPage.js').then((m) => ({ default: m.ExampleGalleryPage })),
 );
+const PluginInstallPage = lazy(() =>
+  import('./plugins/PluginInstallPage.js').then((m) => ({ default: m.PluginInstallPage })),
+);
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -277,6 +280,18 @@ function Shell() {
       keywords: 'plugin sdk dev build tutorial',
       run: () => navigate('/plugins/devkit'),
     },
+    {
+      id: 'plugins-install',
+      label: 'Install Plugin',
+      keywords: 'plugin install file url catalog fplugin',
+      run: () => navigate('/plugins/install'),
+    },
+    {
+      id: 'plugins-catalog',
+      label: 'Plugin Catalog',
+      keywords: 'plugin catalog browse install',
+      run: () => navigate('/plugins/install'),
+    },
     ...registered,
     ...pluginCommands.map((r) => r.command),
   ];
@@ -421,6 +436,7 @@ export function App() {
                   <Route path="settings" element={lazyPage(<SettingsPage />)} />
                   {/* Tier 2 Epic 11: Plugin & Extension Architecture (F1041–F1090) */}
                   <Route path="plugins" element={lazyPage(<PluginsPage />)} />
+                  <Route path="plugins/install" element={lazyPage(<PluginInstallPage />)} />
                   <Route path="plugins/gallery" element={lazyPage(<ExampleGalleryPage />)} />
                   <Route path="plugins/devkit" element={lazyPage(<PluginDevKitPage />)} />
                   <Route path="plugins/:pluginId" element={lazyPage(<PluginDetailPage />)} />
