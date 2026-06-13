@@ -19,7 +19,7 @@ Your notes are the world. Your stories run on a compiler you own.
 
 **Status:** Epic 12 (Real-Time Collaboration & CRDT) COMPLETE — F1101–F1200. Shipped: CRDT core (Yjs, convergence fuzz-proven 2/3/5/10-peer + 20-editor load test, WebSocket sync server, collaborative CodeMirror editor); sharing model with scoped tokens / read-vs-edit / expiry / revocation / guest identity / audit log and permission enforcement on the collab path (migration 019-shares); collaborative stories (shared editing, vote-on-choice, roles, chat, recording); CRDT-anchored comments + suggestions; merge history (checkpoints, attribution, diff, restore, forensic recovery); conflict-free structures (entity fields, notebook tree, tags, save slots); and hardening (chaos test, security review, integrity checksums, health endpoint, graceful single-user). 48/60 of F1141–F1200 shipped; 12 deferred with reasons (UI panels for share management/shared-with-me, e2e suites needing browser runners, canvas CRDT, battery audit, history pruning — see docs/devlog/epic-12.md).
 
-Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). 174 test files, 2,166 tests green; typecheck + lint clean. Next: encrypted storage (F1211–F1220), key-management UX (F1221–F1230), lock behavior (F1231–F1240), per-note secrets (F1241–F1250) via parallel lanes.
+Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). 175 test files, 2,177 tests green; typecheck + lint clean. Next: wire the notes repo onto the vault (transparent encrypt/decrypt → F1211), encrypted FTS post-unlock (F1213), then key-management UX (F1221–F1230) + lock behavior (F1231–F1240) via the web lane.
 
 ---
 
@@ -1652,21 +1652,21 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ### Encrypted Storage (F1211–F1220)
 
 - [ ] F1211 — Encrypted vault mode: note bodies/titles encrypted at rest
-- [ ] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
+- [x] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
 - [ ] F1213 — Encrypted FTS approach: in-memory index built post-unlock
 - [ ] F1214 — Encrypted attachments with streaming encrypt/decrypt
 - [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
-- [ ] F1216 — Decrypt-on-read caching with memory bounds
-- [ ] F1217 — Write-path encryption with crash-safe ordering
+- [x] F1216 — Decrypt-on-read caching with memory bounds
+- [x] F1217 — Write-path encryption with crash-safe ordering
 - [ ] F1218 — Encrypted backup format (.fablesbak v2)
 - [ ] F1219 — Performance benchmark: encrypted vs plaintext vault
-- [ ] F1220 — Encrypted storage tests
+- [x] F1220 — Encrypted storage tests
 
 ### Key Management UX (F1221–F1230)
 
 - [ ] F1221 — Vault unlock screen with passphrase entry
 - [ ] F1222 — Recovery codes generated at vault creation
-- [ ] F1223 — Passphrase change flow (re-wrap, not re-encrypt)
+- [x] F1223 — Passphrase change flow (re-wrap, not re-encrypt)
 - [ ] F1224 — WebAuthn/passkey unlock where available
 - [ ] F1225 — Unlock session duration settings
 - [ ] F1226 — Wrong-passphrase rate limiting with backoff
