@@ -26,6 +26,7 @@ import {
   type Scenario,
   type ScenarioResult,
 } from './scenarios.js';
+import { makeSimHost, parseMockInput } from '../knowledgeSim.js';
 
 export interface PlaytestPaneProps {
   storyId: string;
@@ -52,6 +53,10 @@ export function PlaytestPane({
   const [startKnot, setStartKnot] = useState('');
   const [vars, setVars] = useState<Record<string, string>>({});
   const [showVars, setShowVars] = useState(false);
+  // Knowledge sim (F646): free-text `entity.field = value` mock lines.
+  const [mockInput, setMockInput] = useState('');
+  const [showKnowledge, setShowKnowledge] = useState(false);
+  const [liveBindings, setLiveBindings] = useState(false);
   const [mobile, setMobile] = useState(false);
   const [run, setRun] = useState<RunResult | null>(null);
   const [program, setProgram] = useState<IrProgram | null>(null);
@@ -63,6 +68,8 @@ export function PlaytestPane({
 
   /** The recorded choice path of the live run (texts, in order). */
   const pathRef = useRef<string[]>([]);
+  /** The sim host driving the live run, so post-choice reads keep counting. */
+  const simRef = useRef<ReturnType<typeof makeSimHost> | null>(null);
   const sourcesRef = useRef(sources);
   sourcesRef.current = sources;
 
@@ -85,13 +92,16 @@ export function PlaytestPane({
         setRun(null);
         return;
       }
-      const result = startRun(built, { seed: seed === '' ? 42 : seed, vars }, path);
+      const sim = makeSimHost(parseMockInput(mockInput));
+      simRef.current = sim;
+      const result = startRun(built, { seed: seed === '' ? 42 : seed, vars, host: sim.host }, path);
+      setLiveBindings(sim.usedLiveBindings());
       pathRef.current = result.lines
         .filter((l) => l.kind === 'choice')
         .map((l) => l.text);
       setRun(result);
     },
-    [compileNow, seed, vars],
+    [compileNow, seed, vars, mockInput],
   );
 
   // Hot reload (F532/F533): when buffers change while a run is live, rebuild
@@ -103,7 +113,10 @@ export function PlaytestPane({
       const built = compileNow();
       if (built === null) return; // keep the stale run + show the build error
       if (fingerprint !== null && programFingerprint(built) === fingerprint) return;
-      const result = startRun(built, { seed: seed === '' ? 42 : seed, vars }, pathRef.current);
+      const sim = makeSimHost(parseMockInput(mockInput));
+      simRef.current = sim;
+      const result = startRun(built, { seed: seed === '' ? 42 : seed, vars, host: sim.host }, pathRef.current);
+      setLiveBindings(sim.usedLiveBindings());
       pathRef.current = result.lines.filter((l) => l.kind === 'choice').map((l) => l.text);
       setRun(result);
     }, REBUILD_IDLE_MS);
@@ -116,6 +129,7 @@ export function PlaytestPane({
     if (view === undefined) return;
     pathRef.current = [...pathRef.current, view.text];
     setRun(takeChoice(run, program, index));
+    if (simRef.current !== null) setLiveBindings(simRef.current.usedLiveBindings());
   };
 
   const knotNames = useMemo(() => {
@@ -155,8 +169,11 @@ export function PlaytestPane({
       toast(built.error ?? 'story does not compile');
       return;
     }
+    const mocks = parseMockInput(mockInput);
     const results = new Map<string, ScenarioResult>();
-    for (const scenario of scenarios) results.set(scenario.id, runScenario(built.program, scenario));
+    for (const scenario of scenarios) {
+      results.set(scenario.id, runScenario(built.program, scenario, mocks));
+    }
     setScenarioResults(results);
   };
 
@@ -231,6 +248,13 @@ export function PlaytestPane({
           vars
         </Button>
         <Button
+          onClick={() => setShowKnowledge((v) => !v)}
+          title="Mock @entity.field reads for deterministic playtests (F646)"
+          className={showKnowledge ? 'regex-toggle on' : ''}
+        >
+          knowledge
+        </Button>
+        <Button
           onClick={() => setMobile((m) => !m)}
           title="iPhone preview frame (F539)"
           className={mobile ? 'regex-toggle on' : ''}
@@ -250,6 +274,11 @@ export function PlaytestPane({
         </p>
       ) : null}
       {run !== null && run.status === 'done' ? <p className="pt-status">— THE END —</p> : null}
+      {run !== null && liveBindings ? (
+        <p className="pt-status pt-live-warning" data-testid="live-binding-warning">
+          ⚠ read live entity data — add a mock in Knowledge for a deterministic run (F647).
+        </p>
+      ) : null}
 
       {showVars ? (
         <div className="pt-vars" data-testid="playtest-vars">
@@ -268,6 +297,23 @@ export function PlaytestPane({
               </label>
             ))
           )}
+        </div>
+      ) : null}
+
+      {showKnowledge ? (
+        <div className="pt-knowledge" data-testid="playtest-knowledge">
+          <label className="pt-knowledge-label">
+            Mock <code>@entity.field</code> reads — one <code>entity.field = value</code> per line:
+          </label>
+          <textarea
+            className="pt-knowledge-input"
+            placeholder={'Fox.cunning = 9\nCrow.mood = "smug"'}
+            value={mockInput}
+            onChange={(e) => setMockInput(e.target.value)}
+            aria-label="Entity field mocks"
+            rows={4}
+            spellCheck={false}
+          />
         </div>
       ) : null}
 
@@ -315,6 +361,11 @@ export function PlaytestPane({
                   >
                     {result.status}
                   </button>
+                ) : null}
+                {result?.usedLiveBindings === true ? (
+                  <span className="sc-chip live" title="replay read unmocked entity data — non-deterministic (F647)">
+                    live
+                  </span>
                 ) : null}
                 <Button
                   onClick={() => {

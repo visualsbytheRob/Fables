@@ -841,3 +841,109 @@
     grid-template-rows: auto minmax(280px, 1fr) minmax(280px, 1fr);
   }
 }
+
+/* ── Lore side-pane (F628) ─────────────────────────────────────────────── */
+.lore-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  overflow: auto;
+  height: 100%;
+}
+.lore-file {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  font-family: var(--font-mono, monospace);
+}
+.lore-section h4 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+}
+.lore-section ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lore-count {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  background: var(--bg-active);
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+}
+.lore-ref {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.lore-ref:hover {
+  background: var(--bg-hover);
+}
+.lore-note {
+  color: var(--accent);
+}
+.lore-entity {
+  font-family: var(--font-mono, monospace);
+}
+.lore-field-tag {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+.lore-empty,
+.lore-hint {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  margin: 0;
+}
+
+/* ── Playtest knowledge sim (F646/F647) ────────────────────────────────── */
+.pt-knowledge {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+.pt-knowledge-label {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+.pt-knowledge-input {
+  width: 100%;
+  resize: vertical;
+  font-family: var(--font-mono, monospace);
+  font-size: var(--text-xs);
+  padding: var(--space-2);
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+.pt-live-warning {
+  color: #f5a623;
+}
+.sc-chip.live {
+  background: #f5a623;
+  color: #1a1a1a;
+  border-radius: var(--radius-sm);
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+}

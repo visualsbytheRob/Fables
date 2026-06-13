@@ -13,10 +13,13 @@ import { codexRepo } from '../db/repos/codex.js';
 import { entitiesRepo } from '../db/repos/entities.js';
 import { notebooksRepo } from '../db/repos/notebooks.js';
 import { notesRepo } from '../db/repos/notes.js';
+import { playthroughsRepo } from '../db/repos/playthroughs.js';
 import { storiesRepo, type StoryRecord } from '../db/repos/stories.js';
+import { worldRepo } from '../db/repos/world.js';
 import { recordEncounter, recordReveal } from './codex.js';
 import { validateFieldValue } from './entities.js';
 import { applyServerEdit, createNote } from './notes.js';
+import { canWrite, storyDeclarations } from './permissions.js';
 
 /**
  * VM host-effect ingestion (F631–F640). The player (web lane) runs the VM and
@@ -107,8 +110,13 @@ export function ingestEffects(
     });
   }
 
+  // Permission model (F648) + sandbox routing (F686) are resolved once per batch.
+  const declarations = storyDeclarations(db, storyId);
+  const sandbox = playthroughsRepo(db).get(storyId, input.playthroughId)?.sandbox === true;
+
   return withTransaction(db, () => {
     const codex = codexRepo(db);
+    const world = worldRepo(db);
     const results: Record<string, unknown>[] = [];
 
     // Journal events batch into a single daily-note edit (F638): one rev bump
@@ -129,7 +137,47 @@ export function ingestEffects(
         }
         case 'entity_set': {
           const entity = resolveEntity(db, event.payload.entity);
+          // Permission gate (F648): writes to undeclared entities are FORBIDDEN.
+          if (!canWrite(declarations, entity)) {
+            throw new AppError(
+              'FORBIDDEN',
+              `this story may not write to entity "${entity.name}"`,
+              { details: { storyId, entityId: entity.id, field: event.payload.field } },
+            );
+          }
           validateFieldValue(db, entity, event.payload.field, event.payload.value);
+          if (sandbox) {
+            // Sandbox writes land in the per-playthrough overlay, not the world (F686).
+            const oldValue =
+              world.sandboxFields(storyId, input.playthroughId, entity.id)[event.payload.field] ??
+              entity.fields[event.payload.field] ??
+              null;
+            world.setSandboxField(
+              storyId,
+              input.playthroughId,
+              entity.id,
+              event.payload.field,
+              event.payload.value,
+            );
+            codex.recordMutation({
+              storyId,
+              playthroughId: input.playthroughId,
+              entityId: entity.id,
+              field: event.payload.field,
+              oldValue,
+              newValue: event.payload.value,
+              sandbox: true,
+            });
+            results.push({
+              type: 'entity_set',
+              entityId: entity.id,
+              field: event.payload.field,
+              oldValue,
+              newValue: event.payload.value,
+              sandbox: true,
+            });
+            break;
+          }
           const oldValue = entity.fields[event.payload.field] ?? null;
           entitiesRepo(db).update(entity.id, {
             fields: { ...entity.fields, [event.payload.field]: event.payload.value },

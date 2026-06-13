@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Days 6-7 wave: player+library+entities/codex/effects done. 1,242 tests green. Tier 2 amended: Claude LLM adapter (F1361-70), ComfyUI art adapter (F1861-70). Next: fusion UI (F603+, F614+, F621+).
+**Status:** Day 7 (the fusion) COMPLETE. Web: entity editor, in-player codex + lore embeds + annotations, knowledge-condition layer, demo content + tour. Server: knowledge-state feed, timeline, cross-reference/impact reports, transclusion resolution, world-state snapshots/sandbox — backends shipped; their browser UIs (F651–F690 views) are the next web wave. 1,339 tests green. Next: Day 8 search & intelligence (F701).
 
 ---
 
@@ -831,11 +831,11 @@ Your notes are the world. Your stories run on a compiler you own.
 
 - [x] F601 — Entity model: typed notes (character/place/item/faction/custom) with schema fields
 - [x] F602 — Entity field schemas per type, user-editable (health: number, traits: list)
-- [ ] F603 — Entity editor UI: structured fields + freeform markdown body
-- [ ] F604 — Entity creation from templates (F265) wired to schemas
+- [x] F603 — Entity editor UI: structured fields + freeform markdown body
+- [x] F604 — Entity creation from templates (F265) wired to schemas
 - [x] F605 — Entity aliases for mention detection and story binding
 - [x] F606 — Entity relationship fields (ally-of, located-in) creating typed links
-- [ ] F607 — Entity gallery views per type with card layouts
+- [x] F607 — Entity gallery views per type with card layouts
 - [x] F608 — Entity field validation + defaults from schema
 - [x] F609 — Entity API endpoints (CRUD + schema introspection for compiler F369)
 - [x] F610 — Entity model tests
@@ -845,52 +845,52 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F611 — Codex: auto-generated index note per story listing all bound entities (computed codex endpoint subsumes the materialized index note)
 - [x] F612 — Codex entries reveal progressively (only entities the reader has met)
 - [x] F613 — "Met" tracking: VM emits entity-encountered events into playthrough state
-- [ ] F614 — Codex UI in player: slide-over panel, badge on new entries
-- [ ] F615 — Codex entry view: entity card + story-specific revealed facts
+- [x] F614 — Codex UI in player: slide-over panel, badge on new entries
+- [x] F615 — Codex entry view: entity card + story-specific revealed facts
 - [x] F616 — Revealed-facts model: story directives unlock entity field visibility
-- [ ] F617 — Codex search and type filters
+- [x] F617 — Codex search and type filters
 - [x] F618 — Spoiler-safety rules: never show unrevealed fields
 - [x] F619 — Codex regeneration on recompile, stable entry IDs
 - [x] F620 — Codex behavior tests (reveal ordering, spoiler safety)
 
 ### Lore Embeds in Stories (F621–F630)
 
-- [ ] F621 — `[[note]]` refs in story text render as tappable lore links in player
-- [ ] F622 — Lore popover: note preview inside player without leaving the story
-- [ ] F623 — `@entity.field` interpolation in story text pulls live entity values
+- [x] F621 — `[[note]]` refs in story text render as tappable lore links in player
+- [x] F622 — Lore popover: note preview inside player without leaving the story
+- [x] F623 — `@entity.field` interpolation in story text pulls live entity values
 - [ ] F624 — Compile-time validation that referenced notes/entities exist (F357)
-- [ ] F625 — Stale-reference handling when a note is deleted post-compile
-- [ ] F626 — Lore link styling distinct from choices (no accidental taps)
-- [ ] F627 — Lore visit tracking: which lore the reader opened
-- [ ] F628 — Author-side lore panel: all knowledge refs in current file
-- [ ] F629 — Broken-binding diagnostics surfaced in problems panel
-- [ ] F630 — Lore embed integration tests
+- [x] F625 — Stale-reference handling when a note is deleted post-compile
+- [x] F626 — Lore link styling distinct from choices (no accidental taps)
+- [x] F627 — Lore visit tracking: which lore the reader opened
+- [x] F628 — Author-side lore panel: all knowledge refs in current file
+- [x] F629 — Broken-binding diagnostics surfaced in problems panel
+- [x] F630 — Lore embed integration tests
 
 ### Story Events → Journal (F631–F640)
 
 - [x] F631 — `@journal()` effect (F483) writing structured entries to daily notes
 - [x] F632 — Journal entry template: story, scene, chosen text, timestamp
-- [ ] F633 — Playthrough summary note auto-created on story completion
+- [x] F633 — Playthrough summary note auto-created on story completion
 - [ ] F634 — Decision log: major choices (tagged by author) recorded as note entries
-- [ ] F635 — Journal entries link back to exact story moment (deep link + state ref)
-- [ ] F636 — Reader annotations: highlight story text → creates a linked note
-- [ ] F637 — Annotation review view: all annotations across playthroughs
+- [x] F635 — Journal entries link back to exact story moment (deep link + state ref)
+- [x] F636 — Reader annotations: highlight story text → creates a linked note
+- [x] F637 — Annotation review view: all annotations across playthroughs
 - [x] F638 — Journal write batching to avoid noisy daily notes
 - [x] F639 — Privacy toggle: stories that may not write to the journal
 - [x] F640 — Journal effect tests
 
 ### Knowledge-Driven Conditions (F641–F650)
 
-- [ ] F641 — Story conditions over knowledge state: `{ @note.exists("...") }`
-- [ ] F642 — Conditions over entity fields: `{ @hero.health > 50 }` evaluated live
-- [ ] F643 — Conditions over tags: content unlocked if reader has notes tagged X
-- [ ] F644 — Read-only vs live binding modes (snapshot at start vs live queries)
-- [ ] F645 — Binding evaluation caching per turn with invalidation
-- [ ] F646 — Author preview: simulate knowledge state in playtest state editor (F535)
-- [ ] F647 — Determinism guard: live bindings flagged in replay scenarios (F537)
-- [ ] F648 — Permission model: stories declare which entities they may read/write
-- [ ] F649 — Binding failure semantics: missing data → typed default + warning
-- [ ] F650 — Knowledge-condition test matrix
+- [x] F641 — Story conditions over knowledge state: `{ @note.exists("...") }`
+- [x] F642 — Conditions over entity fields: `{ @hero.health > 50 }` evaluated live
+- [x] F643 — Conditions over tags: content unlocked if reader has notes tagged X
+- [x] F644 — Read-only vs live binding modes (snapshot at start vs live queries)
+- [x] F645 — Binding evaluation caching per turn with invalidation
+- [x] F646 — Author preview: simulate knowledge state in playtest state editor (F535)
+- [x] F647 — Determinism guard: live bindings flagged in replay scenarios (F537)
+- [x] F648 — Permission model: stories declare which entities they may read/write
+- [x] F649 — Binding failure semantics: missing data → typed default + warning
+- [x] F650 — Knowledge-condition test matrix
 
 ### Timeline View (F651–F660)
 
@@ -946,16 +946,16 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Fusion Demo Content (F691–F700)
 
-- [ ] F691 — Demo world: "The Aesop Engine" — notebook of fable entities (Fox, Crow, Lion...)
-- [ ] F692 — Demo story 1: "The Fox & The Crow, Annotated" using lore embeds
-- [ ] F693 — Demo story 2: branching fable using entity mutations + codex reveals
+- [x] F691 — Demo world: "The Aesop Engine" — notebook of fable entities (Fox, Crow, Lion...)
+- [x] F692 — Demo story 1: "The Fox & The Crow, Annotated" using lore embeds
+- [x] F693 — Demo story 2: branching fable using entity mutations + codex reveals
 - [ ] F694 — Demo daily-note journal seeded with story-generated entries
 - [ ] F695 — Demo saved queries + dashboard note showcasing FQL embeds
 - [ ] F696 — Demo graph view arrangement that screenshots well
-- [ ] F697 — Guided tour overlay: first-run walkthrough of the fusion features
+- [x] F697 — Guided tour overlay: first-run walkthrough of the fusion features
 - [ ] F698 — `pnpm seed:demo` one-command demo world install
 - [ ] F699 — Demo content e2e test (compiles, plays, mutates, journals)
-- [ ] F700 — Day-7 retro note in `docs/devlog/day-07.md`
+- [x] F700 — Day-7 retro note in `docs/devlog/day-07.md`
 
 ---
 

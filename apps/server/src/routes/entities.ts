@@ -1,4 +1,4 @@
-import { ENTITY_TYPES, type EntityId, type LinkId } from '@fables/core';
+import { AppError, ENTITY_TYPES, type EntityId, type LinkId } from '@fables/core';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { paginated, parsePagination } from '../api/envelope.js';
@@ -9,6 +9,7 @@ import { entitiesRepo } from '../db/repos/entities.js';
 import { entitySchemasRepo } from '../db/repos/entity-schemas.js';
 import { codexRepo } from '../db/repos/codex.js';
 import { linksRepo } from '../db/repos/links.js';
+import { entityImpact } from '../services/crossref.js';
 import {
   convertEntityMentions,
   createEntity,
@@ -18,6 +19,8 @@ import {
   updateEntity,
   validateSchemaDefinition,
 } from '../services/entities.js';
+
+const forceQuerySchema = z.object({ force: z.coerce.boolean().optional() });
 
 /**
  * Entity routes (F601–F610): typed CRUD with schema validation, per-type
@@ -76,6 +79,11 @@ const listQuerySchema = z.object({
 const convertBodySchema = z.object({
   mentionId: z.string().min(1).optional(),
   all: z.boolean().optional(),
+});
+
+const mutationsQuerySchema = z.object({
+  playthroughId: z.string().min(1).max(200).optional(),
+  field: z.string().min(1).max(100).optional(),
 });
 
 registerRoute({
@@ -149,8 +157,9 @@ registerRoute({
 registerRoute({
   method: 'GET',
   path: '/entities/:id/mutations',
-  summary: 'ENTITY_SET audit trail for one entity (world inspector)',
+  summary: 'ENTITY_SET audit trail for one entity (world inspector), filterable',
   params: idParamsSchema,
+  query: mutationsQuerySchema,
 });
 
 export const entitiesRoutes: FastifyPluginAsync = async (app) => {
@@ -234,6 +243,16 @@ export const entitiesRoutes: FastifyPluginAsync = async (app) => {
 
   app.delete('/entities/:id', async (request) => {
     const { id } = parseWith(idParamsSchema, request.params, 'params');
+    const { force } = parseWith(forceQuerySchema, request.query, 'query');
+    // Impact guard (F665): bound by a story ⇒ 409 unless forced.
+    if (force !== true) {
+      const impact = entityImpact(app.db, id as EntityId);
+      if (impact.stories.length > 0) {
+        throw new AppError('CONFLICT', 'entity is referenced by one or more stories', {
+          details: { impact, hint: 'retry with ?force=true to delete anyway' },
+        });
+      }
+    }
     deleteEntity(app.db, id as EntityId);
     return { data: { id, deleted: true } };
   });
@@ -273,7 +292,13 @@ export const entitiesRoutes: FastifyPluginAsync = async (app) => {
 
   app.get('/entities/:id/mutations', async (request) => {
     const { id } = parseWith(idParamsSchema, request.params, 'params');
+    const query = parseWith(mutationsQuerySchema, request.query, 'query');
     const entity = entitiesRepo(app.db).mustGet(id as EntityId);
-    return { data: codexRepo(app.db).listMutationsForEntity(entity.id) };
+    return {
+      data: codexRepo(app.db).listMutationsForEntity(entity.id, {
+        ...(query.playthroughId !== undefined ? { playthroughId: query.playthroughId } : {}),
+        ...(query.field !== undefined ? { field: query.field } : {}),
+      }),
+    };
   });
 };

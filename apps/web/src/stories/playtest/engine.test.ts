@@ -12,6 +12,7 @@ import {
   takeChoice,
   transcriptOf,
 } from './engine.js';
+import { makeSimHost, mocksFrom } from '../knowledgeSim.js';
 
 const STORY = `VAR mood = "wary"
 
@@ -123,6 +124,26 @@ describe('makeJumpSource (F534)', () => {
     const built = compileBuffers(files(jumped), 'main.fable');
     const run = startRun(built.program!, {});
     expect(transcriptOf(run.lines)).toContain('B side.');
+  });
+});
+
+describe('knowledge sim host (F646/F647)', () => {
+  const BINDING_STORY = 'Fox cunning is {@Fox.cunning}.\n-> END\n';
+
+  it('serves mocked @entity.field reads into the transcript', () => {
+    const built = compileBuffers(files(BINDING_STORY), 'main.fable');
+    const sim = makeSimHost(mocksFrom({ Fox: { cunning: 9 } }));
+    const run = startRun(built.program!, { seed: 7, host: sim.host });
+    expect(transcriptOf(run.lines)).toContain('Fox cunning is 9.');
+    expect(sim.usedLiveBindings()).toBe(false);
+  });
+
+  it('flags an unmocked entity read as a live binding (F647)', () => {
+    const built = compileBuffers(files(BINDING_STORY), 'main.fable');
+    const sim = makeSimHost(new Map());
+    startRun(built.program!, { seed: 7, host: sim.host });
+    expect(sim.usedLiveBindings()).toBe(true);
+    expect(sim.log().live.has('Fox.cunning')).toBe(true);
   });
 });
 

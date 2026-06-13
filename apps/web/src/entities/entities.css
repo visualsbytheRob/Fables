@@ -1,0 +1,291 @@
+/* Entity editor (Day 7, F603/F604/F607). Mirrors stories.css conventions. */
+
+/* ── gallery (F607) ────────────────────────────────────────────────────── */
+.entity-controls {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin: var(--space-3) 0;
+  align-items: center;
+}
+.entity-typeswitch {
+  display: flex;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+.entity-typeswitch button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font: inherit;
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.entity-typeswitch button:hover {
+  background: var(--bg-hover);
+}
+.entity-typeswitch button.active {
+  color: var(--text);
+  border-color: var(--accent);
+  background: var(--bg-active);
+}
+.entity-search {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim);
+}
+.entity-search input {
+  flex: 1;
+  min-height: 40px;
+  font: inherit;
+  font-size: var(--text-sm);
+  background: transparent;
+  border: none;
+  color: var(--text);
+  outline: none;
+}
+.entity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.entity-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  font: inherit;
+}
+.entity-card:hover {
+  background: var(--bg-hover);
+}
+.entity-card-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.entity-card-head h3 {
+  margin: 0;
+  font-size: var(--text-md);
+  flex: 1;
+  min-width: 0;
+}
+.entity-card-icon {
+  color: var(--accent);
+  flex: none;
+}
+.entity-card-aliases {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+}
+.entity-card-fields {
+  color: var(--text-dim);
+  font-size: var(--text-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.entity-empty {
+  color: var(--text-dim);
+  margin-top: var(--space-4);
+}
+
+/* ── detail / editor (F603) ────────────────────────────────────────────── */
+.entity-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 880px;
+}
+.entity-detail-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.entity-detail-head h1 {
+  margin: 0;
+  flex: 1;
+  min-width: 200px;
+}
+.entity-detail-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+}
+.entity-section {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  padding: var(--space-3);
+}
+.entity-section > h2 {
+  font-size: var(--text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-dim);
+  margin: 0 0 var(--space-3);
+}
+.entity-fieldrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+  flex-wrap: wrap;
+}
+.entity-fieldrow > label {
+  width: 140px;
+  flex: none;
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+}
+.entity-fieldrow > label .req {
+  color: var(--danger);
+  margin-left: 2px;
+}
+.entity-fieldrow .ui-input,
+.entity-fieldrow .ui-textarea {
+  flex: 1;
+  min-width: 160px;
+}
+.entity-aliases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.entity-alias-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: var(--text-sm);
+}
+.entity-alias-chip button {
+  background: none;
+  border: 0;
+  color: var(--text-dim);
+  cursor: pointer;
+  display: inline-flex;
+  padding: 2px;
+  line-height: 1;
+}
+.entity-alias-chip button:hover {
+  color: var(--danger);
+}
+.entity-inline-add {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+.entity-relation {
+  margin-bottom: var(--space-3);
+}
+.entity-relation-name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+.entity-relation-targets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+.entity-picker {
+  position: relative;
+  max-width: 360px;
+}
+.entity-picker-results {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  right: 0;
+  margin-top: 2px;
+  max-height: 220px;
+  overflow: auto;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.entity-picker-results button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 0;
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.entity-picker-results button:hover {
+  background: var(--bg-hover);
+}
+.entity-incoming {
+  font-size: var(--text-sm);
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.entity-incoming button {
+  background: none;
+  border: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+}
+.entity-body-editor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+.entity-body-editor .ui-textarea {
+  min-height: 200px;
+  font-family: ui-monospace, monospace;
+  font-size: var(--text-sm);
+}
+.entity-body-preview {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-3);
+  overflow: auto;
+  max-height: 320px;
+}
+.entity-save-hint {
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+}
+@media (max-width: 720px) {
+  .entity-body-editor {
+    grid-template-columns: 1fr;
+  }
+}

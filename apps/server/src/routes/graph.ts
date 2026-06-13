@@ -50,6 +50,19 @@ registerRoute({
   params: idParamsSchema,
   query: localQuerySchema,
 });
+registerRoute({
+  method: 'GET',
+  path: '/graph/presets',
+  summary: 'Named graph filter presets (story web, knowledge web, fusion view)',
+});
+
+/** Graph filter presets (F667): named kind-sets the UI offers as one-tap views. */
+export const GRAPH_PRESETS = [
+  { id: 'wikilinks', label: 'Wikilinks', kinds: ['wikilink'] },
+  { id: 'knowledge-web', label: 'Knowledge web', kinds: ['wikilink', 'mention'] },
+  { id: 'story-web', label: 'Story web', kinds: ['binding', 'relation'] },
+  { id: 'fusion-view', label: 'Fusion view', kinds: ['wikilink', 'mention', 'binding', 'relation'] },
+] as const;
 
 function parseFilter(query: z.infer<typeof filterQuerySchema>): GraphFilter {
   let kinds: LinkKind[] | undefined;
@@ -92,5 +105,9 @@ export const graphRoutes: FastifyPluginAsync = async (app) => {
     const { id } = parseWith(idParamsSchema, request.params, 'params');
     const query = parseWith(localQuerySchema, request.query, 'query');
     return { data: localGraph(app.db, id as NoteId, query.hops, parseFilter(query)) };
+  });
+
+  app.get('/graph/presets', async () => {
+    return { data: GRAPH_PRESETS };
   });
 };

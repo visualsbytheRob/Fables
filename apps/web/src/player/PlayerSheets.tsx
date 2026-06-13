@@ -10,6 +10,7 @@ import {
   Bookmark,
   Button,
   GitCompare,
+  Highlighter,
   History,
   Info,
   LogOut,
@@ -44,7 +45,8 @@ export type PlayerPanel =
   | 'history'
   | 'bookmarks'
   | 'transcript'
-  | 'compare';
+  | 'compare'
+  | 'annotations';
 
 /** Bottom sheet shell: dialog semantics, Escape + scrim dismissal (F599). */
 export function Sheet({
@@ -109,6 +111,7 @@ export function MenuSheet({
     { panel: 'history', icon: <History size={16} />, label: 'Choice history' },
     { panel: 'bookmarks', icon: <Bookmark size={16} />, label: 'Bookmarks' },
     { panel: 'transcript', icon: <ScrollText size={16} />, label: 'Transcript' },
+    { panel: 'annotations', icon: <Highlighter size={16} />, label: 'Annotations' },
     { panel: 'compare', icon: <GitCompare size={16} />, label: 'Compare playthroughs' },
     { panel: 'settings', icon: <SettingsIcon size={16} />, label: 'Reader settings' },
     { panel: 'info', icon: <Info size={16} />, label: 'Story info' },

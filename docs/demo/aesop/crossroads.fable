@@ -1,0 +1,46 @@
+# title: The Crossroads of Beasts
+# author: Aesop, retold
+
+VAR trust = 0
+VAR lion_mood = "still"
+CONST king = "Leo"
+
+A signpost marks where three paths meet under a grey sky.
+@journal(Arrived at the crossroads of beasts)
+-> crossroads
+
+=== crossroads === # scene: the meeting of ways
+@Lion, the one they call {king}, waits at the centre, regal and still.
+You recall what the elders said: [[The Lion's Court]].
+
+* (honour) Bow low and offer tribute.
+  ~ trust = trust + 2
+  ~ lion_mood = "pleased"
+  @journal(Honoured the Lion at the crossroads)
+  @Lion inclines his head. His mood is now {lion_mood}.
+  -> west_road
+* (challenge) Meet his gaze without flinching.
+  ~ trust = trust - 1
+  ~ lion_mood = "wary"
+  @journal(Stared down the Lion)
+  @Crow caws a warning from the signpost: [[On Pride]].
+  -> east_road
+
+=== west_road === # scene: the kind path
+The @Fox falls in beside you, cunning at {@Fox.cunning}.
+"You chose well," he murmurs. {trust >= 2: He almost means it.}
+@journal(Walked the west road with the Fox)
+-> reckoning
+
+=== east_road === # scene: the hard path
+@Fox watches from the brush but does not follow.
+The road is long and the @Crow trails you, remembering [[On Pride]].
+@journal(Walked the east road alone)
+-> reckoning
+
+=== reckoning ===
+At journey's end the @Lion's verdict turns on your trust: {trust}.
+The Lion's mood is {lion_mood}.
+{trust > 0: "You may pass, friend of the court."|"Go, and tread more humbly next time."}
+@journal(The Lion gave his verdict)
+-> END

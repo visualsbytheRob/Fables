@@ -7,6 +7,7 @@ import {
   FileText,
   Network,
   Paperclip,
+  Shapes,
   ThemeProvider,
   ToastProvider,
   Upload,
@@ -18,6 +19,7 @@ import { ErrorBoundary } from './components/ErrorBoundary.js';
 import { Skeleton } from './components/Skeleton.js';
 import { CheatSheet } from './notes/CheatSheet.js';
 import { QuickCapture } from './notes/QuickCapture.js';
+import { Tour } from './onboarding/Tour.js';
 import { PlaygroundPage } from './pages/Playground.js';
 
 // Code-split the notes experience (CodeMirror + markdown pipeline) off the main chunk.
@@ -54,6 +56,10 @@ const StoryEditPage = lazy(() =>
 const StoryDetailPage = lazy(() =>
   import('./stories/StoryDetailPage.js').then((m) => ({ default: m.StoryDetailPage })),
 );
+// Entity editor (Day 7, F603/F604/F607): schema-driven forms + markdown body.
+const EntitiesPage = lazy(() =>
+  import('./entities/EntitiesPage.js').then((m) => ({ default: m.EntitiesPage })),
+);
 // The player (Day 6, F541–F600) carries the forge compiler + VM: own chunk.
 const PlayerPage = lazy(() =>
   import('./player/PlayerPage.js').then((m) => ({ default: m.PlayerPage })),
@@ -75,6 +81,12 @@ function Shell() {
       label: 'Go to Stories',
       keywords: 'fables play',
       run: () => navigate('/stories'),
+    },
+    {
+      id: 'entities',
+      label: 'Go to Entities',
+      keywords: 'characters places items codex world',
+      run: () => navigate('/entities'),
     },
     { id: 'graph', label: 'Go to Graph', keywords: 'links network', run: () => navigate('/graph') },
     { id: 'today', label: 'Open Today', keywords: 'daily journal', run: () => navigate('/today') },
@@ -121,6 +133,9 @@ function Shell() {
         <NavLink to="/stories">
           <BookOpen size={16} /> Stories
         </NavLink>
+        <NavLink to="/entities">
+          <Shapes size={16} /> Entities
+        </NavLink>
         <NavLink to="/graph">
           <Network size={16} /> Graph
         </NavLink>
@@ -140,6 +155,7 @@ function Shell() {
       <CommandPalette commands={commands} />
       <QuickCapture onCreated={(id) => navigate(`/notes/${id}`)} />
       <CheatSheet />
+      <Tour />
     </div>
   );
 }
@@ -171,6 +187,8 @@ export function App() {
                   <Route path="stories/:storyId" element={lazyPage(<StoryDetailPage />)} />
                   <Route path="stories/:storyId/edit" element={lazyPage(<StoryEditPage />)} />
                   <Route path="stories/:storyId/play" element={lazyPage(<PlayerPage />)} />
+                  <Route path="entities" element={lazyPage(<EntitiesPage />)} />
+                  <Route path="entities/:entityId" element={lazyPage(<EntitiesPage />)} />
                   <Route path="graph" element={lazyPage(<GraphPage />)} />
                   <Route path="today" element={lazyPage(<TodayPage />)} />
                   <Route path="templates" element={lazyPage(<TemplatesPage />)} />

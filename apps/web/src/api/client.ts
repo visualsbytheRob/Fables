@@ -501,6 +501,128 @@ export const importApi = {
   job: (id: string) => api.get<ImportJob>(`/import/jobs/${id}`),
 };
 
+/* ===== Entities + schemas (F601–F610, web halves F603/F604/F607) ===== */
+
+export type EntityType = 'character' | 'place' | 'item' | 'faction' | 'custom';
+export type EntityFieldType = 'number' | 'string' | 'bool' | 'list';
+
+export interface EntityFieldDef {
+  name: string;
+  fieldType: EntityFieldType;
+  default?: number | string | boolean | unknown[];
+  required?: boolean;
+}
+
+export interface EntityRelationDef {
+  name: string;
+  targetType: EntityType | null;
+}
+
+export interface EntityTypeSchema {
+  type: EntityType;
+  fields: EntityFieldDef[];
+  relations: EntityRelationDef[];
+  updatedAt: string;
+}
+
+/** name → list of target entity ids. */
+export type RelationMap = Record<string, string[]>;
+
+export interface Entity {
+  id: string;
+  type: EntityType;
+  name: string;
+  aliases: string[];
+  fields: Record<string, unknown>;
+  noteId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  relations: RelationMap;
+}
+
+export interface IncomingRelation {
+  id: string;
+  name: string;
+  sourceId: string;
+  sourceName: string;
+  sourceType: EntityType;
+}
+
+export type EntityDetail = Entity & { incomingRelations: IncomingRelation[] };
+
+export interface EntityMention {
+  id: string;
+  sourceId: string;
+  sourceTitle: string;
+  position: number;
+  length: number;
+  text: string;
+}
+
+export interface EntityCreateInput {
+  type: EntityType;
+  name: string;
+  aliases?: string[];
+  fields?: Record<string, unknown>;
+  relations?: RelationMap;
+}
+
+export interface EntityPatch {
+  name?: string;
+  aliases?: string[];
+  fields?: Record<string, unknown>;
+  relations?: RelationMap;
+}
+
+export interface EntityListParams {
+  type?: EntityType;
+  q?: string;
+  limit?: number;
+  cursor?: string;
+}
+
+export const entitiesApi = {
+  schemas: () => api.get<EntityTypeSchema[]>('/entities/schemas'),
+  schema: (type: EntityType) => api.get<EntityTypeSchema>(`/entities/schemas/${type}`),
+  putSchema: (
+    type: EntityType,
+    body: { fields?: EntityFieldDef[]; relations?: EntityRelationDef[] },
+  ) => api.put<EntityTypeSchema>(`/entities/schemas/${type}`, body),
+  list: (params: EntityListParams = {}) => api.getPaged<Entity>(`/entities${qs({ ...params })}`),
+  get: (id: string) => api.get<EntityDetail>(`/entities/${id}`),
+  create: (input: EntityCreateInput) => api.post<Entity>('/entities', input),
+  patch: (id: string, patch: EntityPatch) => api.patch<Entity>(`/entities/${id}`, patch),
+  remove: (id: string) => api.delete<{ id: string; deleted: boolean }>(`/entities/${id}`),
+  /** Create-or-fetch the freeform markdown backing note (F603). */
+  ensureNote: (id: string) =>
+    api.post<{ entity: Entity; note: Note; created: boolean }>(`/entities/${id}/note`),
+  mentions: (id: string) => api.get<EntityMention[]>(`/entities/${id}/mentions`),
+};
+
+/* ===== Codex (player, F614/F615/F617) ===== */
+
+export interface CodexEntry {
+  entryId: string;
+  entityId: string;
+  type: EntityType;
+  name: string;
+  noteId: string | null;
+  metAt: string;
+  encounters: number;
+  revealedFields: Record<string, unknown>;
+}
+
+export interface CodexData {
+  storyId: string;
+  playthroughId: string;
+  entries: CodexEntry[];
+}
+
+export const codexApi = {
+  get: (storyId: string, playthroughId: string) =>
+    api.get<CodexData>(`/stories/${storyId}/codex${qs({ playthroughId })}`),
+};
+
 export const attachmentsApi = {
   list: (params: { limit?: number; cursor?: string } = {}) =>
     api.getPaged<Attachment>(`/attachments${qs({ ...params })}`),

@@ -9,6 +9,7 @@ import {
   saveScenario,
   type Scenario,
 } from './scenarios.js';
+import { mocksFrom } from '../knowledgeSim.js';
 
 const STORY = `-> gate
 
@@ -86,6 +87,40 @@ describe('runScenario (F537)', () => {
     const edited = STORY.replace('* Slip through.', '* Tunnel under.');
     const result = runScenario(programFor(edited), scenario);
     expect(result.status).toBe('fail');
+  });
+});
+
+describe('runScenario live-binding flag (F647)', () => {
+  const BINDING_STORY = 'Fox cunning is {@Fox.cunning}.\n-> END\n';
+
+  const recordBinding = (): Scenario => {
+    const run = startRun(programFor(BINDING_STORY), { seed: 11 }, []);
+    return {
+      id: 'sc-b',
+      name: 'binding',
+      seed: 11,
+      choices: [],
+      baseline: transcriptOf(run.lines),
+      createdAt: 'now',
+    };
+  };
+
+  it('flags usedLiveBindings when an unmocked entity read occurs', () => {
+    const result = runScenario(programFor(BINDING_STORY), recordBinding());
+    expect(result.usedLiveBindings).toBe(true);
+  });
+
+  it('clears the flag when every read is mocked', () => {
+    const result = runScenario(programFor(BINDING_STORY), recordBinding(), mocksFrom({ Fox: { cunning: 9 } }));
+    expect(result.usedLiveBindings).toBe(false);
+    expect(result.transcript).toContain('Fox cunning is 9.');
+  });
+
+  it('reports no live bindings for stories without entity reads', () => {
+    const store = memoryStore();
+    const scenario = saveScenario('s', record(STORY, ['Slip through.']), store);
+    const result = runScenario(programFor(STORY), scenario);
+    expect(result.usedLiveBindings).toBe(false);
   });
 });
 

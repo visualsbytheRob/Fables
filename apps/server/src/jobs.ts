@@ -4,6 +4,7 @@ import type { Db } from './db/connection.js';
 import { linksRepo } from './db/repos/links.js';
 import { notesRepo } from './db/repos/notes.js';
 import { tagsRepo } from './db/repos/tags.js';
+import { pruneMutationAudit } from './services/world.js';
 
 /** Trash retention (F107): notes trashed longer than this are purged on boot. */
 export const TRASH_RETENTION_DAYS = 30;
@@ -23,5 +24,10 @@ export function runBootJobs(db: Db, dataDir: string, log: FastifyBaseLogger): vo
   // Link integrity (F219): rows orphaned by hard-deleted notes are swept here.
   const links = linksRepo(db).cleanupOrphans();
   const attachments = gcAttachments(db, dataDir);
-  log.info({ purgedNotes, orphanTags, links, attachments }, 'boot maintenance complete');
+  // Mutation-audit retention (F690): drop world-mutation rows past 90 days.
+  const prunedMutations = pruneMutationAudit(db);
+  log.info(
+    { purgedNotes, orphanTags, links, attachments, prunedMutations },
+    'boot maintenance complete',
+  );
 }

@@ -1,4 +1,4 @@
-import { conflict, notFound, type NotebookId, type NoteId } from '@fables/core';
+import { AppError, conflict, notFound, type NotebookId, type NoteId } from '@fables/core';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { paginated, parsePagination } from '../api/envelope.js';
@@ -6,9 +6,12 @@ import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { notesRepo } from '../db/repos/notes.js';
 import { tagsRepo } from '../db/repos/tags.js';
+import { noteImpact } from '../services/crossref.js';
 import { invalidateGraphCache } from '../services/graph.js';
 import { bulkNotes, createNote, duplicateNote, updateNote } from '../services/notes.js';
 import { parseTagName } from '../services/tags.js';
+
+const forceQuerySchema = z.object({ force: z.coerce.boolean().optional() });
 
 const idParamsSchema = z.object({ id: z.string().min(1) });
 
@@ -128,10 +131,20 @@ export const notesRoutes: FastifyPluginAsync = async (app) => {
 
   app.delete('/notes/:id', async (request) => {
     const { id } = parseWith(idParamsSchema, request.params, 'params');
+    const { force } = parseWith(forceQuerySchema, request.query, 'query');
     const repo = notesRepo(app.db);
     const note = repo.get(id as NoteId);
     if (!note) throw notFound('Note', id);
     if (note.trashedAt === null) {
+      // Impact guard (F665): bound by a story ⇒ 409 unless forced.
+      if (force !== true) {
+        const impact = noteImpact(app.db, id as NoteId);
+        if (impact.stories.length > 0) {
+          throw new AppError('CONFLICT', 'note is referenced by one or more stories', {
+            details: { impact, hint: 'retry with ?force=true to delete anyway' },
+          });
+        }
+      }
       repo.trash(id as NoteId); // idempotent: re-deleting is a no-op
       invalidateGraphCache(app.db); // trashed notes drop out of the graph (F235)
     }

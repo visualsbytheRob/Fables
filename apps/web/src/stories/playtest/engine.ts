@@ -5,7 +5,7 @@
  * from the bytecode source map. Pure module — the pane is just rendering.
  */
 import { compileToIr, createStory } from '@fables/forge-vm';
-import type { ChoiceView, IrProgram, Story, Value } from '@fables/forge-vm';
+import type { ChoiceView, IrProgram, Story, StoryHost, Value } from '@fables/forge-vm';
 import { compile, parse } from '@fables/forge-dsl';
 import type { Diagnostic } from '@fables/forge-dsl';
 import { fileProviderFor } from '../build.js';
@@ -85,6 +85,12 @@ export interface RunOptions {
   readonly seed?: number | string;
   /** Initial VAR overrides applied before the first line runs (F535). */
   readonly vars?: Readonly<Record<string, string>>;
+  /**
+   * Host serving `@entity.field` reads during the run — the knowledge sim host
+   * mocks entity data so playtests stay deterministic (F646). When omitted the
+   * VM's inert default is used and entity reads yield error values.
+   */
+  readonly host?: StoryHost;
 }
 
 export interface RunResult {
@@ -146,6 +152,7 @@ export function startRun(
   try {
     const story = createStory(program, {
       ...(options.seed !== undefined ? { seed: options.seed } : {}),
+      ...(options.host !== undefined ? { host: options.host } : {}),
     });
     for (const [name, raw] of Object.entries(options.vars ?? {})) {
       if (raw.trim() === '') continue;

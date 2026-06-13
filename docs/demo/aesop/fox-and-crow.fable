@@ -1,0 +1,35 @@
+# title: The Fox & The Crow, Annotated
+# author: Aesop, retold
+
+VAR flattered = false
+CONST prize = "cheese"
+
+The wood smelled of rain and old oak.
+-> meeting
+
+=== meeting === # scene: the branch
+@Crow perches high with a wedge of {prize} in her beak.
+You recall the old warning: [[On Flattery]].
+@Fox(Reynard) pads to the foot of the tree, cunning at {@Fox.cunning}.
+
+* (praise) "What a glorious bird! Surely your voice matches your plumage?"
+  ~ flattered = true
+  @Crow preens. Her pride, [[The Vanity of Crows]], gets the better of her.
+  -> the_song
+* (wait) Say nothing, and watch.
+  -> patience
+
+=== the_song ===
+@Crow opens her beak to sing — and the {prize} tumbles down.
+@Fox snaps it up. {flattered: Flattery did the work no claw could.}
+-> moral
+
+=== patience ===
+The @Crow eyes you warily and keeps her beak shut.
+The {prize} stays put. @Fox.cunning was not enough today.
+-> moral
+
+=== moral ===
+See also: [[Aesop's Morals]].
+{flattered: Do not trust flatterers.|Even Reynard is foiled by patience.}
+-> END

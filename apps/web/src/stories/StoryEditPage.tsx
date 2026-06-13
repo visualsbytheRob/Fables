@@ -18,6 +18,7 @@ import {
   Input,
   Network,
   Play,
+  BookOpen,
   Regex as RegexIcon,
   Search,
   Select,
@@ -36,6 +37,7 @@ import { replaceInFiles, searchFiles, type SearchMatch } from './search.js';
 import { insertSnippet, SNIPPETS } from './snippets.js';
 import { WorkspaceStore } from './store.js';
 import { PlaytestPane } from './playtest/PlaytestPane.js';
+import { LorePanel } from './LorePanel.js';
 import { SceneGraphView } from './SceneGraphView.js';
 import './stories.css';
 
@@ -121,7 +123,7 @@ export function StoryEditPage() {
     else viewsRef.current.set(path, view);
   }, []);
 
-  const [sidePane, setSidePane] = useState<'playtest' | 'graph'>('playtest');
+  const [sidePane, setSidePane] = useState<'playtest' | 'graph' | 'lore'>('playtest');
   const [showProblems, setShowProblems] = useState(true);
   const [showSearch, setShowSearch] = useState(false);
   const [snippetsOpen, setSnippetsOpen] = useState(false);
@@ -542,6 +544,9 @@ export function StoryEditPage() {
             <button className={sidePane === 'graph' ? 'active' : ''} onClick={() => setSidePane('graph')}>
               <Network size={13} /> Graph
             </button>
+            <button className={sidePane === 'lore' ? 'active' : ''} onClick={() => setSidePane('lore')}>
+              <BookOpen size={13} /> Lore
+            </button>
           </div>
           <div className="story-sidepane-content">
             {sidePane === 'playtest' ? (
@@ -551,6 +556,14 @@ export function StoryEditPage() {
                 entryPath={entryPath}
                 version={state.version}
                 onJumpToSource={jumpToLine}
+              />
+            ) : sidePane === 'lore' ? (
+              <LorePanel
+                activePath={state.active}
+                source={state.active !== null ? store.file(state.active)?.source ?? '' : ''}
+                onJump={(offset) => {
+                  if (state.active !== null) jumpTo(state.active, offset);
+                }}
               />
             ) : (
               <SceneGraphView

@@ -5,6 +5,7 @@
  */
 import type { IrProgram } from '@fables/forge-vm';
 import { startRun, transcriptOf } from './engine.js';
+import { makeSimHost, type SimMocks } from '../knowledgeSim.js';
 
 export interface Scenario {
   readonly id: string;
@@ -30,6 +31,12 @@ export interface ScenarioResult {
   readonly transcript: string;
   readonly diff: readonly DiffLine[];
   readonly error: string | null;
+  /**
+   * True when replaying the scenario read an `@entity.field` with no mock
+   * backing it — i.e. it would hit live data, a determinism risk for the
+   * recorded baseline (F647).
+   */
+  readonly usedLiveBindings: boolean;
 }
 
 const storageKey = (storyId: string): string => `fables.playtest.scenarios.${storyId}`;
@@ -124,9 +131,19 @@ export function diffTranscripts(before: string, after: string): DiffLine[] {
   return out;
 }
 
-/** Replay a scenario against the current program and diff transcripts (F537). */
-export function runScenario(program: IrProgram, scenario: Scenario): ScenarioResult {
-  const run = startRun(program, { seed: scenario.seed }, scenario.choices);
+/**
+ * Replay a scenario against the current program and diff transcripts (F537).
+ * Entity-field reads are served through a knowledge sim host seeded with
+ * `mocks`; any read with no mock flips `usedLiveBindings` so the chip can warn
+ * about a non-deterministic baseline (F647).
+ */
+export function runScenario(
+  program: IrProgram,
+  scenario: Scenario,
+  mocks: SimMocks = new Map(),
+): ScenarioResult {
+  const sim = makeSimHost(mocks);
+  const run = startRun(program, { seed: scenario.seed, host: sim.host }, scenario.choices);
   if (run.error !== null) {
     return {
       scenario,
@@ -134,6 +151,7 @@ export function runScenario(program: IrProgram, scenario: Scenario): ScenarioRes
       transcript: '',
       diff: diffTranscripts(scenario.baseline, ''),
       error: run.error,
+      usedLiveBindings: sim.usedLiveBindings(),
     };
   }
   const transcript = transcriptOf(run.lines);
@@ -145,5 +163,6 @@ export function runScenario(program: IrProgram, scenario: Scenario): ScenarioRes
     transcript,
     diff: diffTranscripts(scenario.baseline, transcript),
     error: null,
+    usedLiveBindings: sim.usedLiveBindings(),
   };
 }
