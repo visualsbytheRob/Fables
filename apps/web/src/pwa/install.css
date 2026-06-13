@@ -1,0 +1,122 @@
+/* Install instructions page (F804) */
+.install-page {
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-6) var(--space-4);
+  padding-top: max(var(--space-6), var(--safe-top));
+}
+
+.install-card {
+  max-width: 480px;
+  width: 100%;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-6);
+}
+
+.install-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: var(--space-4);
+}
+
+.install-card h1 {
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin: 0 0 var(--space-3);
+  text-align: center;
+}
+
+.install-card p {
+  color: var(--text-dim);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  margin: 0 0 var(--space-4);
+}
+
+.install-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.install-steps li {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+}
+
+.install-step-num {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.install-steps strong {
+  display: block;
+  color: var(--text);
+  font-size: var(--text-sm);
+  margin-bottom: 2px;
+}
+
+.install-steps p {
+  margin: 0;
+  font-size: 0.82rem;
+}
+
+.install-key {
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.8rem;
+  font-family: -apple-system, sans-serif;
+  white-space: nowrap;
+}
+
+.install-benefits {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.install-benefits h2 {
+  font-size: var(--text-sm);
+  font-weight: 700;
+  color: var(--text);
+  margin: 0 0 var(--space-2);
+}
+
+.install-benefits ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.install-benefits li {
+  color: var(--text-dim);
+  font-size: 0.82rem;
+}
+
+.install-note {
+  font-size: 0.78rem !important;
+  color: var(--text-dim) !important;
+}

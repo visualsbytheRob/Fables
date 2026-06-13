@@ -20,7 +20,14 @@ export default tseslint.config(
     rules: { 'no-console': 'off' },
   },
   {
-    files: ['scripts/**/*.mjs'],
-    languageOptions: { globals: { process: 'readonly', console: 'readonly' } },
+    files: ['scripts/**/*.mjs', 'apps/*/scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        process: 'readonly',
+        console: 'readonly',
+        Buffer: 'readonly',
+      },
+    },
+    rules: { 'no-console': 'off', 'no-undef': 'off' },
   },
 );

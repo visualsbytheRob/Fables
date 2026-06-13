@@ -1,0 +1,78 @@
+/* Offline indicator pill (F851) */
+.offline-pill {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: var(--bg-panel, #231d35);
+  border: 1px solid var(--border, #2e2847);
+  color: var(--text, #e8e3f4);
+  font-size: 0.78rem;
+  font-weight: 600;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+  pointer-events: none;
+  animation: slide-up 0.25s ease;
+}
+
+.offline-pill--syncing {
+  border-color: var(--accent, #a78bfa);
+  color: var(--accent, #a78bfa);
+}
+
+.offline-pill__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  flex-shrink: 0;
+}
+
+.offline-pill--syncing .offline-pill__dot {
+  background: var(--accent, #a78bfa);
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+.offline-pill__count {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+}
+
+/* Reconnect sync progress toast handled by useReconnectSync */
+
+@keyframes slide-up {
+  from {
+    transform: translateX(-50%) translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* Safe-area bottom nav on phone (F872) */
+@media (max-width: 640px) {
+  .offline-pill {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
+  }
+}

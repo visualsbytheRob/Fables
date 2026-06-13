@@ -3,7 +3,58 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA manifest (F801) -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Theme & brand colours -->
     <meta name="theme-color" content="#1a1625" />
+    <meta name="background-color" content="#1a1625" />
+
+    <!-- iOS PWA meta tags (F803) -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Fables" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- iOS icons (F803) -->
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180.png" />
+
+    <!-- iOS splash screens (F803) — portrait orientations for common iPhones -->
+    <!-- iPhone 14 Pro Max -->
+    <link
+      rel="apple-touch-startup-image"
+      media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/icons/splash-1290x2796.png"
+    />
+    <!-- iPhone 14 Pro -->
+    <link
+      rel="apple-touch-startup-image"
+      media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/icons/splash-1179x2556.png"
+    />
+    <!-- iPhone 14 / 13 / 12 -->
+    <link
+      rel="apple-touch-startup-image"
+      media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)"
+      href="/icons/splash-1170x2532.png"
+    />
+    <!-- iPhone SE (3rd gen) / 8 / 7 / 6S -->
+    <link
+      rel="apple-touch-startup-image"
+      media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)"
+      href="/icons/splash-750x1334.png"
+    />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <link rel="icon" type="image/svg+xml" href="/icons/fables.svg" />
+
+    <!-- Prevent double-tap zoom on iOS (F879) -->
+    <meta name="format-detection" content="telephone=no" />
+
     <title>Fables</title>
   </head>
   <body>

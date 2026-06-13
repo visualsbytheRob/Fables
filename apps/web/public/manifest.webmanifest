@@ -1,0 +1,115 @@
+{
+  "name": "Fables",
+  "short_name": "Fables",
+  "description": "Your personal narrative workspace — notes, stories, entities, and more.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#1a1625",
+  "theme_color": "#1a1625",
+  "lang": "en",
+  "categories": ["productivity", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon-72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Note",
+      "short_name": "New Note",
+      "description": "Create a new note quickly",
+      "url": "/?action=new-note",
+      "icons": [
+        { "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Today",
+      "short_name": "Today",
+      "description": "Open today's journal page",
+      "url": "/today",
+      "icons": [
+        { "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Continue Reading",
+      "short_name": "Reading",
+      "description": "Resume your most recent story",
+      "url": "/stories?action=continue",
+      "icons": [
+        { "src": "/icons/icon-96.png", "sizes": "96x96", "type": "image/png" }
+      ]
+    }
+  ],
+  "share_target": {
+    "action": "/clip",
+    "method": "GET",
+    "params": {
+      "url": "url",
+      "text": "text",
+      "title": "title"
+    }
+  },
+  "screenshots": [],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

@@ -29,6 +29,14 @@ import { QuickCapture } from './notes/QuickCapture.js';
 import { SearchOverlay } from './search/SearchOverlay.js';
 import { Tour } from './onboarding/Tour.js';
 import { PlaygroundPage } from './pages/Playground.js';
+import { SWUpdateToast } from './pwa/SWUpdateToast.js';
+import { OfflineIndicator } from './offline/OfflineIndicator.js';
+import { NotificationCenter } from './notifications/NotificationCenter.js';
+import { BottomTabBar } from './mobile/BottomTabBar.js';
+import { useReconnectSync } from './offline/useReconnectSync.js';
+import { scheduleJournalReminder } from './notifications/notificationStore.js';
+import './mobile/mobile.css';
+import './offline/offline.css';
 
 // Code-split the notes experience (CodeMirror + markdown pipeline) off the main chunk.
 const NotesPage = lazy(() =>
@@ -87,11 +95,13 @@ const InsightsPage = lazy(() =>
 const IngestPage = lazy(() =>
   import('./pages/IngestPage.js').then((m) => ({ default: m.IngestPage })),
 );
-const ClipPage = lazy(() =>
-  import('./pages/ClipPage.js').then((m) => ({ default: m.ClipPage })),
-);
+const ClipPage = lazy(() => import('./pages/ClipPage.js').then((m) => ({ default: m.ClipPage })));
 const VoicePage = lazy(() =>
   import('./pages/VoicePage.js').then((m) => ({ default: m.VoicePage })),
+);
+// Day 9: PWA install instructions (F804)
+const InstallPage = lazy(() =>
+  import('./pwa/InstallPage.js').then((m) => ({ default: m.InstallPage })),
 );
 
 const queryClient = new QueryClient({
@@ -104,6 +114,12 @@ function Shell() {
   const navigate = useNavigate();
   const registered = useRegisteredCommands();
   const [searchOpen, setSearchOpen] = useState(false);
+
+  // PWA Day 9: reconnect sync (F856) + journal reminder scheduling (F872)
+  useReconnectSync();
+  useEffect(() => {
+    scheduleJournalReminder();
+  }, []);
 
   // Global search hotkeys: ⌘⇧F / Ctrl+Shift+F (F711)
   useEffect(() => {
@@ -194,6 +210,12 @@ function Shell() {
       keywords: 'analytics stats health vault intelligence',
       run: () => navigate('/insights'),
     },
+    {
+      id: 'install',
+      label: 'Install Fables on iPhone…',
+      keywords: 'pwa install home screen ios',
+      run: () => navigate('/install'),
+    },
     ...registered,
   ];
 
@@ -259,6 +281,11 @@ function Shell() {
       <CheatSheet />
       <Tour />
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+      {/* Day 9: PWA + offline + notifications (F801–F900) */}
+      <SWUpdateToast />
+      <OfflineIndicator />
+      <NotificationCenter />
+      <BottomTabBar />
     </div>
   );
 }
@@ -304,6 +331,7 @@ export function App() {
                   <Route path="playground" element={<PlaygroundPage />} />
                   <Route path="forge-playground" element={lazyPage(<ForgePlaygroundPage />)} />
                   <Route path="insights" element={lazyPage(<InsightsPage />)} />
+                  <Route path="install" element={lazyPage(<InstallPage />)} />
                   <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                 </Route>
               </Routes>

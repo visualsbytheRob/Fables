@@ -14,4 +14,19 @@ export default defineConfig({
       },
     },
   },
+  build: {
+    rollupOptions: {
+      input: {
+        main: 'index.html',
+        sw: 'src/sw/sw.ts',
+      },
+      output: {
+        // The service worker must be at /sw.js at the root for max scope.
+        entryFileNames: (chunk) => {
+          if (chunk.name === 'sw') return 'sw.js';
+          return 'assets/[name]-[hash].js';
+        },
+      },
+    },
+  },
 });

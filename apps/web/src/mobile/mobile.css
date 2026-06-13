@@ -1,0 +1,201 @@
+/* ─────────────────────────────────────────────────────────────────────
+   Fables Mobile Polish (F871–F900)
+   - Bottom tab bar (F877)
+   - Safe-area / notch insets (F804)
+   - iOS quirk fixes (F879): rubber-band, 100dvh, double-tap zoom
+   - Touch-target audit helpers (F871): ≥44px on interactive elements
+   - Pull-to-refresh visual (F874)
+   - Swipe gesture affordances (F872)
+───────────────────────────────────────────────────────────────────── */
+
+/* ── Bottom Tab Bar ─────────────────────────────────────────────── */
+.bottom-tab-bar {
+  display: none; /* shown via media query below */
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border);
+  /* Safe-area bottom inset for iPhone notch */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  display: flex; /* keep flex regardless — controlled by @media */
+}
+
+@media (max-width: 640px) {
+  .bottom-tab-bar {
+    display: flex;
+    align-items: stretch;
+  }
+}
+
+/* Hide on desktop: override the flex from above */
+@media (min-width: 641px) {
+  .bottom-tab-bar {
+    display: none;
+  }
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 0.65rem;
+  font-weight: 500;
+  min-height: 44px; /* touch target (F871) */
+  padding: 6px 4px;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s;
+}
+
+.tab-item:hover,
+.tab-item--active {
+  color: var(--accent);
+}
+
+.tab-item__icon {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.tab-item__label {
+  line-height: 1;
+}
+
+/* ── Body padding for bottom tab bar ───────────────────────────── */
+@media (max-width: 640px) {
+  body {
+    /* push content above tab bar */
+    padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ── Safe-area / notch insets (F804) ────────────────────────────── */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+/* Shell respects notch on standalone */
+@media (display-mode: standalone) {
+  .shell {
+    padding-top: var(--safe-top);
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+  }
+}
+
+/* ── iOS: prevent overscroll rubber-band on body (F879) ─────────── */
+/* (allow rubber-band on scrollable elements) */
+html,
+body {
+  overscroll-behavior-y: none;
+}
+
+/* ── iOS: true viewport height (F879) ──────────────────────────── */
+/* Use dvh where supported; fall back to 100vh */
+.shell {
+  min-height: 100dvh;
+}
+
+/* ── Touch-target minimums (F871) ──────────────────────────────── */
+button,
+[role='button'],
+a,
+input[type='checkbox'],
+input[type='radio'],
+select {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Override for inline icon-only buttons that already set size */
+.sidebar a,
+.notes-page__back {
+  min-height: 44px;
+}
+
+/* ── Keyboard avoidance: editor toolbar stays above software keyboard (F878) */
+/* Uses the CSS env() visual viewport trick */
+.editor-toolbar-sticky {
+  position: sticky;
+  bottom: env(keyboard-inset-height, 0px);
+  z-index: 10;
+}
+
+/* ── Pull-to-refresh indicator (F874) ──────────────────────────── */
+.pull-refresh-indicator {
+  position: fixed;
+  top: calc(var(--safe-top) + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-60px);
+  z-index: 200;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.pull-refresh-indicator--visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.pull-refresh-indicator--loading {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+
+/* ── Landscape reading mode (F880) ─────────────────────────────── */
+@media (orientation: landscape) and (max-height: 500px) {
+  .notes-page__editor {
+    padding: var(--space-2) var(--space-4);
+  }
+
+  .bottom-tab-bar {
+    display: none; /* too cramped in landscape on small phones */
+  }
+
+  body {
+    padding-bottom: 0;
+  }
+}
+
+/* ── Standalone display detection (F804) ────────────────────────── */
+@media (display-mode: standalone) {
+  /* Hide browser-style back buttons — we have in-app back nav */
+  .notes-page__back {
+    display: flex; /* already showing; just ensure correct */
+  }
+
+  /* Tighten sidebar brand padding when in standalone (status bar is above) */
+  .sidebar .brand {
+    padding-top: var(--space-1);
+  }
+}
+
+/* ── Swipe gesture visual cue (F872) ────────────────────────────── */
+/* Left-edge swipe-back affordance shown on note detail in PWA */
+@media (display-mode: standalone) {
+  .notes-page__editor {
+    border-left: 3px solid transparent;
+    transition: border-color 0.15s;
+  }
+}

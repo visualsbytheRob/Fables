@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1625;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d1f4e;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="glyph" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a78bfa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)" />
+  <!-- Open book pages -->
+  <path d="M256 140 C220 140 160 155 130 175 L130 365 C160 348 220 338 256 338 L256 140Z" fill="url(#glyph)" opacity="0.9"/>
+  <path d="M256 140 C292 140 352 155 382 175 L382 365 C352 348 292 338 256 338 L256 140Z" fill="url(#glyph)" opacity="0.7"/>
+  <!-- Spine line -->
+  <line x1="256" y1="140" x2="256" y2="338" stroke="#fff" stroke-width="4" opacity="0.8"/>
+  <!-- Stars (magic/fable motif) -->
+  <circle cx="180" cy="210" r="5" fill="#fff" opacity="0.7"/>
+  <circle cx="200" cy="250" r="3" fill="#fff" opacity="0.5"/>
+  <circle cx="170" cy="280" r="4" fill="#fff" opacity="0.6"/>
+  <circle cx="330" cy="220" r="5" fill="#fff" opacity="0.7"/>
+  <circle cx="310" cy="260" r="3" fill="#fff" opacity="0.5"/>
+  <circle cx="340" cy="290" r="4" fill="#fff" opacity="0.6"/>
+  <!-- Text lines on pages -->
+  <line x1="155" y1="230" x2="240" y2="225" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+  <line x1="155" y1="245" x2="240" y2="240" stroke="#fff" stroke-width="3" opacity="0.3" stroke-linecap="round"/>
+  <line x1="155" y1="260" x2="235" y2="255" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+  <line x1="272" y1="225" x2="357" y2="230" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+  <line x1="272" y1="240" x2="357" y2="245" stroke="#fff" stroke-width="3" opacity="0.3" stroke-linecap="round"/>
+  <line x1="277" y1="255" x2="357" y2="260" stroke="#fff" stroke-width="3" opacity="0.4" stroke-linecap="round"/>
+  <!-- Quill pen at bottom -->
+  <path d="M240 360 Q256 340 272 360 Q264 380 256 390 Q248 380 240 360Z" fill="#a78bfa" opacity="0.8"/>
+</svg>
