@@ -34,9 +34,12 @@ import { OfflineIndicator } from './offline/OfflineIndicator.js';
 import { NotificationCenter } from './notifications/NotificationCenter.js';
 import { BottomTabBar } from './mobile/BottomTabBar.js';
 import { useReconnectSync } from './offline/useReconnectSync.js';
+import { useSync } from './offline/useSync.js';
+import { ConflictReviewPanel } from './offline/ConflictReviewPanel.js';
 import { scheduleJournalReminder } from './notifications/notificationStore.js';
 import './mobile/mobile.css';
 import './offline/offline.css';
+import './offline/conflict.css';
 
 // Code-split the notes experience (CodeMirror + markdown pipeline) off the main chunk.
 const NotesPage = lazy(() =>
@@ -114,9 +117,12 @@ function Shell() {
   const navigate = useNavigate();
   const registered = useRegisteredCommands();
   const [searchOpen, setSearchOpen] = useState(false);
+  const [conflictPanelOpen, setConflictPanelOpen] = useState(false);
 
   // PWA Day 9: reconnect sync (F856) + journal reminder scheduling (F872)
   useReconnectSync();
+  // Sync engine wiring (F834/F837/F855/F863)
+  const { pendingCount, conflictCount, isSyncing } = useSync();
   useEffect(() => {
     scheduleJournalReminder();
   }, []);
@@ -283,7 +289,17 @@ function Shell() {
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
       {/* Day 9: PWA + offline + notifications (F801–F900) */}
       <SWUpdateToast />
-      <OfflineIndicator />
+      <OfflineIndicator
+        pendingCount={pendingCount}
+        conflictCount={conflictCount}
+        isSyncing={isSyncing}
+        onConflictClick={() => setConflictPanelOpen(true)}
+      />
+      {conflictPanelOpen && (
+        <div className="conflict-panel-overlay" role="dialog" aria-label="Sync conflict review">
+          <ConflictReviewPanel onClose={() => setConflictPanelOpen(false)} />
+        </div>
+      )}
       <NotificationCenter />
       <BottomTabBar />
     </div>

@@ -1,0 +1,316 @@
+/* Conflict review panel (F844) */
+
+.conflict-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 320px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.conflict-panel__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+  background: var(--surface-raised, #f9fafb);
+}
+
+.conflict-panel__header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.conflict-panel__close {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--text-dim, #6b7280);
+  border-radius: 4px;
+}
+
+.conflict-panel__close:hover {
+  background: var(--hover, #f3f4f6);
+}
+
+.conflict-panel--empty .conflict-panel__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex: 1;
+  padding: 32px;
+  color: var(--text-dim, #6b7280);
+}
+
+.conflict-panel__body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Inbox */
+.conflict-inbox {
+  width: 200px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border, #e5e7eb);
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.conflict-inbox__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text, #111);
+}
+
+.conflict-inbox__item:hover {
+  background: var(--hover, #f3f4f6);
+}
+
+.conflict-inbox__item.active {
+  background: var(--accent-subtle, #eff6ff);
+  color: var(--accent, #3b82f6);
+}
+
+.conflict-inbox__entity {
+  font-weight: 600;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.conflict-inbox__field {
+  color: var(--text-dim, #6b7280);
+  flex: 1;
+}
+
+.conflict-inbox__time {
+  font-size: 10px;
+  color: var(--text-dim, #6b7280);
+}
+
+/* Detail */
+.conflict-detail {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 16px;
+  gap: 12px;
+}
+
+.conflict-detail__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.conflict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  background: var(--danger-subtle, #fef2f2);
+  color: var(--danger, #ef4444);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.conflict-detail__time {
+  font-size: 11px;
+  color: var(--text-dim, #6b7280);
+}
+
+.conflict-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  flex: 1;
+  overflow: hidden;
+  min-height: 120px;
+}
+
+.conflict-col {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.conflict-col--local {
+  border-color: var(--accent, #3b82f6);
+}
+
+.conflict-col--remote {
+  border-color: var(--warning, #f59e0b);
+}
+
+.conflict-col__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 10px;
+  background: var(--surface-raised, #f9fafb);
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border, #e5e7eb);
+}
+
+.conflict-col--local .conflict-col__header {
+  background: var(--accent-subtle, #eff6ff);
+  color: var(--accent, #3b82f6);
+}
+
+.conflict-col--remote .conflict-col__header {
+  background: var(--warning-subtle, #fffbeb);
+  color: var(--warning-dark, #d97706);
+}
+
+.conflict-col__lamport {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.conflict-col__text {
+  flex: 1;
+  padding: 10px;
+  margin: 0;
+  overflow-y: auto;
+  font-family: var(--font-mono, monospace);
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--surface, #fff);
+}
+
+.conflict-col__text--base {
+  background: var(--surface-raised, #f9fafb);
+  color: var(--text-dim, #6b7280);
+}
+
+.conflict-base {
+  font-size: 12px;
+  color: var(--text-dim, #6b7280);
+}
+
+.conflict-base summary {
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+/* Actions */
+.conflict-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border, #e5e7eb);
+}
+
+.conflict-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 6px;
+  background: var(--surface, #fff);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.1s, color 0.1s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.conflict-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.conflict-btn--mine {
+  border-color: var(--accent, #3b82f6);
+  color: var(--accent, #3b82f6);
+}
+
+.conflict-btn--mine:hover:not(:disabled) {
+  background: var(--accent-subtle, #eff6ff);
+}
+
+.conflict-btn--theirs {
+  border-color: var(--warning, #f59e0b);
+  color: var(--warning-dark, #d97706);
+}
+
+.conflict-btn--theirs:hover:not(:disabled) {
+  background: var(--warning-subtle, #fffbeb);
+}
+
+.conflict-btn--both {
+  border-color: var(--success, #22c55e);
+  color: var(--success-dark, #16a34a);
+}
+
+.conflict-btn--both:hover:not(:disabled) {
+  background: var(--success-subtle, #f0fdf4);
+}
+
+/* Conflict badge button (nav/indicator) */
+.conflict-badge-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  background: var(--danger-subtle, #fef2f2);
+  color: var(--danger, #ef4444);
+  border: 1px solid var(--danger, #ef4444);
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.conflict-badge-btn:hover {
+  background: var(--danger, #ef4444);
+  color: #fff;
+}
+
+/* Entity field conflict badge (F845) */
+.world-field-conflict-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 5px;
+  background: var(--danger-subtle, #fef2f2);
+  color: var(--danger, #ef4444);
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.world-field-conflict-badge:hover {
+  background: var(--danger, #ef4444);
+  color: #fff;
+}

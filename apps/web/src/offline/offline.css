@@ -70,6 +70,30 @@
   }
 }
 
+/* Allow pointer events on the pill when interactive (conflict badge) */
+.offline-pill {
+  pointer-events: auto;
+}
+
+/* Conflict panel overlay (F844) */
+.conflict-panel-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.conflict-panel-overlay > .conflict-panel {
+  width: 100%;
+  max-width: 800px;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
 /* Safe-area bottom nav on phone (F872) */
 @media (max-width: 640px) {
   .offline-pill {

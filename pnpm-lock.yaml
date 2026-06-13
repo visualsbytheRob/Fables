@@ -47,6 +47,9 @@ importers:
       '@fables/forge-vm':
         specifier: workspace:*
         version: link:../../packages/forge-vm
+      '@fables/sync':
+        specifier: workspace:*
+        version: link:../../packages/sync
       '@fastify/compress':
         specifier: ^9.0.0
         version: 9.0.0
@@ -117,6 +120,9 @@ importers:
       '@fables/forge-vm':
         specifier: workspace:*
         version: link:../../packages/forge-vm
+      '@fables/sync':
+        specifier: workspace:*
+        version: link:../../packages/sync
       '@fables/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -195,6 +201,12 @@ importers:
       '@fables/forge-dsl':
         specifier: workspace:*
         version: link:../forge-dsl
+
+  packages/sync:
+    dependencies:
+      '@fables/core':
+        specifier: workspace:*
+        version: link:../core
 
   packages/ui:
     dependencies:

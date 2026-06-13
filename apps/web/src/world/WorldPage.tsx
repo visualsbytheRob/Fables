@@ -24,6 +24,8 @@ import {
   Upload,
   useToast,
 } from '@fables/ui';
+import { useEntityConflicts } from '../offline/useConflicts.js';
+import '../offline/conflict.css';
 import { Skeleton } from '../components/Skeleton.js';
 import {
   worldApi,
@@ -123,9 +125,11 @@ function DashboardTab() {
 function EntityRow({ view }: { view: WorldEntityView }) {
   const [open, setOpen] = useState(false);
   const summary = useMemo(() => summarizeMutations(view), [view]);
+  // F845: sync conflict badge
+  const { hasConflict, conflictFields } = useEntityConflicts(view.id);
 
   return (
-    <div className={`world-entity${summary.hasMutations ? ' mutated' : ''}`}>
+    <div className={`world-entity${summary.hasMutations ? ' mutated' : ''}${hasConflict ? ' has-sync-conflict' : ''}`}>
       <button
         className="world-entity-head"
         aria-expanded={open}
@@ -138,8 +142,18 @@ function EntityRow({ view }: { view: WorldEntityView }) {
             {summary.fields.length} mutated · {summary.totalCount}×
           </span>
         ) : null}
+        {hasConflict ? (
+          <span
+            className="world-field-conflict-badge"
+            title={`Sync conflict on: ${conflictFields.join(', ')}`}
+            aria-label="Sync conflict pending review"
+          >
+            <AlertTriangle size={10} />
+            sync conflict
+          </span>
+        ) : null}
       </button>
-      {open ? <EntityDetail view={view} summary={summary} /> : null}
+      {open ? <EntityDetail view={view} summary={summary} conflictFields={conflictFields} /> : null}
     </div>
   );
 }
@@ -147,9 +161,11 @@ function EntityRow({ view }: { view: WorldEntityView }) {
 function EntityDetail({
   view,
   summary,
+  conflictFields = [],
 }: {
   view: WorldEntityView;
   summary: ReturnType<typeof summarizeMutations>;
+  conflictFields?: string[];
 }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -171,6 +187,7 @@ function EntityDetail({
   });
 
   const fieldNames = [...new Set([...Object.keys(view.fields), ...summary.fields])].sort();
+  const conflictFieldSet = new Set(conflictFields);
 
   const revert = (field?: string) => {
     const label = field === undefined ? `all mutated fields of ${view.name}` : `${view.name}.${field}`;
@@ -184,12 +201,14 @@ function EntityDetail({
         {fieldNames.map((field) => {
           const info = view.mutatedFields[field];
           const isMutated = info !== undefined;
+          const hasSyncConflict = conflictFieldSet.has(field);
           return (
             <FieldLine
               key={field}
               field={field}
               value={view.fields[field]}
               mutated={isMutated}
+              hasSyncConflict={hasSyncConflict}
               meta={
                 info !== undefined
                   ? `${info.count}× · ${info.storyIds.length} stor${info.storyIds.length === 1 ? 'y' : 'ies'}`
@@ -232,6 +251,7 @@ function FieldLine({
   field,
   value,
   mutated,
+  hasSyncConflict = false,
   meta,
   onRevert,
   disabled,
@@ -239,14 +259,26 @@ function FieldLine({
   field: string;
   value: unknown;
   mutated: boolean;
+  hasSyncConflict?: boolean;
   meta: string;
   onRevert?: () => void;
   disabled: boolean;
 }) {
   return (
     <>
-      <span className="world-field-name">{field}</span>
-      <span className={`world-field-value${mutated ? ' mutated' : ''}`}>
+      <span className="world-field-name">
+        {field}
+        {hasSyncConflict && (
+          <span
+            className="world-field-conflict-badge"
+            title="This field has a pending sync conflict — review in Settings"
+            aria-label="Sync conflict"
+          >
+            <AlertTriangle size={10} /> conflict
+          </span>
+        )}
+      </span>
+      <span className={`world-field-value${mutated ? ' mutated' : ''}${hasSyncConflict ? ' sync-conflict' : ''}`}>
         {formatFieldValue(value)}
       </span>
       {onRevert !== undefined ? (

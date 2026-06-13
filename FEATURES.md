@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 9 nearly COMPLETE — PWA install/manifest/service-worker/IndexedDB offline (F801–F830), offline editing + reconnect sync (F851–F860), notifications + mobile polish (F871–F900), and the op-log sync engine + server endpoints + conflict resolution (F831–F870, minus web conflict UIs F844/F845/F850). Tailscale guide shipped (F881). Remaining: wire the sync engine into the web outbox, conflict review UI, then Day 10 (hardening/ship). 1,682 tests green. Next: sync-web integration + Day 10.
+**Status:** Day 9 (PWA, Offline, Sync & Tailscale) COMPLETE — F801–F900. Installable iPhone PWA, offline editing, op-log sync wired into the web outbox with conflict-review UI, Tailscale guide. 1,733 tests green. Tier 1 is 9/10 days done. Next: Day 10 — hardening, security, perf & v1.0 ship (F901).
 
 ---
 
@@ -1152,13 +1152,13 @@ Your notes are the world. Your stories run on a compiler you own.
 - [x] F841 — Conflict policy: field-level last-writer-wins with lamport ordering
 - [x] F842 — Note body conflicts: three-way text merge when clean
 - [x] F843 — Unresolvable body conflicts → conflict copy note + banner
-- [~] F844 — Conflict review UI: side-by-side, pick/merge/keep-both (deferred: conflict review UI is apps/web; merge backend + data shape ready)
-- [~] F845 — Entity field conflicts surfaced in world inspector (F681) (deferred: world-inspector conflict surfacing UI; entity field merge backend ready)
+- [x] F844 — Conflict review UI: side-by-side, pick/merge/keep-both
+- [x] F845 — Entity field conflicts surfaced in world inspector (F681)
 - [x] F846 — Tombstone handling (delete vs concurrent edit)
 - [x] F847 — Save-slot conflicts: keep both with device labels
 - [x] F848 — Conflict metrics in debug stats
 - [x] F849 — Fuzz tests: random concurrent op sequences always converge
-- [~] F850 — Conflict UX e2e test (deferred: conflict UX e2e needs the web conflict UI)
+- [x] F850 — Conflict UX e2e test
 
 ### Offline Editing UX (F851–F860)
 

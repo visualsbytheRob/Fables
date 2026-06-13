@@ -1,51 +1,75 @@
 /**
  * Offline indicator pill showing connection status + pending-op count (F851).
- * Shows only when offline or when there are pending outbox entries.
+ * Upgraded (F863) to also reflect SyncEngine health state and conflict count (F844).
+ *
+ * Shows only when offline, when there are pending outbox entries, or when there
+ * are unresolved conflicts.
  */
-import { useEffect, useState } from 'react';
 import { useOnlineStatus } from './useOnlineStatus.js';
-import { outboxStore } from './idb.js';
+import { AlertTriangle } from '@fables/ui';
 import './offline.css';
+import './conflict.css';
 
-export function OfflineIndicator() {
+interface OfflineIndicatorProps {
+  /** Pending op count from useSync() */
+  pendingCount?: number;
+  /** Conflict count from useSync() */
+  conflictCount?: number;
+  /** Whether a sync is in progress */
+  isSyncing?: boolean;
+  /** Called when conflict badge is clicked */
+  onConflictClick?: () => void;
+}
+
+export function OfflineIndicator({
+  pendingCount = 0,
+  conflictCount = 0,
+  isSyncing = false,
+  onConflictClick,
+}: OfflineIndicatorProps) {
   const online = useOnlineStatus();
-  const [pendingCount, setPendingCount] = useState(0);
 
-  useEffect(() => {
-    let cancelled = false;
-    async function refresh() {
-      const count = await outboxStore.count().catch(() => 0);
-      if (!cancelled) setPendingCount(count);
-    }
-    void refresh();
-    // Refresh every 3s
-    const timer = setInterval(() => void refresh(), 3000);
-    return () => {
-      cancelled = true;
-      clearInterval(timer);
-    };
-  }, []);
-
-  // Only show when offline or when there are pending writes
-  if (online && pendingCount === 0) return null;
+  // Only show when offline, syncing, pending writes, or conflicts
+  if (online && pendingCount === 0 && !isSyncing && conflictCount === 0) return null;
 
   return (
     <div
-      className={`offline-pill${online ? ' offline-pill--syncing' : ''}`}
+      className={`offline-pill${online ? (isSyncing ? ' offline-pill--syncing' : '') : ''}`}
       role="status"
       aria-live="polite"
       aria-label={
-        online ? `Syncing ${pendingCount} change${pendingCount !== 1 ? 's' : ''}` : 'Offline'
+        !online
+          ? 'Offline'
+          : isSyncing
+            ? `Syncing ${pendingCount} change${pendingCount !== 1 ? 's' : ''}`
+            : pendingCount > 0
+              ? `${pendingCount} pending change${pendingCount !== 1 ? 's' : ''}`
+              : 'Sync up to date'
       }
     >
       <span className="offline-pill__dot" aria-hidden />
       {!online ? (
         <>
           <span>Offline</span>
-          {pendingCount > 0 && <span className="offline-pill__count">{pendingCount} pending</span>}
+          {pendingCount > 0 && (
+            <span className="offline-pill__count">{pendingCount} pending</span>
+          )}
         </>
-      ) : (
-        <span>Syncing {pendingCount}…</span>
+      ) : isSyncing ? (
+        <span>Syncing {pendingCount > 0 ? `${pendingCount}` : ''}…</span>
+      ) : pendingCount > 0 ? (
+        <span>{pendingCount} pending</span>
+      ) : null}
+
+      {conflictCount > 0 && (
+        <button
+          className="conflict-badge-btn"
+          onClick={onConflictClick}
+          aria-label={`${conflictCount} sync conflict${conflictCount !== 1 ? 's' : ''} — click to review`}
+        >
+          <AlertTriangle size={12} />
+          <span>{conflictCount}</span>
+        </button>
       )}
     </div>
   );
