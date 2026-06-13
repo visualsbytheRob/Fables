@@ -1766,7 +1766,19 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1299 — Epic security sign-off checklist
 - [ ] F1300 — Epic 13 retro devlog
 
-## Epic 14 — Local AI Co-Writer & Intelligence (F1301–F1400)
+## Epic 14 — AI Co-Writer, Intelligence & Modality Mesh (F1301–F1400)
+
+> **Modality Mesh (cross-cutting).** This epic's "Backend abstraction: one
+> interface, pluggable engines" (F1303) generalizes into the **Modality Mesh** —
+> the shared adapter + capability-router + job-queue + content-addressed-cache
+> core that lets Fables generate and involve _every_ data modality with many
+> models (transformer, diffusion, specialized) working together, swappably, and
+> degrading gracefully offline. The transformer (Claude) is the conductor;
+> diffusion and friends are the renderers. Epics 16 (geo, ink), 17 (speech,
+> audio, music) and 19 (image, video, 3D) are all reframed as Mesh consumers.
+> Full blueprint: `docs/architecture/modality-mesh.md`. The plan stays at ~2,000
+> features; the back half is restructured around the Mesh rather than extended
+> past it.
 
 ### Local Model Runtime (F1301–F1310)
 
@@ -2032,6 +2044,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ## Epic 16 — Canvas & Spatial Views (F1501–F1600)
 
+> Mesh consumer: adds the `geo` (world atlas, travel routes) and `ink` (stylus capture) capabilities. See `docs/architecture/modality-mesh.md`.
+
 ### Canvas Engine (F1501–F1510)
 
 - [ ] F1501 — Infinite canvas: pan/zoom with culling and LOD
@@ -2163,6 +2177,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1600 — Epic 16 retro devlog
 
 ## Epic 17 — Audio Fables (F1601–F1700)
+
+> Mesh consumer: the TTS foundation, soundscapes, and adaptive score become the `speech`, `audio`, and `music` capabilities on the shared Modality Mesh. See `docs/architecture/modality-mesh.md`.
 
 ### TTS Foundation (F1601–F1610)
 
@@ -2427,6 +2443,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1800 — Epic 18 retro devlog
 
 ## Epic 19 — Story Interop & Distribution (F1801–F1900)
+
+> Mesh consumer: the ComfyUI art adapter becomes the `image` provider, joined by `video` and `model3d`, so a published fable can ship with generated illustration, narration, score, and explorable scenes. See `docs/architecture/modality-mesh.md`.
 
 ### .fablepack Format (F1801–F1810)
 
