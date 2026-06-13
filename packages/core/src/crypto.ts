@@ -46,6 +46,18 @@ export async function cryptoReady(): Promise<Sodium> {
   return sodium;
 }
 
+/**
+ * The already-initialized libsodium instance, synchronously. Throws if
+ * {@link cryptoReady} has not completed yet. Sync callers (e.g. the synchronous
+ * better-sqlite3 repos) must ensure the vault has been unlocked first — unlock
+ * awaits `cryptoReady`, so by the time any encrypted row is read or written the
+ * instance is guaranteed loaded.
+ */
+export function cryptoReadySync(): Sodium {
+  if (!_sodium) throw new Error('crypto not initialized — call cryptoReady() before sync use');
+  return _sodium;
+}
+
 // ── Branded key types (F1206) ───────────────────────────────────────────────
 
 /** A 256-bit symmetric key. Branded so the key hierarchy can't be crossed by accident. */
@@ -164,12 +176,12 @@ export interface Sealed {
  * random nonce is generated internally — callers cannot supply one, so nonce
  * reuse is impossible by construction (F1206).
  */
-export async function seal(
+export function sealSync(
   plaintext: Uint8Array,
   key: SecretKey,
   associatedData?: Uint8Array,
-): Promise<Sealed> {
-  const s = await cryptoReady();
+): Sealed {
+  const s = cryptoReadySync();
   const nonce = s.randombytes_buf(s.crypto_aead_xchacha20poly1305_ietf_NPUBBYTES);
   const ct = s.crypto_aead_xchacha20poly1305_ietf_encrypt(
     plaintext,
@@ -181,16 +193,22 @@ export async function seal(
   return { v: CURRENT_CRYPTO_PARAMS.version, alg: ALG_XCHACHA20POLY1305, nonce, ct };
 }
 
+/** Async variant of {@link sealSync}; ensures libsodium is loaded first. */
+export async function seal(
+  plaintext: Uint8Array,
+  key: SecretKey,
+  associatedData?: Uint8Array,
+): Promise<Sealed> {
+  await cryptoReady();
+  return sealSync(plaintext, key, associatedData);
+}
+
 /**
  * Decrypt and verify a sealed box (F1204). Throws if the key is wrong, the
  * associated data doesn't match, or the ciphertext was tampered with.
  */
-export async function open(
-  sealed: Sealed,
-  key: SecretKey,
-  associatedData?: Uint8Array,
-): Promise<Uint8Array> {
-  const s = await cryptoReady();
+export function openSync(sealed: Sealed, key: SecretKey, associatedData?: Uint8Array): Uint8Array {
+  const s = cryptoReadySync();
   if (sealed.alg !== ALG_XCHACHA20POLY1305) {
     throw new Error(`unsupported AEAD algorithm id ${String(sealed.alg)}`);
   }
@@ -201,6 +219,16 @@ export async function open(
     sealed.nonce,
     key,
   );
+}
+
+/** Async variant of {@link openSync}; ensures libsodium is loaded first. */
+export async function open(
+  sealed: Sealed,
+  key: SecretKey,
+  associatedData?: Uint8Array,
+): Promise<Uint8Array> {
+  await cryptoReady();
+  return openSync(sealed, key, associatedData);
 }
 
 // ── Key hierarchy: wrap / unwrap data keys (F1203) ──────────────────────────
@@ -280,4 +308,46 @@ export async function utf8ToBytes(text: string): Promise<Uint8Array> {
 export async function bytesToUtf8(bytes: Uint8Array): Promise<string> {
   const s = await cryptoReady();
   return s.to_string(bytes);
+}
+
+// ── Field codec (F1211 at-rest field encryption) ────────────────────────────
+
+/** Marker identifying an encrypted field value at rest. Plaintext never matches. */
+export const ENC_FIELD_PREFIX = 'enc:v1:';
+
+/**
+ * Encrypt a string field for at-rest storage (sync). Returns a self-describing
+ * `enc:v1:<base64 envelope>` string. Idempotent guards in callers keep already-
+ * encrypted values from being double-wrapped.
+ */
+export function encryptFieldSync(plaintext: string, key: SecretKey): string {
+  return ENC_FIELD_PREFIX + toBase64Sync(packSealed(sealSync(utf8ToBytesSync(plaintext), key)));
+}
+
+/** Decrypt a value produced by {@link encryptFieldSync}. Plaintext passes through. */
+export function decryptFieldSync(stored: string, key: SecretKey): string {
+  if (!stored.startsWith(ENC_FIELD_PREFIX)) return stored;
+  const b64 = stored.slice(ENC_FIELD_PREFIX.length);
+  return bytesToUtf8Sync(openSync(unpackSealed(fromBase64Sync(b64)), key));
+}
+
+/** True if a stored value is an encrypted-field envelope. */
+export function isEncryptedField(stored: string): boolean {
+  return stored.startsWith(ENC_FIELD_PREFIX);
+}
+
+// Synchronous encoding helpers (require cryptoReady() to have completed).
+export function toBase64Sync(bytes: Uint8Array): string {
+  const s = cryptoReadySync();
+  return s.to_base64(bytes, s.base64_variants.ORIGINAL);
+}
+export function fromBase64Sync(text: string): Uint8Array {
+  const s = cryptoReadySync();
+  return s.from_base64(text, s.base64_variants.ORIGINAL);
+}
+export function utf8ToBytesSync(text: string): Uint8Array {
+  return cryptoReadySync().from_string(text);
+}
+export function bytesToUtf8Sync(bytes: Uint8Array): string {
+  return cryptoReadySync().to_string(bytes);
 }

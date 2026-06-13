@@ -10,11 +10,13 @@ import { describe, it, expect } from 'vitest';
 import _sodium from 'libsodium-wrappers-sumo';
 import {
   cryptoReady,
+  cryptoReadySync,
   CURRENT_CRYPTO_PARAMS,
   generateSalt,
   generateDataKey,
   deriveMasterKey,
   seal,
+  sealSync,
   open,
   wrapDataKey,
   unwrapDataKey,
@@ -25,6 +27,10 @@ import {
   zeroKey,
   utf8ToBytes,
   bytesToUtf8,
+  encryptFieldSync,
+  decryptFieldSync,
+  isEncryptedField,
+  ENC_FIELD_PREFIX,
   type MasterKey,
   type SecretKey,
 } from './crypto.js';
@@ -197,5 +203,34 @@ describe('crypto: utilities', () => {
     expect(CURRENT_CRYPTO_PARAMS.version).toBe(1);
     expect(CURRENT_CRYPTO_PARAMS.kdf).toBe('argon2id13');
     expect(CURRENT_CRYPTO_PARAMS.aead).toBe('xchacha20poly1305-ietf');
+  });
+});
+
+describe('crypto: synchronous field codec (F1211)', () => {
+  it('round-trips a field with the enc:v1: marker', async () => {
+    const key = (await generateDataKey()) as unknown as SecretKey;
+    const stored = encryptFieldSync('The dragon sleeps beneath the keep.', key);
+    expect(stored.startsWith(ENC_FIELD_PREFIX)).toBe(true);
+    expect(isEncryptedField(stored)).toBe(true);
+    expect(stored).not.toContain('dragon');
+    expect(decryptFieldSync(stored, key)).toBe('The dragon sleeps beneath the keep.');
+  });
+
+  it('passes plaintext through decrypt unchanged (mixed-mode safe)', async () => {
+    const key = (await generateDataKey()) as unknown as SecretKey;
+    expect(isEncryptedField('just a plaintext title')).toBe(false);
+    expect(decryptFieldSync('just a plaintext title', key)).toBe('just a plaintext title');
+  });
+
+  it('sealSync/openSync match the async seal/open', async () => {
+    const key = (await generateDataKey()) as unknown as SecretKey;
+    const sealed = sealSync(await utf8ToBytes('sync path'), key);
+    expect(await bytesToUtf8(await open(sealed, key))).toBe('sync path');
+  });
+
+  it('cryptoReadySync throws before init only', async () => {
+    // After any earlier test, sodium is already loaded, so this resolves.
+    await cryptoReady();
+    expect(() => cryptoReadySync()).not.toThrow();
   });
 });

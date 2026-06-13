@@ -25,7 +25,9 @@ import {
   AppError,
   CURRENT_CRYPTO_PARAMS,
   bytesToUtf8,
+  decryptFieldSync,
   deriveMasterKey,
+  encryptFieldSync,
   fromBase64,
   generateDataKey,
   generateSalt,
@@ -152,8 +154,30 @@ export class VaultService {
     });
   }
 
+  /**
+   * A synchronous field codec bound to the unlocked data key, or null when the
+   * vault is locked (F1211). The notes repo uses this to encrypt note titles and
+   * bodies on write and decrypt them on read, inline with synchronous SQLite.
+   * Fetch a fresh codec per request — a captured one becomes unusable once the
+   * vault locks (the underlying key is zeroed).
+   */
+  fieldCodec(): FieldCodec | null {
+    if (!this.dek) return null;
+    const dek = this.dek;
+    return {
+      encrypt: (plaintext: string) => encryptFieldSync(plaintext, dek),
+      decrypt: (stored: string) => decryptFieldSync(stored, dek),
+    };
+  }
+
   private requireUnlocked(): DataKey {
     if (!this.dek) throw new AppError('FORBIDDEN', 'vault is locked');
     return this.dek;
   }
+}
+
+/** Synchronous encrypt/decrypt pair for at-rest field encryption (F1211). */
+export interface FieldCodec {
+  encrypt(plaintext: string): string;
+  decrypt(stored: string): string;
 }

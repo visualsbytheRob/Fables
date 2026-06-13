@@ -10,6 +10,21 @@ import {
 } from '@fables/core';
 import type { Db } from '../connection.js';
 
+/**
+ * Optional at-rest field codec (F1211). When supplied (vault unlocked), note
+ * titles and bodies are encrypted before they touch the DB and decrypted on the
+ * way out — transparently, so the rest of the app sees plaintext. Without it the
+ * notes path is byte-for-byte unchanged (plaintext, the default).
+ *
+ * Encrypted notes are not findable via the persistent FTS index (it only ever
+ * sees ciphertext, which never matches a plaintext query) — searching encrypted
+ * content is the job of the post-unlock in-memory index (F1213, follow-on).
+ */
+export interface NoteFieldCodec {
+  encrypt(plaintext: string): string;
+  decrypt(stored: string): string;
+}
+
 export type NoteSort = 'updated' | 'created' | 'title';
 
 const ORDERINGS: Record<NoteSort, { column: keyof Row & string; dir: 'ASC' | 'DESC' }> = {
@@ -30,21 +45,24 @@ interface Row {
   rev: number;
 }
 
-function toNote(row: Row): Note {
-  return {
-    id: row.id as NoteId,
-    notebookId: row.notebook_id as NotebookId,
-    title: row.title,
-    body: row.body,
-    pinned: row.pinned === 1,
-    trashedAt: row.trashed_at,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-    rev: row.rev,
-  };
-}
+export function notesRepo(db: Db, codec?: NoteFieldCodec) {
+  const enc = (s: string): string => (codec ? codec.encrypt(s) : s);
+  const dec = (s: string): string => (codec ? codec.decrypt(s) : s);
 
-export function notesRepo(db: Db) {
+  function toNote(row: Row): Note {
+    return {
+      id: row.id as NoteId,
+      notebookId: row.notebook_id as NotebookId,
+      title: dec(row.title),
+      body: dec(row.body),
+      pinned: row.pinned === 1,
+      trashedAt: row.trashed_at,
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+      rev: row.rev,
+    };
+  }
+
   return {
     create(input: { notebookId: NotebookId; title?: string; body?: string }): Note {
       const now = nowIso();
@@ -62,7 +80,14 @@ export function notesRepo(db: Db) {
       db.prepare(
         `INSERT INTO notes (id, notebook_id, title, body, pinned, trashed_at, created_at, updated_at, rev)
          VALUES (?, ?, ?, ?, 0, NULL, ?, ?, 0)`,
-      ).run(note.id, note.notebookId, note.title, note.body, note.createdAt, note.updatedAt);
+      ).run(
+        note.id,
+        note.notebookId,
+        enc(note.title),
+        enc(note.body),
+        note.createdAt,
+        note.updatedAt,
+      );
       return note;
     },
 
@@ -94,8 +119,8 @@ export function notesRepo(db: Db) {
          WHERE id = ? AND rev = ?`,
       ).run(
         next.notebookId,
-        next.title,
-        next.body,
+        enc(next.title),
+        enc(next.body),
         next.pinned ? 1 : 0,
         next.updatedAt,
         next.rev,
@@ -217,7 +242,7 @@ export function notesRepo(db: Db) {
       const rows = db
         .prepare(`SELECT id, title FROM notes WHERE trashed_at IS NULL AND title != '' ORDER BY id`)
         .all() as { id: string; title: string }[];
-      return rows.map((r) => ({ id: r.id as NoteId, title: r.title }));
+      return rows.map((r) => ({ id: r.id as NoteId, title: dec(r.title) }));
     },
 
     /**
@@ -264,7 +289,7 @@ export function notesRepo(db: Db) {
         .all(...args) as { id: string; title: string; notebook_id: string; updated_at: string }[];
       return rows.map((r) => ({
         id: r.id as NoteId,
-        title: r.title,
+        title: dec(r.title),
         notebookId: r.notebook_id as NotebookId,
         updatedAt: r.updated_at,
       }));
