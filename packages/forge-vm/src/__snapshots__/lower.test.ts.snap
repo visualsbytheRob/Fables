@@ -1,0 +1,260 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`lowering snapshots (F410) > dumps stable IR for 03-choices-basic 1`] = `
+"program v1 entry=#0 containers=8 strings=14 consts=0 temps=0 alts=0
+
+#0 <preamble> (preamble)
+    0  DIVERT #1 (crossroads)
+
+#1 crossroads (knot, visits)
+    0  VISIT #1 (crossroads)
+    1  TEXT "The path splits beneath an old oak."
+    2  NEWLINE
+    3  CHOICE 0 - #3 (crossroads#opt1#text) #2 (crossroads#opt1)
+    4  CHOICE 0 - #5 (crossroads#opt2#text) #4 (crossroads#opt2)
+    5  CHOICE 1 - #7 (crossroads#opt3#text) #6 (crossroads#opt3)
+    6  PRESENT
+
+#2 crossroads#opt1 (choiceBody, visits)
+    0  VISIT #2 (crossroads#opt1)
+    1  TEXT "Take the shaded trail."
+    2  NEWLINE
+    3  TEXT "Ferns brush your ankles."
+    4  NEWLINE
+    5  DIVERT #1 (crossroads)
+
+#3 crossroads#opt1#text (choiceText)
+    0  TEXT "Take the shaded trail."
+    1  RET
+
+#4 crossroads#opt2 (choiceBody, visits)
+    0  VISIT #4 (crossroads#opt2)
+    1  TEXT "Follow the sunny ridge."
+    2  NEWLINE
+    3  TEXT "The grass hums with crickets."
+    4  NEWLINE
+    5  DIVERT #1 (crossroads)
+
+#5 crossroads#opt2#text (choiceText)
+    0  TEXT "Follow the sunny ridge."
+    1  RET
+
+#6 crossroads#opt3 (choiceBody, visits)
+    0  VISIT #6 (crossroads#opt3)
+    1  TEXT "Sit and rest a while."
+    2  NEWLINE
+    3  DIVERT #1 (crossroads)
+
+#7 crossroads#opt3#text (choiceText)
+    0  TEXT "Sit and rest a while."
+    1  RET
+"
+`;
+
+exports[`lowering snapshots (F410) > dumps stable IR for 06-gathers-labels 1`] = `
+"program v1 entry=#0 containers=9 strings=15 consts=1 temps=0 alts=0
+
+#0 <preamble> (preamble)
+    0  DIVERT #1 (clearing)
+
+#1 clearing (knot, visits)
+    0  VISIT #1 (clearing)
+    1  TEXT "Moonlight pools in the clearing."
+    2  NEWLINE
+    3  CHOICE 0 - #6 (clearing.howl#text) #2 (clearing.howl)
+    4  CHOICE 0 - #7 (clearing.dig#text) #3 (clearing.dig)
+    5  CHOICE 1 - #8 (clearing.wait#text) #4 (clearing.wait)
+    6  PRESENT
+
+#2 clearing.howl (choiceBody, visits)
+    0  VISIT #2 (clearing.howl)
+    1  TEXT "Howl at the moon."
+    2  NEWLINE
+    3  DIVERT #5 (clearing.gathered)
+
+#3 clearing.dig (choiceBody, visits)
+    0  VISIT #3 (clearing.dig)
+    1  TEXT "Dig at the cold earth."
+    2  NEWLINE
+    3  DIVERT #5 (clearing.gathered)
+
+#4 clearing.wait (choiceBody, visits)
+    0  VISIT #4 (clearing.wait)
+    1  TEXT "Do nothing at all."
+    2  NEWLINE
+    3  DIVERT #5 (clearing.gathered)
+
+#5 clearing.gathered (gather, visits)
+    0  VISIT #5 (clearing.gathered)
+    1  TEXT "Whatever you did, the night swallows it."
+    2  NEWLINE
+    3  LOAD_VISITS #2 (clearing.howl)
+    4  PUSH_CONST 0
+    5  GT
+    6  JUMP_IF_FALSE @8
+    7  TEXT " Your throat is still sore."
+    8  NEWLINE
+    9  END_STORY
+
+#6 clearing.howl#text (choiceText)
+    0  TEXT "Howl at the moon."
+    1  RET
+
+#7 clearing.dig#text (choiceText)
+    0  TEXT "Dig at the cold earth."
+    1  RET
+
+#8 clearing.wait#text (choiceText)
+    0  TEXT "Do nothing at all."
+    1  RET
+"
+`;
+
+exports[`lowering snapshots (F410) > dumps stable IR for 10-alternatives 1`] = `
+"program v1 entry=#0 containers=6 strings=21 consts=0 temps=0 alts=3
+
+#0 <preamble> (preamble)
+    0  DIVERT #1 (watch)
+
+#1 watch (knot, visits)
+    0  VISIT #1 (watch)
+    1  TEXT "The heron "
+    2  ALT 0 0 [@3, @5, @7]
+    3  TEXT "stands"
+    4  JUMP @9
+    5  TEXT "still stands"
+    6  JUMP @9
+    7  TEXT "has not moved"
+    8  JUMP @9
+    9  TEXT "."
+   10  NEWLINE
+   11  TEXT "The reeds "
+   12  ALT 1 1 [@13, @15, @17]
+   13  TEXT "whisper"
+   14  JUMP @19
+   15  TEXT "rattle"
+   16  JUMP @19
+   17  TEXT "sigh"
+   18  JUMP @19
+   19  TEXT "."
+   20  NEWLINE
+   21  TEXT "A frog "
+   22  ALT 2 2 [@23, @25, @27]
+   23  TEXT "plops"
+   24  JUMP @29
+   25  TEXT "croaks"
+   26  JUMP @29
+   27  TEXT "vanishes"
+   28  JUMP @29
+   29  TEXT "."
+   30  NEWLINE
+   31  CHOICE 1 - #3 (watch#opt1#text) #2 (watch#opt1)
+   32  CHOICE 1 - #5 (watch#opt2#text) #4 (watch#opt2)
+   33  PRESENT
+
+#2 watch#opt1 (choiceBody, visits)
+    0  VISIT #2 (watch#opt1)
+    1  TEXT "Keep watching."
+    2  NEWLINE
+    3  DIVERT #1 (watch)
+
+#3 watch#opt1#text (choiceText)
+    0  TEXT "Keep watching."
+    1  RET
+
+#4 watch#opt2 (choiceBody, visits)
+    0  VISIT #4 (watch#opt2)
+    1  TEXT "Leave the marsh."
+    2  NEWLINE
+    3  END_STORY
+
+#5 watch#opt2#text (choiceText)
+    0  TEXT "Leave the marsh."
+    1  RET
+"
+`;
+
+exports[`lowering snapshots (F410) > dumps stable IR for 13-tunnels 1`] = `
+"program v1 entry=#0 containers=3 strings=6 consts=0 temps=0 alts=0
+
+#0 <preamble> (preamble)
+    0  DIVERT #1 (day)
+
+#1 day (knot, visits)
+    0  VISIT #1 (day)
+    1  TEXT "The cubs want to play."
+    2  NEWLINE
+    3  TUNNEL #2 (pounce_lesson)
+    4  TEXT "After the lesson, everyone naps."
+    5  NEWLINE
+    6  END_STORY
+
+#2 pounce_lesson (knot, visits)
+    0  VISIT #2 (pounce_lesson)
+    1  TEXT "Crouch. Wiggle. Leap!"
+    2  NEWLINE
+    3  TUNNEL_RETURN
+"
+`;
+
+exports[`lowering snapshots (F410) > dumps the multi-file include fixture 1`] = `
+"program v1 entry=#0 containers=9 strings=16 consts=2 temps=0 alts=0
+meta: title="The Wandering Fox"
+globals:
+  $0 VAR spirit init=#4
+
+#0 <preamble> (preamble)
+    0  DIVERT #1 (forest_edge)
+
+#1 forest_edge (knot, visits)
+    0  VISIT #1 (forest_edge)
+    1  TEXT "Pines crowd the path."
+    2  NEWLINE
+    3  LOAD_GLOBAL $spirit
+    4  PUSH_CONST 1
+    5  ADD
+    6  STORE_GLOBAL $spirit
+    7  CHOICE 0 - #6 (forest_edge#opt1#text) #5 (forest_edge#opt1)
+    8  CHOICE 1 - #8 (forest_edge#opt2#text) #7 (forest_edge#opt2)
+    9  PRESENT
+
+#2 forest_heart (knot, visits)
+    0  VISIT #2 (forest_heart)
+    1  TEXT "It is dark and very quiet."
+    2  NEWLINE
+    3  DIVERT #3 (river_bend)
+
+#3 river_bend (knot, visits)
+    0  VISIT #3 (river_bend)
+    1  TEXT "The river runs quick and cold. Spirit: "
+    2  LOAD_GLOBAL $spirit
+    3  PRINT
+    4  TEXT "."
+    5  NEWLINE
+    6  END_STORY
+
+#4 spirit#init (init)
+    0  PUSH_CONST 2
+    1  RET
+
+#5 forest_edge#opt1 (choiceBody, visits)
+    0  VISIT #5 (forest_edge#opt1)
+    1  TEXT "Head deeper in."
+    2  NEWLINE
+    3  DIVERT #2 (forest_heart)
+
+#6 forest_edge#opt1#text (choiceText)
+    0  TEXT "Head deeper in."
+    1  RET
+
+#7 forest_edge#opt2 (choiceBody, visits)
+    0  VISIT #7 (forest_edge#opt2)
+    1  TEXT "Follow the water sounds."
+    2  NEWLINE
+    3  DIVERT #3 (river_bend)
+
+#8 forest_edge#opt2#text (choiceText)
+    0  TEXT "Follow the water sounds."
+    1  RET
+"
+`;
