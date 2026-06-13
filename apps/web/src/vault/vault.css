@@ -1,0 +1,217 @@
+/* Epic 13 – Encrypted Vault UX (F1221–F1240) */
+
+/* ── Gate overlay ──────────────────────────────────────────────────────────
+   Full-screen overlay that blocks the app when the vault is absent/locked.
+   Renders nothing sensitive behind it (F1233).                              */
+
+.vault-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg, #0f0f0f);
+}
+
+.vault-gate__card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6, 2rem);
+  background: var(--bg-surface, #1a1a1a);
+  border: 1px solid var(--border, #333);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.vault-gate__icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: var(--space-4, 1rem);
+  color: var(--text-dim, #888);
+}
+
+.vault-gate__title {
+  text-align: center;
+  font-size: var(--text-lg, 1.125rem);
+  font-weight: 600;
+  color: var(--text, #eee);
+  margin: 0 0 var(--space-2, 0.5rem);
+}
+
+.vault-gate__subtitle {
+  text-align: center;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--text-dim, #888);
+  margin: 0 0 var(--space-5, 1.5rem);
+}
+
+.vault-gate__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+  margin-bottom: var(--space-4, 1rem);
+}
+
+.vault-gate__label {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--text, #eee);
+}
+
+.vault-gate__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75rem);
+  margin-top: var(--space-4, 1rem);
+}
+
+.vault-gate__error {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-error, #e05252);
+  text-align: center;
+  margin: var(--space-2, 0.5rem) 0 0;
+}
+
+.vault-gate__backoff {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-warning, #e09a22);
+  text-align: center;
+  padding: var(--space-3, 0.75rem);
+  border: 1px solid var(--color-warning, #e09a22);
+  border-radius: 6px;
+  margin-bottom: var(--space-3, 0.75rem);
+}
+
+.vault-gate__secondary {
+  font-size: var(--text-xs, 0.75rem);
+  color: var(--text-dim, #888);
+  text-align: center;
+}
+
+.vault-gate__secondary button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--accent, #7c6af5);
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+/* ── Recovery codes display ─────────────────────────────────────────────── */
+
+.vault-recovery {
+  margin-top: var(--space-4, 1rem);
+}
+
+.vault-recovery__warning {
+  background: rgba(224, 90, 40, 0.12);
+  border: 1px solid rgba(224, 90, 40, 0.4);
+  border-radius: 6px;
+  padding: var(--space-3, 0.75rem);
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-warning, #e09a22);
+  margin-bottom: var(--space-4, 1rem);
+  line-height: 1.5;
+}
+
+.vault-recovery__codes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2, 0.5rem);
+  margin-bottom: var(--space-4, 1rem);
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-size: var(--text-sm, 0.875rem);
+}
+
+.vault-recovery__code {
+  background: var(--bg-hover, #222);
+  border: 1px solid var(--border, #333);
+  border-radius: 4px;
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  color: var(--text, #eee);
+  user-select: all;
+  word-break: break-all;
+}
+
+.vault-recovery__copy-btn {
+  width: 100%;
+}
+
+/* ── Passphrase-change dialog ───────────────────────────────────────────── */
+
+.vault-change-pp {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  padding: var(--space-2, 0.5rem) 0;
+}
+
+.vault-change-pp__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5rem);
+}
+
+.vault-change-pp__label {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--text, #eee);
+}
+
+.vault-change-pp__actions {
+  display: flex;
+  gap: var(--space-3, 0.75rem);
+  justify-content: flex-end;
+}
+
+/* ── Fingerprint display ─────────────────────────────────────────────────── */
+
+.vault-fingerprint {
+  font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--text-dim, #888);
+  letter-spacing: 0.05em;
+  word-spacing: 0.5em;
+  background: var(--bg-hover, #222);
+  border: 1px solid var(--border, #333);
+  border-radius: 4px;
+  padding: var(--space-2, 0.5rem) var(--space-3, 0.75rem);
+  display: inline-block;
+}
+
+/* ── Session settings row ────────────────────────────────────────────────── */
+
+.vault-session-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+}
+
+.vault-session-row__label {
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--text, #eee);
+  flex: 1;
+}
+
+/* ── Panic lock indicator ───────────────────────────────────────────────── */
+
+.vault-panic-btn {
+  position: fixed;
+  bottom: 80px;
+  right: var(--space-4, 1rem);
+  z-index: 1000;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.vault-panic-btn:hover {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vault-panic-btn {
+    transition: none;
+  }
+}

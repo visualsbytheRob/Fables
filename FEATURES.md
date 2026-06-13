@@ -19,7 +19,7 @@ Your notes are the world. Your stories run on a compiler you own.
 
 **Status:** Epic 12 (Real-Time Collaboration & CRDT) COMPLETE — F1101–F1200. Shipped: CRDT core (Yjs, convergence fuzz-proven 2/3/5/10-peer + 20-editor load test, WebSocket sync server, collaborative CodeMirror editor); sharing model with scoped tokens / read-vs-edit / expiry / revocation / guest identity / audit log and permission enforcement on the collab path (migration 019-shares); collaborative stories (shared editing, vote-on-choice, roles, chat, recording); CRDT-anchored comments + suggestions; merge history (checkpoints, attribution, diff, restore, forensic recovery); conflict-free structures (entity fields, notebook tree, tags, save slots); and hardening (chaos test, security review, integrity checksums, health endpoint, graceful single-user). 48/60 of F1141–F1200 shipped; 12 deferred with reasons (UI panels for share management/shared-with-me, e2e suites needing browser runners, canvas CRDT, battery audit, history pruning — see docs/devlog/epic-12.md).
 
-Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). 175 test files, 2,177 tests green; typecheck + lint clean. Next: wire the notes repo onto the vault (transparent encrypt/decrypt → F1211), encrypted FTS post-unlock (F1213), then key-management UX (F1221–F1230) + lock behavior (F1231–F1240) via the web lane.
+Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). Key-management UX + lock behavior shipped (apps/web/src/vault): unlock/create screens with one-time recovery codes + honest data-loss messaging, passphrase-change dialog, wrong-passphrase exponential backoff, key-fingerprint display, session-duration setting, auto-lock on idle, lock-on-background, panic lock + indicator, locked-state UI rendering nothing sensitive, in-memory purge on lock, and cross-tab coordination via BroadcastChannel (F1221/F1222/F1225–F1227/F1229–F1234/F1236/F1237/F1239/F1240; F1224 passkey + F1235 PIN + F1228 emergency-export + F1238 pending-edit deferred). 176 test files, 2,221 tests green; typecheck + lint clean. Next: wire the notes repo onto the vault (transparent encrypt/decrypt → F1211), encrypted FTS post-unlock (F1213), per-note secrets (F1241–F1250).
 
 ---
 
@@ -1664,29 +1664,29 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Key Management UX (F1221–F1230)
 
-- [ ] F1221 — Vault unlock screen with passphrase entry
-- [ ] F1222 — Recovery codes generated at vault creation
+- [x] F1221 — Vault unlock screen with passphrase entry
+- [x] F1222 — Recovery codes generated at vault creation
 - [x] F1223 — Passphrase change flow (re-wrap, not re-encrypt)
-- [ ] F1224 — WebAuthn/passkey unlock where available
-- [ ] F1225 — Unlock session duration settings
-- [ ] F1226 — Wrong-passphrase rate limiting with backoff
-- [ ] F1227 — Key fingerprint display for device verification
-- [ ] F1228 — Emergency export with explicit re-auth
-- [ ] F1229 — Forgotten passphrase = data loss messaging (honest UX)
-- [ ] F1230 — Key management flow tests
+- [~] F1224 — WebAuthn/passkey unlock where available (deferred: WebAuthn/passkey needs a platform API unavailable in jsdom; scaffolded with a clear interface)
+- [x] F1225 — Unlock session duration settings
+- [x] F1226 — Wrong-passphrase rate limiting with backoff
+- [x] F1227 — Key fingerprint display for device verification
+- [~] F1228 — Emergency export with explicit re-auth (deferred: emergency export with re-auth not yet built)
+- [x] F1229 — Forgotten passphrase = data loss messaging (honest UX)
+- [x] F1230 — Key management flow tests
 
 ### Lock Behavior (F1231–F1240)
 
-- [ ] F1231 — Auto-lock on idle (configurable)
-- [ ] F1232 — Lock on PWA background/visibility change option
-- [ ] F1233 — Locked-state UI: nothing sensitive rendered or cached
-- [ ] F1234 — In-memory state purge on lock
-- [ ] F1235 — Quick-unlock PIN with device-bound wrapping key
-- [ ] F1236 — Panic lock command (palette + URL)
-- [ ] F1237 — Lock status indicator everywhere
-- [ ] F1238 — Pending-edit preservation across lock (encrypted holding pen)
-- [ ] F1239 — Lock behavior on multiple tabs coordinated
-- [ ] F1240 — Lock tests incl. memory inspection assertions
+- [x] F1231 — Auto-lock on idle (configurable)
+- [x] F1232 — Lock on PWA background/visibility change option
+- [x] F1233 — Locked-state UI: nothing sensitive rendered or cached
+- [x] F1234 — In-memory state purge on lock
+- [~] F1235 — Quick-unlock PIN with device-bound wrapping key (deferred: quick-unlock PIN deferred; needs device-bound wrapping key)
+- [x] F1236 — Panic lock command (palette + URL)
+- [x] F1237 — Lock status indicator everywhere
+- [~] F1238 — Pending-edit preservation across lock (encrypted holding pen) (deferred: pending-edit preservation needs an encrypted holding pen; deferred)
+- [x] F1239 — Lock behavior on multiple tabs coordinated
+- [x] F1240 — Lock tests incl. memory inspection assertions
 
 ### Per-Note Encryption (F1241–F1250)
 
