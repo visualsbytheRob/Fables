@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 4 COMPLETE (F301–F400). 882 tests green, forge-dsl coverage 98.4% (gate ≥90%). Day 5 VM lane (F401–F500) in flight. Next: F401.
+**Status:** Day 5 VM core done (F401–F500 minus integration halves: F462-3, F467-8, F480, F494, F497, F499). 1,053 tests green. Next: Day 6 story authoring + player (F501).
 
 ---
 
@@ -561,133 +561,133 @@ Your notes are the world. Your stories run on a compiler you own.
 
 ### Intermediate Representation (F401–F410)
 
-- [ ] F401 — `packages/forge-vm`: package scaffold
-- [ ] F402 — IR design doc: flat container tree, instruction kinds
-- [ ] F403 — AST → IR lowering for content and structure
-- [ ] F404 — IR for expressions: stack-based operation sequence
-- [ ] F405 — IR for choices: choice points with condition refs
-- [ ] F406 — IR for diverts/tunnels: addresses + call-stack ops
-- [ ] F407 — IR validation pass (well-formed addresses, no dangling refs)
-- [ ] F408 — IR text dump format for debugging (`forge dump-ir`)
-- [ ] F409 — IR optimization: constant folding, dead branch pruning
-- [ ] F410 — Lowering test suite with IR snapshots
+- [x] F401 — `packages/forge-vm`: package scaffold
+- [x] F402 — IR design doc: flat container tree, instruction kinds
+- [x] F403 — AST → IR lowering for content and structure
+- [x] F404 — IR for expressions: stack-based operation sequence
+- [x] F405 — IR for choices: choice points with condition refs
+- [x] F406 — IR for diverts/tunnels: addresses + call-stack ops
+- [x] F407 — IR validation pass (well-formed addresses, no dangling refs)
+- [x] F408 — IR text dump format for debugging (`forge dump-ir`)
+- [x] F409 — IR optimization: constant folding, dead branch pruning
+- [x] F410 — Lowering test suite with IR snapshots
 
 ### Bytecode Format (F411–F420)
 
-- [ ] F411 — Bytecode container spec: header, version, string table, instruction stream
-- [ ] F412 — Opcode set definition (~40 ops) with operand encodings
-- [ ] F413 — Serializer: IR → bytecode buffer
-- [ ] F414 — Deserializer with version check + corruption detection (checksum)
-- [ ] F415 — String/constant pool deduplication
-- [ ] F416 — Source map section: instruction → source span for runtime errors
-- [ ] F417 — Knowledge binding table section (entity/note refs by ID)
-- [ ] F418 — Disassembler (`forge disasm`) producing readable listing
-- [ ] F419 — Backward compatibility policy doc + version negotiation
-- [ ] F420 — Round-trip tests: serialize → deserialize → identical execution
+- [x] F411 — Bytecode container spec: header, version, string table, instruction stream
+- [x] F412 — Opcode set definition (~40 ops) with operand encodings
+- [x] F413 — Serializer: IR → bytecode buffer
+- [x] F414 — Deserializer with version check + corruption detection (checksum)
+- [x] F415 — String/constant pool deduplication
+- [x] F416 — Source map section: instruction → source span for runtime errors
+- [x] F417 — Knowledge binding table section (entity/note refs by ID)
+- [x] F418 — Disassembler (`forge disasm`) producing readable listing
+- [x] F419 — Backward compatibility policy doc + version negotiation
+- [x] F420 — Round-trip tests: serialize → deserialize → identical execution
 
 ### Code Generation (F421–F430)
 
-- [ ] F421 — Codegen for text output ops with interpolation
-- [ ] F422 — Codegen for variable load/store, temp slots
-- [ ] F423 — Codegen for arithmetic/logic/comparison expression ops
-- [ ] F424 — Codegen for conditionals and inline alternatives (sequences, cycles, shuffles)
-- [ ] F425 — Codegen for choice points incl. once-only visit tracking
-- [ ] F426 — Codegen for diverts, tunnels, and story end
-- [ ] F427 — Codegen for list operations
-- [ ] F428 — Codegen for entity binding reads/writes
-- [ ] F429 — Visit-count instrumentation (knot/stitch counters)
-- [ ] F430 — Codegen golden tests: fixtures → disassembly snapshots
+- [x] F421 — Codegen for text output ops with interpolation
+- [x] F422 — Codegen for variable load/store, temp slots
+- [x] F423 — Codegen for arithmetic/logic/comparison expression ops
+- [x] F424 — Codegen for conditionals and inline alternatives (sequences, cycles, shuffles)
+- [x] F425 — Codegen for choice points incl. once-only visit tracking
+- [x] F426 — Codegen for diverts, tunnels, and story end
+- [x] F427 — Codegen for list operations
+- [x] F428 — Codegen for entity binding reads/writes
+- [x] F429 — Visit-count instrumentation (knot/stitch counters)
+- [x] F430 — Codegen golden tests: fixtures → disassembly snapshots
 
 ### VM Core (F431–F440)
 
-- [ ] F431 — VM execution loop: fetch/decode/execute over bytecode
-- [ ] F432 — Output buffer model: text fragments, line breaks, glue resolution
-- [ ] F433 — `Continue()` semantics: run until choice point or end
-- [ ] F434 — Choice presentation: gather available choices with evaluated conditions
-- [ ] F435 — `ChooseIndex()` API resuming flow from selected choice
-- [ ] F436 — Call stack for tunnels with depth limit + overflow diagnostics
-- [ ] F437 — Runtime error model mapping back to source via source maps
-- [ ] F438 — Step budget guard against infinite loops, configurable
-- [ ] F439 — VM public API surface doc (`createStory`, `continue`, `choices`, `choose`)
-- [ ] F440 — VM core tests driving fixture stories end-to-end
+- [x] F431 — VM execution loop: fetch/decode/execute over bytecode
+- [x] F432 — Output buffer model: text fragments, line breaks, glue resolution
+- [x] F433 — `Continue()` semantics: run until choice point or end
+- [x] F434 — Choice presentation: gather available choices with evaluated conditions
+- [x] F435 — `ChooseIndex()` API resuming flow from selected choice
+- [x] F436 — Call stack for tunnels with depth limit + overflow diagnostics
+- [x] F437 — Runtime error model mapping back to source via source maps
+- [x] F438 — Step budget guard against infinite loops, configurable
+- [x] F439 — VM public API surface doc (`createStory`, `continue`, `choices`, `choose`)
+- [x] F440 — VM core tests driving fixture stories end-to-end
 
 ### State & Variables (F441–F450)
 
-- [ ] F441 — Variable storage: globals map, temp frames, typed values
-- [ ] F442 — Visit counts queryable from expressions (`visited(knot)`)
-- [ ] F443 — Read-only external state injection (host-provided values)
-- [ ] F444 — Variable observers: host callback on change (drives UI)
-- [ ] F445 — List value semantics: ordered sets with origin tracking
-- [ ] F446 — String interpolation evaluation at output time
-- [ ] F447 — Turn counter + choice history in state
-- [ ] F448 — State serialization: full VM state → JSON
-- [ ] F449 — State deserialization with bytecode-version compatibility check
-- [ ] F450 — State round-trip property tests (serialize mid-story, resume, identical transcript)
+- [x] F441 — Variable storage: globals map, temp frames, typed values
+- [x] F442 — Visit counts queryable from expressions (`visited(knot)`)
+- [x] F443 — Read-only external state injection (host-provided values)
+- [x] F444 — Variable observers: host callback on change (drives UI)
+- [x] F445 — List value semantics: ordered sets with origin tracking
+- [x] F446 — String interpolation evaluation at output time
+- [x] F447 — Turn counter + choice history in state
+- [x] F448 — State serialization: full VM state → JSON
+- [x] F449 — State deserialization with bytecode-version compatibility check
+- [x] F450 — State round-trip property tests (serialize mid-story, resume, identical transcript)
 
 ### Choices & Control Flow (F451–F460)
 
-- [ ] F451 — Once-only choice consumption tracked in state
-- [ ] F452 — Sticky choices remain across revisits
-- [ ] F453 — Conditional choices evaluated lazily at presentation
-- [ ] F454 — Fallback choice semantics (auto-taken when no others remain)
-- [ ] F455 — Gather points re-converging branched flow
-- [ ] F456 — Nested choice/gather depth handling (4+ levels)
-- [ ] F457 — Choice text vs output text split (`[bracket]` syntax)
-- [ ] F458 — Labeled choices referencable in conditions
-- [ ] F459 — Divert-targets-as-values (variables holding destinations)
-- [ ] F460 — Control flow torture tests (deep nesting, loops with exits)
+- [x] F451 — Once-only choice consumption tracked in state
+- [x] F452 — Sticky choices remain across revisits
+- [x] F453 — Conditional choices evaluated lazily at presentation
+- [x] F454 — Fallback choice semantics (auto-taken when no others remain)
+- [x] F455 — Gather points re-converging branched flow
+- [x] F456 — Nested choice/gather depth handling (4+ levels)
+- [x] F457 — Choice text vs output text split (`[bracket]` syntax)
+- [x] F458 — Labeled choices referencable in conditions
+- [x] F459 — Divert-targets-as-values (variables holding destinations)
+- [x] F460 — Control flow torture tests (deep nesting, loops with exits)
 
 ### Saves & Snapshots (F461–F470)
 
-- [ ] F461 — Save slot model: named snapshots of VM state + story metadata
+- [x] F461 — Save slot model: named snapshots of VM state + story metadata
 - [ ] F462 — Save/load API endpoints per story per user
 - [ ] F463 — Autosave on every choice with ring buffer of last N
-- [ ] F464 — Rewind: restore to any point in choice history
-- [ ] F465 — Save migration when story is recompiled (best-effort, with report)
-- [ ] F466 — Transcript log: full text + choices made, exportable
+- [x] F464 — Rewind: restore to any point in choice history
+- [x] F465 — Save migration when story is recompiled (best-effort, with report)
+- [x] F466 — Transcript log: full text + choices made, exportable
 - [ ] F467 — Save slot UI metadata: progress %, scene name, timestamp
 - [ ] F468 — Cloud-of-one: saves synced through the op-log like notes
-- [ ] F469 — Corrupt save detection + graceful recovery
-- [ ] F470 — Save/rewind integration tests
+- [x] F469 — Corrupt save detection + graceful recovery
+- [x] F470 — Save/rewind integration tests
 
 ### Randomness & Expressions (F471–F480)
 
-- [ ] F471 — Seedable PRNG in VM state (deterministic replays)
-- [ ] F472 — `RANDOM(min,max)` and dice expression support (`d20`, `3d6+2`)
-- [ ] F473 — Shuffle alternatives using state PRNG
-- [ ] F474 — Math stdlib: floor/ceil/abs/min/max/clamp
-- [ ] F475 — String stdlib: upper/lower/contains/length
-- [ ] F476 — List stdlib: count/min/max/random-from/intersection
-- [ ] F477 — Replay determinism tests: same seed + same choices = same transcript
-- [ ] F478 — Expression evaluator fuzz tests
-- [ ] F479 — Stdlib reference doc generated from registry
+- [x] F471 — Seedable PRNG in VM state (deterministic replays)
+- [x] F472 — `RANDOM(min,max)` and dice expression support (`d20`, `3d6+2`)
+- [x] F473 — Shuffle alternatives using state PRNG
+- [x] F474 — Math stdlib: floor/ceil/abs/min/max/clamp
+- [x] F475 — String stdlib: upper/lower/contains/length
+- [x] F476 — List stdlib: count/min/max/random-from/intersection
+- [x] F477 — Replay determinism tests: same seed + same choices = same transcript
+- [x] F478 — Expression evaluator fuzz tests
+- [x] F479 — Stdlib reference doc generated from registry
 - [ ] F480 — Dice roller UI affordance in player (tap to roll visibly)
 
 ### Effects & Host Hooks (F481–F490)
 
-- [ ] F481 — External function registry: host functions callable from stories
-- [ ] F482 — Effect ops: play-audio, set-theme, vibrate (mobile), pause
-- [ ] F483 — Knowledge effects: `@journal(...)` writes a note entry from story flow
-- [ ] F484 — Entity mutation effects (`~ @hero.health -= 10`) persisted to entity store
-- [ ] F485 — Effect sandboxing: allowlist, no arbitrary host access
-- [ ] F486 — Async host function support with VM suspend/resume
-- [ ] F487 — Effect audit log per playthrough
-- [ ] F488 — Effect failure handling: story-visible error values, no crashes
-- [ ] F489 — Host hook API docs with examples
-- [ ] F490 — Effects integration tests with mock host
+- [x] F481 — External function registry: host functions callable from stories
+- [x] F482 — Effect ops: play-audio, set-theme, vibrate (mobile), pause
+- [x] F483 — Knowledge effects: `@journal(...)` writes a note entry from story flow
+- [x] F484 — Entity mutation effects (`~ @hero.health -= 10`) persisted to entity store
+- [x] F485 — Effect sandboxing: allowlist, no arbitrary host access
+- [x] F486 — Async host function support with VM suspend/resume
+- [x] F487 — Effect audit log per playthrough
+- [x] F488 — Effect failure handling: story-visible error values, no crashes
+- [x] F489 — Host hook API docs with examples
+- [x] F490 — Effects integration tests with mock host
 
 ### Debugger & Tooling (F491–F500)
 
-- [ ] F491 — Step-through debugger API: step, step-over choice, inspect state
-- [ ] F492 — Breakpoints on knots/stitches/lines
-- [ ] F493 — Watch expressions evaluated against live state
+- [x] F491 — Step-through debugger API: step, step-over choice, inspect state
+- [x] F492 — Breakpoints on knots/stitches/lines
+- [x] F493 — Watch expressions evaluated against live state
 - [ ] F494 — Debugger UI panel in authoring mode
-- [ ] F495 — State inspector tree (variables, lists, visit counts, call stack)
-- [ ] F496 — Time-travel: jump to any prior turn in debug session
+- [x] F495 — State inspector tree (variables, lists, visit counts, call stack)
+- [x] F496 — Time-travel: jump to any prior turn in debug session
 - [ ] F497 — `forge run` CLI: play a story in the terminal
-- [ ] F498 — `forge test` CLI: assert-script format for story unit tests
+- [x] F498 — `forge test` CLI: assert-script format for story unit tests
 - [ ] F499 — VM performance benchmark suite (ops/sec, GC pressure)
-- [ ] F500 — Day-5 retro note in `docs/devlog/day-05.md`
+- [x] F500 — Day-5 retro note in `docs/devlog/day-05.md`
 
 ---
 
