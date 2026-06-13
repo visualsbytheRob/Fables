@@ -147,18 +147,23 @@ describe('SearchOverlay (F711–F720)', () => {
     );
   });
 
-  it('shows semantic and hybrid modes as disabled (coming soon)', () => {
+  it('has all three mode buttons enabled and keyword active by default', () => {
     mockFetchRoutes([]);
     render(<SearchOverlay open={true} onClose={onClose} />, { wrapper: createWrapper() });
 
-    // Buttons are in the mode group — find by partial text
     const modeGroup = screen.getByRole('group', { name: 'Search mode' });
-    const buttons = modeGroup.querySelectorAll('button[aria-disabled="true"]');
-    expect(buttons.length).toBe(2);
+    const buttons = Array.from(modeGroup.querySelectorAll('button'));
+    const labels = buttons.map((b) => b.textContent?.trim() ?? '');
 
-    const texts = Array.from(buttons).map((b) => b.textContent ?? '');
-    expect(texts.some((t) => t.includes('semantic'))).toBe(true);
-    expect(texts.some((t) => t.includes('hybrid'))).toBe(true);
+    // All three modes present and none disabled
+    expect(labels.some((t) => t === 'keyword')).toBe(true);
+    expect(labels.some((t) => t === 'semantic')).toBe(true);
+    expect(labels.some((t) => t === 'hybrid')).toBe(true);
+    expect(modeGroup.querySelectorAll('button[aria-disabled="true"]').length).toBe(0);
+
+    // keyword is active by default
+    const keywordBtn = buttons.find((b) => b.textContent?.trim() === 'keyword');
+    expect(keywordBtn?.className).toContain('search-mode-btn--active');
   });
 
   it('closes on Escape key', () => {
@@ -167,5 +172,133 @@ describe('SearchOverlay (F711–F720)', () => {
 
     fireEvent.keyDown(window, { key: 'Escape' });
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('passes mode param to /search endpoint when mode is switched', async () => {
+    const { calls } = mockFetchRoutes([
+      { url: '/api/v1/search', body: mockSearchResponse },
+      { url: '/api/v1/embeddings/status', body: { data: { provider: { id: 'noop', dim: 0, available: false }, coverage: { coveragePct: 0 }, queue: { queueDepth: 0 } } } },
+    ]);
+    render(<SearchOverlay open={true} onClose={onClose} />, { wrapper: createWrapper() });
+
+    const modeGroup = screen.getByRole('group', { name: 'Search mode' });
+    const semanticBtn = Array.from(modeGroup.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'semantic',
+    );
+    fireEvent.click(semanticBtn!);
+
+    const input = screen.getByLabelText('Search query');
+    fireEvent.change(input, { target: { value: 'fox' } });
+
+    await waitFor(() => {
+      const searchCalls = calls.filter((c) => c.url.includes('/api/v1/search'));
+      return expect(searchCalls.some((c) => c.url.includes('mode=semantic'))).toBe(true);
+    }, { timeout: 2000 });
+  });
+
+  it('shows degraded notice when response has degraded:true', async () => {
+    mockFetchRoutes([
+      {
+        url: '/api/v1/search',
+        body: {
+          data: {
+            mode: 'semantic',
+            query: 'fox',
+            degraded: true,
+            groups: [{ type: 'notes', total: 1, results: [{ id: 'n1', title: 'The Fox', snippet: 'A fox', highlights: [], score: 0.5 }] }],
+          },
+          page: { nextCursor: null, limit: 5 },
+        },
+      },
+      { url: '/api/v1/embeddings/status', body: { data: { provider: { id: 'noop', dim: 0, available: false }, coverage: { coveragePct: 0 }, queue: { queueDepth: 0 } } } },
+    ]);
+    render(<SearchOverlay open={true} onClose={onClose} />, { wrapper: createWrapper() });
+
+    // Switch to semantic mode
+    const modeGroup = screen.getByRole('group', { name: 'Search mode' });
+    const semanticBtn = Array.from(modeGroup.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'semantic',
+    );
+    fireEvent.click(semanticBtn!);
+
+    const input = screen.getByLabelText('Search query');
+    fireEvent.change(input, { target: { value: 'fox' } });
+
+    await waitFor(
+      () => expect(screen.queryByText(/Semantic index still building/)).not.toBeNull(),
+      { timeout: 2000 },
+    );
+  });
+
+  it('shows embeddings status in footer when provider is available', async () => {
+    mockFetchRoutes([
+      {
+        url: '/api/v1/embeddings/status',
+        body: {
+          data: {
+            provider: { id: 'local', dim: 384, available: true },
+            coverage: { coveragePct: 42 },
+            queue: { queueDepth: 0 },
+          },
+        },
+      },
+    ]);
+    render(<SearchOverlay open={true} onClose={onClose} />, { wrapper: createWrapper() });
+
+    await waitFor(
+      () => expect(screen.queryByText(/42% indexed/)).not.toBeNull(),
+      { timeout: 2000 },
+    );
+    expect(screen.queryByText('Build index')).not.toBeNull();
+  });
+
+  it('shows "why?" button in hybrid mode and renders score breakdown on click', async () => {
+    mockFetchRoutes([
+      {
+        url: '/api/v1/search',
+        body: {
+          data: {
+            mode: 'hybrid',
+            query: 'fox',
+            degraded: false,
+            groups: [{
+              type: 'notes',
+              total: 1,
+              results: [{
+                id: 'n1',
+                title: 'The Fox',
+                snippet: 'A fox',
+                highlights: [],
+                score: 0.9,
+                scoreComponents: { fts: 0.6, vector: 0.3 },
+              }],
+            }],
+          },
+          page: { nextCursor: null, limit: 5 },
+        },
+      },
+      { url: '/api/v1/embeddings/status', body: { data: { provider: { id: 'noop', dim: 0, available: false }, coverage: { coveragePct: 0 }, queue: { queueDepth: 0 } } } },
+    ]);
+    render(<SearchOverlay open={true} onClose={onClose} />, { wrapper: createWrapper() });
+
+    // Switch to hybrid mode
+    const modeGroup = screen.getByRole('group', { name: 'Search mode' });
+    const hybridBtn = Array.from(modeGroup.querySelectorAll('button')).find(
+      (b) => b.textContent?.trim() === 'hybrid',
+    );
+    fireEvent.click(hybridBtn!);
+
+    const input = screen.getByLabelText('Search query');
+    fireEvent.change(input, { target: { value: 'fox' } });
+
+    await waitFor(() => expect(screen.getByText('The Fox')).toBeDefined(), { timeout: 2000 });
+
+    // "why?" button should be present
+    const whyBtn = screen.getByLabelText('Why this result?');
+    expect(whyBtn).toBeDefined();
+
+    // Click to show breakdown
+    fireEvent.click(whyBtn);
+    await waitFor(() => expect(screen.queryByText(/fts: 0.600/)).not.toBeNull(), { timeout: 1000 });
   });
 });

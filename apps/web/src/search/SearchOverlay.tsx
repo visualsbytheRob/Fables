@@ -1,15 +1,18 @@
 /**
- * Global search overlay (F711–F720).
+ * Global search overlay (F711–F720, F742, F746).
  * Triggered by ⌘⇧F (Mac) / Ctrl+Shift+F (Win/Linux).
  * Features: grouped results, highlight rendering, keyboard nav, type filters,
- * recent searches, mode toggle (keyword only; others "coming soon"),
+ * recent searches, mode toggle (keyword/semantic/hybrid all active),
+ * degraded notice when embeddings aren't built yet,
+ * "why?" score breakdown per hybrid result (F746),
+ * embeddings status in footer (F742),
  * desktop preview pane, empty/no-result states, zero-result logging.
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Filter, Search, SlidersHorizontal, X } from '@fables/ui';
-import type { SearchGroup, SearchMode, SearchResult } from '../api/client.js';
-import { useSearch } from '../api/hooks.js';
+import { Button, Filter, Loader2, Search, SlidersHorizontal, X } from '@fables/ui';
+import type { ScoreComponents, SearchGroup, SearchMode, SearchResult } from '../api/client.js';
+import { useEmbeddingsBackfill, useEmbeddingsStatus, useSearch } from '../api/hooks.js';
 import { splitHighlights } from './highlight.js';
 import { addRecentSearch, getRecentSearches, logZeroResult } from './recentSearches.js';
 import './search.css';
@@ -39,19 +42,42 @@ function HighlightedText({
   );
 }
 
+function ScoreBreakdown({ components }: { components: ScoreComponents }) {
+  const entries = Object.entries(components).filter(
+    ([, v]) => v !== undefined && v > 0,
+  ) as [string, number][];
+  if (entries.length === 0) return null;
+  return (
+    <div className="search-result-item__breakdown" role="note" aria-label="Score breakdown">
+      {entries.map(([key, value]) => (
+        <span key={key} className="search-result-item__breakdown-item">
+          {key}: {value.toFixed(3)}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 function ResultItem({
   result,
   type,
   isActive,
+  showExplain,
   onSelect,
   onHover,
+  onExplain,
 }: {
   result: SearchResult;
   type: string;
   isActive: boolean;
+  showExplain: boolean;
   onSelect: () => void;
   onHover: () => void;
+  onExplain?: () => void;
 }) {
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const components = result.scoreComponents;
+
   return (
     <div
       className={`search-result-item${isActive ? ' search-result-item--active' : ''}`}
@@ -63,12 +89,31 @@ function ResultItem({
     >
       <div className="search-result-item__title">
         <HighlightedText text={result.title} highlights={[]} />
+        {showExplain && (
+          <button
+            type="button"
+            className="search-result-item__why"
+            aria-label="Why this result?"
+            title="Show score breakdown"
+            onClick={(e) => {
+              e.stopPropagation();
+              if (components) {
+                setShowBreakdown((v) => !v);
+              } else {
+                onExplain?.();
+              }
+            }}
+          >
+            why?
+          </button>
+        )}
       </div>
       {result.snippet && (
         <div className="search-result-item__snippet">
           <HighlightedText text={result.snippet} highlights={result.highlights} />
         </div>
       )}
+      {showBreakdown && components && <ScoreBreakdown components={components} />}
     </div>
   );
 }
@@ -77,14 +122,18 @@ function GroupSection({
   group,
   activeIdx,
   globalOffset,
+  showExplain,
   onSelect,
   onHover,
+  onExplain,
 }: {
   group: SearchGroup;
   activeIdx: number;
   globalOffset: number;
+  showExplain: boolean;
   onSelect: (result: SearchResult, type: string) => void;
   onHover: (idx: number) => void;
+  onExplain: (resultId: string) => void;
 }) {
   return (
     <div className="search-group">
@@ -98,8 +147,10 @@ function GroupSection({
           result={result}
           type={group.type}
           isActive={globalOffset + i === activeIdx}
+          showExplain={showExplain}
           onSelect={() => onSelect(result, group.type)}
           onHover={() => onHover(globalOffset + i)}
+          onExplain={() => onExplain(result.id)}
         />
       ))}
     </div>
@@ -131,6 +182,8 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
   const inputRef = useRef<HTMLInputElement>(null);
   const debouncedRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  // Track which result IDs we've fetched explain for
+  const [explainIds, setExplainIds] = useState<Set<string>>(() => new Set());
 
   // Debounce query 250ms
   useEffect(() => {
@@ -149,19 +202,64 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
         ? {
             q: debouncedQuery.trim(),
             types: activeTypes.join(','),
+            mode,
             limit: 5,
           }
         : null,
-    [debouncedQuery, activeTypes],
+    [debouncedQuery, activeTypes, mode],
+  );
+
+  // Separate explain params — only fires when user clicks "why?"
+  const [explainQuery, setExplainQuery] = useState<string | null>(null);
+  const explainParams = useMemo(
+    () =>
+      explainQuery
+        ? {
+            q: explainQuery,
+            types: activeTypes.join(','),
+            mode,
+            limit: 5,
+            explain: true,
+          }
+        : null,
+    [explainQuery, activeTypes, mode],
   );
 
   const { data, isPending } = useSearch(searchParams);
+  const { data: explainData } = useSearch(explainParams);
+  const embeddingsStatus = useEmbeddingsStatus(open);
+  const backfill = useEmbeddingsBackfill();
+
+  // Merge explain scoreComponents back into normal results
+  const mergedData = useMemo(() => {
+    if (!data) return data;
+    if (!explainData || explainIds.size === 0) return data;
+    const explainMap = new Map<string, SearchResult>();
+    for (const g of explainData.data.groups ?? []) {
+      for (const r of g.results) {
+        explainMap.set(r.id, r);
+      }
+    }
+    return {
+      ...data,
+      data: {
+        ...data.data,
+        groups: data.data.groups.map((g) => ({
+          ...g,
+          results: g.results.map((r) => {
+            const exp = explainMap.get(r.id);
+            return exp?.scoreComponents ? { ...r, scoreComponents: exp.scoreComponents } : r;
+          }),
+        })),
+      },
+    };
+  }, [data, explainData, explainIds]);
 
   // Flatten all results for keyboard nav
   const flatResults = useMemo<Array<{ result: SearchResult; type: string }>>(() => {
-    if (!data?.data.groups) return [];
-    return data.data.groups.flatMap((g) => g.results.map((r) => ({ result: r, type: g.type })));
-  }, [data]);
+    if (!mergedData?.data.groups) return [];
+    return mergedData.data.groups.flatMap((g) => g.results.map((r) => ({ result: r, type: g.type })));
+  }, [mergedData]);
 
   // Zero result logging
   const zeroLogged = useRef<string | null>(null);
@@ -236,12 +334,27 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
     setActiveIdx(0);
   };
 
+  const handleExplain = useCallback(
+    (resultId: string) => {
+      setExplainIds((prev) => new Set([...prev, resultId]));
+      setExplainQuery(debouncedQuery.trim() || null);
+    },
+    [debouncedQuery],
+  );
+
   if (!open) return null;
 
-  const groups = data?.data.groups ?? [];
+  const groups = mergedData?.data.groups ?? [];
+  const isDegraded = mergedData?.data.degraded === true;
   const hasResults = flatResults.length > 0;
   const showEmpty = debouncedQuery.trim() && !isPending && !hasResults;
   const showRecent = !debouncedQuery.trim() && recent.length > 0;
+  const showExplain = mode === 'hybrid';
+
+  // Embeddings coverage for footer indicator
+  const coveragePct = embeddingsStatus.data?.coverage.coveragePct ?? null;
+  const queueDepth = embeddingsStatus.data?.queue.queueDepth ?? 0;
+  const providerAvailable = embeddingsStatus.data?.provider.available ?? false;
 
   // Build group offsets for keyboard nav
   let offset = 0;
@@ -312,15 +425,14 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
               <button
                 key={m}
                 type="button"
-                className={`search-mode-btn${mode === m ? ' search-mode-btn--active' : ''}${m !== 'keyword' ? ' search-mode-btn--soon' : ''}`}
+                className={`search-mode-btn${mode === m ? ' search-mode-btn--active' : ''}`}
                 onClick={() => {
-                  if (m === 'keyword') setMode(m);
+                  setMode(m);
+                  setActiveIdx(0);
                 }}
-                title={m !== 'keyword' ? `${m} — coming soon` : m}
-                aria-disabled={m !== 'keyword'}
+                title={m}
               >
                 {m}
-                {m !== 'keyword' && <span className="search-mode-btn__soon">soon</span>}
               </button>
             ))}
           </div>
@@ -348,6 +460,13 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                     <span className="search-recent__query">{q}</span>
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* Degraded notice: index still building */}
+            {isDegraded && debouncedQuery && (
+              <div className="search-overlay__degraded" role="status">
+                Semantic index still building — showing keyword results
               </div>
             )}
 
@@ -380,8 +499,10 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
                 group={group}
                 activeIdx={activeIdx}
                 globalOffset={gOffset}
+                showExplain={showExplain}
                 onSelect={navigateToResult}
                 onHover={setActiveIdx}
+                onExplain={handleExplain}
               />
             ))}
           </div>
@@ -393,11 +514,35 @@ export function SearchOverlay({ open, onClose }: { open: boolean; onClose: () =>
           />
         </div>
 
-        {/* Footer hints */}
+        {/* Footer hints + embeddings status */}
         <div className="search-overlay__footer">
           <span><kbd>↑↓</kbd> navigate</span>
           <span><kbd>↵</kbd> open</span>
           <span><kbd>Esc</kbd> close</span>
+          {coveragePct !== null && providerAvailable && (
+            <span className="search-overlay__footer-embed" aria-label="Embeddings status">
+              {queueDepth > 0 ? (
+                <>
+                  <Loader2 size={10} className="search-overlay__footer-spin" />
+                  {' '}indexing…
+                </>
+              ) : coveragePct < 100 ? (
+                <>
+                  {Math.round(coveragePct)}% indexed{' '}
+                  <button
+                    type="button"
+                    className="search-overlay__footer-backfill"
+                    onClick={() => backfill.mutate()}
+                    disabled={backfill.isPending}
+                  >
+                    Build index
+                  </button>
+                </>
+              ) : (
+                <>{Math.round(coveragePct)}% indexed</>
+              )}
+            </span>
+          )}
         </div>
       </div>
     </div>

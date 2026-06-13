@@ -197,14 +197,6 @@
   background: var(--bg-active);
 }
 
-.search-result-item__title {
-  font-size: var(--text-sm);
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .search-result-item__snippet {
   font-size: var(--text-xs);
   color: var(--text-dim);
@@ -268,4 +260,86 @@
   border-radius: var(--radius-sm);
   padding: 1px 5px;
   font-size: 11px;
+}
+
+.search-overlay__footer-embed {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--text-dim);
+}
+
+.search-overlay__footer-spin {
+  animation: search-spin 1s linear infinite;
+}
+
+@keyframes search-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.search-overlay__footer-backfill {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  font-size: 10px;
+  padding: 1px 6px;
+  cursor: pointer;
+}
+
+.search-overlay__footer-backfill:hover {
+  background: var(--bg-hover);
+}
+
+.search-overlay__degraded {
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--text-dim);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-bottom: 1px solid var(--border);
+}
+
+.search-result-item__why {
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  font-size: 10px;
+  padding: 0 4px;
+  cursor: pointer;
+  margin-left: var(--space-2);
+  flex-shrink: 0;
+}
+
+.search-result-item__why:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.search-result-item__breakdown {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding: var(--space-1) var(--space-2);
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.search-result-item__breakdown-item {
+  font-variant-numeric: tabular-nums;
+}
+
+.search-result-item__title {
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

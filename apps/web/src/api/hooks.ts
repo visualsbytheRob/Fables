@@ -5,6 +5,7 @@
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   attachmentsApi,
+  embeddingsApi,
   graphApi,
   importApi,
   insightsApi,
@@ -12,6 +13,7 @@ import {
   notebooksApi,
   notesApi,
   queryApi,
+  relatedApi,
   revisionsApi,
   savedQueriesApi,
   searchApi,
@@ -497,5 +499,38 @@ export function useRelatedByLinks(noteId: string | null, enabled = true) {
     queryFn: () => graphApi.local(noteId as string, 2),
     enabled: noteId !== null && enabled,
     staleTime: 30_000,
+  });
+}
+
+/** Semantic nearest-neighbor related notes (F751/F754). */
+export function useRelatedBySemantic(noteId: string | null, limit = 8, enabled = true) {
+  return useQuery({
+    queryKey: ['related', 'semantic', noteId ?? 'none', limit],
+    queryFn: () => relatedApi.semantic(noteId as string, limit),
+    enabled: noteId !== null && enabled,
+    staleTime: 60_000,
+  });
+}
+
+/* ===== Embeddings status (F742 indicator) ===== */
+
+export function useEmbeddingsStatus(enabled = true) {
+  return useQuery({
+    queryKey: ['embeddings', 'status'],
+    queryFn: embeddingsApi.status,
+    enabled,
+    staleTime: 10_000,
+    refetchInterval: (query) => {
+      const depth = query.state.data?.queue.queueDepth ?? 0;
+      return depth > 0 ? 3000 : false;
+    },
+  });
+}
+
+export function useEmbeddingsBackfill() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: embeddingsApi.backfill,
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['embeddings', 'status'] }),
   });
 }

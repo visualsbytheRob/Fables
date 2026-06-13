@@ -638,11 +638,20 @@ export const attachmentsApi = {
   },
 };
 
-/* ===== Search (F711–F720) ===== */
+/* ===== Search (F711–F720, F742, F746) ===== */
 
 export interface SearchHighlight {
   start: number;
   end: number;
+}
+
+/** Score breakdown from explain=true or scoreComponents in response (F746). */
+export interface ScoreComponents {
+  fts?: number;
+  vector?: number;
+  recency?: number;
+  links?: number;
+  [key: string]: number | undefined;
 }
 
 export interface SearchResult {
@@ -651,6 +660,7 @@ export interface SearchResult {
   snippet: string;
   highlights: SearchHighlight[];
   score: number;
+  scoreComponents?: ScoreComponents;
 }
 
 export interface SearchGroup {
@@ -664,6 +674,7 @@ export type SearchMode = 'keyword' | 'semantic' | 'hybrid';
 export interface SearchData {
   mode: SearchMode;
   query: string;
+  degraded?: boolean;
   groups: SearchGroup[];
 }
 
@@ -675,8 +686,10 @@ export interface SearchResponse {
 export interface SearchParams {
   q: string;
   types?: string;
+  mode?: SearchMode;
   limit?: number;
   cursor?: string;
+  explain?: boolean;
 }
 
 async function requestSearch(params: SearchParams): Promise<SearchResponse> {
@@ -698,6 +711,57 @@ async function requestSearch(params: SearchParams): Promise<SearchResponse> {
 
 export const searchApi = {
   search: (params: SearchParams) => requestSearch(params),
+};
+
+/* ===== Semantic related notes (F751/F754) ===== */
+
+export interface SemanticRelatedResult {
+  id: string;
+  title: string;
+  score: number;
+  snippet: string;
+  sourceType: string;
+}
+
+export interface SemanticRelatedData {
+  noteId: string;
+  degraded: boolean;
+  results: SemanticRelatedResult[];
+}
+
+export const relatedApi = {
+  semantic: (noteId: string, limit = 8) =>
+    api.get<SemanticRelatedData>(`/notes/${noteId}/related/semantic${qs({ limit })}`),
+};
+
+/* ===== Embeddings status + backfill (F742/embeddings indicator) ===== */
+
+export interface EmbeddingsProvider {
+  id: string;
+  dim: number;
+  available: boolean;
+}
+
+export interface EmbeddingsCoverage {
+  coveragePct: number;
+  [key: string]: unknown;
+}
+
+export interface EmbeddingsQueue {
+  queueDepth: number;
+  [key: string]: unknown;
+}
+
+export interface EmbeddingsStatus {
+  provider: EmbeddingsProvider;
+  coverage: EmbeddingsCoverage;
+  queue: EmbeddingsQueue;
+}
+
+export const embeddingsApi = {
+  status: () => api.get<EmbeddingsStatus>('/embeddings/status'),
+  backfill: () =>
+    request<{ message: string; provider: string }>('/embeddings/backfill', { method: 'POST' }),
 };
 
 /* ===== Insights (F791–F800) ===== */

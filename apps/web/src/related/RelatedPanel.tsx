@@ -1,12 +1,12 @@
 /**
- * Related notes panel (F751–F760): shows shared-link neighbors, shared-tag
- * neighbors, and a "semantic (coming soon)" placeholder. Has a dismiss
- * affordance and uses cached graph data.
+ * Related notes panel (F751–F754/F760): shows shared-link neighbors, shared-tag
+ * neighbors, and a "Similar by meaning" section from the semantic API.
+ * Degraded state shows a quiet "building index" note instead of the placeholder.
  */
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Brain, Button, Network, X } from '@fables/ui';
-import { useBacklinks, useRelatedByLinks } from '../api/hooks.js';
+import { useBacklinks, useRelatedByLinks, useRelatedBySemantic } from '../api/hooks.js';
 import { computeRelatedNotes } from './relatedCompute.js';
 import type { NoteWithTags } from '../api/client.js';
 import './related.css';
@@ -20,6 +20,7 @@ export function RelatedPanel({ note, onClose }: RelatedPanelProps) {
   const navigate = useNavigate();
   const graph = useRelatedByLinks(note.id);
   const backlinks = useBacklinks(note.id);
+  const semantic = useRelatedBySemantic(note.id);
   const [dismissed, setDismissed] = useState<Set<string>>(() => new Set());
 
   // Compute related by link graph
@@ -113,16 +114,45 @@ export function RelatedPanel({ note, onClose }: RelatedPanelProps) {
         </section>
       )}
 
-      {/* Semantic placeholder */}
-      <section className="related-section related-section--soon">
+      {/* Semantic similarity — real results from /notes/:id/related/semantic */}
+      <section className="related-section">
         <h3 className="related-section__title">
-          <Brain size={14} /> Semantic similarity
-          <span className="related-soon-badge">coming soon</span>
+          <Brain size={14} /> Similar by meaning
+          {semantic.data?.degraded && (
+            <span className="related-soon-badge">building index</span>
+          )}
         </h3>
-        <p className="related-empty">
-          Semantic similarity search will find conceptually related notes even without explicit
-          links.
-        </p>
+        {semantic.isPending && <p className="related-empty">Loading…</p>}
+        {semantic.data && semantic.data.results.length === 0 && !semantic.isPending && (
+          <p className="related-empty">No similar notes found yet.</p>
+        )}
+        {semantic.data && semantic.data.results.length > 0 && (
+          <ul className="related-list">
+            {semantic.data.results
+              .filter((r) => !dismissed.has(r.id))
+              .map((r) => (
+                <li key={r.id} className="related-item">
+                  <button
+                    type="button"
+                    className="related-item__title"
+                    onClick={() => openNote(r.id)}
+                  >
+                    {r.title || 'Untitled'}
+                  </button>
+                  <span className="related-item__score">
+                    {semantic.data?.degraded ? 'linked' : (r.score * 100).toFixed(0) + '%'}
+                  </span>
+                  <Button
+                    aria-label={`Dismiss ${r.title}`}
+                    className="related-item__dismiss"
+                    onClick={() => dismiss(r.id)}
+                  >
+                    <X size={12} />
+                  </Button>
+                </li>
+              ))}
+          </ul>
+        )}
       </section>
     </aside>
   );

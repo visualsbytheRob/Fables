@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Day 8 intelligence backend done: embeddings + vector + hybrid search (F721–F750) with graceful pure-JS degradation, no native deps. 1,510 tests green. Remaining Day 8: semantic UI activation (F754 backend done), ingestion/clipper/audio (F761–F790, later wave). Next: wire semantic/hybrid modes in web, then F761.
+**Status:** Day 8 search/semantic COMPLETE: keyword+semantic+hybrid search live in UI with degraded-state handling, explain breakdowns, semantic related-notes, embeddings index control. 1,518 tests green. Remaining Day 8: ingestion/clipper/audio (F761–F790, heavy-dep wave). Next: F761.
 
 ---
 
