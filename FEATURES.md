@@ -17,7 +17,9 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 12 (Real-Time Collaboration & CRDT) COMPLETE — F1101–F1200. Shipped: CRDT core (Yjs, convergence fuzz-proven 2/3/5/10-peer + 20-editor load test, WebSocket sync server, collaborative CodeMirror editor); sharing model with scoped tokens / read-vs-edit / expiry / revocation / guest identity / audit log and permission enforcement on the collab path (migration 019-shares); collaborative stories (shared editing, vote-on-choice, roles, chat, recording); CRDT-anchored comments + suggestions; merge history (checkpoints, attribution, diff, restore, forensic recovery); conflict-free structures (entity fields, notebook tree, tags, save slots); and hardening (chaos test, security review, integrity checksums, health endpoint, graceful single-user). 48/60 of F1141–F1200 shipped; 12 deferred with reasons (UI panels for share management/shared-with-me, e2e suites needing browser runners, canvas CRDT, battery audit, history pruning — see docs/devlog/epic-12.md). 173 test files, 2,149 tests green; typecheck + lint + build clean. Next: Epic 13 — Encrypted Vault (F1201–F1300); pre-install + smoke-test libsodium first.
+**Status:** Epic 12 (Real-Time Collaboration & CRDT) COMPLETE — F1101–F1200. Shipped: CRDT core (Yjs, convergence fuzz-proven 2/3/5/10-peer + 20-editor load test, WebSocket sync server, collaborative CodeMirror editor); sharing model with scoped tokens / read-vs-edit / expiry / revocation / guest identity / audit log and permission enforcement on the collab path (migration 019-shares); collaborative stories (shared editing, vote-on-choice, roles, chat, recording); CRDT-anchored comments + suggestions; merge history (checkpoints, attribution, diff, restore, forensic recovery); conflict-free structures (entity fields, notebook tree, tags, save slots); and hardening (chaos test, security review, integrity checksums, health endpoint, graceful single-user). 48/60 of F1141–F1200 shipped; 12 deferred with reasons (UI panels for share management/shared-with-me, e2e suites needing browser runners, canvas CRDT, battery audit, history pruning — see docs/devlog/epic-12.md).
+
+Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). 174 test files, 2,166 tests green; typecheck + lint clean. Next: encrypted storage (F1211–F1220), key-management UX (F1221–F1230), lock behavior (F1231–F1240), per-note secrets (F1241–F1250) via parallel lanes.
 
 ---
 
@@ -1636,16 +1638,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Crypto Core (F1201–F1210)
 
-- [ ] F1201 — libsodium integration with audited primitive choices documented
-- [ ] F1202 — Key derivation: Argon2id from passphrase with tuned params
-- [ ] F1203 — Master key / data key hierarchy (rotate data keys cheaply)
-- [ ] F1204 — Authenticated encryption helpers (XChaCha20-Poly1305)
-- [ ] F1205 — Secure memory handling (zeroing, no key logging)
-- [ ] F1206 — Crypto module API with misuse-resistant design
-- [ ] F1207 — Known-answer tests against reference vectors
-- [ ] F1208 — Constant-time comparison utilities
-- [ ] F1209 — Crypto parameter versioning for future upgrades
-- [ ] F1210 — Crypto core test suite
+- [x] F1201 — libsodium integration with audited primitive choices documented
+- [x] F1202 — Key derivation: Argon2id from passphrase with tuned params
+- [x] F1203 — Master key / data key hierarchy (rotate data keys cheaply)
+- [x] F1204 — Authenticated encryption helpers (XChaCha20-Poly1305)
+- [x] F1205 — Secure memory handling (zeroing, no key logging)
+- [x] F1206 — Crypto module API with misuse-resistant design
+- [x] F1207 — Known-answer tests against reference vectors
+- [x] F1208 — Constant-time comparison utilities
+- [x] F1209 — Crypto parameter versioning for future upgrades
+- [x] F1210 — Crypto core test suite
 
 ### Encrypted Storage (F1211–F1220)
 

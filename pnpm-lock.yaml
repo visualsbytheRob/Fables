@@ -209,6 +209,9 @@ importers:
 
   packages/core:
     dependencies:
+      libsodium-wrappers-sumo:
+        specifier: ^0.8.4
+        version: 0.8.4
       ulid:
         specifier: ^3.0.0
         version: 3.0.2
