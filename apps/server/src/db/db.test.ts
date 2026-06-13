@@ -30,6 +30,7 @@ describe('migrations', () => {
       '011-fts',
       '012-embeddings',
       '013-ingest-jobs',
+      '014-sync',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

@@ -26,6 +26,7 @@ import { storySavesRoutes } from './story-saves.js';
 import { tagsRoutes } from './tags.js';
 import { timelineRoutes } from './timeline.js';
 import { transclusionRoutes } from './transclusion.js';
+import { syncRoutes } from './sync.js';
 import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
@@ -62,4 +63,5 @@ export const routes: FastifyPluginAsync[] = [
   ingestRoutes,
   clipRoutes,
   transcribeRoutes,
+  syncRoutes,
 ];
