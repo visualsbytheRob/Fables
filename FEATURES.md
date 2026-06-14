@@ -1758,13 +1758,13 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1291 — Full-suite security regression run
 - [ ] F1292 — Performance re-baseline with encryption enabled
 - [ ] F1293 — Encrypted vault disaster recovery drill (scripted)
-- [ ] F1294 — Documentation: security model for normal humans
-- [ ] F1295 — Documentation: security model for experts
+- [x] F1294 — Documentation: security model for normal humans
+- [x] F1295 — Documentation: security model for experts
 - [ ] F1296 — Default-mode decision: encryption opt-in flow polished
 - [ ] F1297 — Migration guides between all vault modes
-- [ ] F1298 — Security FAQ
-- [ ] F1299 — Epic security sign-off checklist
-- [ ] F1300 — Epic 13 retro devlog
+- [x] F1298 — Security FAQ
+- [x] F1299 — Epic security sign-off checklist
+- [x] F1300 — Epic 13 retro devlog
 
 ## Epic 14 — AI Co-Writer, Intelligence & Modality Mesh (F1301–F1400)
 
