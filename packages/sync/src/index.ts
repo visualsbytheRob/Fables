@@ -163,3 +163,12 @@ export {
   mergeStructuredDocs,
 } from './crdt-struct.js';
 export type { TreeNode, SaveSlotEntry } from './crdt-struct.js';
+
+// Encrypted sync payloads (F1251, F1252)
+export {
+  encryptUpdate,
+  decryptUpdate,
+  encryptOpPayload,
+  decryptOpPayload,
+  isEncryptedPayload,
+} from './encrypted.js';
