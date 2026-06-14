@@ -2710,4 +2710,54 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ---
 
-_2,000 features. Two tiers. One fable at a time._
+## Epic 21 — New Millennium Polish (F2001–F2022)
+
+> A bonus encore: 22 features for 2026 — beauty as a feature, not a coat of paint.
+> The brief is Apple-grade restraint and Pentagram-grade craft: a single design
+> system where colour is perceptual, type is editorial, motion has physics, and
+> the GPU does quiet, tasteful work that makes the vault feel _alive_ on a desktop
+> display and luminous as an iPhone PWA. Mesh consumer: adds the `light` (real-time
+> GPU surfaces) capability. Non-negotiable throughout: every effect degrades
+> gracefully and bows to `prefers-reduced-motion` and an eco/performance mode —
+> beauty that never costs usability, battery, or accessibility.
+
+### Colour & light
+
+- [ ] F2001 — OKLCH perceptual colour core: every token defined in OKLCH so palettes are perceptually uniform and contrast is correct by construction
+- [ ] F2002 — Seed-to-system theming: one seed colour generates a full tonal palette (Material-You-style) with guaranteed WCAG-AA/AAA contrast pairings
+- [ ] F2003 — Light / dark / dim triad with flash-free cross-fade theme transitions, honouring `prefers-color-scheme` + manual override
+- [ ] F2004 — Per-notebook accent colour that ripples through tags, headers, focus rings, and selection via the OKLCH engine
+
+### Typography & composition (Pentagram fundamentals)
+
+- [ ] F2005 — Editorial modular type scale (perfect-fourth ramp), optical sizing, and tabular numerals for a print-quality voice
+- [ ] F2006 — Baseline-grid + vertical-rhythm engine: everything snaps to a 4/8pt grid for compositional calm
+- [ ] F2007 — Variable-font axis animation: weight/width interpolate smoothly on emphasis, headings, and state changes
+- [ ] F2008 — Fine typesetting: balanced wrapping (`text-wrap: balance/pretty`), hanging punctuation, true smart quotes + ligatures
+
+### Motion (GSAP-class)
+
+- [ ] F2009 — Unified spring-physics motion layer: interruptible spring + easing tokens driving every transition consistently
+- [ ] F2010 — Shared-element view transitions (View Transitions API): the selected note expands into the editor and back
+- [ ] F2011 — Orchestrated staggered reveals for lists/grids on first paint and on filter/search changes
+- [ ] F2012 — Scroll-driven choreography (scroll-linked progress, gentle parallax depth) tuned for 120Hz ProMotion + battery-aware throttling
+- [ ] F2013 — Micro-interaction kit: tactile press, magnetic hover, draw-on checkboxes, with haptics where supported
+
+### WebGL / GLSL showpieces
+
+- [ ] F2014 — WebGL ambient backdrop: a slow generative gradient-mesh (GLSL) that drifts with theme and time of day
+- [ ] F2015 — GPU aurora / flow-field shader for hero + empty states, degrading cleanly to a CSS gradient without WebGL
+- [ ] F2016 — Shader-based glass materials: real-time blur + refraction + specular for panels, sheets, and the command palette (Apple-style depth)
+- [ ] F2017 — Knowledge graph on WebGL: thousands of nodes at 60fps with bloom, depth-of-field, and buttery pan/zoom
+- [ ] F2018 — Tasteful GPU delight: save-pulse, completion bursts, and constellation effects — reduced-motion aware, never gratuitous
+
+### Craft & system polish
+
+- [ ] F2019 — Cohesive icon system on one grid (consistent stroke, corner radius, optical balance) with animated state morphs
+- [ ] F2020 — Layered elevation + light-source-consistent soft shadows, plus subtle film grain to kill gradient banding
+- [ ] F2021 — Content-aware skeletons with shimmer and zero layout shift, so loading feels designed, not blank
+- [ ] F2022 — Beauty-with-a-conscience: complete `prefers-reduced-motion` paths, `:focus-visible` choreography, and an eco/performance mode that dials shaders down — accessibility and battery first
+
+---
+
+_2,026 features. Two tiers and an encore. One fable at a time._
