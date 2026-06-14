@@ -20,6 +20,7 @@ import { migration019Shares } from './019-shares.js';
 import { migration020Vault } from './020-vault.js';
 import { migration021SecurityAudit } from './021-security-audit.js';
 import { migration022Compliance } from './022-compliance.js';
+import { migration023Retention } from './023-retention.js';
 
 export interface Migration {
   id: number;
@@ -51,4 +52,5 @@ export const migrations: Migration[] = [
   migration020Vault,
   migration021SecurityAudit,
   migration022Compliance,
+  migration023Retention,
 ];

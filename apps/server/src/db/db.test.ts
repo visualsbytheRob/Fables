@@ -39,6 +39,7 @@ describe('migrations', () => {
       '020-vault',
       '021-security-audit',
       '022-compliance',
+      '023-retention',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

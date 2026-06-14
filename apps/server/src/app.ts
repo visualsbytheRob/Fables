@@ -11,7 +11,7 @@ import { isAppError, type ErrorCode } from '@fables/core';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
 import { CollabService } from './collab/service.js';
-import { VaultService } from './vault/service.js';
+import { ExtendedVaultService } from './vault/extended-service.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -35,8 +35,9 @@ declare module 'fastify' {
     plugins?: PluginRegistry;
     /** CRDT collaboration service: room management, awareness relay, persistence. */
     collab: CollabService;
-    /** Encrypted vault: passphrase unlock + at-rest field encryption (Epic 13). */
-    vault: VaultService;
+    /** Encrypted vault: passphrase unlock + at-rest field encryption (Epic 13).
+     *  At runtime this is always an ExtendedVaultService (a strict superset). */
+    vault: ExtendedVaultService;
   }
 }
 
@@ -77,7 +78,9 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   app.decorate('collab', collab);
 
   // Encrypted vault service (F1211–F1220) — locked until a passphrase unlock.
-  app.decorate('vault', new VaultService(db));
+  // ExtendedVaultService is a strict superset of VaultService; it adds binary
+  // blob seal/open (F1214) and data-key exposure for the backup v2 format (F1218).
+  app.decorate('vault', new ExtendedVaultService(db));
 
   app.addHook('onClose', async () => {
     await collab.shutdown();
