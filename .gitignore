@@ -21,3 +21,4 @@ logs/
 # editor/os noise
 .DS_Store
 .idea/
+.claude/

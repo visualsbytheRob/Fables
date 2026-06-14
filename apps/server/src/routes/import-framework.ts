@@ -21,11 +21,17 @@ import {
   rollbackImport,
   runImport,
 } from '../import/framework/index.js';
+import { detectImportSource } from '../import/detect.js';
 
 registerRoute({
   method: 'GET',
   path: '/import/sources',
   summary: 'List available importers (F1409)',
+});
+registerRoute({
+  method: 'GET',
+  path: '/import/detect',
+  summary: 'Detect which importer fits a dropped path (F1469)',
 });
 registerRoute({
   method: 'POST',
@@ -72,6 +78,16 @@ const importBody = z.object({
 
 export const importFrameworkRoutes: FastifyPluginAsync = async (app) => {
   app.get('/import/sources', async () => ({ data: app.importers.list() }));
+
+  app.get('/import/detect', async (request) => {
+    const target = (request.query as { path?: string }).path;
+    if (typeof target !== 'string' || target === '') {
+      return { data: { guesses: [] } };
+    }
+    // Only surface guesses for importers that are actually registered.
+    const guesses = detectImportSource(target).filter((g) => app.importers.has(g.source));
+    return { data: { guesses } };
+  });
 
   app.post('/import/:source/dry-run', async (request) => {
     const { source } = parseWith(sourceParams, request.params, 'params');

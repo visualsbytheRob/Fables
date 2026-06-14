@@ -21,6 +21,13 @@ import { StandardNotesAdapter } from './standard-notes/adapter.js';
 import { BearAdapter } from './bear/adapter.js';
 import { JoplinAdapter } from './joplin/adapter.js';
 import { MarkdownFolderAdapter } from './markdown/adapter.js';
+import { DocxAdapter } from './docx/adapter.js';
+import { HtmlSiteAdapter } from './html-site/adapter.js';
+import { CsvEntitiesAdapter } from './csv-entities/adapter.js';
+import { OpmlAdapter } from './opml/adapter.js';
+import { IcsAdapter } from './ics/adapter.js';
+import { EmailAdapter } from './email/adapter.js';
+import { PlaintextAdapter } from './plaintext/adapter.js';
 
 function asPathInput(input: unknown): { path: string } {
   if (
@@ -82,6 +89,35 @@ export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRe
     { name: 'markdown', description: 'Generic folder of markdown (frontmatter dialects)' },
     (input) => new MarkdownFolderAdapter(asPathInput(input)),
   );
-  // Further importers append registrations here (F1461+).
+  // ── Documents (F1461–F1467) ──
+  registry.register(
+    { name: 'docx', description: 'Microsoft Word .docx document' },
+    (input) => new DocxAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'html', description: 'Directory of HTML (static site) → notes' },
+    (input) => new HtmlSiteAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'csv', description: 'CSV table → one note per row (structured entities)' },
+    (input) => new CsvEntitiesAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'opml', description: 'OPML outline / feed list' },
+    (input) => new OpmlAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'ics', description: 'iCalendar (.ics) events → Calendar notebook' },
+    (input) => new IcsAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'email', description: 'Email (.eml / .mbox) → Email notebook' },
+    (input) => new EmailAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'plaintext', description: 'Plain text (.txt) with heading/list heuristics' },
+    (input) => new PlaintextAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1471+).
   return registry;
 }
