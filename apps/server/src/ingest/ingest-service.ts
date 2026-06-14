@@ -125,7 +125,7 @@ export function startPdfIngest(
         body: note.body,
       });
     } catch (err) {
-      repo.setFailed(job.id, String(err));
+      if (db.open) repo.setFailed(job.id, String(err));
     }
   })();
 
@@ -164,7 +164,7 @@ export function startEpubIngest(
         body: note.body,
       });
     } catch (err) {
-      repo.setFailed(job.id, String(err));
+      if (db.open) repo.setFailed(job.id, String(err));
     }
   })();
 
