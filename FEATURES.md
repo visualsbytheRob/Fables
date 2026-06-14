@@ -1755,12 +1755,12 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Security Epic Close (F1291–F1300)
 
-- [ ] F1291 — Full-suite security regression run
+- [x] F1291 — Full-suite security regression run
 - [ ] F1292 — Performance re-baseline with encryption enabled
-- [ ] F1293 — Encrypted vault disaster recovery drill (scripted)
+- [x] F1293 — Encrypted vault disaster recovery drill (scripted)
 - [x] F1294 — Documentation: security model for normal humans
 - [x] F1295 — Documentation: security model for experts
-- [ ] F1296 — Default-mode decision: encryption opt-in flow polished
+- [x] F1296 — Default-mode decision: encryption opt-in flow polished
 - [ ] F1297 — Migration guides between all vault modes
 - [x] F1298 — Security FAQ
 - [x] F1299 — Epic security sign-off checklist
