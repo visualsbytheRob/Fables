@@ -12,6 +12,8 @@ import type { ImporterRegistry } from './framework/index.js';
 import { NotionAdapter } from './notion/adapter.js';
 import { AppleNotesAdapter } from './apple-notes/adapter.js';
 import { EvernoteAdapter } from './evernote/adapter.js';
+import { RoamAdapter } from './roam/adapter.js';
+import { LogseqAdapter } from './logseq/adapter.js';
 
 function asPathInput(input: unknown): { path: string } {
   if (
@@ -37,6 +39,14 @@ export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRe
     { name: 'evernote', description: 'Evernote export (.enex, one per notebook)' },
     (input) => new EvernoteAdapter(asPathInput(input)),
   );
-  // Further importers append registrations here (F1441+).
+  registry.register(
+    { name: 'roam', description: 'Roam Research JSON export' },
+    (input) => new RoamAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'logseq', description: 'Logseq graph directory (markdown/org)' },
+    (input) => new LogseqAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1451+).
   return registry;
 }

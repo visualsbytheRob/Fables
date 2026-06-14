@@ -1966,16 +1966,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Roam / Logseq (F1441–F1450)
 
-- [ ] F1441 — Roam JSON export parser
-- [ ] F1442 — Logseq directory parser (md + org modes)
-- [ ] F1443 — Block-reference semantics → block links/transclusion
-- [ ] F1444 — Daily-notes mapping to Fables journal
-- [ ] F1445 — Outliner indentation → markdown structure strategy
-- [ ] F1446 — Block UID preservation for link integrity
-- [ ] F1447 — Queries → FQL translation (best-effort + report)
-- [ ] F1448 — Namespace pages → nested notebooks option
-- [ ] F1449 — Roam/Logseq fixture tests
-- [ ] F1450 — Outliner import guide
+- [x] F1441 — Roam JSON export parser
+- [x] F1442 — Logseq directory parser (md + org modes) — markdown fully supported; .org parsed best-effort (bullet structure), full org syntax not reproduced
+- [x] F1443 — Block-reference semantics → block links/transclusion — ((uid)) → owning-page link + a `^uid` anchor on the target block (navigable, link-stable); exact inline block transclusion flagged lossy
+- [x] F1444 — Daily-notes mapping to Fables journal
+- [x] F1445 — Outliner indentation → markdown structure strategy
+- [x] F1446 — Block UID preservation for link integrity
+- [x] F1447 — Queries → FQL translation (best-effort + report)
+- [x] F1448 — Namespace pages → nested notebooks option
+- [x] F1449 — Roam/Logseq fixture tests
+- [x] F1450 — Outliner import guide
 
 ### Bear / Day One / Misc (F1451–F1460)
 
