@@ -16,6 +16,7 @@ import { parseWith } from '../api/validate.js';
 import { buildInventory } from '../compliance/inventory.js';
 import { legalHoldRepo } from '../compliance/legal-hold.js';
 import { redactNote } from '../compliance/redaction.js';
+import { retentionRepo } from '../compliance/retention.js';
 import type { NoteId } from '@fables/core';
 
 // ── Route registration ────────────────────────────────────────────────────────
@@ -45,11 +46,31 @@ registerRoute({
   path: '/compliance/export',
   summary: 'Download full compliance data inventory as JSON',
 });
+registerRoute({
+  method: 'GET',
+  path: '/compliance/retention',
+  summary: 'List notebook retention policies',
+});
+registerRoute({
+  method: 'PUT',
+  path: '/compliance/retention/:notebookId',
+  summary: 'Set or clear a notebook retention window',
+});
+registerRoute({
+  method: 'POST',
+  path: '/compliance/retention/purge',
+  summary: 'Purge notes past their retention window (blocked under legal hold)',
+});
 
 // ── Schemas ───────────────────────────────────────────────────────────────────
 
 const legalHoldBodySchema = z.object({
   active: z.boolean(),
+});
+
+const retentionParamsSchema = z.object({ notebookId: z.string().min(1) });
+const retentionBodySchema = z.object({
+  retentionDays: z.number().int().min(1).max(3650).nullable(),
 });
 
 const redactBodySchema = z.object({
@@ -114,5 +135,25 @@ export const complianceRoutes: FastifyPluginAsync = async (app) => {
       .header('content-disposition', `attachment; filename="${filename}"`)
       .header('content-length', Buffer.byteLength(json, 'utf8'))
       .send(json);
+  });
+
+  // ── Retention policies (F1283) ─────────────────────────────────────────────
+
+  app.get('/compliance/retention', async () => {
+    return { data: { notebooks: retentionRepo(app.db).listConfigured() } };
+  });
+
+  app.put('/compliance/retention/:notebookId', async (request) => {
+    const { notebookId } = parseWith(retentionParamsSchema, request.params, 'params');
+    const body = parseWith(retentionBodySchema, request.body, 'body');
+    try {
+      return { data: retentionRepo(app.db).set(notebookId, body.retentionDays) };
+    } catch {
+      throw notFound('Notebook', notebookId);
+    }
+  });
+
+  app.post('/compliance/retention/purge', async () => {
+    return { data: retentionRepo(app.db).purge() };
   });
 };

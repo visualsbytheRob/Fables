@@ -6,6 +6,7 @@ import { notesRepo } from './db/repos/notes.js';
 import { tagsRepo } from './db/repos/tags.js';
 import { scheduleBackupJob } from './services/backup.js';
 import { pruneMutationAudit } from './services/world.js';
+import { retentionRepo } from './compliance/retention.js';
 
 /** Trash retention (F107): notes trashed longer than this are purged on boot. */
 export const TRASH_RETENTION_DAYS = 30;
@@ -27,8 +28,18 @@ export function runBootJobs(db: Db, dataDir: string, log: FastifyBaseLogger): vo
   const attachments = gcAttachments(db, dataDir);
   // Mutation-audit retention (F690): drop world-mutation rows past 90 days.
   const prunedMutations = pruneMutationAudit(db);
+  // Per-notebook retention auto-purge (F1283); a no-op under legal hold (F1286).
+  const retention = retentionRepo(db).purge();
   log.info(
-    { purgedNotes, orphanTags, links, attachments, prunedMutations },
+    {
+      purgedNotes,
+      orphanTags,
+      links,
+      attachments,
+      prunedMutations,
+      retentionPurged: retention.purged,
+      retentionBlockedByLegalHold: retention.blockedByLegalHold,
+    },
     'boot maintenance complete',
   );
 

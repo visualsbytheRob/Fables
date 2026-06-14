@@ -1744,7 +1744,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1281 — Full vault wipe with verification
 - [x] F1282 — Data inventory export (everything stored, machine-readable)
-- [ ] F1283 — Retention policies per notebook (auto-purge)
+- [x] F1283 — Retention policies per notebook (auto-purge)
 - [x] F1284 — Tamper-evident audit log (hash chain)
 - [x] F1285 — Read receipts opt-out everywhere
 - [x] F1286 — Legal hold mode (freeze deletions)
