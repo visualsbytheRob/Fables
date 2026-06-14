@@ -1886,16 +1886,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Evaluation & Guardrails (F1381–F1390)
 
-- [ ] F1381 — Eval harness CLI running all eval sets against configured models
-- [ ] F1382 — Quality gates: features degrade gracefully under weak models
-- [ ] F1383 — Hallucination tripwires in grounded tasks (citation coverage check)
-- [ ] F1384 — Latency budgets per AI feature with timeout UX
-- [ ] F1385 — Output filter: AI never writes outside granted scopes
-- [ ] F1386 — Privacy assertion suite: zero network egress during AI ops
-- [ ] F1387 — Model comparison report generator
-- [ ] F1388 — Failure taxonomy + user-facing error language
-- [ ] F1389 — Eval results tracked in repo over time
-- [ ] F1390 — Guardrail tests
+- [~] F1381 — Eval harness CLI running all eval sets against configured models — harness engine (runEvalSet/report/record) shipped + tested; the CLI wrapper + labeled datasets land with F1329/F1369
+- [x] F1382 — Quality gates: features degrade gracefully under weak models
+- [x] F1383 — Hallucination tripwires in grounded tasks (citation coverage check)
+- [x] F1384 — Latency budgets per AI feature with timeout UX — per-task budgets + graceful withTimeout wrapper shipped; the timeout affordance is the web layer
+- [x] F1385 — Output filter: AI never writes outside granted scopes
+- [x] F1386 — Privacy assertion suite: zero network egress during AI ops
+- [x] F1387 — Model comparison report generator
+- [x] F1388 — Failure taxonomy + user-facing error language
+- [~] F1389 — Eval results tracked in repo over time — run-record format + serializer shipped + tested; committed longitudinal data accrues once the CLI runs against real local models
+- [x] F1390 — Guardrail tests
 
 ### AI Settings & Trust (F1391–F1400)
 

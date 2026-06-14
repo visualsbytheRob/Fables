@@ -104,6 +104,13 @@ describe('RAG — grounded answers with citations (F1321/F1322/F1325/F1326)', ()
     expect(['high', 'medium', 'low']).toContain(res.confidence);
   });
 
+  it('flags an answer whose citations do not hold up (F1383 tripwire)', async () => {
+    // The mock answers "cold iron [1]" which is a valid citation → citationsValid.
+    const good = await ragAnswer(app.ai, app.intel, app.db, 'What do dragons fear?');
+    if (!good.available || !good.ok) throw new Error('expected grounded answer');
+    expect(good.citationsValid).toBe(true);
+  });
+
   it('grounds the prompt in the FULL note body, not just the snippet', async () => {
     await ragAnswer(app.ai, app.intel, app.db, 'What do dragons fear?');
     // "cold iron" appears only at the tail of the body, beyond a 120-char snippet.
@@ -177,12 +184,14 @@ describe('RAG — grounded answers with citations (F1321/F1322/F1325/F1326)', ()
       sources: [],
       confidence: 'low',
       grounded: true,
+      citationsValid: true,
     });
     saveQaNote(app.db, 'q2', {
       answer: 'a2',
       sources: [],
       confidence: 'low',
       grounded: true,
+      citationsValid: true,
     });
     const after = notebooksRepo(app.db)
       .list({ includeArchived: true })

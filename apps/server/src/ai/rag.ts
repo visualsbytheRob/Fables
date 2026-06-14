@@ -24,6 +24,7 @@ import type { SemanticSearchResult } from '../intelligence/vector-store.js';
 import type { AIRuntime } from './runtime.js';
 import type { AiOutcome } from './note-intelligence.js';
 import { fitToBudget } from './prompt.js';
+import { citationCoverage } from './guardrails.js';
 import { runStructuredTask, runTextTask } from './task-router.js';
 import { TEMPLATES } from './templates.js';
 
@@ -53,6 +54,12 @@ export interface RagAnswer {
   confidence: RagConfidence;
   /** False when we refused for lack of sources (F1326) — answer is the refusal. */
   grounded: boolean;
+  /**
+   * Citation tripwire (F1383): true when the grounded answer cites at least one
+   * source and every [n] resolves to a real one. False is a hallucination signal
+   * the UI can surface ("answer may be unsupported"). Always true for refusals.
+   */
+  citationsValid: boolean;
 }
 
 export interface RagScope {
@@ -112,6 +119,7 @@ export async function ragAnswer(
       sources: [],
       confidence: 'none',
       grounded: false,
+      citationsValid: true,
     };
   }
 
@@ -155,6 +163,8 @@ export async function ragAnswer(
     sources,
     confidence: confidenceFrom(hits),
     grounded: true,
+    // F1383: flag answers whose citations don't hold up against the sources.
+    citationsValid: !citationCoverage(answer, sources.length).tripped,
   };
 }
 
