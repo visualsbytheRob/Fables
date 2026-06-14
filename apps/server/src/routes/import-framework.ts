@@ -17,6 +17,7 @@ import { notesRepo } from '../db/repos/notes.js';
 import {
   dryRun,
   importBatchesRepo,
+  importHealthReport,
   normalizeRules,
   rollbackImport,
   runImport,
@@ -45,6 +46,11 @@ registerRoute({
 });
 registerRoute({ method: 'GET', path: '/import/batches', summary: 'List import batches' });
 registerRoute({ method: 'GET', path: '/import/batches/:id', summary: 'Get an import batch' });
+registerRoute({
+  method: 'GET',
+  path: '/import/batches/:id/health',
+  summary: 'Import health report: link resolution + counts (F1486)',
+});
 registerRoute({
   method: 'POST',
   path: '/import/batches/:id/rollback',
@@ -116,6 +122,11 @@ export const importFrameworkRoutes: FastifyPluginAsync = async (app) => {
     const batch = importBatchesRepo(app.db).get(id);
     if (!batch) throw notFound('ImportBatch', id);
     return { data: batch };
+  });
+
+  app.get('/import/batches/:id/health', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    return { data: importHealthReport(app.db, id) };
   });
 
   app.post('/import/batches/:id/rollback', async (request) => {

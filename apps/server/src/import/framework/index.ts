@@ -29,3 +29,4 @@ export {
   type ArtifactKind,
 } from './batches.js';
 export { ImporterRegistry, type AdapterFactory, type ImporterInfo } from './registry.js';
+export { importHealthReport, resyncImport, type ImportHealth } from './health.js';
