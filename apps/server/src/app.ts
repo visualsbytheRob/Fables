@@ -20,6 +20,8 @@ import { usageMeter, type UsageMeter } from './ai/usage-meter.js';
 import { aiSettingsRepo } from './ai/settings.js';
 import { ImporterRegistry } from './import/framework/index.js';
 import { registerBuiltinImporters } from './import/importers.js';
+import { ExporterRegistry } from './export/index.js';
+import { registerBuiltinExporters } from './export/exporters.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -52,6 +54,8 @@ declare module 'fastify' {
     aiUsage: UsageMeter;
     /** Importer registry: source adapters keyed by name (Epic 15, F1409). */
     importers: ImporterRegistry;
+    /** Exporter registry: format targets keyed by name (Epic 15, F1471). */
+    exporters: ExporterRegistry;
   }
 }
 
@@ -114,6 +118,7 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // Importer registry (Epic 15): built-in source adapters register here; plugins
   // can add more via the importer SDK (F1409).
   app.decorate('importers', registerBuiltinImporters(new ImporterRegistry()));
+  app.decorate('exporters', registerBuiltinExporters(new ExporterRegistry()));
 
   app.addHook('onClose', async () => {
     await collab.shutdown();
