@@ -21,6 +21,7 @@ import { migration020Vault } from './020-vault.js';
 import { migration021SecurityAudit } from './021-security-audit.js';
 import { migration022Compliance } from './022-compliance.js';
 import { migration023Retention } from './023-retention.js';
+import { migration024AiUsage } from './024-ai-usage.js';
 
 export interface Migration {
   id: number;
@@ -53,4 +54,5 @@ export const migrations: Migration[] = [
   migration021SecurityAudit,
   migration022Compliance,
   migration023Retention,
+  migration024AiUsage,
 ];

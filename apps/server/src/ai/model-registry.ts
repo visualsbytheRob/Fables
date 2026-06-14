@@ -28,6 +28,11 @@ const FAMILIES: { match: string; cap: Capability }[] = [
   { match: 'qwen2.5:7b', cap: { contextTokens: 32768, speedClass: 'balanced' } },
   { match: 'qwen2.5:14b', cap: { contextTokens: 32768, speedClass: 'large' } },
   { match: '70b', cap: { contextTokens: 131072, speedClass: 'large' } },
+  // Cloud Claude models (F1361). Large context; speed class by tier.
+  { match: 'claude-haiku', cap: { contextTokens: 200_000, speedClass: 'fast' } },
+  { match: 'claude-sonnet', cap: { contextTokens: 200_000, speedClass: 'balanced' } },
+  { match: 'claude-opus', cap: { contextTokens: 200_000, speedClass: 'large' } },
+  { match: 'claude-fable', cap: { contextTokens: 200_000, speedClass: 'large' } },
 ];
 
 const DEFAULT_CAP: Capability = { contextTokens: 4096, speedClass: 'balanced' };

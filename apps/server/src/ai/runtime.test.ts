@@ -85,6 +85,46 @@ describe('AIRuntime backend abstraction (F1303) + graceful mode (F1309)', () => 
   });
 });
 
+describe('per-feature routing — generatePreferring (F1363)', () => {
+  class NamedAdapter implements LanguageModelAdapter {
+    constructor(
+      readonly name: string,
+      private readonly up: boolean,
+    ) {}
+    async isAvailable() {
+      return this.up;
+    }
+    async listModels(): Promise<ModelInfo[]> {
+      return [toModelInfo('llama3.1:8b')];
+    }
+    async generate(req: GenerateRequest): Promise<GenerateResponse> {
+      return { text: `${this.name}:${req.prompt}`, model: this.name };
+    }
+  }
+
+  it('uses the preferred backend when it is available', async () => {
+    const rt = new AIRuntime()
+      .register(new NamedAdapter('ollama', true))
+      .register(new NamedAdapter('claude', true));
+    const res = await rt.generatePreferring('claude', { prompt: 'hi' });
+    expect(res.text).toBe('claude:hi');
+  });
+
+  it('falls back to the first-available backend when the preferred one is down', async () => {
+    const rt = new AIRuntime()
+      .register(new NamedAdapter('ollama', true))
+      .register(new NamedAdapter('claude', false));
+    const res = await rt.generatePreferring('claude', { prompt: 'hi' });
+    expect(res.text).toBe('ollama:hi');
+  });
+
+  it('falls back when the preferred backend is not registered at all', async () => {
+    const rt = new AIRuntime().register(new NamedAdapter('ollama', true));
+    const res = await rt.generatePreferring('claude', { prompt: 'hi' });
+    expect(res.text).toBe('ollama:hi');
+  });
+});
+
 describe('OllamaAdapter (F1301)', () => {
   it('reports unavailable when no server is reachable (graceful)', async () => {
     // Closed high port on loopback — connection refused fast.

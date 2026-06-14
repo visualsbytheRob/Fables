@@ -32,6 +32,12 @@ import {
 } from '../ai/note-transform.js';
 
 registerRoute({ method: 'GET', path: '/ai/status', summary: 'AI availability + models' });
+registerRoute({ method: 'GET', path: '/ai/usage', summary: 'Local AI token-usage meter (F1367)' });
+registerRoute({
+  method: 'GET',
+  path: '/ai/cloud/status',
+  summary: 'Cloud backend availability (F1361/F1362)',
+});
 registerRoute({
   method: 'POST',
   path: '/notes/:id/ai/summary',
@@ -122,6 +128,26 @@ export const aiRoutes: FastifyPluginAsync = async (app) => {
   app.get('/ai/status', async () => {
     const available = await app.ai.isAvailable();
     return { data: { available, models: available ? await app.ai.listModels() : [] } };
+  });
+
+  app.get('/ai/usage', async (request) => {
+    const month = (request.query as { month?: string }).month;
+    return {
+      data: {
+        total: app.aiUsage.monthlyTotal(month),
+        byFeature: app.aiUsage.forMonth(month),
+      },
+    };
+  });
+
+  app.get('/ai/cloud/status', async () => {
+    // Whether a cloud backend is configured + available (key present). Reports
+    // only availability — never the key itself (F1362).
+    const claude = app.ai.adapterNamed('claude');
+    const available = claude ? await claude.isAvailable() : false;
+    return {
+      data: { backend: 'claude', available, models: available ? await claude!.listModels() : [] },
+    };
   });
 
   function loadNote(id: string) {

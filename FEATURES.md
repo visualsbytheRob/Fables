@@ -1860,16 +1860,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Cloud LLM Adapter — Claude (F1361–F1370)
 
-- [ ] F1361 — Claude API backend implementing the same adapter interface as Ollama/llama.cpp (F1303)
-- [ ] F1362 — API key management: local config only, never synced, masked in UI, validated on save
-- [ ] F1363 — Per-feature backend routing: creative tasks (co-writer, dialogue) default to Claude when enabled
-- [ ] F1364 — Explicit egress consent: first-use dialog + persistent "leaves your machine" indicator on cloud calls
-- [ ] F1365 — Per-notebook cloud exclusions (private areas never sent to any cloud backend)
-- [ ] F1366 — Streaming, retries with backoff, and rate-limit handling for the cloud path
-- [ ] F1367 — Cost awareness: token usage tracked locally per feature with a monthly meter
-- [ ] F1368 — Prompt cache-friendly request shaping for repeated vault context
-- [ ] F1369 — Side-by-side eval: cloud vs local on the Epic 14 eval sets, results in repo
-- [ ] F1370 — Cloud adapter tests with mocked API (zero real calls in CI)
+- [x] F1361 — Claude API backend implementing the same adapter interface as Ollama/llama.cpp (F1303)
+- [x] F1362 — API key management: local config only, never synced, masked in UI, validated on save
+- [x] F1363 — Per-feature backend routing: creative tasks (co-writer, dialogue) default to Claude when enabled
+- [x] F1364 — Explicit egress consent: first-use dialog + persistent "leaves your machine" indicator on cloud calls — server-side consent gate (canSendToCloud) shipped + tested; the dialog/indicator land in the web UI pass
+- [x] F1365 — Per-notebook cloud exclusions (private areas never sent to any cloud backend)
+- [x] F1366 — Streaming, retries with backoff, and rate-limit handling for the cloud path
+- [x] F1367 — Cost awareness: token usage tracked locally per feature with a monthly meter
+- [x] F1368 — Prompt cache-friendly request shaping for repeated vault context
+- [~] F1369 — Side-by-side eval: cloud vs local on the Epic 14 eval sets, results in repo — depends on the F1381 eval-harness CLI; deferred until that lands
+- [x] F1370 — Cloud adapter tests with mocked API (zero real calls in CI)
 
 ### AI Command Surface (F1371–F1380)
 

@@ -15,6 +15,8 @@ import { ExtendedVaultService } from './vault/extended-service.js';
 import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
 import { AIRuntime } from './ai/runtime.js';
 import { OllamaAdapter } from './ai/ollama.js';
+import { ClaudeAdapter } from './ai/claude.js';
+import { usageMeter, type UsageMeter } from './ai/usage-meter.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -43,6 +45,8 @@ declare module 'fastify' {
     vault: ExtendedVaultService;
     /** AI runtime: pluggable language-model backends; optional/graceful (Epic 14). */
     ai: AIRuntime;
+    /** Local AI token-usage meter (F1367). */
+    aiUsage: UsageMeter;
   }
 }
 
@@ -91,9 +95,12 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // vault's private field (F1214).
   registerVaultDataKeyGetter(vault, () => vault.currentDataKey());
 
-  // AI runtime (Epic 14) — Ollama backend by default; absent/unavailable means
-  // every AI feature degrades gracefully (F1309). Tests register a mock adapter.
-  app.decorate('ai', new AIRuntime().register(new OllamaAdapter()));
+  // AI runtime (Epic 14) — local Ollama is preferred; the Claude cloud adapter
+  // is registered too but only becomes available when an API key is configured
+  // and is opt-in (F1361–F1365). Absent/unavailable backends mean every AI
+  // feature degrades gracefully (F1309). Tests register a mock adapter.
+  app.decorate('ai', new AIRuntime().register(new OllamaAdapter()).register(new ClaudeAdapter()));
+  app.decorate('aiUsage', usageMeter(db));
 
   app.addHook('onClose', async () => {
     await collab.shutdown();

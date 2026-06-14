@@ -35,6 +35,22 @@ export class AIRuntime {
     return null;
   }
 
+  /** Look up a registered adapter by its stable name, if present. */
+  adapterNamed(name: string): LanguageModelAdapter | undefined {
+    return this.adapters.find((a) => a.name === name);
+  }
+
+  /**
+   * Generate, preferring a specific backend by name when it's available (F1363
+   * per-feature routing). Falls back to the normal first-available adapter when
+   * the preferred one is absent or down, so routing never breaks generation.
+   */
+  async generatePreferring(preferredName: string, req: GenerateRequest): Promise<GenerateResponse> {
+    const preferred = this.adapterNamed(preferredName);
+    if (preferred && (await preferred.isAvailable())) return preferred.generate(req);
+    return this.generate(req);
+  }
+
   /** F1309: true only when some backend can serve requests right now. */
   async isAvailable(): Promise<boolean> {
     return (await this.activeAdapter()) !== null;
