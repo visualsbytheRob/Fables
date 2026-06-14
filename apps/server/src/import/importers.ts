@@ -7,9 +7,26 @@
  * concrete importer is wired.
  */
 
+import { validation } from '@fables/core';
 import type { ImporterRegistry } from './framework/index.js';
+import { NotionAdapter, type NotionInput } from './notion/adapter.js';
+
+function asPathInput(input: unknown): { path: string } {
+  if (
+    typeof input === 'object' &&
+    input !== null &&
+    typeof (input as NotionInput).path === 'string'
+  ) {
+    return { path: (input as NotionInput).path };
+  }
+  throw validation('import input must be { path } pointing at the export');
+}
 
 export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRegistry {
-  // Concrete importers append registrations here (F1411+).
+  registry.register(
+    { name: 'notion', description: 'Notion "Markdown & CSV" export (.zip or folder)' },
+    (input) => new NotionAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1421+).
   return registry;
 }

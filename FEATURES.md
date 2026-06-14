@@ -1927,16 +1927,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Notion (F1411–F1420)
 
-- [ ] F1411 — Notion export (.zip) parser: pages, databases, blocks
-- [ ] F1412 — Database → notebook + structured entity mapping option
-- [ ] F1413 — Block type coverage (toggles, callouts, columns → markdown strategy)
-- [ ] F1414 — Relation/rollup property handling
-- [ ] F1415 — Notion internal links → wikilinks
-- [ ] F1416 — Media and file property import
-- [ ] F1417 — Nested page hierarchy preservation
-- [ ] F1418 — Notion-specific dry-run report (what maps lossy)
-- [ ] F1419 — Notion fixture corpus tests
-- [ ] F1420 — Notion import docs
+- [x] F1411 — Notion export (.zip) parser: pages, databases, blocks
+- [x] F1412 — Database → notebook + structured entity mapping option — DB→notebook with properties table + tag harvesting shipped; the entity-mapping alternative is a planned toggle
+- [x] F1413 — Block type coverage (toggles, callouts, columns → markdown strategy)
+- [x] F1414 — Relation/rollup property handling
+- [x] F1415 — Notion internal links → wikilinks
+- [x] F1416 — Media and file property import
+- [x] F1417 — Nested page hierarchy preservation
+- [x] F1418 — Notion-specific dry-run report (what maps lossy)
+- [x] F1419 — Notion fixture corpus tests
+- [x] F1420 — Notion import docs
 
 ### Apple Notes (F1421–F1430)
 
