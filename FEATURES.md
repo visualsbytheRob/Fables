@@ -1797,8 +1797,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1311 — Prompt template system with typed slots
 - [x] F1312 — Context budget manager (fit notes into model context)
-- [ ] F1313 — Template library versioned in-repo
-- [ ] F1314 — Per-task model routing (small for tags, big for prose)
+- [x] F1313 — Template library versioned in-repo
+- [x] F1314 — Per-task model routing (small for tags, big for prose)
 - [x] F1315 — Response schema validation (JSON tasks re-asked on parse failure)
 - [ ] F1316 — Prompt/response logging (local, inspectable, off by default)
 - [ ] F1317 — User-editable prompt overrides
