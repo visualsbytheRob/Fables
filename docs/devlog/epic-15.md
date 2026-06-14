@@ -55,3 +55,47 @@ exactly what maps and what doesn't.
 ~2,538 green across 217 files at the F1440 checkpoint. Every importer is driven by
 synthetic fixtures built in-process (no binary fixtures) — including hand-built
 ZIP and ENEX documents.
+
+## Retrospective (F1500) — Epic 15 complete
+
+**Shipped:** F1401–F1500. One **import framework** (staging IR → mapping → asset
+pipeline → link reconstruction → collisions → provenance/resume/rollback) feeding
+**19 importers** (Notion, Apple Notes, Evernote, Roam, Logseq, Bear, Day One,
+Simplenote, Google Keep, Standard Notes, Joplin, generic markdown, .docx, HTML,
+CSV, OPML, ICS, email, plaintext); a mirror **export framework** with **6 targets**
+(JSON, Obsidian, Notion-md, Logseq, static-site, pdf-book) and a real-CRC zip
+writer; format-detection-on-drop; a universal CLI; health reports + a vault-wide
+link audit; fuzz hardening; a memory ceiling; local telemetry; and a per-source
+fidelity scoreboard.
+
+**What went well.** The "thin adapter, fat framework" split was the whole game:
+each importer only parses its format into `StagedDoc`, and the framework does
+everything hard exactly once. Two shared cores paid for themselves many times over
+— the ENEX/ENML core (Apple Notes + Evernote) and the outliner model (Roam +
+Logseq). Building dependency-free **ZIP read/write** and a **tar reader** kept the
+"no heavy deps" ethos intact and unlocked .zip/.jex/.docx with hand-built test
+fixtures (no copyrighted sample data in the repo). The **parallel agent teams**
+(Opus orchestrator + 2 Sonnet code lanes + Haiku docs) shipped the seven document
+importers and all six export targets cleanly because every adapter lives in its own
+directory — the only collisions were the registry/routes, which the orchestrator
+owned.
+
+**Decisions.** Every import is reversible (provenance + one-click rollback) and
+preview-first (dry-run with a lossy report) — trust before writes. Unresolved
+import links stay real `[[wikilinks]]` so they heal later rather than degrading to
+plain text. Honesty over optics: format-inherent losses (ENEX has no tag
+hierarchy; Notion pre-flattens toggles; locked notes are unreadable) are detected,
+skipped where needed, and surfaced — never faked.
+
+**Deferred (web UI).** The import wizard, mapping-preview, progress, error-triage,
+and post-import-tour screens (F1481–F1485, F1489) are queued for the web-UI pass;
+the server pipeline they drive (detect → dry-run → run → health → rollback) is all
+shipped and tested. PDF export is a print-ready HTML book until there's a
+server-side PDF renderer.
+
+**The recurring tax.** The agent Write tool kept corrupting spaces into NUL bytes
+inside regexes; caught by lint (`no-control-regex`) every time, fixed by hand. A
+known quirk to keep watching.
+
+**Counts.** ~2,791 tests green across 240 files at the F1500 checkpoint. Epic 15
+done; next is Epic 16 (Canvas & Spatial Views).

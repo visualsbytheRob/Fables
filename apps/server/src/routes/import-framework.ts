@@ -18,6 +18,7 @@ import {
   dryRun,
   importBatchesRepo,
   importHealthReport,
+  linkIntegrityAudit,
   normalizeRules,
   rollbackImport,
   runImport,
@@ -43,6 +44,11 @@ registerRoute({
   method: 'POST',
   path: '/import/:source/run',
   summary: 'Run an import (F1401/F1406)',
+});
+registerRoute({
+  method: 'GET',
+  path: '/import/audit',
+  summary: 'Vault-wide link-integrity audit (F1491)',
 });
 registerRoute({ method: 'GET', path: '/import/batches', summary: 'List import batches' });
 registerRoute({ method: 'GET', path: '/import/batches/:id', summary: 'Get an import batch' });
@@ -114,6 +120,8 @@ export const importFrameworkRoutes: FastifyPluginAsync = async (app) => {
       }),
     };
   });
+
+  app.get('/import/audit', async () => ({ data: linkIntegrityAudit(app.db) }));
 
   app.get('/import/batches', async () => ({ data: importBatchesRepo(app.db).list() }));
 

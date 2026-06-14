@@ -30,3 +30,14 @@ export {
 } from './batches.js';
 export { ImporterRegistry, type AdapterFactory, type ImporterInfo } from './registry.js';
 export { importHealthReport, resyncImport, type ImportHealth } from './health.js';
+export {
+  linkIntegrityAudit,
+  assertImportSize,
+  MAX_IMPORT_DOCS,
+  classifyImportError,
+  importTelemetry,
+  type LinkAudit,
+  type BrokenLink,
+  type ImportTelemetry,
+  type ImportErrorKind,
+} from './audit.js';
