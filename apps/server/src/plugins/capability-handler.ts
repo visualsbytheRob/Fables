@@ -13,6 +13,7 @@ import { tagsRepo } from '../db/repos/tags.js';
 import { pluginsRepo } from '../db/repos/plugins.js';
 import { parseFql } from '../fql/parse.js';
 import { compileFql } from '../fql/compile.js';
+import { safeFetch } from '../lib/ssrf.js';
 import type { NoteId, NotebookId } from '@fables/core';
 
 /** Run a FQL query against the notes table, return matching Note rows. */
@@ -23,8 +24,15 @@ function runFqlQuery(db: Db, fql: string, limit: number, cursor: string | null |
   const sql = `SELECT n.* FROM notes n WHERE (${compiled.where}) AND n.trashed_at IS NULL ${cursorClause} ORDER BY n.updated_at DESC LIMIT ?`;
   const params: unknown[] = [...compiled.params, ...(cursor ? [cursor] : []), limit + 1];
   return db.prepare(sql).all(...params) as Array<{
-    id: string; notebook_id: string; title: string; body: string;
-    pinned: number; trashed_at: string | null; created_at: string; updated_at: string; rev: number;
+    id: string;
+    notebook_id: string;
+    title: string;
+    body: string;
+    pinned: number;
+    trashed_at: string | null;
+    created_at: string;
+    updated_at: string;
+    rev: number;
   }>;
 }
 
@@ -92,8 +100,14 @@ export function buildCapabilityHandler(db: Db, pluginId: string) {
           const data = hasMore ? rows.slice(0, limit) : rows;
           return {
             notes: data.map((r) => ({
-              id: r.id, notebookId: r.notebook_id, title: r.title, body: r.body,
-              createdAt: r.created_at, updatedAt: r.updated_at, rev: r.rev, tags: [],
+              id: r.id,
+              notebookId: r.notebook_id,
+              title: r.title,
+              body: r.body,
+              createdAt: r.created_at,
+              updatedAt: r.updated_at,
+              rev: r.rev,
+              tags: [],
             })),
             nextCursor: hasMore && data[data.length - 1] ? data[data.length - 1]!.id : null,
           };
@@ -181,7 +195,9 @@ export function buildCapabilityHandler(db: Db, pluginId: string) {
         // VM state access: return a stub (real integration hooks into the VM saves repo)
         const { storyId, key } = call.params;
         const row = db
-          .prepare('SELECT variables FROM story_saves WHERE story_id = ? ORDER BY saved_at DESC LIMIT 1')
+          .prepare(
+            'SELECT variables FROM story_saves WHERE story_id = ? ORDER BY saved_at DESC LIMIT 1',
+          )
           .get(storyId) as { variables: string } | undefined;
         if (!row) return null;
         const vars = JSON.parse(row.variables) as Record<string, unknown>;
@@ -189,7 +205,9 @@ export function buildCapabilityHandler(db: Db, pluginId: string) {
       }
 
       case 'http.fetch': {
-        // Network capability (F1083 demo). Uses native fetch.
+        // Network capability (F1083). Routed through the SSRF guard so a plugin
+        // with the `network` permission still cannot reach private/internal or
+        // cloud-metadata addresses (F1268/F1273 — plugin escalation closed).
         const { url, method = 'GET', headers = {}, body: reqBody } = call.params;
         const fetchInit: RequestInit = {
           method,
@@ -197,10 +215,12 @@ export function buildCapabilityHandler(db: Db, pluginId: string) {
           signal: AbortSignal.timeout(10_000),
         };
         if (reqBody !== undefined) fetchInit.body = reqBody;
-        const resp = await fetch(url, fetchInit);
+        const resp = await safeFetch(url, fetchInit);
         const respBody = await resp.text();
         const respHeaders: Record<string, string> = {};
-        resp.headers.forEach((v, k) => { respHeaders[k] = v; });
+        resp.headers.forEach((v, k) => {
+          respHeaders[k] = v;
+        });
         return { status: resp.status, body: respBody, headers: respHeaders };
       }
 

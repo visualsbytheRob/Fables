@@ -1731,8 +1731,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1271 — Threat model v2 covering collab, plugins, encryption
 - [x] F1272 — Attack tree for vault compromise paths
-- [ ] F1273 — Plugin permission escalation analysis
-- [ ] F1274 — Self-audit checklist run + findings fixed
+- [x] F1273 — Plugin permission escalation analysis
+- [x] F1274 — Self-audit checklist run + findings fixed
 - [x] F1275 — Crypto design doc for external review
 - [x] F1276 — Privacy data-flow map (what leaves the machine: nothing)
 - [x] F1277 — Incident response runbook (corruption, key loss, device theft)
