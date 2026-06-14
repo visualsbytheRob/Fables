@@ -10,12 +10,25 @@
  */
 
 import type { FastifyPluginAsync } from 'fastify';
-import { notFound } from '@fables/core';
+import { notFound, validation } from '@fables/core';
 import { z } from 'zod';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { canvasRepo } from '../db/repos/canvas.js';
+import { canvasEdgesRepo } from '../db/repos/canvas-edges.js';
+import { canConnect, materializeConnectorLink } from '../canvas/connections.js';
 
+registerRoute({ method: 'GET', path: '/canvas/:id/edges', summary: 'List connectors (F1521)' });
+registerRoute({
+  method: 'POST',
+  path: '/canvas/:id/edges',
+  summary: 'Create a connector; link kind writes a real link (F1523/F1528)',
+});
+registerRoute({
+  method: 'DELETE',
+  path: '/canvas/:id/edges/:edgeId',
+  summary: 'Delete a connector',
+});
 registerRoute({ method: 'POST', path: '/canvas', summary: 'Create a canvas (F1502)' });
 registerRoute({ method: 'GET', path: '/canvas', summary: 'List canvases' });
 registerRoute({
@@ -28,8 +41,17 @@ registerRoute({ method: 'DELETE', path: '/canvas/:id', summary: 'Delete a canvas
 registerRoute({ method: 'PUT', path: '/canvas/:id/objects', summary: 'Autosave objects (F1508)' });
 
 const idParams = z.object({ id: z.string().min(1) });
+const edgeParams = z.object({ id: z.string().min(1), edgeId: z.string().min(1) });
 const createBody = z.object({ name: z.string().min(1).max(200) });
 const renameBody = z.object({ name: z.string().min(1).max(200) });
+
+const edgeBody = z.object({
+  fromId: z.string().min(1),
+  toId: z.string().min(1),
+  kind: z.string().min(1).max(40).optional(),
+  label: z.string().max(200).optional(),
+  style: z.enum(['curved', 'orthogonal', 'straight']).optional(),
+});
 
 const OBJECT_KINDS = [
   'note',
@@ -117,5 +139,45 @@ export const canvasRoutes: FastifyPluginAsync = async (app) => {
     if (!repo().get(id)) throw notFound('Canvas', id);
     const count = repo().replaceObjects(id, objects);
     return { data: { saved: count } };
+  });
+
+  // ── Connectors (F1521/F1523/F1528) ─────────────────────────────────────────
+
+  app.get('/canvas/:id/edges', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    if (!repo().get(id)) throw notFound('Canvas', id);
+    return { data: canvasEdgesRepo(app.db).list(id) };
+  });
+
+  app.post('/canvas/:id/edges', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const body = parseWith(edgeBody, request.body, 'body');
+    if (!repo().get(id)) throw notFound('Canvas', id);
+
+    const objects = repo().listObjects(id);
+    const from = objects.find((o) => o.id === body.fromId);
+    const to = objects.find((o) => o.id === body.toId);
+    if (!from || !to) throw notFound('CanvasObject', `${body.fromId} or ${body.toId}`);
+
+    const kind = body.kind ?? 'line';
+    const decision = canConnect(from.kind, to.kind, kind);
+    if (!decision.allowed) throw validation(decision.reason ?? 'invalid connection');
+
+    const edge = canvasEdgesRepo(app.db).create(id, {
+      fromId: body.fromId,
+      toId: body.toId,
+      kind,
+      ...(body.label !== undefined ? { label: body.label } : {}),
+      ...(body.style !== undefined ? { style: body.style } : {}),
+    });
+    // F1523: a link connector between note cards becomes a real graph link.
+    const linked = kind === 'link' ? materializeConnectorLink(app.db, from, to) : false;
+    return { data: { edge, linkCreated: linked } };
+  });
+
+  app.delete('/canvas/:id/edges/:edgeId', async (request) => {
+    const { id, edgeId } = parseWith(edgeParams, request.params, 'params');
+    if (!canvasEdgesRepo(app.db).remove(id, edgeId)) throw notFound('CanvasEdge', edgeId);
+    return { data: { deleted: true } };
   });
 };

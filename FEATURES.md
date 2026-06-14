@@ -2076,29 +2076,29 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Connectors (F1521–F1530)
 
-- [ ] F1521 — Edges between objects with arrowheads and labels
-- [ ] F1522 — Edge routing (orthogonal/curved, obstacle-aware)
-- [ ] F1523 — Edge semantics: typed connections create real links
-- [ ] F1524 — Auto-layout commands (tree, grid, force)
-- [ ] F1525 — Connector styles per link type
+- [x] F1521 — Edges between objects with arrowheads and labels
+- [x] F1522 — Edge routing (orthogonal/curved, obstacle-aware)
+- [x] F1523 — Edge semantics: typed connections create real links
+- [x] F1524 — Auto-layout commands (tree, grid, force)
+- [x] F1525 — Connector styles per link type — edge model carries style (curved/orthogonal/straight) + kind per connector; the visual rendering is web
 - [ ] F1526 — Reconnect/reroute interactions
 - [ ] F1527 — Edge bundling at scale
-- [ ] F1528 — Connection validity rules (what may link to what)
+- [x] F1528 — Connection validity rules (what may link to what)
 - [ ] F1529 — Connector accessibility (keyboard creation/navigation)
-- [ ] F1530 — Connector tests
+- [x] F1530 — Connector tests
 
 ### Drawing (F1531–F1540)
 
-- [ ] F1531 — Freehand ink with pressure (Pencil support)
+- [~] F1531 — Freehand ink with pressure (Pencil support) — stroke math with pressure (smoothing, RDP simplify, compact serialization) shipped + tested; the Pencil input device + on-canvas drawing surface are web
 - [ ] F1532 — Shape tools (rect, ellipse, line, arrow)
-- [ ] F1533 — Ink smoothing and simplification
+- [x] F1533 — Ink smoothing and simplification
 - [ ] F1534 — Eraser and lasso for strokes
 - [ ] F1535 — Color/width presets with theme awareness
 - [ ] F1536 — Ink-to-shape recognition (optional)
 - [ ] F1537 — Drawing layers above/below cards
-- [ ] F1538 — Stroke serialization efficiency
+- [x] F1538 — Stroke serialization efficiency
 - [ ] F1539 — Palm rejection handling on tablet
-- [ ] F1540 — Drawing tests
+- [x] F1540 — Drawing tests
 
 ### Story Mapping Mode (F1541–F1550)
 
