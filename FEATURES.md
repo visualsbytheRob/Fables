@@ -19,7 +19,7 @@ Your notes are the world. Your stories run on a compiler you own.
 
 **Status:** Epic 12 (Real-Time Collaboration & CRDT) COMPLETE — F1101–F1200. Shipped: CRDT core (Yjs, convergence fuzz-proven 2/3/5/10-peer + 20-editor load test, WebSocket sync server, collaborative CodeMirror editor); sharing model with scoped tokens / read-vs-edit / expiry / revocation / guest identity / audit log and permission enforcement on the collab path (migration 019-shares); collaborative stories (shared editing, vote-on-choice, roles, chat, recording); CRDT-anchored comments + suggestions; merge history (checkpoints, attribution, diff, restore, forensic recovery); conflict-free structures (entity fields, notebook tree, tags, save slots); and hardening (chaos test, security review, integrity checksums, health endpoint, graceful single-user). 48/60 of F1141–F1200 shipped; 12 deferred with reasons (UI panels for share management/shared-with-me, e2e suites needing browser runners, canvas CRDT, battery audit, history pruning — see docs/devlog/epic-12.md).
 
-Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). Key-management UX + lock behavior shipped (apps/web/src/vault): unlock/create screens with one-time recovery codes + honest data-loss messaging, passphrase-change dialog, wrong-passphrase exponential backoff, key-fingerprint display, session-duration setting, auto-lock on idle, lock-on-background, panic lock + indicator, locked-state UI rendering nothing sensitive, in-memory purge on lock, and cross-tab coordination via BroadcastChannel (F1221/F1222/F1225–F1227/F1229–F1234/F1236/F1237/F1239/F1240; F1224 passkey + F1235 PIN + F1228 emergency-export + F1238 pending-edit deferred). Vault gate wired into the app shell as opt-in (transparent with no vault; gates only when locked). Notes-at-rest encryption landed (F1211): synchronous crypto primitives + an `enc:v1:` field codec in @fables/core, a `VaultService.fieldCodec()`, and `notesRepo(db, codec?)` that encrypts titles/bodies on write and decrypts on read — proven end-to-end (ciphertext on disk, transparent plaintext on read, mixed plaintext/ciphertext safe). Compliance features F1281/F1284: a tamper-evident SHA-256 hash-chained security audit log (vault create/unlock/unlock-failed/lock/passphrase-change/wipe events, with `verify()` that pinpoints the first broken row) and a full vault wipe with re-auth + verification (`GET /vault/audit`, `POST /vault/wipe`). Hardening: SSRF guard on outbound URL fetches (F1268) — scheme allow-list + DNS-resolved private/reserved/metadata IP blocking, wired into the web clipper; security-headers verification suite (F1269); CSP tightened with object-src 'none' (F1261 partial). 180 test files, 2,253 tests green; typecheck + lint + build clean. Next: thread the codec through the ~53 server call sites so the live app auto-encrypts, encrypted post-unlock search index (F1213), per-note secrets (F1241–F1250).
+Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). Key-management UX + lock behavior shipped (apps/web/src/vault): unlock/create screens with one-time recovery codes + honest data-loss messaging, passphrase-change dialog, wrong-passphrase exponential backoff, key-fingerprint display, session-duration setting, auto-lock on idle, lock-on-background, panic lock + indicator, locked-state UI rendering nothing sensitive, in-memory purge on lock, and cross-tab coordination via BroadcastChannel (F1221/F1222/F1225–F1227/F1229–F1234/F1236/F1237/F1239/F1240; F1224 passkey + F1235 PIN + F1228 emergency-export + F1238 pending-edit deferred). Vault gate wired into the app shell as opt-in (transparent with no vault; gates only when locked). Notes-at-rest encryption landed (F1211): synchronous crypto primitives + an `enc:v1:` field codec in @fables/core, a `VaultService.fieldCodec()`, and `notesRepo(db, codec?)` that encrypts titles/bodies on write and decrypts on read — proven end-to-end (ciphertext on disk, transparent plaintext on read, mixed plaintext/ciphertext safe). Compliance features F1281/F1284: a tamper-evident SHA-256 hash-chained security audit log (vault create/unlock/unlock-failed/lock/passphrase-change/wipe events, with `verify()` that pinpoints the first broken row) and a full vault wipe with re-auth + verification (`GET /vault/audit`, `POST /vault/wipe`). Hardening: SSRF guard on outbound URL fetches (F1268) — scheme allow-list + DNS-resolved private/reserved/metadata IP blocking, wired into the web clipper; security-headers verification suite (F1269); CSP tightened with object-src 'none' (F1261 partial). Agentic-formation pass (1 Opus + 2 Sonnet + 1 Haiku) landed: compliance backend (data inventory F1282, legal hold F1286, redaction + export-with-redactions F1287/F1288, migration 022), web security UI (clipboard hygiene F1263, read-receipts opt-out F1285, screenshot warning F1264, plus the Epic-12-deferred share-management F1144 + shared-with-me F1147), parser fuzzing F1267, and a docs refresh. 186 test files, 2,328 tests green; typecheck + lint clean. Next: thread the at-rest codec through the ~53 server call sites + encrypted post-unlock search index (F1213), then per-note secrets (F1241–F1250).
 
 ---
 
@@ -1561,10 +1561,10 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1141 — Share model: per-note/notebook grants to named devices/users
 - [x] F1142 — Tailnet share links with scoped tokens
 - [x] F1143 — Read-only vs edit permission levels
-- [~] F1144 — Share management UI (who has access to what) (deferred: REST list/revoke API shipped; dedicated management UI panel deferred)
+- [x] F1144 — Share management UI (who has access to what)
 - [x] F1145 — Link expiry and revocation
 - [x] F1146 — Guest identity (name + color) for link visitors
-- [~] F1147 — Shared-with-me view (deferred: GET /shared-with-me API shipped; UI view deferred)
+- [x] F1147 — Shared-with-me view
 - [x] F1148 — Access audit log
 - [x] F1149 — Permission enforcement tests across sync + collab paths
 - [~] F1150 — Sharing e2e tests (deferred: needs Playwright browser binaries, unavailable in build env)
@@ -1718,8 +1718,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [ ] F1261 — CSP tightened to strict-dynamic with nonce
 - [ ] F1262 — Subresource integrity on all assets
-- [ ] F1263 — Clipboard hygiene (auto-clear copied secrets)
-- [ ] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
+- [x] F1263 — Clipboard hygiene (auto-clear copied secrets)
+- [x] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
 - [ ] F1265 — Memory-safe attachment preview pipeline
 - [ ] F1266 — Dependency supply-chain audit + pinning policy
 - [ ] F1267 — Fuzzing pass on all parsers (markdown, FQL, .fable, imports)
@@ -1743,15 +1743,15 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ### Compliance-Grade Features (F1281–F1290)
 
 - [x] F1281 — Full vault wipe with verification
-- [ ] F1282 — Data inventory export (everything stored, machine-readable)
+- [x] F1282 — Data inventory export (everything stored, machine-readable)
 - [ ] F1283 — Retention policies per notebook (auto-purge)
 - [x] F1284 — Tamper-evident audit log (hash chain)
-- [ ] F1285 — Read receipts opt-out everywhere
-- [ ] F1286 — Legal hold mode (freeze deletions)
-- [ ] F1287 — Redaction tool (true content removal from history)
-- [ ] F1288 — Export with redactions applied
+- [x] F1285 — Read receipts opt-out everywhere
+- [x] F1286 — Legal hold mode (freeze deletions)
+- [x] F1287 — Redaction tool (true content removal from history)
+- [x] F1288 — Export with redactions applied
 - [x] F1289 — Compliance feature documentation
-- [ ] F1290 — Compliance feature tests
+- [x] F1290 — Compliance feature tests
 
 ### Security Epic Close (F1291–F1300)
 
