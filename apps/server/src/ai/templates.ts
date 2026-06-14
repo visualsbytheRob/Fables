@@ -70,6 +70,59 @@ export const TEMPLATES = {
     template: 'Question: {{question}}\n\nAnswer: {{answer}}',
     slots: ['question', 'answer'] as const,
   }),
+
+  /** Rewrite a passage following an instruction (F1336, free text). */
+  rewrite: defineTemplate({
+    id: 'rewrite',
+    system:
+      'You rewrite the given text following the instruction. Preserve meaning and any ' +
+      'markdown structure. Reply with ONLY the rewritten text — no preamble, no commentary.',
+    template: 'Instruction: {{instruction}}\n\nText:\n{{body}}',
+    slots: ['instruction', 'body'] as const,
+  }),
+
+  /** Turn messy notes into a structured markdown outline (F1335, free text). */
+  outline: defineTemplate({
+    id: 'outline',
+    system:
+      'You turn rough notes into a clean, hierarchical markdown outline using "-" bullets ' +
+      "and nesting. Keep the author's content; only organise it. Reply with ONLY the outline.",
+    template: 'Notes:\n{{body}}',
+    slots: ['body'] as const,
+  }),
+
+  /** Extract actions + decisions from meeting notes (F1337, structured → JSON). */
+  meetingStructure: defineTemplate({
+    id: 'meeting-structure',
+    system:
+      'You structure meeting notes. Extract action items, decisions, and a one-line summary. ' +
+      'Reply ONLY with JSON: {"summary": "...", "decisions": ["..."], ' +
+      '"actions": [{"task": "...", "owner": "..."}]}. Use "" for an unknown owner. No prose.',
+    template: 'Meeting notes:\n{{body}}',
+    slots: ['body'] as const,
+  }),
+
+  /** Draft a weekly review from journal entries (F1338, free text). */
+  weeklyReview: defineTemplate({
+    id: 'weekly-review',
+    system:
+      'You draft a reflective weekly review from the journal entries provided. Cover what ' +
+      'happened, wins, challenges, and a few focus points for next week. Use markdown headings.',
+    template: 'Journal entries this week:\n{{body}}',
+    slots: ['body'] as const,
+  }),
+
+  /** Propose wikilinks from a note to candidate notes (F1334, structured → JSON). */
+  linkSuggest: defineTemplate({
+    id: 'link-suggest',
+    system:
+      'You suggest wikilinks. Given a note and a list of candidate note titles, identify ' +
+      'short phrases in the note that should link to a candidate. Only use titles from the ' +
+      'list; never invent. Reply ONLY with JSON: ' +
+      '{"links": [{"phrase": "...", "target": "exact candidate title"}]}. No prose.',
+    template: 'Note:\n{{body}}\n\nCandidate titles:\n{{candidates}}',
+    slots: ['body', 'candidates'] as const,
+  }),
 } as const;
 
 export type TemplateId = (typeof TEMPLATES)[keyof typeof TEMPLATES]['id'];

@@ -14,13 +14,22 @@
 
 import { notFound } from '@fables/core';
 import type { FastifyPluginAsync } from 'fastify';
-import type { NoteId } from '@fables/core';
+import type { NoteId, NotebookId } from '@fables/core';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { z } from 'zod';
 import { notesRepo } from '../db/repos/notes.js';
 import { suggestTags, suggestTitle, summarizeNote } from '../ai/note-intelligence.js';
 import { ragAnswer, saveQaNote, suggestFollowUps } from '../ai/rag.js';
+import {
+  REWRITE_MODES,
+  outlineNote,
+  rewriteText,
+  structureMeeting,
+  suggestLinks,
+  weeklyReview,
+  type RewriteMode,
+} from '../ai/note-transform.js';
 
 registerRoute({ method: 'GET', path: '/ai/status', summary: 'AI availability + models' });
 registerRoute({
@@ -48,8 +57,44 @@ registerRoute({
   path: '/ai/follow-ups',
   summary: 'Suggest follow-up questions after an answer (F1328)',
 });
+registerRoute({
+  method: 'POST',
+  path: '/notes/:id/ai/rewrite',
+  summary: 'Rewrite a note (tighten/expand/tone) (F1336)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/notes/:id/ai/outline',
+  summary: 'Generate an outline from a note (F1335)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/notes/:id/ai/structure',
+  summary: 'Structure meeting notes into actions + decisions (F1337)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/notes/:id/ai/links',
+  summary: 'Suggest wikilinks for a note (F1334)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/ai/weekly-review',
+  summary: 'Draft a weekly review from a journal notebook (F1338)',
+});
 
 const idParams = z.object({ id: z.string().min(1) });
+
+const rewriteBody = z.object({
+  mode: z.enum(REWRITE_MODES as [RewriteMode, ...RewriteMode[]]),
+});
+
+const weeklyReviewBody = z.object({
+  /** The journal notebook to summarise. */
+  notebookId: z.string().min(1),
+  /** Max recent entries to include. */
+  limit: z.number().int().min(1).max(50).optional(),
+});
 
 const turnSchema = z.object({
   question: z.string().min(1).max(1000),
@@ -121,5 +166,47 @@ export const aiRoutes: FastifyPluginAsync = async (app) => {
   app.post('/ai/follow-ups', async (request) => {
     const body = parseWith(followUpsBody, request.body, 'body');
     return { data: await suggestFollowUps(app.ai, body.question, body.answer) };
+  });
+
+  app.post('/notes/:id/ai/rewrite', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const { mode } = parseWith(rewriteBody, request.body, 'body');
+    const note = loadNote(id);
+    return { data: await rewriteText(app.ai, note.body, mode) };
+  });
+
+  app.post('/notes/:id/ai/outline', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const note = loadNote(id);
+    return { data: await outlineNote(app.ai, note.body) };
+  });
+
+  app.post('/notes/:id/ai/structure', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const note = loadNote(id);
+    return { data: await structureMeeting(app.ai, note.body) };
+  });
+
+  app.post('/notes/:id/ai/links', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const note = loadNote(id);
+    // Candidate targets: notes semantically related to this one (never itself).
+    const related = await app.intel.store.search(`${note.title}\n${note.body}`, { limit: 10 });
+    const candidates = related
+      .filter((r) => r.sourceType === 'note' && r.id !== id)
+      .map((r) => ({ id: r.id, title: r.title }));
+    return { data: await suggestLinks(app.ai, note.body, candidates) };
+  });
+
+  app.post('/ai/weekly-review', async (request) => {
+    const body = parseWith(weeklyReviewBody, request.body, 'body');
+    const notes = notesRepo(app.db).list({
+      sort: 'updated',
+      fetch: body.limit ?? 20,
+      cursor: null,
+      notebookId: body.notebookId as NotebookId,
+    });
+    const entries = notes.map((n) => `${n.title}\n${n.body}`.trim()).filter((e) => e.length > 0);
+    return { data: await weeklyReview(app.ai, entries) };
   });
 };

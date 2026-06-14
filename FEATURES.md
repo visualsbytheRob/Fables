@@ -1824,13 +1824,13 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1331 — Summarize note/notebook commands
 - [x] F1332 — Auto-tag suggestions with one-tap accept
 - [x] F1333 — Title suggestions for untitled notes
-- [ ] F1334 — Link suggestions: AI-proposed wikilinks with context
-- [ ] F1335 — Outline generation from messy notes
-- [ ] F1336 — Rewrite tools: tighten, expand, change tone
-- [ ] F1337 — Meeting-note structurer (actions, decisions extracted)
-- [ ] F1338 — Weekly review draft generation from journal
-- [ ] F1339 — All intelligence actions undoable + clearly attributed
-- [ ] F1340 — Note intelligence tests
+- [x] F1334 — Link suggestions: AI-proposed wikilinks with context
+- [x] F1335 — Outline generation from messy notes
+- [x] F1336 — Rewrite tools: tighten, expand, change tone
+- [x] F1337 — Meeting-note structurer (actions, decisions extracted)
+- [x] F1338 — Weekly review draft generation from journal
+- [x] F1339 — All intelligence actions undoable + clearly attributed (suggestions never mutate; applying is a normal, undoable note edit)
+- [x] F1340 — Note intelligence tests
 
 ### Story Co-Writer (F1341–F1350)
 
