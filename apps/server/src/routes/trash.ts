@@ -1,6 +1,7 @@
 import type { FastifyPluginAsync } from 'fastify';
 import { paginated, parsePagination } from '../api/envelope.js';
 import { registerRoute } from '../api/registry.js';
+import { legalHoldRepo } from '../compliance/legal-hold.js';
 import { linksRepo } from '../db/repos/links.js';
 import { notesRepo } from '../db/repos/notes.js';
 
@@ -21,7 +22,18 @@ export const trashRoutes: FastifyPluginAsync = async (app) => {
     return paginated(rows, pagination);
   });
 
-  app.post('/trash/empty', async () => {
+  app.post('/trash/empty', async (_request, reply) => {
+    // Legal hold guard (F1286): block destructive purge when hold is active.
+    const hold = legalHoldRepo(app.db).get();
+    if (hold.active) {
+      return reply.status(403).send({
+        error: {
+          code: 'FORBIDDEN',
+          message: 'legal hold is active — destructive operations are blocked',
+          details: { legalHold: true },
+        },
+      });
+    }
     const purged = notesRepo(app.db).purgeTrashed();
     // Link integrity (F219): hard deletes orphan link rows immediately.
     if (purged > 0) linksRepo(app.db).cleanupOrphans();
