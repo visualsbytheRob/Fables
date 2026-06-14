@@ -2,7 +2,7 @@
 
 This document describes the planned compliance features (Tier 2, Phase 2) that support regulated use cases: legal holds, redaction, audit trails, retention policies, and data inventory export.
 
-**Status:** Design document. Features F1281–F1290 planned but not yet implemented.
+**Status:** Design document. Audit log (F1284) shipped; full vault wipe with verification (F1281) shipped. Remaining features (F1282–F1283, F1285–F1288) designed but not yet implemented.
 
 ---
 
@@ -25,6 +25,8 @@ Fables is currently a single-user personal knowledge OS (Tier 1). Phase 2 (F1211
 
 **Goal:** Allow users to securely and irrevocably delete the entire vault, with verification that deletion was complete.
 
+**Status:** ✅ SHIPPED
+
 #### Design
 
 **Wipe process:**
@@ -32,25 +34,29 @@ Fables is currently a single-user personal knowledge OS (Tier 1). Phase 2 (F1211
 1. User initiates wipe from Settings → Data Management → Wipe All Data.
 2. UI confirms: "This will permanently delete all notes, entities, stories, attachments, and sync state. This cannot be undone."
 3. User must type "WIPE" to confirm.
-4. System performs:
-   - Overwrite SQLite file with random data (multiple passes, e.g., 7-pass DoD wipe).
-   - Delete attachment directory recursively.
-   - Delete sync state (op-log, CRDT snapshots).
-   - Delete logs.
-   - Recreate `~/.fables/` as an empty vault.
+4. System performs (in a transaction):
+   - Count notes in the vault (for audit record).
+   - Delete all notes (cascades to revisions, tags, links).
+   - Delete vault configuration from DB.
+   - Append a `vault.wiped` entry to the audit log with deletion count.
+   - Zero the in-memory data key.
 5. On completion: "Vault wiped successfully. All data has been securely deleted."
 
 **Verification:**
 
-- Hash of the vault before wipe is recorded.
-- After wipe, hash of the empty vault is computed.
-- If hashes don't match an expected empty state, wipe failed → user is warned.
+- After wipe, the system verifies that:
+  - The vault configuration no longer exists in the DB.
+  - No notes remain in the DB (count must be 0).
+- If verification fails, an `INTERNAL` error is thrown and the user is warned.
 
-**Implementation details:**
+**Implementation:**
 
-- File-level wipe: `fs.writeFile(file, random_buffer)` for N passes.
-- Database-level wipe: Truncate all tables, then vacuum to reclaim space.
-- Secure deletion: Use libsodium `sodium.randombytes_buf()` for random overwrites.
+- `VaultService.wipe(passphrase)` in `apps/server/src/vault/service.ts`.
+- Requires re-authentication with the passphrase (cannot wipe accidentally).
+- Full transaction ensures atomicity (all-or-nothing).
+- Audit log is reset to genesis state with a single `vault.wiped` entry.
+
+**Code reference:** `apps/server/src/vault/service.ts:171–192` (`wipe` method).
 
 #### Compliance Rationale
 
@@ -190,47 +196,52 @@ Fables is currently a single-user personal knowledge OS (Tier 1). Phase 2 (F1211
 
 **Goal:** Maintain an immutable, forensically verifiable audit trail of all vault operations (creates, updates, deletes, shares, etc.). Tampering is detectable.
 
+**Status:** ✅ SHIPPED
+
 #### Design
 
 **Audit log entry:**
 
-```json
-{
-  "sequence": 12345,
-  "timestamp": "2026-06-13T10:00:00Z",
-  "operation": "note_create" | "note_update" | "note_delete" | "entity_set" | "share_create" | "share_revoke" | "vault_unlock" | "vault_lock" | "vault_wipe" | ...,
-  "actor": "user" | "plugin:<plugin_id>" | "system",
-  "target": {
-    "type": "note" | "entity" | "attachment" | "share" | "vault",
-    "id": "ulid..."
-  },
-  "details": {
-    "field_changed": "title",  // for updates
-    "old_value": "...",
-    "new_value": "...",
-    // or other context-specific fields
-  },
-  "hash_prev": "sha256-...",  // hash of the previous log entry
-  "hash_self": "sha256-..."   // hash of this entry
+```typescript
+interface AuditEntry {
+  seq: number; // sequence number (1, 2, 3, ...)
+  event: AuditEvent; // e.g., 'vault.unlocked', 'vault.unlock_failed', 'vault.locked', 'vault.passphrase_changed', 'vault.wiped'
+  detail: Record<string, unknown>; // operation-specific metadata
+  ts: string; // ISO 8601 timestamp
+  prevHash: string; // SHA-256 hash of the previous entry
+  hash: string; // SHA-256 hash of this entry
 }
 ```
 
 **Hash chain verification:**
 
-- `hash_self = sha256(sequence || timestamp || operation || actor || target || details || hash_prev)`
-- Each entry's `hash_prev` must match the previous entry's `hash_self`.
+- `hash = sha256(seq || event || JSON.stringify(detail) || ts || prevHash)`
+- Each entry's `prevHash` must match the previous entry's `hash`.
 - If any entry is modified, all subsequent hashes are invalidated.
-- The chain is tamper-evident: any modification is detectable.
+- The chain is tamper-evident: any modification is detectable via `auditLog(db).verify()`.
+
+**Events recorded:**
+
+- `vault.created` (with KDF strength).
+- `vault.unlocked` (successful unlock).
+- `vault.unlock_failed` (wrong passphrase).
+- `vault.locked` (vault locked).
+- `vault.passphrase_changed` (passphrase change).
+- `vault.wiped` (full vault wipe, with count of deleted notes).
 
 **Storage:**
 
-- Log entries stored in SQLite in a dedicated `audit_log` table.
+- Log entries stored in SQLite in a dedicated `security_audit` table.
 - Table is append-only (no UPDATE, only INSERT).
-- Optionally replicate to external service for off-server storage (future).
+- Never records secrets (passphrases, keys, etc.).
 
-**UI access:** Settings → Audit Log (read-only, searchable by date/actor/operation/target).
+**API access:** `auditLog(db)` in `apps/server/src/vault/audit.ts` with methods:
 
-**Export:** `GET /audit-log/export.jsonl` (JSON Lines format, one entry per line).
+- `append(event, detail)` — add a new entry.
+- `list()` — get all entries.
+- `verify()` — check chain integrity (returns `{ ok: true }` or `{ ok: false, brokenAt: seq }`).
+- `clear()` — wipe the log (only as part of a full vault wipe, F1281).
+- `count()` — number of entries.
 
 #### Compliance Rationale
 
@@ -506,13 +517,14 @@ This documentation helps users understand which features to enable for their com
 
 ## Implementation Roadmap
 
-| Phase       | Sprint    | Features                                                      | Status                            |
-| ----------- | --------- | ------------------------------------------------------------- | --------------------------------- |
-| **Tier 1**  | Day 1–10  | Baseline (notes, stories, sync)                               | ✅ Complete                       |
-| **Tier 2a** | Day 11–13 | Encryption (F1201–F1210)                                      | ✅ In progress (Crypto Core done) |
-| **Tier 2b** | Day 13+   | Encrypted storage (F1211–F1220), Key management (F1221–F1230) | 🔄 Planned                        |
-| **Tier 2c** | Day 14+   | Collaboration (F1101–F1200)                                   | 🔄 In progress (CRDT engine done) |
-| **Tier 3**  | Day 15+   | Compliance features (F1281–F1290)                             | ⏳ Planned                        |
+| Phase       | Sprint    | Features                                                                                        | Status                                                  |
+| ----------- | --------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| **Tier 1**  | Day 1–10  | Baseline (notes, stories, sync)                                                                 | ✅ Complete                                             |
+| **Tier 2a** | Day 11–13 | Encryption (F1201–F1210)                                                                        | ✅ Complete (Crypto core done)                          |
+| **Tier 2b** | Day 14    | Encrypted storage (F1211–F1220), Vault ops (F1215–F1223, F1234, F1281)                          | ✅ Complete (vault service, at-rest encryption, wipe)   |
+| **Tier 2c** | Day 14+   | Collaboration (F1101–F1200)                                                                     | 🔄 In progress (CRDT engine done)                       |
+| **Tier 2d** | Day 14    | Audit log (F1284), SSRF guard (F1268)                                                           | ✅ Complete (tamper-evident log, outbound fetch safety) |
+| **Tier 3**  | Day 15+   | Key management UX (F1221–F1230), lock behavior (F1231–F1240), compliance features (F1282–F1288) | ⏳ Planned                                              |
 
 ---
 
@@ -557,4 +569,17 @@ A: Yes, via `GET /audit-log/export.jsonl`. The export includes all operations (c
 
 ---
 
-**Last updated:** Day 11, Epic 13 F1289. Describes planned compliance features for Tier 3. All features are in design phase; none are implemented yet. Implementation expected in Tier 2 Phase 2–3 (post-MVP).
+**Last updated:** Day 14, Epic 13 (F1289).
+
+**Implementation status:**
+
+- ✅ F1281 (Full vault wipe with verification) — SHIPPED
+- ✅ F1284 (Tamper-evident audit log) — SHIPPED
+- ⏳ F1282 (Data inventory export) — Designed, not yet implemented
+- ⏳ F1283 (Retention policies) — Designed, not yet implemented
+- ⏳ F1285 (Read receipts opt-out) — Designed, not yet implemented
+- ⏳ F1286 (Legal hold mode) — Designed, not yet implemented
+- ⏳ F1287 (Redaction tool) — Designed, not yet implemented
+- ⏳ F1288 (Export with redactions) — Designed, not yet implemented
+
+Remaining compliance features expected in Tier 3 (Day 15+).

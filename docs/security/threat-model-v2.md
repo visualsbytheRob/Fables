@@ -162,7 +162,7 @@ The **innermost boundary** is process memory during active operations. The **out
 - **Room membership validation:** Server checks the share token on every WebSocket message. Revoked tokens are immediately invalid.
 - **CRDT integrity:** Yjs CRDT ops are cryptographically identified by (`clientID`, `clock`). Forged ops cause merge conflicts (visible to collaborators).
 - **Presence attestation:** (F1141–F1150) Collaborators see each other's avatars and cursors. Unexpected guests are obvious.
-- **Audit log (optional, F1284):** Every op is logged server-side with timestamp and actor. Malicious edits can be forensically identified.
+- **Audit log (F1284, shipped):** Every vault op (unlock, lock, passphrase change, wipe) is logged server-side with timestamp. Hash-chained for tamper detection. Malicious edits are forensically verifiable.
 
 **What we DON'T protect against:**
 
@@ -356,4 +356,4 @@ The **innermost boundary** is process memory during active operations. The **out
 
 ---
 
-**Last updated:** Day 11, Epic 13. Covers F1201–F1210 (crypto core) through F1271 (threat model v2). Real-time collaboration (Epic 12) and plugin system (Epic 11) are complete; encryption vault (F1211+) in progress.
+**Last updated:** Day 14, Epic 13. Covers F1201–F1210 (crypto core), F1211–F1223 (encrypted storage & vault ops), F1268 (SSRF guard), F1284 (audit log), F1281 (vault wipe). Real-time collaboration (Epic 12) and plugin system (Epic 11) are complete; encrypted vault fully shipped in Tier 2 Phase 1.

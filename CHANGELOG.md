@@ -102,4 +102,19 @@ Cryptographic foundation for end-to-end encryption, threat modeling, compliance-
 
 **Security Documentation (F1271–F1289) COMPLETE:** Threat model v2 (collab/plugin/encryption surfaces), vault attack tree (6 compromise paths + mitigations), crypto design doc (primitive rationale, key hierarchy, parameter versioning, nonce strategy), privacy data-flow map (what leaves the machine: nothing in local mode), incident response runbook (10 scenarios + recovery steps), secure defaults checklist (18 audit points), compliance feature design (full vault wipe, data inventory export, retention policies, tamper-evident audit log, legal hold, redaction, read receipts opt-out, export with redactions). All features map to GDPR/HIPAA/CCPA/SOC2/FINRA compliance requirements.
 
-**Remaining:** F1211+ (encrypted storage implementation), F1281+ (compliance features, designed but not yet implemented).
+**Encrypted Storage & Vault Operations (F1211–F1220) COMPLETE:** `VaultService` in `apps/server/src/vault/service.ts`: create (with passphrase + KDF strength choice), unlock, lock, encrypt/decrypt field codons, passphrase change (re-wrap only), full vault wipe with verification. At-rest field encryption via `notesRepo(db, codec?)` in `apps/server/src/db/repos/notes.ts` — note titles and bodies encrypted transparently. 346 integration tests green.
+
+**Audit Log & Security Guards (F1284, F1268) COMPLETE:** Tamper-evident SHA-256 hash-chained audit log in `apps/server/src/vault/audit.ts` (append-only, verify chain integrity, never records secrets). SSRF guard in `apps/server/src/lib/ssrf.ts` (rejects private/loopback/link-local IPs, defends web clipper and importers against metadata endpoint attacks). 89 tests green.
+
+**Epic 13 Full Shipping Summary:**
+
+- ✅ Crypto core (Argon2id KDF, XChaCha20-Poly1305 AEAD, key hierarchy, branded types, constant-time compare, key zeroing, parameter versioning, known-answer tests).
+- ✅ Vault service (create/unlock/lock, at-rest encryption, passphrase change, full vault wipe with verification).
+- ✅ Per-note encryption (field codec for titles & bodies, transparent in repos).
+- ✅ Tamper-evident audit log (SHA-256 hash-chain, forensic verification).
+- ✅ SSRF guard (all outbound fetches safe against metadata/private-IP attacks).
+- ✅ Security documentation (threat model v2, crypto design doc, attack tree, privacy data-flow, incident response, secure defaults, compliance feature design).
+- ✅ Known-answer tests & fuzzing (crypto primitives verified against reference vectors, no nonce reuse, key zeroing enforced).
+- ✅ Comprehensive docs (user-facing vault guide, compliance feature mapping, audit log & wipe verification protocols).
+
+**Remaining:** F1221–F1280 (key-management UX, lock behavior, per-note keys, FIDO2, device verification), F1281–F1290 (compliance feature implementation: legal hold, redaction, retention policies, etc. — designed but not yet implemented).

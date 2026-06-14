@@ -20,12 +20,12 @@ Fables ships with security settings that prioritize user safety over convenience
 
 ### 2. Data Encryption
 
-| Setting                | Default (Tier 1)              | Planned (Tier 2, F1211+)                   | Reasoning                                                                                             |
-| ---------------------- | ----------------------------- | ------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
-| **Vault encryption**   | Plaintext (no encryption)     | Opt-in (user chooses at setup)             | Encryption adds overhead; Tier 1 assumes trust in local filesystem. Phase 2 adds optional encryption. |
-| **At-rest encryption** | None (file-system perms only) | XChaCha20-Poly1305 (if vault mode enabled) | Encryption key is user's passphrase (Argon2id KDF). User controls the master key.                     |
-| **Backup encryption**  | Inherits vault mode           | Inherits vault mode (F1211+)               | Exported backups are plaintext or encrypted depending on vault mode.                                  |
-| **Key zeroing**        | Automatic on lock (F1205)     | Automatic on lock                          | Keys are filled with 0x00 as soon as they're no longer needed.                                        |
+| Setting                | Default (Tier 1)              | Tier 2 (F1211+, Shipped)                   | Reasoning                                                                                            |
+| ---------------------- | ----------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| **Vault encryption**   | Plaintext (no encryption)     | Opt-in (user chooses at setup)             | Encryption adds overhead; Tier 1 assumes trust in local filesystem. Tier 2 adds optional encryption. |
+| **At-rest encryption** | None (file-system perms only) | XChaCha20-Poly1305 (if vault mode enabled) | Encryption key is user's passphrase (Argon2id KDF). User controls the master key.                    |
+| **Backup encryption**  | Inherits vault mode           | Inherits vault mode (F1211+)               | Exported backups are plaintext or encrypted depending on vault mode.                                 |
+| **Key zeroing**        | Automatic on lock (F1205)     | Automatic on lock                          | Keys are filled with 0x00 as soon as they're no longer needed.                                       |
 
 ### 3. Search & Export
 
@@ -61,12 +61,12 @@ Fables ships with security settings that prioritize user safety over convenience
 
 ### 6. Logging & Auditing
 
-| Setting                    | Default                  | Reasoning                                                              |
-| -------------------------- | ------------------------ | ---------------------------------------------------------------------- |
-| **Server logs**            | Enabled (summaries only) | Operation summaries logged to `~/.fables/logs/`. No note content.      |
-| **Audit trail**            | Opt-in (future, F1284)   | Tamper-evident audit log (hash-chained) can be enabled for compliance. |
-| **User activity tracking** | None (local only)        | No analytics or telemetry sent to external servers.                    |
-| **Log retention**          | 30 days (default, TBD)   | Old logs are pruned. User can configure retention.                     |
+| Setting                    | Default                  | Reasoning                                                             |
+| -------------------------- | ------------------------ | --------------------------------------------------------------------- |
+| **Server logs**            | Enabled (summaries only) | Operation summaries logged to `~/.fables/logs/`. No note content.     |
+| **Audit trail**            | Enabled (F1284, shipped) | Tamper-evident audit log (hash-chained) records vault ops, always on. |
+| **User activity tracking** | None (local only)        | No analytics or telemetry sent to external servers.                   |
+| **Log retention**          | 30 days (default, TBD)   | Old logs are pruned. User can configure retention.                    |
 
 ### 7. Attachment Handling
 
@@ -244,13 +244,15 @@ After completing the checklist, you should have:
 **Use case:** Personal notes, not sensitive to device theft.  
 **Recommendation:** Pair with full-disk encryption (FileVault, BitLocker).
 
-### Tier 2 (Planned, F1211+): Encrypted Vault
+### Tier 2 (Shipped, F1211+): Encrypted Vault
 
 ✅ All of Tier 1  
 ✅ Encryption at rest (Argon2id + XChaCha20-Poly1305)  
 ✅ Passphrase-protected master key  
 ✅ Per-vault data key  
-✅ Optional audit trail (hash-chained)  
+✅ Tamper-evident audit trail (hash-chained, always on)  
+✅ Full vault wipe with verification  
+✅ SSRF guard for outbound fetches  
 ❌ No multi-device cloud sync (yet)
 
 **Use case:** Sensitive notes, protection against disk theft.  
@@ -290,4 +292,4 @@ If you discover a security flaw or configuration issue:
 
 ---
 
-**Last updated:** Day 11, Epic 13 F1278. Covers Tier 1 defaults and previews Tier 2 encryption. Audit checklist is actionable and includes command examples.
+**Last updated:** Day 14, Epic 13 (F1278 + F1284 + F1281). Covers Tier 1 defaults and Tier 2 encryption (shipped). Tier 2 includes vault encryption, passphrase-protected keys, audit log, vault wipe, SSRF guards. Audit checklist is actionable and includes command examples.
