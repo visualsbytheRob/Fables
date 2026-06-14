@@ -1721,7 +1721,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1263 — Clipboard hygiene (auto-clear copied secrets)
 - [x] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
 - [ ] F1265 — Memory-safe attachment preview pipeline
-- [ ] F1266 — Dependency supply-chain audit + pinning policy
+- [x] F1266 — Dependency supply-chain audit + pinning policy
 - [ ] F1267 — Fuzzing pass on all parsers (markdown, FQL, .fable, imports)
 - [x] F1268 — Server-side request forgery guards on clipper/import URLs
 - [x] F1269 — Security headers verification suite
