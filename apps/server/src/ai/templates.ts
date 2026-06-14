@@ -123,6 +123,74 @@ export const TEMPLATES = {
     template: 'Note:\n{{body}}\n\nCandidate titles:\n{{candidates}}',
     slots: ['body', 'candidates'] as const,
   }),
+
+  // ── Story co-writer (F1341–F1346) ──────────────────────────────────────────
+
+  /** Suggest the next story beats from the current knot (F1341, structured → JSON). */
+  beatSuggest: defineTemplate({
+    id: 'beat-suggest',
+    system:
+      'You are a story co-writer. Given the current scene, propose 3-5 possible next beats — ' +
+      'short, concrete story moments that could follow. Match the established tone. Reply ONLY ' +
+      'with JSON: {"beats": ["...", "..."]}. No prose.',
+    template: '{{style}}Current scene:\n{{scene}}',
+    slots: ['style', 'scene'] as const,
+  }),
+
+  /** Draft a set of player choices in the author's style (F1342, structured → JSON). */
+  choiceExpand: defineTemplate({
+    id: 'choice-expand',
+    system:
+      'You draft interactive-fiction choices. Given a scene, write 2-4 distinct, in-voice ' +
+      'player choices that lead somewhere different. Keep each label under 12 words. Reply ONLY ' +
+      'with JSON: {"choices": ["...", "..."]}. No prose.',
+    template: '{{style}}Scene:\n{{scene}}',
+    slots: ['style', 'scene'] as const,
+  }),
+
+  /** Draft scene prose from an outline (F1343, free text). */
+  sceneDraft: defineTemplate({
+    id: 'scene-draft',
+    system:
+      'You are a fiction co-writer. Expand the outline into vivid scene prose, honouring the ' +
+      'style guidance if given. Reply with ONLY the prose — no headings, no commentary.',
+    template: '{{style}}Outline:\n{{outline}}',
+    slots: ['style', 'outline'] as const,
+  }),
+
+  /** Capture an author's style from sample text (F1344, structured → JSON). */
+  styleCapture: defineTemplate({
+    id: 'style-capture',
+    system:
+      'You analyse prose style. From the sample, describe the tone in one phrase and list 3-6 ' +
+      'concrete stylistic traits (sentence length, diction, mood, person/tense). Reply ONLY ' +
+      'with JSON: {"tone": "...", "traits": ["..."]}. No prose.',
+    template: 'Sample:\n{{sample}}',
+    slots: ['sample'] as const,
+  }),
+
+  /** Check a scene against known entity facts for contradictions (F1345, structured → JSON). */
+  consistencyCheck: defineTemplate({
+    id: 'consistency-check',
+    system:
+      'You are a continuity editor. Compare the scene against the established facts and list ' +
+      'any contradictions. Only flag genuine conflicts grounded in the facts; never invent ' +
+      'facts. Reply ONLY with JSON: {"issues": [{"claim": "...", "conflict": "...", ' +
+      '"severity": "low|medium|high"}]}. Empty array if consistent. No prose.',
+    template: 'Established facts:\n{{facts}}\n\nScene:\n{{scene}}',
+    slots: ['facts', 'scene'] as const,
+  }),
+
+  /** Suggest content for an underdeveloped branch (F1346, structured → JSON). */
+  gapAnalysis: defineTemplate({
+    id: 'gap-analysis',
+    system:
+      'You analyse interactive-story branches. Given a description of a thin or dead-end path, ' +
+      'suggest 3-5 concrete ways to develop it (new beats, choices, or consequences). Reply ' +
+      'ONLY with JSON: {"suggestions": ["...", "..."]}. No prose.',
+    template: 'Branch:\n{{branch}}',
+    slots: ['branch'] as const,
+  }),
 } as const;
 
 export type TemplateId = (typeof TEMPLATES)[keyof typeof TEMPLATES]['id'];

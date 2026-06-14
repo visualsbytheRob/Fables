@@ -37,6 +37,7 @@ import { collabRoutes } from './collab.js';
 import { sharesRoutes } from './shares.js';
 import { vaultRoutes } from './vault.js';
 import { aiRoutes } from './ai.js';
+import { aiStoryRoutes } from './ai-story.js';
 import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
@@ -78,6 +79,7 @@ export const routes: FastifyPluginAsync[] = [
   sharesRoutes,
   vaultRoutes,
   aiRoutes,
+  aiStoryRoutes,
   backupRoutes,
   analyticsRoutes,
   complianceRoutes,

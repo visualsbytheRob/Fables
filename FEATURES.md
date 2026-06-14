@@ -1834,16 +1834,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Story Co-Writer (F1341–F1350)
 
-- [ ] F1341 — Beat suggestion: given current knot, propose next beats
-- [ ] F1342 — Choice expansion: AI drafts choice sets in author's style
-- [ ] F1343 — Scene prose draft from outline notes
-- [ ] F1344 — Style capture: learn tone from existing story text
-- [ ] F1345 — Consistency checker: contradictions vs entity facts
-- [ ] F1346 — Branch gap analysis (suggest content for thin paths)
-- [ ] F1347 — Co-writer panel in author workspace with diff-style accept
-- [ ] F1348 — Generated content provenance markers in source
-- [ ] F1349 — Co-writer eval scenarios
-- [ ] F1350 — Co-writer tests
+- [x] F1341 — Beat suggestion: given current knot, propose next beats
+- [x] F1342 — Choice expansion: AI drafts choice sets in author's style
+- [x] F1343 — Scene prose draft from outline notes
+- [x] F1344 — Style capture: learn tone from existing story text
+- [x] F1345 — Consistency checker: contradictions vs entity facts
+- [x] F1346 — Branch gap analysis (suggest content for thin paths)
+- [~] F1347 — Co-writer panel in author workspace with diff-style accept — server endpoints (/ai/story/\*) shipped; React panel deferred to web UI pass
+- [x] F1348 — Generated content provenance markers in source
+- [x] F1349 — Co-writer eval scenarios
+- [x] F1350 — Co-writer tests
 
 ### Character & Dialogue (F1351–F1360)
 
