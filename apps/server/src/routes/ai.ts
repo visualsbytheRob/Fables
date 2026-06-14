@@ -20,6 +20,7 @@ import { parseWith } from '../api/validate.js';
 import { z } from 'zod';
 import { notesRepo } from '../db/repos/notes.js';
 import { suggestTags, suggestTitle, summarizeNote } from '../ai/note-intelligence.js';
+import { ragAnswer } from '../ai/rag.js';
 
 registerRoute({ method: 'GET', path: '/ai/status', summary: 'AI availability + models' });
 registerRoute({
@@ -37,8 +38,21 @@ registerRoute({
   path: '/notes/:id/ai/title',
   summary: 'Suggest a title for a note (F1333)',
 });
+registerRoute({
+  method: 'POST',
+  path: '/ai/ask',
+  summary: 'Ask your vault: grounded, cited answer (F1321/F1322)',
+});
 
 const idParams = z.object({ id: z.string().min(1) });
+
+const askBody = z.object({
+  question: z.string().min(1).max(1000),
+  /** Restrict retrieval to one notebook (F1323 scope). */
+  notebookId: z.string().min(1).optional(),
+  /** Max sources to retrieve. */
+  limit: z.number().int().min(1).max(12).optional(),
+});
 
 export const aiRoutes: FastifyPluginAsync = async (app) => {
   app.get('/ai/status', async () => {
@@ -68,5 +82,15 @@ export const aiRoutes: FastifyPluginAsync = async (app) => {
     const { id } = parseWith(idParams, request.params, 'params');
     const note = loadNote(id);
     return { data: await suggestTitle(app.ai, { title: note.title, body: note.body }) };
+  });
+
+  app.post('/ai/ask', async (request) => {
+    const body = parseWith(askBody, request.body, 'body');
+    return {
+      data: await ragAnswer(app.ai, app.intel, app.db, body.question, {
+        ...(body.notebookId !== undefined ? { notebookId: body.notebookId } : {}),
+        ...(body.limit !== undefined ? { limit: body.limit } : {}),
+      }),
+    };
   });
 };
