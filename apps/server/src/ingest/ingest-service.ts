@@ -118,7 +118,12 @@ export function startPdfIngest(
       autoTagNote(db, note.id, 'pdf');
       repo.setDone(job.id, note.id);
       // Trigger embedding via queue (F768) — createNote already triggers FTS via DB trigger
-      intel.queue.enqueue({ sourceId: note.id, sourceType: 'note', title: note.title, body: note.body });
+      intel.queue.enqueue({
+        sourceId: note.id,
+        sourceType: 'note',
+        title: note.title,
+        body: note.body,
+      });
     } catch (err) {
       repo.setFailed(job.id, String(err));
     }
@@ -152,7 +157,12 @@ export function startEpubIngest(
       const note = createNote(db, { notebookId, title: result.bookTitle, body });
       autoTagNote(db, note.id, 'epub');
       repo.setDone(job.id, note.id);
-      intel.queue.enqueue({ sourceId: note.id, sourceType: 'note', title: note.title, body: note.body });
+      intel.queue.enqueue({
+        sourceId: note.id,
+        sourceType: 'note',
+        title: note.title,
+        body: note.body,
+      });
     } catch (err) {
       repo.setFailed(job.id, String(err));
     }
@@ -189,9 +199,16 @@ export function startHtmlIngest(
       const note = createNote(db, { notebookId, title: result.title, body });
       autoTagNote(db, note.id, 'html');
       repo.setDone(job.id, note.id);
-      intel.queue.enqueue({ sourceId: note.id, sourceType: 'note', title: note.title, body: note.body });
+      intel.queue.enqueue({
+        sourceId: note.id,
+        sourceType: 'note',
+        title: note.title,
+        body: note.body,
+      });
     } catch (err) {
-      repo.setFailed(job.id, String(err));
+      // If the DB was closed under us (e.g. server shutdown mid-job), the job
+      // result is moot — don't turn it into an unhandled rejection.
+      if (db.open) repo.setFailed(job.id, String(err));
     }
   })();
 
@@ -223,9 +240,14 @@ export function startUrlIngest(
       const note = createNote(db, { notebookId, title: result.title, body });
       autoTagNote(db, note.id, 'url');
       repo.setDone(job.id, note.id);
-      intel.queue.enqueue({ sourceId: note.id, sourceType: 'note', title: note.title, body: note.body });
+      intel.queue.enqueue({
+        sourceId: note.id,
+        sourceType: 'note',
+        title: note.title,
+        body: note.body,
+      });
     } catch (err) {
-      repo.setFailed(job.id, String(err));
+      if (db.open) repo.setFailed(job.id, String(err));
     }
   })();
 
