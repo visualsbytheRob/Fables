@@ -43,6 +43,7 @@ describe('migrations', () => {
       '024-ai-usage',
       '025-ai-actions',
       '026-ai-settings',
+      '027-import-framework',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

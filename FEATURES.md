@@ -1914,16 +1914,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Interop Infrastructure (F1401–F1410)
 
-- [ ] F1401 — Importer framework: source adapter interface, staging area, dry-run reports
-- [ ] F1402 — Mapping engine: foreign structures → Fables model with rule files
-- [ ] F1403 — Asset pipeline shared by all importers (media dedupe, relinking)
-- [ ] F1404 — Link graph reconstruction pass (resolve internal refs post-import)
-- [ ] F1405 — Import job persistence (resume interrupted imports)
-- [ ] F1406 — Collision strategies (skip/rename/merge) shared UI
-- [ ] F1407 — Import provenance metadata on every imported note
-- [ ] F1408 — Rollback: undo an entire import batch
-- [ ] F1409 — Importer SDK so plugins can add sources
-- [ ] F1410 — Framework tests with synthetic source
+- [x] F1401 — Importer framework: source adapter interface, staging area, dry-run reports
+- [x] F1402 — Mapping engine: foreign structures → Fables model with rule files
+- [x] F1403 — Asset pipeline shared by all importers (media dedupe, relinking)
+- [x] F1404 — Link graph reconstruction pass (resolve internal refs post-import)
+- [x] F1405 — Import job persistence (resume interrupted imports)
+- [x] F1406 — Collision strategies (skip/rename/merge) shared UI
+- [x] F1407 — Import provenance metadata on every imported note
+- [x] F1408 — Rollback: undo an entire import batch
+- [x] F1409 — Importer SDK so plugins can add sources
+- [x] F1410 — Framework tests with synthetic source
 
 ### Notion (F1411–F1420)
 

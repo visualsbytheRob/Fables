@@ -18,6 +18,8 @@ import { OllamaAdapter } from './ai/ollama.js';
 import { ClaudeAdapter } from './ai/claude.js';
 import { usageMeter, type UsageMeter } from './ai/usage-meter.js';
 import { aiSettingsRepo } from './ai/settings.js';
+import { ImporterRegistry } from './import/framework/index.js';
+import { registerBuiltinImporters } from './import/importers.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -48,6 +50,8 @@ declare module 'fastify' {
     ai: AIRuntime;
     /** Local AI token-usage meter (F1367). */
     aiUsage: UsageMeter;
+    /** Importer registry: source adapters keyed by name (Epic 15, F1409). */
+    importers: ImporterRegistry;
   }
 }
 
@@ -106,6 +110,10 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   ai.setKillSwitch(aiSettingsRepo(db).get().killSwitch);
   app.decorate('ai', ai);
   app.decorate('aiUsage', usageMeter(db));
+
+  // Importer registry (Epic 15): built-in source adapters register here; plugins
+  // can add more via the importer SDK (F1409).
+  app.decorate('importers', registerBuiltinImporters(new ImporterRegistry()));
 
   app.addHook('onClose', async () => {
     await collab.shutdown();

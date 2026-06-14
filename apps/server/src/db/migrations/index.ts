@@ -24,6 +24,7 @@ import { migration023Retention } from './023-retention.js';
 import { migration024AiUsage } from './024-ai-usage.js';
 import { migration025AiActions } from './025-ai-actions.js';
 import { migration026AiSettings } from './026-ai-settings.js';
+import { migration027ImportFramework } from './027-import-framework.js';
 
 export interface Migration {
   id: number;
@@ -59,4 +60,5 @@ export const migrations: Migration[] = [
   migration024AiUsage,
   migration025AiActions,
   migration026AiSettings,
+  migration027ImportFramework,
 ];

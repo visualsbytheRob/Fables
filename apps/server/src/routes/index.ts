@@ -16,6 +16,7 @@ import { entitiesRoutes } from './entities.js';
 import { graphRoutes } from './graph.js';
 import { healthRoutes } from './health.js';
 import { importExportRoutes } from './import-export.js';
+import { importFrameworkRoutes } from './import-framework.js';
 import { ingestRoutes } from './ingest.js';
 import { insightsRoutes } from './insights.js';
 import { knowledgeRoutes } from './knowledge.js';
@@ -59,6 +60,7 @@ export const routes: FastifyPluginAsync[] = [
   queryRoutes,
   savedQueriesRoutes,
   importExportRoutes,
+  importFrameworkRoutes,
   storiesRoutes,
   storyFilesRoutes,
   storySavesRoutes,
