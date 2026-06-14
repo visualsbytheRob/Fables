@@ -11,6 +11,7 @@ import { validation } from '@fables/core';
 import type { ImporterRegistry } from './framework/index.js';
 import { NotionAdapter } from './notion/adapter.js';
 import { AppleNotesAdapter } from './apple-notes/adapter.js';
+import { EvernoteAdapter } from './evernote/adapter.js';
 
 function asPathInput(input: unknown): { path: string } {
   if (
@@ -32,6 +33,10 @@ export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRe
     { name: 'apple-notes', description: 'Apple Notes via the Exporter app (.enex)' },
     (input) => new AppleNotesAdapter(asPathInput(input)),
   );
-  // Further importers append registrations here (F1431+).
+  registry.register(
+    { name: 'evernote', description: 'Evernote export (.enex, one per notebook)' },
+    (input) => new EvernoteAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1441+).
   return registry;
 }

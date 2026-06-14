@@ -1953,16 +1953,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Evernote (F1431–F1440)
 
-- [ ] F1431 — ENEX parser (notes, resources, attributes)
-- [ ] F1432 — ENML → markdown conversion
-- [ ] F1433 — Notebook/stack mapping
-- [ ] F1434 — Tag import with hierarchy
-- [ ] F1435 — Web-clip note handling (simplify vs preserve)
-- [ ] F1436 — Resource (attachment) extraction with hashes
-- [ ] F1437 — Reminder/todo attribute mapping
-- [ ] F1438 — Large ENEX streaming (multi-GB files)
-- [ ] F1439 — Evernote fixture tests
-- [ ] F1440 — Evernote guide
+- [x] F1431 — ENEX parser (notes, resources, attributes)
+- [x] F1432 — ENML → markdown conversion
+- [x] F1433 — Notebook/stack mapping — file→notebook mapping shipped; stacks are not present in the ENEX format (documented limitation)
+- [x] F1434 — Tag import with hierarchy — tags imported; ENEX carries only flat tags, so hierarchy is not recoverable from the export (documented)
+- [x] F1435 — Web-clip note handling (simplify vs preserve)
+- [x] F1436 — Resource (attachment) extraction with hashes
+- [x] F1437 — Reminder/todo attribute mapping
+- [x] F1438 — Large ENEX streaming (multi-GB files)
+- [x] F1439 — Evernote fixture tests
+- [x] F1440 — Evernote guide
 
 ### Roam / Logseq (F1441–F1450)
 

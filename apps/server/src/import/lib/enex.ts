@@ -9,6 +9,7 @@
  */
 
 import crypto from 'node:crypto';
+import fs from 'node:fs';
 
 export interface EnexResource {
   /** MD5 of the bytes, lowercased hex — the key `<en-media hash>` references. */
@@ -28,18 +29,55 @@ export interface EnexNote {
   resources: EnexResource[];
   /** True when the note contains encrypted (`<en-crypt>`) content — a locked note. */
   encrypted: boolean;
+  /** `<note-attributes>` children, e.g. source-url, reminder-time (F1435/F1437). */
+  attributes: Record<string, string>;
 }
 
 const NOTE_RE = /<note>([\s\S]*?)<\/note>/g;
 const RESOURCE_RE = /<resource>([\s\S]*?)<\/resource>/g;
 
-/** Parse an ENEX document into its notes. */
+/** Parse an ENEX document (already in memory) into its notes. */
 export function parseEnex(xml: string): EnexNote[] {
   const notes: EnexNote[] = [];
   for (const m of xml.matchAll(NOTE_RE)) {
     notes.push(parseNote(m[1]!));
   }
   return notes;
+}
+
+/**
+ * Stream notes from an ENEX file on disk, one at a time (F1438).
+ *
+ * Reads the file in fixed chunks and emits each `<note>…</note>` as soon as it's
+ * complete, so peak string memory is bounded to roughly one note plus a chunk —
+ * the parser never holds a multi-GB export as a single string. (Resource bytes
+ * for the current note are still materialized; callers process notes
+ * sequentially, keeping overall footprint to one note at a time.)
+ */
+export function* streamEnexNotes(filePath: string, chunkSize = 1 << 20): Generator<EnexNote> {
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    const buf = Buffer.alloc(chunkSize);
+    let carry = '';
+    let read: number;
+    while ((read = fs.readSync(fd, buf, 0, chunkSize, null)) > 0) {
+      carry += buf.toString('utf8', 0, read);
+      let end: number;
+      while ((end = carry.indexOf('</note>')) !== -1) {
+        const start = carry.indexOf('<note>');
+        if (start === -1 || start > end) {
+          // Drop content before the closing tag we can't pair (preamble/garbage).
+          carry = carry.slice(end + 7);
+          continue;
+        }
+        const block = carry.slice(start + 6, end);
+        carry = carry.slice(end + 7);
+        yield parseNote(block);
+      }
+    }
+  } finally {
+    fs.closeSync(fd);
+  }
 }
 
 function parseNote(block: string): EnexNote {
@@ -63,10 +101,22 @@ function parseNote(block: string): EnexNote {
     tags,
     resources,
     encrypted: /<en-crypt[\s>]/.test(content),
+    attributes: parseAttributes(block),
   };
   if (created !== undefined) note.created = created;
   if (updated !== undefined) note.updated = updated;
   return note;
+}
+
+/** Flatten `<note-attributes>` children into a string map (F1435/F1437). */
+function parseAttributes(block: string): Record<string, string> {
+  const inner = firstTag(block, 'note-attributes');
+  if (inner === null) return {};
+  const attrs: Record<string, string> = {};
+  for (const m of inner.matchAll(/<([a-z][a-z0-9-]*)>([\s\S]*?)<\/\1>/gi)) {
+    attrs[m[1]!.toLowerCase()] = decodeXml(m[2]!).trim();
+  }
+  return attrs;
 }
 
 /** `<content>` is CDATA-wrapped ENML; pull the inner XHTML out. */
