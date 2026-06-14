@@ -14,6 +14,13 @@ import { AppleNotesAdapter } from './apple-notes/adapter.js';
 import { EvernoteAdapter } from './evernote/adapter.js';
 import { RoamAdapter } from './roam/adapter.js';
 import { LogseqAdapter } from './logseq/adapter.js';
+import { DayOneAdapter } from './day-one/adapter.js';
+import { SimplenoteAdapter } from './simplenote/adapter.js';
+import { GoogleKeepAdapter } from './google-keep/adapter.js';
+import { StandardNotesAdapter } from './standard-notes/adapter.js';
+import { BearAdapter } from './bear/adapter.js';
+import { JoplinAdapter } from './joplin/adapter.js';
+import { MarkdownFolderAdapter } from './markdown/adapter.js';
 
 function asPathInput(input: unknown): { path: string } {
   if (
@@ -47,6 +54,34 @@ export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRe
     { name: 'logseq', description: 'Logseq graph directory (markdown/org)' },
     (input) => new LogseqAdapter(asPathInput(input)),
   );
-  // Further importers append registrations here (F1451+).
+  registry.register(
+    { name: 'day-one', description: 'Day One JSON export (journal entries + metadata)' },
+    (input) => new DayOneAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'simplenote', description: 'Simplenote notes.json export' },
+    (input) => new SimplenoteAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'google-keep', description: 'Google Keep (Takeout) JSON export' },
+    (input) => new GoogleKeepAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'standard-notes', description: 'Standard Notes decrypted backup' },
+    (input) => new StandardNotesAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'bear', description: 'Bear markdown export (tags, wikilinks, assets)' },
+    (input) => new BearAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'joplin', description: 'Joplin .jex export (tarball of notes + resources)' },
+    (input) => new JoplinAdapter(asPathInput(input)),
+  );
+  registry.register(
+    { name: 'markdown', description: 'Generic folder of markdown (frontmatter dialects)' },
+    (input) => new MarkdownFolderAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1461+).
   return registry;
 }
