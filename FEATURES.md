@@ -2102,7 +2102,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Story Mapping Mode (F1541–F1550)
 
-- [ ] F1541 — Story map: canvas view generated from story IR
+- [x] F1541 — Story map: canvas view generated from story IR
 - [ ] F1542 — Two-way sync: move/connect knots on canvas ↔ source edits
 - [ ] F1543 — Beat cards not yet in source (planning objects → stub knots)
 - [ ] F1544 — Path coloring by playthrough data
@@ -2111,7 +2111,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1547 — Diff overlay after story edits
 - [ ] F1548 — Export story map as image/PDF
 - [ ] F1549 — Story map e2e test (canvas edit → compile → play)
-- [ ] F1550 — Story mapping tests
+- [x] F1550 — Story mapping tests
 
 ### Boards (F1551–F1560)
 

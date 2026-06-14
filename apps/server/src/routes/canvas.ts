@@ -17,7 +17,13 @@ import { parseWith } from '../api/validate.js';
 import { canvasRepo } from '../db/repos/canvas.js';
 import { canvasEdgesRepo } from '../db/repos/canvas-edges.js';
 import { canConnect, materializeConnectorLink } from '../canvas/connections.js';
+import { buildStoryMap } from '../canvas/story-map.js';
 
+registerRoute({
+  method: 'POST',
+  path: '/canvas/:id/story-map',
+  summary: 'Generate a story map (knot cards + diverts) from Forge source (F1541)',
+});
 registerRoute({ method: 'GET', path: '/canvas/:id/edges', summary: 'List connectors (F1521)' });
 registerRoute({
   method: 'POST',
@@ -52,6 +58,8 @@ const edgeBody = z.object({
   label: z.string().max(200).optional(),
   style: z.enum(['curved', 'orthogonal', 'straight']).optional(),
 });
+
+const storyMapBody = z.object({ source: z.string().min(1).max(2_000_000) });
 
 const OBJECT_KINDS = [
   'note',
@@ -179,5 +187,17 @@ export const canvasRoutes: FastifyPluginAsync = async (app) => {
     const { id, edgeId } = parseWith(edgeParams, request.params, 'params');
     if (!canvasEdgesRepo(app.db).remove(id, edgeId)) throw notFound('CanvasEdge', edgeId);
     return { data: { deleted: true } };
+  });
+
+  // F1541: lay out a Forge story as knot cards + divert connectors on the canvas.
+  app.post('/canvas/:id/story-map', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const { source } = parseWith(storyMapBody, request.body, 'body');
+    if (!repo().get(id)) throw notFound('Canvas', id);
+    const map = buildStoryMap(source);
+    repo().replaceObjects(id, map.objects);
+    const edges = canvasEdgesRepo(app.db);
+    for (const e of map.edges) edges.create(id, e);
+    return { data: { objects: map.objects.length, edges: map.edges.length } };
   });
 };
