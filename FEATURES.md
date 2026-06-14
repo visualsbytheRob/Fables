@@ -2045,6 +2045,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ## Epic 16 — Canvas & Spatial Views (F1501–F1600)
 
 > Mesh consumer: adds the `geo` (world atlas, travel routes) and `ink` (stylus capture) capabilities. See `docs/architecture/modality-mesh.md`.
+>
+> _Inspired by [Dylan Roscover](https://github.com/theexperiential)'s node-based TouchDesigner work — spatial, node-graph thinking and visuals driven through the plugin/AI surface. See `docs/credits.md`._
 
 ### Canvas Engine (F1501–F1510)
 
@@ -2179,6 +2181,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ## Epic 17 — Audio Fables (F1601–F1700)
 
 > Mesh consumer: the TTS foundation, soundscapes, and adaptive score become the `speech`, `audio`, and `music` capabilities on the shared Modality Mesh. See `docs/architecture/modality-mesh.md`.
+>
+> _Inspired by [Mahya Khazaei](https://github.com/maahhi)'s ear-training agent (audio-based learning drills, tying this epic to Epic 18) and the Composers Desktop Project's spectral techniques. See `docs/credits.md`._
 
 ### TTS Foundation (F1601–F1610)
 
@@ -2311,6 +2315,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1700 — Epic 17 retro devlog
 
 ## Epic 18 — Spaced Repetition & Learning (F1701–F1800)
+
+> _Inspired by [Greg McDonald](https://github.com/GregLMcDonald)'s **Socrates** (Rob's brother) — beyond flashcards: an AI that quizzes you Socratically on your own notes to test real understanding. See `docs/credits.md`._
 
 ### Scheduler Core (F1701–F1710)
 
@@ -2445,6 +2451,8 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ## Epic 19 — Story Interop & Distribution (F1801–F1900)
 
 > Mesh consumer: the ComfyUI art adapter becomes the `image` provider, joined by `video` and `model3d`, so a published fable can ship with generated illustration, narration, score, and explorable scenes. See `docs/architecture/modality-mesh.md`.
+>
+> _Inspired by [Remotion](https://github.com/remotion-dev/remotion) (videos programmatically with React — our exact stack): render a played-through fable into a shareable video. See `docs/credits.md`._
 
 ### .fablepack Format (F1801–F1810)
 
