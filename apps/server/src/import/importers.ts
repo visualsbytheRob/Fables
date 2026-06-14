@@ -9,15 +9,16 @@
 
 import { validation } from '@fables/core';
 import type { ImporterRegistry } from './framework/index.js';
-import { NotionAdapter, type NotionInput } from './notion/adapter.js';
+import { NotionAdapter } from './notion/adapter.js';
+import { AppleNotesAdapter } from './apple-notes/adapter.js';
 
 function asPathInput(input: unknown): { path: string } {
   if (
     typeof input === 'object' &&
     input !== null &&
-    typeof (input as NotionInput).path === 'string'
+    typeof (input as { path?: unknown }).path === 'string'
   ) {
-    return { path: (input as NotionInput).path };
+    return { path: (input as { path: string }).path };
   }
   throw validation('import input must be { path } pointing at the export');
 }
@@ -27,6 +28,10 @@ export function registerBuiltinImporters(registry: ImporterRegistry): ImporterRe
     { name: 'notion', description: 'Notion "Markdown & CSV" export (.zip or folder)' },
     (input) => new NotionAdapter(asPathInput(input)),
   );
-  // Further importers append registrations here (F1421+).
+  registry.register(
+    { name: 'apple-notes', description: 'Apple Notes via the Exporter app (.enex)' },
+    (input) => new AppleNotesAdapter(asPathInput(input)),
+  );
+  // Further importers append registrations here (F1431+).
   return registry;
 }

@@ -1940,16 +1940,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Apple Notes (F1421–F1430)
 
-- [ ] F1421 — Apple Notes export path documentation (the honest options)
-- [ ] F1422 — .enex-via-Exporter ingestion route
-- [ ] F1423 — Folder structure mapping
-- [ ] F1424 — Inline image + scan attachment handling
-- [ ] F1425 — Checklist conversion to task lists
-- [ ] F1426 — Table conversion
-- [ ] F1427 — Creation/modification date preservation
-- [ ] F1428 — Locked-note detection + skip report
-- [ ] F1429 — Apple Notes fixture tests
-- [ ] F1430 — Apple Notes guide
+- [x] F1421 — Apple Notes export path documentation (the honest options)
+- [x] F1422 — .enex-via-Exporter ingestion route
+- [x] F1423 — Folder structure mapping
+- [x] F1424 — Inline image + scan attachment handling
+- [x] F1425 — Checklist conversion to task lists
+- [x] F1426 — Table conversion
+- [x] F1427 — Creation/modification date preservation
+- [x] F1428 — Locked-note detection + skip report
+- [x] F1429 — Apple Notes fixture tests
+- [x] F1430 — Apple Notes guide
 
 ### Evernote (F1431–F1440)
 
