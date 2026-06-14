@@ -45,7 +45,9 @@ import {
   type KdfStrength,
 } from '@fables/core';
 import type { Db } from '../db/connection.js';
+import { withTransaction } from '../db/connection.js';
 import { vaultRepo } from '../db/repos/vault.js';
+import { auditLog } from './audit.js';
 
 export type VaultStatus = 'absent' | 'locked' | 'unlocked';
 
@@ -90,6 +92,7 @@ export class VaultService {
       kdfStrength: strength,
     });
     this.dek = dek;
+    auditLog(this.db).append('vault.created', { kdfStrength: strength });
   }
 
   /** Unlock with a passphrase (F1221). Throws FORBIDDEN on a wrong passphrase. */
@@ -102,10 +105,12 @@ export class VaultService {
     try {
       this.dek = await unwrapDataKey(unpackSealed(cfg.wrappedDek), master);
     } catch {
+      auditLog(this.db).append('vault.unlock_failed');
       throw new AppError('FORBIDDEN', 'incorrect passphrase');
     } finally {
       zeroKey(master);
     }
+    auditLog(this.db).append('vault.unlocked');
   }
 
   /** Lock the vault: zero the in-memory data key (F1234). Idempotent. */
@@ -113,6 +118,7 @@ export class VaultService {
     if (this.dek) {
       zeroKey(this.dek);
       this.dek = null;
+      auditLog(this.db).append('vault.locked');
     }
   }
 
@@ -152,6 +158,37 @@ export class VaultService {
       paramsVersion: params.version,
       kdfStrength: params.kdfStrength,
     });
+    auditLog(this.db).append('vault.passphrase_changed');
+  }
+
+  /**
+   * Full vault wipe with verification (F1281). Re-authenticates with the
+   * passphrase, then irreversibly deletes the vault config and ALL note content
+   * (revisions/tags/links cascade), zeroes the in-memory key, resets the audit
+   * log to a single genesis 'vault.wiped' entry, and verifies the wipe took.
+   * Returns the count of notes removed; throws if verification fails.
+   */
+  async wipe(passphrase: string): Promise<{ notesDeleted: number; verified: true }> {
+    await this.unlock(passphrase); // FORBIDDEN if wrong — re-auth before destruction
+
+    const notesDeleted = withTransaction(this.db, () => {
+      const n = (this.db.prepare('SELECT COUNT(*) AS n FROM notes').get() as { n: number }).n;
+      this.db.prepare('DELETE FROM notes').run();
+      vaultRepo(this.db).destroy();
+      return n;
+    });
+
+    this.lock();
+    const audit = auditLog(this.db);
+    audit.clear();
+    audit.append('vault.wiped', { notesDeleted });
+
+    // Verify (F1281): the vault is gone and no notes remain.
+    const remaining = (this.db.prepare('SELECT COUNT(*) AS n FROM notes').get() as { n: number }).n;
+    if (vaultRepo(this.db).exists() || remaining !== 0) {
+      throw new AppError('INTERNAL', 'vault wipe verification failed');
+    }
+    return { notesDeleted, verified: true };
   }
 
   /**

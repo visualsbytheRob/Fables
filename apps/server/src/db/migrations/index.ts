@@ -18,6 +18,7 @@ import { migration017PluginDistribution } from './017-plugin-distribution.js';
 import { migration018Crdt } from './018-crdt.js';
 import { migration019Shares } from './019-shares.js';
 import { migration020Vault } from './020-vault.js';
+import { migration021SecurityAudit } from './021-security-audit.js';
 
 export interface Migration {
   id: number;
@@ -47,4 +48,5 @@ export const migrations: Migration[] = [
   migration018Crdt,
   migration019Shares,
   migration020Vault,
+  migration021SecurityAudit,
 ];

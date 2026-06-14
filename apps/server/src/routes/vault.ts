@@ -15,6 +15,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
+import { auditLog } from '../vault/audit.js';
 
 registerRoute({ method: 'GET', path: '/vault/status', summary: 'Vault status' });
 registerRoute({ method: 'POST', path: '/vault', summary: 'Create a vault from a passphrase' });
@@ -25,6 +26,16 @@ registerRoute({
   path: '/vault/passphrase',
   summary: 'Change the vault passphrase',
 });
+registerRoute({
+  method: 'GET',
+  path: '/vault/audit',
+  summary: 'Tamper-evident security audit log',
+});
+registerRoute({
+  method: 'POST',
+  path: '/vault/wipe',
+  summary: 'Full vault wipe with verification',
+});
 
 const createSchema = z.object({
   passphrase: z.string().min(1),
@@ -32,6 +43,7 @@ const createSchema = z.object({
 });
 const unlockSchema = z.object({ passphrase: z.string().min(1) });
 const changeSchema = z.object({ current: z.string().min(1), next: z.string().min(1) });
+const wipeSchema = z.object({ passphrase: z.string().min(1), confirm: z.literal('WIPE') });
 
 export const vaultRoutes: FastifyPluginAsync = async (app) => {
   app.get('/vault/status', async () => {
@@ -59,5 +71,18 @@ export const vaultRoutes: FastifyPluginAsync = async (app) => {
     const body = parseWith(changeSchema, request.body, 'body');
     await app.vault.changePassphrase(body.current, body.next);
     return { data: { status: app.vault.status() } };
+  });
+
+  // Tamper-evident security audit log + chain verification (F1284).
+  app.get('/vault/audit', async () => {
+    const log = auditLog(app.db);
+    return { data: { entries: log.list(), verification: log.verify() } };
+  });
+
+  // Full vault wipe with verification (F1281). Requires re-auth + explicit confirm.
+  app.post('/vault/wipe', async (request) => {
+    const body = parseWith(wipeSchema, request.body, 'body');
+    const result = await app.vault.wipe(body.passphrase);
+    return { data: { ...result, status: app.vault.status() } };
   });
 };
