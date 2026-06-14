@@ -1873,16 +1873,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### AI Command Surface (F1371–F1380)
 
-- [ ] F1371 — Palette AI actions with natural-language fallback
-- [ ] F1372 — Inline editor AI menu on selection
-- [ ] F1373 — Slash commands in editor (/summarize, /continue)
-- [ ] F1374 — AI action keyboard shortcuts
-- [ ] F1375 — Streaming inline preview before accept
-- [ ] F1376 — Multi-step AI workflows (summarize → tag → file)
-- [ ] F1377 — Custom user-defined AI actions (prompt + scope)
-- [ ] F1378 — AI action usage stats (local)
-- [ ] F1379 — Abuse guard: actions never auto-run on bulk data without confirm
-- [ ] F1380 — Command surface tests
+- [~] F1371 — Palette AI actions with natural-language fallback — web UI; server enablers (custom-action run, streaming generateStream) shipped; panel deferred to web pass
+- [~] F1372 — Inline editor AI menu on selection — web UI; server enablers (custom-action run, streaming generateStream) shipped; panel deferred to web pass
+- [~] F1373 — Slash commands in editor (/summarize, /continue) — web UI; server enablers (custom-action run, streaming generateStream) shipped; panel deferred to web pass
+- [~] F1374 — AI action keyboard shortcuts — web UI; server enablers (custom-action run, streaming generateStream) shipped; panel deferred to web pass
+- [~] F1375 — Streaming inline preview before accept — web UI; server enablers (custom-action run, streaming generateStream) shipped; panel deferred to web pass
+- [x] F1376 — Multi-step AI workflows (summarize → tag → file)
+- [x] F1377 — Custom user-defined AI actions (prompt + scope)
+- [x] F1378 — AI action usage stats (local)
+- [x] F1379 — Abuse guard: actions never auto-run on bulk data without confirm
+- [x] F1380 — Command surface tests
 
 ### Evaluation & Guardrails (F1381–F1390)
 

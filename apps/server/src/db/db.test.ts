@@ -41,6 +41,7 @@ describe('migrations', () => {
       '022-compliance',
       '023-retention',
       '024-ai-usage',
+      '025-ai-actions',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
