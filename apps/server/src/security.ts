@@ -31,10 +31,7 @@ export function registerSecurityHeaders(app: FastifyInstance): void {
 
     // Permissions policy: no geolocation, payment, or camera except for the
     // PWA's own mic (voice capture F781).
-    reply.header(
-      'Permissions-Policy',
-      'geolocation=(), payment=(), camera=(), microphone=(self)',
-    );
+    reply.header('Permissions-Policy', 'geolocation=(), payment=(), camera=(), microphone=(self)');
 
     // Content-Security-Policy (F947).
     // Single-user tailnet app: strict policy with `self` sources only.
@@ -53,6 +50,8 @@ export function registerSecurityHeaders(app: FastifyInstance): void {
         "font-src 'self' data:",
         "connect-src 'self'",
         "worker-src 'self' blob:",
+        // No plugins/embeds; lock down framing, form, and base targets (F1261).
+        "object-src 'none'",
         "frame-ancestors 'none'",
         "form-action 'self'",
         "base-uri 'self'",
@@ -119,7 +118,9 @@ export function registerTokenAuth(app: FastifyInstance, token: string | undefine
     reply
       .status(401)
       .header('WWW-Authenticate', 'Bearer realm="Fables"')
-      .send({ error: { code: 'FORBIDDEN', message: 'invalid or missing auth token', details: null } });
+      .send({
+        error: { code: 'FORBIDDEN', message: 'invalid or missing auth token', details: null },
+      });
   });
 }
 

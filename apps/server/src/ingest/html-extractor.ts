@@ -12,6 +12,7 @@
  */
 
 import { AppError } from '@fables/core';
+import { safeFetch } from '../lib/ssrf.js';
 
 export const HTML_MAX_BYTES = 10 * 1024 * 1024; // 10 MB
 
@@ -45,8 +46,14 @@ function htmlToMarkdown(html: string): string {
   md = md.replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, '#### $1\n\n');
   md = md.replace(/<h5[^>]*>([\s\S]*?)<\/h5>/gi, '##### $1\n\n');
   md = md.replace(/<h6[^>]*>([\s\S]*?)<\/h6>/gi, '###### $1\n\n');
-  md = md.replace(/<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi, (_, inner) =>
-    inner.trim().split('\n').map((l: string) => `> ${l}`).join('\n') + '\n\n',
+  md = md.replace(
+    /<blockquote[^>]*>([\s\S]*?)<\/blockquote>/gi,
+    (_, inner) =>
+      inner
+        .trim()
+        .split('\n')
+        .map((l: string) => `> ${l}`)
+        .join('\n') + '\n\n',
   );
   md = md.replace(/<pre[^>]*><code[^>]*>([\s\S]*?)<\/code><\/pre>/gi, '```\n$1\n```\n\n');
   md = md.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, '```\n$1\n```\n\n');
@@ -76,7 +83,10 @@ function htmlToMarkdown(html: string): string {
     .replace(/&nbsp;/g, ' ')
     .replace(/&apos;/g, "'");
   // Normalize whitespace
-  md = md.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  md = md
+    .replace(/\r\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
   return md;
 }
 
@@ -105,7 +115,10 @@ export async function extractHtml(
   selection?: string,
 ): Promise<HtmlExtractionResult> {
   if (Buffer.byteLength(html, 'utf8') > HTML_MAX_BYTES) {
-    throw new AppError('PAYLOAD_TOO_LARGE', `HTML exceeds the ${HTML_MAX_BYTES / 1024 / 1024} MB limit`);
+    throw new AppError(
+      'PAYLOAD_TOO_LARGE',
+      `HTML exceeds the ${HTML_MAX_BYTES / 1024 / 1024} MB limit`,
+    );
   }
 
   const clippedAt = new Date().toISOString();
@@ -123,13 +136,15 @@ export async function extractHtml(
     const readabilityMod = await import('@mozilla/readability');
     const Readability = readabilityMod.Readability as unknown as new (
       doc: Record<string, unknown>,
-    ) => { parse(): null | {
-      title: string | null | undefined;
-      content: string | null | undefined;
-      excerpt: string | null | undefined;
-      byline: string | null | undefined;
-      siteName: string | null | undefined;
-    } };
+    ) => {
+      parse(): null | {
+        title: string | null | undefined;
+        content: string | null | undefined;
+        excerpt: string | null | undefined;
+        byline: string | null | undefined;
+        siteName: string | null | undefined;
+      };
+    };
 
     const { document } = parseHTML(html) as { document: Record<string, unknown> };
     const reader = new Readability(document);
@@ -224,7 +239,7 @@ export async function fetchAndExtract(
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15_000);
     try {
-      const resp = await fetch(url, {
+      const resp = await safeFetch(url, {
         signal: controller.signal,
         headers: {
           'User-Agent': 'Fables/1.0 (web-clipper; +https://github.com/fables-app)',
