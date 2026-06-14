@@ -44,6 +44,7 @@ describe('migrations', () => {
       '025-ai-actions',
       '026-ai-settings',
       '027-import-framework',
+      '028-canvas',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

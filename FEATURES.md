@@ -2050,16 +2050,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Canvas Engine (F1501–F1510)
 
-- [ ] F1501 — Infinite canvas: pan/zoom with culling and LOD
-- [ ] F1502 — Canvas document model (objects, transforms, z-order)
-- [ ] F1503 — Spatial index (R-tree) for hit-testing at scale
-- [ ] F1504 — 60fps interaction budget at 1k objects (benchmarked)
-- [ ] F1505 — Snapping and alignment guides
-- [ ] F1506 — Multi-select, group, lock operations
-- [ ] F1507 — Undo system for spatial operations
-- [ ] F1508 — Canvas persistence format + autosave
-- [ ] F1509 — Minimap navigation
-- [ ] F1510 — Engine test suite
+- [~] F1501 — Infinite canvas: pan/zoom with culling and LOD — web rendering; the canvas model + spatial index + DB region-cull query that power culling are shipped
+- [x] F1502 — Canvas document model (objects, transforms, z-order)
+- [x] F1503 — Spatial index (R-tree) for hit-testing at scale
+- [~] F1504 — 60fps interaction budget at 1k objects (benchmarked) — web render benchmark; the server spatial index is property-tested correct at 2k objects vs brute force
+- [x] F1505 — Snapping and alignment guides
+- [x] F1506 — Multi-select, group, lock operations
+- [x] F1507 — Undo system for spatial operations
+- [x] F1508 — Canvas persistence format + autosave
+- [~] F1509 — Minimap navigation — web UI
+- [x] F1510 — Engine test suite
 
 ### Cards & Content (F1511–F1520)
 

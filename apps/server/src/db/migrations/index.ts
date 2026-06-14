@@ -25,6 +25,7 @@ import { migration024AiUsage } from './024-ai-usage.js';
 import { migration025AiActions } from './025-ai-actions.js';
 import { migration026AiSettings } from './026-ai-settings.js';
 import { migration027ImportFramework } from './027-import-framework.js';
+import { migration028Canvas } from './028-canvas.js';
 
 export interface Migration {
   id: number;
@@ -61,4 +62,5 @@ export const migrations: Migration[] = [
   migration025AiActions,
   migration026AiSettings,
   migration027ImportFramework,
+  migration028Canvas,
 ];

@@ -45,6 +45,7 @@ import { aiActionsRoutes } from './ai-actions.js';
 import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
+import { canvasRoutes } from './canvas.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -74,6 +75,7 @@ export const routes: FastifyPluginAsync[] = [
   crossrefRoutes,
   transclusionRoutes,
   worldRoutes,
+  canvasRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
