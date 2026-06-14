@@ -908,8 +908,7 @@ export interface VaultHealth {
 
 export const insightsApi = {
   overview: () => api.get<InsightsOverview>('/insights/overview'),
-  growth: (from: string, to: string) =>
-    api.get<GrowthDay[]>(`/insights/growth${qs({ from, to })}`),
+  growth: (from: string, to: string) => api.get<GrowthDay[]>(`/insights/growth${qs({ from, to })}`),
   streaks: () => api.get<InsightsStreaks>('/insights/streaks'),
   stale: (limit = 20) => api.get<StaleNote[]>(`/insights/stale${qs({ limit })}`),
   suggestedLinks: (limit = 20) =>
@@ -918,4 +917,46 @@ export const insightsApi = {
   deadEnds: () => api.get<DeadEndNote[]>('/insights/dead-ends'),
   health: () => api.get<VaultHealth>('/insights/health'),
   digest: () => api.post<Note>('/insights/digest'),
+};
+
+/* ===== Shares (F1144 Share management UI, F1147 Shared-with-me) ===== */
+
+export type ShareAccessLevel = 'view' | 'comment' | 'edit';
+
+export interface Share {
+  id: string;
+  /** The id of the shared document (note). */
+  docId: string;
+  docTitle: string;
+  accessLevel: ShareAccessLevel;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface ShareAuditEntry {
+  id: string;
+  shareId: string;
+  accessedAt: string;
+  /** May be absent for anonymous accesses */
+  deviceId?: string;
+}
+
+export interface SharedWithMeItem {
+  shareId: string;
+  docId: string;
+  docTitle: string;
+  accessLevel: ShareAccessLevel;
+  sharedAt: string;
+  expiresAt: string | null;
+}
+
+export const sharesApi = {
+  /** List all shares created by this device. */
+  list: () => api.get<Share[]>('/shares'),
+  /** Revoke a share by id. */
+  revoke: (id: string) => api.delete<{ id: string; revoked: boolean }>(`/shares/${id}`),
+  /** Fetch the access log for a share. */
+  audit: (id: string) => api.get<ShareAuditEntry[]>(`/shares/${id}/audit`),
+  /** List items shared with this device (incoming shares). */
+  sharedWithMe: () => api.get<SharedWithMeItem[]>('/shared-with-me'),
 };

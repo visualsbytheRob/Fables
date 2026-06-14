@@ -1,6 +1,7 @@
 /**
  * F997 — Settings page: consolidated toggles for theme, offline, notifications,
  * analytics opt-out, AI/embedding, and accessibility preferences.
+ * F1285 — Read-receipts opt-out toggle.
  *
  * This page unifies controls that previously lived scattered across multiple
  * panels and toasts.
@@ -9,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { Button, Select, useTheme } from '@fables/ui';
 import type { Theme } from '@fables/ui';
 import { isOptedOut, setOptOut } from '../analytics/analyticsStore.js';
+import { readReceiptsEnabled, setReadReceiptsEnabled } from '../security/readReceipts.js';
 import { VaultSettingsSection } from '../vault/VaultSettingsSection.js';
 import './settings.css';
 
@@ -121,6 +123,8 @@ export function SettingsPage() {
   const [notifications, setNotifications] = useState(loadNotificationsEnabled);
   const [reducedMotion, setReducedMotion] = useState(loadReducedMotion);
   const [analyticsOptOut, setAnalyticsOptOut] = useState(isOptedOut);
+  // F1285 — read-receipts: stored as "enabled"; toggle shows "disable" semantics
+  const [readReceipts, setReadReceiptsState] = useState(readReceiptsEnabled);
 
   useEffect(() => {
     saveNotificationsEnabled(notifications);
@@ -133,6 +137,11 @@ export function SettingsPage() {
   function handleOptOut(v: boolean) {
     setAnalyticsOptOut(v);
     setOptOut(v);
+  }
+
+  function handleReadReceipts(v: boolean) {
+    setReadReceiptsState(v);
+    setReadReceiptsEnabled(v);
   }
 
   return (
@@ -220,6 +229,17 @@ export function SettingsPage() {
             </a>
           </p>
         )}
+      </SettingsSection>
+
+      {/* Privacy (F1285) */}
+      <SettingsSection title="Privacy" id="settings-privacy">
+        <ToggleRow
+          id="settings-read-receipts"
+          label="Enable read receipts"
+          description="When off, last-seen timestamps and read-receipt signals are not reported to other devices or collaborators."
+          checked={readReceipts}
+          onChange={handleReadReceipts}
+        />
       </SettingsSection>
 
       {/* Accessibility */}

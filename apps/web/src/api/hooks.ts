@@ -18,6 +18,7 @@ import {
   revisionsApi,
   savedQueriesApi,
   searchApi,
+  sharesApi,
   tagsApi,
   transcribeApi,
   trashApi,
@@ -484,8 +485,13 @@ export function useAcceptSuggestedLink() {
   const invalidate = useInvalidateNotes();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ noteId, input }: { noteId: string; input: { mentionId?: string; all?: boolean } }) =>
-      linksApi.convertMentions(noteId, input),
+    mutationFn: ({
+      noteId,
+      input,
+    }: {
+      noteId: string;
+      input: { mentionId?: string; all?: boolean };
+    }) => linksApi.convertMentions(noteId, input),
     onSuccess: () => {
       invalidate();
       void qc.invalidateQueries({ queryKey: ['insights', 'suggested-links'] });
@@ -574,5 +580,44 @@ export function useEmbeddingsBackfill() {
   return useMutation({
     mutationFn: embeddingsApi.backfill,
     onSuccess: () => void qc.invalidateQueries({ queryKey: ['embeddings', 'status'] }),
+  });
+}
+
+/* ===== Shares (F1144 Share management UI, F1147 Shared-with-me) ===== */
+
+/** All shares created by this device. */
+export function useShares() {
+  return useQuery({
+    queryKey: ['shares'],
+    queryFn: sharesApi.list,
+    staleTime: 15_000,
+  });
+}
+
+/** Access log for a single share. */
+export function useShareAudit(shareId: string | null) {
+  return useQuery({
+    queryKey: ['shares', 'audit', shareId ?? 'none'],
+    queryFn: () => sharesApi.audit(shareId as string),
+    enabled: shareId !== null,
+    staleTime: 15_000,
+  });
+}
+
+/** Revoke a share and invalidate the shares list. */
+export function useRevokeShare() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => sharesApi.revoke(id),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ['shares'] }),
+  });
+}
+
+/** Items shared with this device by others. */
+export function useSharedWithMe() {
+  return useQuery({
+    queryKey: ['shared-with-me'],
+    queryFn: sharesApi.sharedWithMe,
+    staleTime: 15_000,
   });
 }
