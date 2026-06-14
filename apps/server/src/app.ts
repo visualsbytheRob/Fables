@@ -12,6 +12,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
 import { CollabService } from './collab/service.js';
 import { ExtendedVaultService } from './vault/extended-service.js';
+import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -80,7 +81,11 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // Encrypted vault service (F1211–F1220) — locked until a passphrase unlock.
   // ExtendedVaultService is a strict superset of VaultService; it adds binary
   // blob seal/open (F1214) and data-key exposure for the backup v2 format (F1218).
-  app.decorate('vault', new ExtendedVaultService(db));
+  const vault = new ExtendedVaultService(db);
+  app.decorate('vault', vault);
+  // Let the encrypted-attachment module reach the data key without touching the
+  // vault's private field (F1214).
+  registerVaultDataKeyGetter(vault, () => vault.currentDataKey());
 
   app.addHook('onClose', async () => {
     await collab.shutdown();

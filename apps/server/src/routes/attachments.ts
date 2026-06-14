@@ -1,4 +1,3 @@
-import fs from 'node:fs';
 import multipart, { type MultipartFile } from '@fastify/multipart';
 import { AppError, notFound, validation, type AttachmentId, type NoteId } from '@fables/core';
 import type { FastifyPluginAsync } from 'fastify';
@@ -6,12 +5,11 @@ import { z } from 'zod';
 import { paginated, parsePagination } from '../api/envelope.js';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
+import { gcAttachments, removeAttachmentFile } from '../attachments/store.js';
 import {
-  attachmentPath,
-  gcAttachments,
-  removeAttachmentFile,
-  saveAttachmentFile,
-} from '../attachments/store.js';
+  saveAttachmentFileEncrypted,
+  readAttachmentFileDecrypted,
+} from '../vault/attachment-crypto.js';
 import { withTransaction } from '../db/connection.js';
 import { attachmentsRepo } from '../db/repos/attachments.js';
 import { notesRepo } from '../db/repos/notes.js';
@@ -114,7 +112,8 @@ export const attachmentsRoutes: FastifyPluginAsync = async (app) => {
     }
 
     const hash = sha256Hex(content);
-    saveAttachmentFile(app.dataDir, hash, content);
+    // Encrypt at rest when the vault is unlocked (F1214); plaintext otherwise.
+    saveAttachmentFileEncrypted(app.dataDir, hash, content, app.vault);
     const attachment = attachmentsRepo(app.db).create({
       noteId: noteIdField as NoteId | null,
       filename: part.filename || 'untitled',
@@ -139,14 +138,16 @@ export const attachmentsRoutes: FastifyPluginAsync = async (app) => {
     const { id } = parseWith(idParamsSchema, request.params, 'params');
     const attachment = attachmentsRepo(app.db).get(id as AttachmentId);
     if (!attachment) throw notFound('Attachment', id);
-    const file = attachmentPath(app.dataDir, attachment.hash);
-    if (!fs.existsSync(file)) throw notFound('Attachment file', id);
+    // Decrypts when the file was stored encrypted; throws FORBIDDEN if the vault
+    // is locked, returns null if no file exists (F1214).
+    const bytes = readAttachmentFileDecrypted(app.dataDir, attachment.hash, app.vault);
+    if (bytes === null) throw notFound('Attachment file', id);
     const safeName = attachment.filename.replace(/["\\\r\n]/g, '_');
     return reply
       .header('content-type', attachment.mime)
-      .header('content-length', attachment.size)
+      .header('content-length', bytes.byteLength)
       .header('content-disposition', `inline; filename="${safeName}"`)
-      .send(fs.createReadStream(file));
+      .send(bytes);
   });
 
   app.delete('/attachments/:id', async (request) => {

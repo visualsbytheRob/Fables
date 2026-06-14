@@ -27,7 +27,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { packSealed, sealSync, openSync, unpackSealed } from '@fables/core';
+import { AppError, packSealed, sealSync, openSync, unpackSealed } from '@fables/core';
 import type { DataKey } from '@fables/core';
 import type { VaultService } from './service.js';
 
@@ -145,9 +145,9 @@ export function readAttachmentFileDecrypted(
   if (fs.existsSync(encPath)) {
     const dek = getDataKey(vault);
     if (dek === null) {
-      throw Object.assign(
-        new Error('attachment is encrypted — vault must be unlocked to read it'),
-        { code: 'FORBIDDEN' },
+      throw new AppError(
+        'FORBIDDEN',
+        'attachment is encrypted — vault must be unlocked to read it',
       );
     }
     const fileBytes = fs.readFileSync(encPath);

@@ -1654,7 +1654,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1211 — Encrypted vault mode: note bodies/titles encrypted at rest
 - [x] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
 - [ ] F1213 — Encrypted FTS approach: in-memory index built post-unlock
-- [ ] F1214 — Encrypted attachments with streaming encrypt/decrypt
+- [x] F1214 — Encrypted attachments with streaming encrypt/decrypt
 - [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
 - [x] F1216 — Decrypt-on-read caching with memory bounds
 - [x] F1217 — Write-path encryption with crash-safe ordering
