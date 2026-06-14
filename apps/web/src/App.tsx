@@ -17,6 +17,7 @@ import {
   Puzzle,
   Search,
   Settings,
+  Share2,
   Shapes,
   ThemeProvider,
   ToastProvider,
@@ -133,6 +134,13 @@ const ExampleGalleryPage = lazy(() =>
 );
 const PluginInstallPage = lazy(() =>
   import('./plugins/PluginInstallPage.js').then((m) => ({ default: m.PluginInstallPage })),
+);
+// Tier 2 Epic 13: Encrypted Vault / Sharing (F1144, F1147)
+const SharesPage = lazy(() =>
+  import('./shares/SharesPage.js').then((m) => ({ default: m.SharesPage })),
+);
+const SharedWithMePage = lazy(() =>
+  import('./shares/SharedWithMePage.js').then((m) => ({ default: m.SharedWithMePage })),
 );
 
 const queryClient = new QueryClient({
@@ -293,6 +301,19 @@ function Shell() {
       keywords: 'plugin catalog browse install',
       run: () => navigate('/plugins/install'),
     },
+    // Tier 2 Epic 13: Sharing (F1144, F1147)
+    {
+      id: 'shares',
+      label: 'Manage Shares',
+      keywords: 'share sharing revoke access vault encrypt',
+      run: () => navigate('/shares'),
+    },
+    {
+      id: 'shared-with-me',
+      label: 'Shared with Me',
+      keywords: 'shared collaborate incoming access',
+      run: () => navigate('/shared-with-me'),
+    },
     ...registered,
     ...pluginCommands.map((r) => r.command),
   ];
@@ -354,6 +375,9 @@ function Shell() {
         </NavLink>
         <NavLink to="/plugins" aria-label="Plugins">
           <Puzzle size={16} aria-hidden="true" /> Plugins
+        </NavLink>
+        <NavLink to="/shares" aria-label="Shares">
+          <Share2 size={16} aria-hidden="true" /> Shares
         </NavLink>
         <div className="spacer" />
         <button
@@ -446,6 +470,9 @@ export function App() {
                       <Route path="plugins/gallery" element={lazyPage(<ExampleGalleryPage />)} />
                       <Route path="plugins/devkit" element={lazyPage(<PluginDevKitPage />)} />
                       <Route path="plugins/:pluginId" element={lazyPage(<PluginDetailPage />)} />
+                      {/* Tier 2 Epic 13: Encrypted Vault / Sharing (F1144, F1147) */}
+                      <Route path="shares" element={lazyPage(<SharesPage />)} />
+                      <Route path="shared-with-me" element={lazyPage(<SharedWithMePage />)} />
                       <Route path="*" element={<Placeholder title="Not found" day={1} />} />
                     </Route>
                   </Routes>
