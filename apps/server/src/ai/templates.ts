@@ -47,6 +47,29 @@ export const TEMPLATES = {
     template: 'Sources:\n{{sources}}\n\nQuestion: {{question}}',
     slots: ['sources', 'question'] as const,
   }),
+
+  /** RAG answer that carries earlier turns for context (F1324 conversation memory). */
+  qaFollowUp: defineTemplate({
+    id: 'qa-followup',
+    system:
+      'You answer the latest question using ONLY the provided sources. Cite sources by their ' +
+      '[n] markers. Use the conversation only to interpret what the new question refers to ' +
+      '(e.g. pronouns); still ground every claim in the sources. If they lack the answer, say so.',
+    template:
+      'Sources:\n{{sources}}\n\nConversation so far:\n{{history}}\n\nLatest question: {{question}}',
+    slots: ['sources', 'history', 'question'] as const,
+  }),
+
+  /** Propose next questions after an answer (F1328, structured → JSON). */
+  followUpSuggest: defineTemplate({
+    id: 'followup-suggest',
+    system:
+      'Given a question and the answer it received, propose 3 short, specific follow-up ' +
+      'questions the user might naturally ask next. Reply ONLY with JSON: ' +
+      '{"questions": ["...", "...", "..."]}. No prose.',
+    template: 'Question: {{question}}\n\nAnswer: {{answer}}',
+    slots: ['question', 'answer'] as const,
+  }),
 } as const;
 
 export type TemplateId = (typeof TEMPLATES)[keyof typeof TEMPLATES]['id'];

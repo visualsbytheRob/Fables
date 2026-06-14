@@ -1810,13 +1810,13 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1321 — Ask-your-vault: question → retrieval (Tier 1 hybrid search) → grounded answer
 - [x] F1322 — Citation rendering: every claim links to source notes
-- [ ] F1323 — Retrieval tuning UI (scope to notebooks/tags)
-- [ ] F1324 — Conversation memory within a Q&A session
+- [~] F1323 — Retrieval tuning UI (scope to notebooks/tags) — server scope (notebookId/limit/minScore) shipped; React panel deferred to web UI pass
+- [x] F1324 — Conversation memory within a Q&A session
 - [x] F1325 — Answer confidence signal (retrieval coverage heuristic)
 - [x] F1326 — "No good sources" honest refusal path
-- [ ] F1327 — Q&A history saved as searchable notes (opt-in)
-- [ ] F1328 — Follow-up question suggestions
-- [ ] F1329 — RAG quality eval set (50 labeled Q→A pairs over demo vault)
+- [x] F1327 — Q&A history saved as searchable notes (opt-in)
+- [x] F1328 — Follow-up question suggestions
+- [~] F1329 — RAG quality eval set (50 labeled Q→A pairs over demo vault) — needs a demo-vault fixture + scoring harness; deferred to a dedicated eval pass
 - [x] F1330 — RAG pipeline tests
 
 ### Note Intelligence (F1331–F1340)
