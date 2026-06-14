@@ -1658,7 +1658,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
 - [x] F1216 — Decrypt-on-read caching with memory bounds
 - [x] F1217 — Write-path encryption with crash-safe ordering
-- [ ] F1218 — Encrypted backup format (.fablesbak v2)
+- [x] F1218 — Encrypted backup format (.fablesbak v2)
 - [ ] F1219 — Performance benchmark: encrypted vs plaintext vault
 - [x] F1220 — Encrypted storage tests
 

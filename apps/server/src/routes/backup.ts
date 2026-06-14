@@ -8,6 +8,9 @@
  *  GET  /backup/export          — download a full vault export archive
  */
 
+import fs from 'node:fs';
+import path from 'node:path';
+import { AppError } from '@fables/core';
 import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { registerRoute } from '../api/registry.js';
@@ -19,6 +22,11 @@ import {
   runBackup,
   verifyBackup,
 } from '../services/backup.js';
+import {
+  isEncryptedBackup,
+  unwrapEncryptedBackup,
+  wrapEncryptedBackup,
+} from '../vault/backup-crypto.js';
 
 registerRoute({ method: 'GET', path: '/backup/status', summary: 'Backup status + last result' });
 registerRoute({ method: 'POST', path: '/backup/run', summary: 'Trigger an immediate backup' });
@@ -73,15 +81,37 @@ export const backupRoutes: FastifyPluginAsync = async (app) => {
   app.post('/backup/restore', async (request) => {
     const { archivePath } = parseWith(restoreBodySchema, request.body, 'body');
     const { restoreBackup } = await import('../services/backup.js');
-    const result = await restoreBackup(app.db, app.dataDir, archivePath);
-    return {
-      data: {
-        safetySnapshotPath: result.safetySnapshotPath,
-        restoredDbPath: result.restoredDbPath,
-        attachmentsRestored: result.attachmentsRestored,
-        note: 'Restart the server to load the restored database.',
-      },
-    };
+
+    // F1218: a v2 (encrypted) archive is decrypted to a temp file first, which
+    // requires the vault to be unlocked. v1 archives restore directly.
+    let restorePath = archivePath;
+    let tmpDecrypted: string | null = null;
+    if (fs.existsSync(archivePath)) {
+      const raw = new Uint8Array(fs.readFileSync(archivePath));
+      if (isEncryptedBackup(raw)) {
+        if (!app.vault.isUnlocked()) {
+          throw new AppError('FORBIDDEN', 'encrypted backup — unlock the vault to restore it');
+        }
+        const inner = app.vault.openBlob(unwrapEncryptedBackup(raw));
+        tmpDecrypted = path.join(app.dataDir, `.restore-dec-${Date.now()}.fablesbak`);
+        fs.writeFileSync(tmpDecrypted, Buffer.from(inner));
+        restorePath = tmpDecrypted;
+      }
+    }
+
+    try {
+      const result = await restoreBackup(app.db, app.dataDir, restorePath);
+      return {
+        data: {
+          safetySnapshotPath: result.safetySnapshotPath,
+          restoredDbPath: result.restoredDbPath,
+          attachmentsRestored: result.attachmentsRestored,
+          note: 'Restart the server to load the restored database.',
+        },
+      };
+    } finally {
+      if (tmpDecrypted) fs.rmSync(tmpDecrypted, { force: true });
+    }
   });
 
   app.post('/backup/verify', async (request) => {
@@ -92,12 +122,16 @@ export const backupRoutes: FastifyPluginAsync = async (app) => {
 
   app.get('/backup/export', async (_request, reply) => {
     const { bytes, manifest } = await exportEverything(app.db, app.dataDir);
+    // F1218: when the vault is unlocked, seal the whole archive (.fablesbak v2).
+    const out = app.vault.isUnlocked()
+      ? wrapEncryptedBackup(app.vault.sealBlob(bytes))
+      : Buffer.from(bytes);
     const stamp = manifest.createdAt.replace(/[:.]/g, '-');
     const filename = `fables-export-${stamp}.fablesbak`;
     return reply
-      .header('content-type', 'application/zip')
+      .header('content-type', 'application/octet-stream')
       .header('content-disposition', `attachment; filename="${filename}"`)
-      .header('content-length', bytes.byteLength)
-      .send(Buffer.from(bytes));
+      .header('content-length', out.byteLength)
+      .send(out);
   });
 };
