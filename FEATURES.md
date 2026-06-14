@@ -1725,7 +1725,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [ ] F1267 — Fuzzing pass on all parsers (markdown, FQL, .fable, imports)
 - [x] F1268 — Server-side request forgery guards on clipper/import URLs
 - [x] F1269 — Security headers verification suite
-- [ ] F1270 — Hardening regression tests
+- [x] F1270 — Hardening regression tests
 
 ### Threat Modeling & Audit (F1271–F1280)
 
