@@ -20,6 +20,7 @@ import { selectForSpeed } from './model-registry.js';
 
 export class AIRuntime {
   private readonly adapters: LanguageModelAdapter[] = [];
+  private killed = false;
 
   /** Register a backend. Earlier registrations are preferred when both are up. */
   register(adapter: LanguageModelAdapter): this {
@@ -27,8 +28,23 @@ export class AIRuntime {
     return this;
   }
 
-  /** The first adapter that is currently available, or null. */
+  /**
+   * Global AI kill switch (F1392). When on, the runtime reports no backend, so
+   * every feature degrades to its graceful `{ available: false }` path — a single
+   * flag that turns all AI off, instantly and everywhere.
+   */
+  setKillSwitch(on: boolean): void {
+    this.killed = on;
+  }
+
+  /** Whether the kill switch is currently engaged. */
+  get isKilled(): boolean {
+    return this.killed;
+  }
+
+  /** The first adapter that is currently available, or null (none when killed). */
   async activeAdapter(): Promise<LanguageModelAdapter | null> {
+    if (this.killed) return null;
     for (const adapter of this.adapters) {
       if (await adapter.isAvailable()) return adapter;
     }
@@ -47,7 +63,9 @@ export class AIRuntime {
    */
   async generatePreferring(preferredName: string, req: GenerateRequest): Promise<GenerateResponse> {
     const preferred = this.adapterNamed(preferredName);
-    if (preferred && (await preferred.isAvailable())) return preferred.generate(req);
+    if (!this.killed && preferred && (await preferred.isAvailable())) {
+      return preferred.generate(req);
+    }
     return this.generate(req);
   }
 

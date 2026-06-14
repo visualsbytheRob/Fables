@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { notesRepo } from '../db/repos/notes.js';
 import { suggestTags, suggestTitle, summarizeNote } from '../ai/note-intelligence.js';
 import { ragAnswer, saveQaNote, suggestFollowUps } from '../ai/rag.js';
+import { aiSettingsRepo, AI_FEATURES, DATA_USE } from '../ai/settings.js';
 import {
   REWRITE_MODES,
   outlineNote,
@@ -37,6 +38,16 @@ registerRoute({
   method: 'GET',
   path: '/ai/cloud/status',
   summary: 'Cloud backend availability (F1361/F1362)',
+});
+registerRoute({
+  method: 'GET',
+  path: '/ai/settings',
+  summary: 'AI settings + data-use (F1391/F1393)',
+});
+registerRoute({
+  method: 'PUT',
+  path: '/ai/settings',
+  summary: 'Update AI settings (F1391/F1392/F1394)',
 });
 registerRoute({
   method: 'POST',
@@ -91,6 +102,12 @@ registerRoute({
 
 const idParams = z.object({ id: z.string().min(1) });
 
+const settingsBody = z.object({
+  killSwitch: z.boolean().optional(),
+  featureToggles: z.record(z.enum(AI_FEATURES), z.boolean()).optional(),
+  excludedNotebooks: z.array(z.string().min(1)).max(1000).optional(),
+});
+
 const rewriteBody = z.object({
   mode: z.enum(REWRITE_MODES as [RewriteMode, ...RewriteMode[]]),
 });
@@ -138,6 +155,23 @@ export const aiRoutes: FastifyPluginAsync = async (app) => {
         byFeature: app.aiUsage.forMonth(month),
       },
     };
+  });
+
+  app.get('/ai/settings', async () => ({
+    data: { settings: aiSettingsRepo(app.db).get(), dataUse: DATA_USE },
+  }));
+
+  app.put('/ai/settings', async (request) => {
+    const body = parseWith(settingsBody, request.body, 'body');
+    const current = aiSettingsRepo(app.db).get();
+    const next = aiSettingsRepo(app.db).save({
+      killSwitch: body.killSwitch ?? current.killSwitch,
+      featureToggles: body.featureToggles ?? current.featureToggles,
+      excludedNotebooks: body.excludedNotebooks ?? current.excludedNotebooks,
+    });
+    // F1392: reflect the kill switch onto the live runtime immediately.
+    app.ai.setKillSwitch(next.killSwitch);
+    return { data: next };
   });
 
   app.get('/ai/cloud/status', async () => {

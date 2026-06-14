@@ -144,6 +144,22 @@ describe('RAG — grounded answers with citations (F1321/F1322/F1325/F1326)', ()
     expect(data.sources.length).toBeGreaterThan(0);
   });
 
+  it('never sends an encrypted/secret note to the model (F1395)', async () => {
+    // A note whose body is still in at-rest encrypted form must be excluded from
+    // retrieval — even when it would otherwise match.
+    const nb = notebooksRepo(app.db).create({ name: 'Sealed' });
+    notesRepo(app.db).create({
+      notebookId: nb.id,
+      title: 'Wyrmsecret',
+      body: 'enc:v1:opaque-ciphertext-about-wyrms',
+    });
+    await app.intel.queue.backfill();
+    const res = await ragAnswer(app.ai, app.intel, app.db, 'Tell me about Wyrmsecret');
+    if (!res.available || !res.ok) throw new Error('expected an outcome');
+    // The sealed note must never appear as a source.
+    expect(res.sources.every((s) => s.title !== 'Wyrmsecret')).toBe(true);
+  });
+
   it('validates the question (422 on empty)', async () => {
     const res = await app.inject({
       method: 'POST',

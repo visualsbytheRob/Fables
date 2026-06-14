@@ -17,6 +17,7 @@ import { AIRuntime } from './ai/runtime.js';
 import { OllamaAdapter } from './ai/ollama.js';
 import { ClaudeAdapter } from './ai/claude.js';
 import { usageMeter, type UsageMeter } from './ai/usage-meter.js';
+import { aiSettingsRepo } from './ai/settings.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -99,7 +100,11 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // is registered too but only becomes available when an API key is configured
   // and is opt-in (F1361–F1365). Absent/unavailable backends mean every AI
   // feature degrades gracefully (F1309). Tests register a mock adapter.
-  app.decorate('ai', new AIRuntime().register(new OllamaAdapter()).register(new ClaudeAdapter()));
+  const ai = new AIRuntime().register(new OllamaAdapter()).register(new ClaudeAdapter());
+  // Apply the persisted global kill switch on boot (F1392) so "AI off" survives
+  // restarts — secret-by-default if the user turned everything off.
+  ai.setKillSwitch(aiSettingsRepo(db).get().killSwitch);
+  app.decorate('ai', ai);
   app.decorate('aiUsage', usageMeter(db));
 
   app.addHook('onClose', async () => {

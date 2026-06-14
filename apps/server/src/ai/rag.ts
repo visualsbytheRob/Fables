@@ -25,6 +25,7 @@ import type { AIRuntime } from './runtime.js';
 import type { AiOutcome } from './note-intelligence.js';
 import { fitToBudget } from './prompt.js';
 import { citationCoverage } from './guardrails.js';
+import { isAiVisible } from './settings.js';
 import { runStructuredTask, runTextTask } from './task-router.js';
 import { TEMPLATES } from './templates.js';
 
@@ -104,11 +105,16 @@ export async function ragAnswer(
   const limit = scope.limit ?? DEFAULT_LIMIT;
   const minScore = scope.minScore ?? DEFAULT_MIN_SCORE;
 
-  const hits = await intel.store.search(question, {
+  const retrieved = await intel.store.search(question, {
     limit,
     minScore,
     ...(scope.notebookId !== undefined ? { notebookId: scope.notebookId } : {}),
   });
+
+  // F1395: secret/encrypted content is invisible to AI — drop any retrieved note
+  // whose stored fields are still in at-rest encrypted form (e.g. a locked vault)
+  // so it can never reach the prompt or be cited.
+  const hits = retrieved.filter((h) => h.sourceType !== 'note' || isNoteAiVisible(db, h.id));
 
   // F1326: nothing relevant enough → refuse honestly, never call the model.
   if (hits.length === 0) {
@@ -166,6 +172,15 @@ export async function ragAnswer(
     // F1383: flag answers whose citations don't hold up against the sources.
     citationsValid: !citationCoverage(answer, sources.length).tripped,
   };
+}
+
+/** Whether a note's stored fields are plaintext (AI-visible) and not encrypted (F1395). */
+function isNoteAiVisible(db: Db, id: string): boolean {
+  const row = db.prepare('SELECT title, body FROM notes WHERE id = ?').get(id) as
+    | { title: string; body: string }
+    | undefined;
+  if (!row) return false;
+  return isAiVisible({ title: row.title, body: row.body });
 }
 
 /** Full note body for grounding (falls back to the search snippet for other types). */
