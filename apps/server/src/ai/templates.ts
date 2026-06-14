@@ -191,6 +191,95 @@ export const TEMPLATES = {
     template: 'Branch:\n{{branch}}',
     slots: ['branch'] as const,
   }),
+
+  // ── Character & dialogue (F1351–F1358) ─────────────────────────────────────
+
+  /** Generate dialogue grounded in a character sheet (F1351, free text). */
+  dialogueGen: defineTemplate({
+    id: 'dialogue-gen',
+    system:
+      'You write character dialogue. Stay strictly consistent with the character sheet — their ' +
+      'voice, values, and knowledge. Write only what this character would plausibly say in the ' +
+      'situation. Reply with ONLY the dialogue lines, no narration.',
+    template: 'Character sheet:\n{{sheet}}\n\nSituation:\n{{situation}}',
+    slots: ['sheet', 'situation'] as const,
+  }),
+
+  /** Distil a reusable voice card from a character's lines (F1352, structured → JSON). */
+  voiceCard: defineTemplate({
+    id: 'voice-card',
+    system:
+      "You profile a character's speech. From the sample lines, extract their voice. Reply " +
+      'ONLY with JSON: {"register": "...", "quirks": ["..."], "vocabulary": ["..."], ' +
+      '"catchphrases": ["..."]}. Keep lists short and concrete. No prose.',
+    template: 'Character: {{name}}\n\nSample lines:\n{{lines}}',
+    slots: ['name', 'lines'] as const,
+  }),
+
+  /** Polish a dialogue passage for subtext and brevity (F1353, free text). */
+  dialoguePolish: defineTemplate({
+    id: 'dialogue-polish',
+    system:
+      'You are a dialogue editor. Tighten the passage: cut filler, add subtext, keep each ' +
+      "character's voice. Preserve who says what. Reply with ONLY the polished dialogue.",
+    template: 'Dialogue:\n{{dialogue}}',
+    slots: ['dialogue'] as const,
+  }),
+
+  /** In-character reply for NPC interview mode (F1354, free text). */
+  npcInterview: defineTemplate({
+    id: 'npc-interview',
+    system:
+      'You role-play a character for their author. Answer strictly in character, grounded in ' +
+      'the sheet; if asked something the character would not know, react as they would. Never ' +
+      "break character or mention being an AI. Reply with ONLY the character's response.",
+    template:
+      'Character sheet:\n{{sheet}}\n\nConversation so far:\n{{history}}\n\nAuthor asks: {{question}}',
+    slots: ['sheet', 'history', 'question'] as const,
+  }),
+
+  /** Extract entity facts from an interview transcript (F1355, structured → JSON). */
+  factExtract: defineTemplate({
+    id: 'fact-extract',
+    system:
+      'You extract durable character facts from an interview transcript. Only include facts the ' +
+      'character actually stated about themselves. Reply ONLY with JSON: ' +
+      '{"facts": ["..."]}. No speculation. No prose.',
+    template: 'Transcript:\n{{transcript}}',
+    slots: ['transcript'] as const,
+  }),
+
+  /** Suggest relationship dynamics between characters (F1356, structured → JSON). */
+  relationshipDynamics: defineTemplate({
+    id: 'relationship-dynamics',
+    system:
+      'You suggest relationship dynamics between characters from their facts and connections. ' +
+      'Propose tensions, alliances, or histories worth developing. Reply ONLY with JSON: ' +
+      '{"dynamics": [{"between": "A & B", "dynamic": "..."}]}. No prose.',
+    template: 'Characters and connections:\n{{graph}}',
+    slots: ['graph'] as const,
+  }),
+
+  /** Generate world-consistent names (F1357, structured → JSON). */
+  nameGen: defineTemplate({
+    id: 'name-gen',
+    system:
+      'You generate names that fit a fictional world. Match the linguistic feel of the world ' +
+      'description. Reply ONLY with JSON: {"names": ["..."]}. No prose.',
+    template: 'World:\n{{world}}\n\nGenerate names for: {{kind}}',
+    slots: ['world', 'kind'] as const,
+  }),
+
+  /** Summarise a character's arc across story branches (F1358, structured → JSON). */
+  arcTracker: defineTemplate({
+    id: 'arc-tracker',
+    system:
+      "You track a character's arc. From the scenes (which may span branches), summarise how " +
+      'the character changes and list the key turning points. Reply ONLY with JSON: ' +
+      '{"summary": "...", "turningPoints": ["..."]}. No prose.',
+    template: 'Character: {{name}}\n\nScenes:\n{{scenes}}',
+    slots: ['name', 'scenes'] as const,
+  }),
 } as const;
 
 export type TemplateId = (typeof TEMPLATES)[keyof typeof TEMPLATES]['id'];

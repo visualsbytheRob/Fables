@@ -1847,16 +1847,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Character & Dialogue (F1351–F1360)
 
-- [ ] F1351 — Entity-grounded dialogue: lines consistent with character sheets
-- [ ] F1352 — Voice cards: speech patterns per character
-- [ ] F1353 — Dialogue polish pass (subtext, brevity)
-- [ ] F1354 — NPC interview mode (chat with a character to develop them)
-- [ ] F1355 — Interview transcripts → entity fact extraction
-- [ ] F1356 — Relationship dynamics suggestions from entity graph
-- [ ] F1357 — Name generator with world-consistency
-- [ ] F1358 — Character arc tracker across story branches
-- [ ] F1359 — Dialogue eval set
-- [ ] F1360 — Character AI tests
+- [x] F1351 — Entity-grounded dialogue: lines consistent with character sheets
+- [x] F1352 — Voice cards: speech patterns per character
+- [x] F1353 — Dialogue polish pass (subtext, brevity)
+- [x] F1354 — NPC interview mode (chat with a character to develop them)
+- [x] F1355 — Interview transcripts → entity fact extraction
+- [x] F1356 — Relationship dynamics suggestions from entity graph
+- [x] F1357 — Name generator with world-consistency
+- [x] F1358 — Character arc tracker across story branches
+- [x] F1359 — Dialogue eval set
+- [x] F1360 — Character AI tests
 
 ### Cloud LLM Adapter — Claude (F1361–F1370)
 
