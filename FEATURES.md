@@ -1782,16 +1782,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Local Model Runtime (F1301–F1310)
 
-- [ ] F1301 — Ollama adapter: detect, list models, health check
+- [x] F1301 — Ollama adapter: detect, list models, health check
 - [ ] F1302 — llama.cpp server adapter as alternative backend
-- [ ] F1303 — Backend abstraction: one interface, pluggable engines
-- [ ] F1304 — Model capability registry (context size, speed class)
+- [x] F1303 — Backend abstraction: one interface, pluggable engines
+- [x] F1304 — Model capability registry (context size, speed class)
 - [ ] F1305 — Streaming token output through server to UI
 - [ ] F1306 — Request queue with cancellation
 - [ ] F1307 — Resource guardrails (no AI when battery/CPU constrained, configurable)
 - [ ] F1308 — Model download guidance UI (not bundled)
-- [ ] F1309 — Zero-AI graceful mode: every feature optional
-- [ ] F1310 — Runtime adapter tests with mock backend
+- [x] F1309 — Zero-AI graceful mode: every feature optional
+- [x] F1310 — Runtime adapter tests with mock backend
 
 ### Prompt Infrastructure (F1311–F1320)
 
