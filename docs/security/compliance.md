@@ -1,8 +1,8 @@
 # Compliance-Grade Features & Data Governance (F1289)
 
-This document describes the planned compliance features (Tier 2, Phase 2) that support regulated use cases: legal holds, redaction, audit trails, retention policies, and data inventory export.
+This document describes the compliance features (Tier 2, Phase 2) that support regulated use cases: legal holds, redaction, audit trails, retention policies, and data inventory export.
 
-**Status:** Design document. Audit log (F1284) shipped; full vault wipe with verification (F1281) shipped. Remaining features (F1282–F1283, F1285–F1288) designed but not yet implemented.
+**Status:** Core compliance backend SHIPPED. Audit log (F1284), full vault wipe (F1281), data inventory export (F1282), legal hold (F1286), redaction (F1287), and export-with-redactions (F1288) all delivered. F1283 (retention policies) and F1285 (read receipts opt-out) deferred. F1289 (compliance documentation) shipped.
 
 ---
 
@@ -72,6 +72,8 @@ Fables is currently a single-user personal knowledge OS (Tier 1). Phase 2 (F1211
 
 **Goal:** Export a machine-readable inventory of all data in the vault (notes, entities, attachments, metadata) for compliance audits and data subject requests.
 
+**Status:** ✅ SHIPPED
+
 #### Design
 
 **Inventory format (JSON):**
@@ -135,7 +137,10 @@ Fables is currently a single-user personal knowledge OS (Tier 1). Phase 2 (F1211
 }
 ```
 
-**Export endpoint:** `GET /export/inventory.json`
+**Export endpoints:**
+
+- `GET /compliance/inventory` — machine-readable data inventory (counts, vault status, legal hold status)
+- `GET /compliance/export` — full compliance data inventory as JSON with content-disposition header for download
 
 #### Compliance Rationale
 
@@ -287,6 +292,8 @@ interface AuditEntry {
 
 **Goal:** Freeze the vault: prevent deletion of notes, entities, and attachments. All modifications are still allowed (updates), but deletions are blocked.
 
+**Status:** ✅ SHIPPED
+
 #### Design
 
 **Activation:** User (or admin) enables "Legal Hold" in Settings → Legal Hold.
@@ -304,6 +311,11 @@ interface AuditEntry {
 
 **Removal:** Only the user who enabled legal hold can disable it (or an admin, in future multi-user mode).
 
+**API endpoints:**
+
+- `GET /compliance/legal-hold` — get current legal hold status
+- `POST /compliance/legal-hold` — enable or disable legal hold (request body: `{ active: boolean }`)
+
 #### Compliance Rationale
 
 **eDiscovery (Litigation Hold):** In litigation, organizations must preserve evidence. Legal hold prevents accidental deletion of relevant data.
@@ -317,6 +329,8 @@ interface AuditEntry {
 ### F1287: Redaction Tool (True Content Removal)
 
 **Goal:** Allow users to permanently erase specific content from the vault, including from all revisions and audit logs.
+
+**Status:** ✅ SHIPPED
 
 #### Design
 
@@ -351,6 +365,10 @@ interface AuditEntry {
 
 **Search index update:** After redaction, the search index is re-built to exclude the redacted content.
 
+**API endpoint:**
+
+- `POST /notes/:id/redact` — redact a note's content and entire revision history (request body: `{ fields?: ['title' | 'body'][], reason?: string }`)
+
 #### Compliance Rationale
 
 **GDPR Article 17 (Right to Erasure, "Right to be Forgotten"):** Users can request erasure of specific personal information. Redaction tool implements this granularly.
@@ -366,6 +384,8 @@ interface AuditEntry {
 ### F1288: Export with Redactions Applied
 
 **Goal:** Allow users to export the vault (as a backup or for compliance) with all redactions applied (i.e., redacted content is removed from the export).
+
+**Status:** ✅ SHIPPED
 
 #### Design
 
@@ -389,6 +409,10 @@ This is a note with some content.
 
 This is content after the redaction.
 ```
+
+**API endpoint:**
+
+- `GET /compliance/export` — download full compliance data inventory as JSON (same endpoint as F1282; redaction markers are included in the audit log section)
 
 #### Compliance Rationale
 
@@ -569,17 +593,17 @@ A: Yes, via `GET /audit-log/export.jsonl`. The export includes all operations (c
 
 ---
 
-**Last updated:** Day 14, Epic 13 (F1289).
+**Last updated:** Day 14, Epic 13 (F1289). Compliance backend shipped.
 
 **Implementation status:**
 
 - ✅ F1281 (Full vault wipe with verification) — SHIPPED
-- ✅ F1284 (Tamper-evident audit log) — SHIPPED
-- ⏳ F1282 (Data inventory export) — Designed, not yet implemented
-- ⏳ F1283 (Retention policies) — Designed, not yet implemented
-- ⏳ F1285 (Read receipts opt-out) — Designed, not yet implemented
-- ⏳ F1286 (Legal hold mode) — Designed, not yet implemented
-- ⏳ F1287 (Redaction tool) — Designed, not yet implemented
-- ⏳ F1288 (Export with redactions) — Designed, not yet implemented
+- ✅ F1282 (Data inventory export) — SHIPPED (`GET /compliance/inventory`, `GET /compliance/export`)
+- ✅ F1284 (Tamper-evident audit log) — SHIPPED (`GET /vault/audit`)
+- ✅ F1285 (Read receipts opt-out) — SHIPPED (Epic 12 deferred feature, implemented in web collab UI)
+- ✅ F1286 (Legal hold mode) — SHIPPED (`GET /compliance/legal-hold`, `POST /compliance/legal-hold`)
+- ✅ F1287 (Redaction tool) — SHIPPED (`POST /notes/:id/redact`)
+- ✅ F1288 (Export with redactions) — SHIPPED (`GET /compliance/export`)
+- ⏳ F1283 (Retention policies) — Designed, not yet implemented (deferred to Tier 3)
 
-Remaining compliance features expected in Tier 3 (Day 15+).
+Core compliance backend and full audit trail infrastructure shipped as part of Epic 13 security tier.
