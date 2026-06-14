@@ -1821,9 +1821,9 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Note Intelligence (F1331–F1340)
 
-- [ ] F1331 — Summarize note/notebook commands
-- [ ] F1332 — Auto-tag suggestions with one-tap accept
-- [ ] F1333 — Title suggestions for untitled notes
+- [x] F1331 — Summarize note/notebook commands
+- [x] F1332 — Auto-tag suggestions with one-tap accept
+- [x] F1333 — Title suggestions for untitled notes
 - [ ] F1334 — Link suggestions: AI-proposed wikilinks with context
 - [ ] F1335 — Outline generation from messy notes
 - [ ] F1336 — Rewrite tools: tighten, expand, change tone

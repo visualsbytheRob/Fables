@@ -13,6 +13,8 @@ import type { AppConfig } from './config.js';
 import { CollabService } from './collab/service.js';
 import { ExtendedVaultService } from './vault/extended-service.js';
 import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
+import { AIRuntime } from './ai/runtime.js';
+import { OllamaAdapter } from './ai/ollama.js';
 import { openDb, type Db } from './db/connection.js';
 import { instrumentDb } from './db/instrument.js';
 import { migrate } from './db/migrate.js';
@@ -39,6 +41,8 @@ declare module 'fastify' {
     /** Encrypted vault: passphrase unlock + at-rest field encryption (Epic 13).
      *  At runtime this is always an ExtendedVaultService (a strict superset). */
     vault: ExtendedVaultService;
+    /** AI runtime: pluggable language-model backends; optional/graceful (Epic 14). */
+    ai: AIRuntime;
   }
 }
 
@@ -86,6 +90,10 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // Let the encrypted-attachment module reach the data key without touching the
   // vault's private field (F1214).
   registerVaultDataKeyGetter(vault, () => vault.currentDataKey());
+
+  // AI runtime (Epic 14) — Ollama backend by default; absent/unavailable means
+  // every AI feature degrades gracefully (F1309). Tests register a mock adapter.
+  app.decorate('ai', new AIRuntime().register(new OllamaAdapter()));
 
   app.addHook('onClose', async () => {
     await collab.shutdown();
