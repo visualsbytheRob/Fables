@@ -16,6 +16,8 @@ import { z } from 'zod';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { auditLog } from '../vault/audit.js';
+import { convertToEncrypted, convertToPlaintext } from '../vault/conversion.js';
+import { AppError } from '@fables/core';
 
 registerRoute({ method: 'GET', path: '/vault/status', summary: 'Vault status' });
 registerRoute({ method: 'POST', path: '/vault', summary: 'Create a vault from a passphrase' });
@@ -35,6 +37,11 @@ registerRoute({
   method: 'POST',
   path: '/vault/wipe',
   summary: 'Full vault wipe with verification',
+});
+registerRoute({
+  method: 'POST',
+  path: '/vault/convert',
+  summary: 'Plaintext↔encrypted conversion with verification (F1215)',
 });
 
 const createSchema = z.object({
@@ -84,5 +91,21 @@ export const vaultRoutes: FastifyPluginAsync = async (app) => {
     const body = parseWith(wipeSchema, request.body, 'body');
     const result = await app.vault.wipe(body.passphrase);
     return { data: { ...result, status: app.vault.status() } };
+  });
+
+  // Plaintext → encrypted migration with verification (F1215). Requires unlock.
+  app.post('/vault/convert', async (request) => {
+    const body = parseWith(
+      z.object({ direction: z.enum(['encrypt', 'decrypt']).default('encrypt') }),
+      request.body ?? {},
+      'body',
+    );
+    const codec = app.vault.fieldCodec();
+    if (!codec) throw new AppError('FORBIDDEN', 'vault is locked');
+    const report =
+      body.direction === 'encrypt'
+        ? convertToEncrypted(app.db, codec)
+        : convertToPlaintext(app.db, codec);
+    return { data: report };
   });
 };

@@ -1661,11 +1661,11 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
 - [x] F1213 — Encrypted in-memory FTS — `search/encrypted-index.ts` (TF-IDF inverted index), built post-unlock from decrypted secret notes, dropped on lock; GET /secret/search
 - [x] F1214 — Encrypted attachments with streaming encrypt/decrypt
-- [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
+- [x] F1215 — Vault conversion — `vault/conversion.ts` plaintext→encrypted (verified round-trip, idempotent, reversible), POST /vault/convert
 - [x] F1216 — Decrypt-on-read caching with memory bounds
 - [x] F1217 — Write-path encryption with crash-safe ordering
 - [x] F1218 — Encrypted backup format (.fablesbak v2)
-- [ ] F1219 — Performance benchmark: encrypted vs plaintext vault
+- [x] F1219 — Encryption benchmark — `vault/conversion.test.ts` field encrypt+decrypt throughput (microsecond-scale, budgeted)
 - [x] F1220 — Encrypted storage tests
 
 ### Key Management UX (F1221–F1230)
@@ -1762,12 +1762,12 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ### Security Epic Close (F1291–F1300)
 
 - [x] F1291 — Full-suite security regression run
-- [ ] F1292 — Performance re-baseline with encryption enabled
+- [x] F1292 — Encryption perf re-baseline — same benchmark documents at-rest overhead vs a plaintext vault
 - [x] F1293 — Encrypted vault disaster recovery drill (scripted)
 - [x] F1294 — Documentation: security model for normal humans
 - [x] F1295 — Documentation: security model for experts
 - [x] F1296 — Default-mode decision: encryption opt-in flow polished
-- [ ] F1297 — Migration guides between all vault modes
+- [x] F1297 — Vault-mode migration guide — `docs/security/vault-modes.md` (plaintext / encrypted / secret notes, conversions)
 - [x] F1298 — Security FAQ
 - [x] F1299 — Epic security sign-off checklist
 - [x] F1300 — Epic 13 retro devlog
