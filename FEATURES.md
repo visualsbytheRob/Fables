@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Routes under /cards + /review + /notes/:id/cards/sync. **3,225 tests green across 293 files. CI green.** Next: F1721 (Review Experience). Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 17):** Epic 17 (Audio Fables) server foundation **COMPLETE** — F1601–F1700 all resolved ([x] shipped or [~] web/Web-Audio-layer-deferred). Shipped: pluggable TTS runtime + Piper adapter + content-addressed cache (hit-rate + LRU + priority queue), voice casting (attribution/separation/resolution + cast sheets), narration renderer (scene + timeline + WAV pre-render), soundscapes (Forge bindings/triggers + CC0 library + mixer), read-along alignment, recording studio (content-addressed takes + recording plan), audiobook export (chapters/metadata/cue), playback (resume/queue/pins/stats), accessibility (transcripts/VTT/spoken menus + mono/balance/normalize), and the end-to-end pipeline test. Migrations 030–034. `docs/audio/tts.md`, `docs/audio/guide.md`, `docs/devlog/epic-17.md`. **3,164 tests green across 286 files. CI green.** Next: F1701 (Epic 18 — Spaced Repetition & Learning). The Web-Audio/PWA playback, editor, mic, and codec layers are deferred-with-reason. Prior: Epic 16 (Canvas) server foundation complete; earlier Tier-2 epics 11–15. The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2348,16 +2348,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Review Experience (F1721–F1730)
 
-- [ ] F1721 — Phone-first review UI (big tap targets, swipe ratings)
-- [ ] F1722 — Keyboard review flow on desktop (1-4, space)
-- [ ] F1723 — Answer reveal animations (reduced-motion aware)
-- [ ] F1724 — Session length controls and auto-stop
-- [ ] F1725 — In-review source peek (jump to note context)
-- [ ] F1726 — Audio cards (TTS question/answer via Epic 17)
-- [ ] F1727 — Review offline with sync of logs
-- [ ] F1728 — Undo last rating
-- [ ] F1729 — Review session summary screen
-- [ ] F1730 — Review UX tests
+- [~] F1721 — Phone-first review UI (big tap targets, swipe ratings) — web; driven by /review/queue + /cards/:id/review
+- [~] F1722 — Keyboard review flow on desktop (1-4, space) — web key handling
+- [~] F1723 — Answer reveal animations (reduced-motion aware) — web animation
+- [~] F1724 — Session length controls and auto-stop — web session; /review/queue limit + /review/summary support it
+- [~] F1725 — In-review source peek (jump to note context) — web; card carries noteId/blockRef
+- [~] F1726 — Audio cards (TTS question/answer via Epic 17) — web integration of /tts/synthesize over card text
+- [~] F1727 — Review offline with sync of logs — web offline + Epic-12 sync; review_log is the synced record
+- [x] F1728 — Undo last rating — `undoLastReview` restores prior FSRS state + drops the log row, POST /cards/:id/undo
+- [x] F1729 — Review session summary screen — `sessionSummary` (counts by rating + distinct cards), GET /review/summary
+- [x] F1730 — Review UX tests — undo + summary repo + route suites
 
 ### Story-Driven Learning (F1731–F1740)
 

@@ -37,6 +37,12 @@ registerRoute({ method: 'POST', path: '/cards/:id/review', summary: 'Rate a card
 registerRoute({ method: 'POST', path: '/cards/:id/suspend', summary: 'Suspend a card (F1707)' });
 registerRoute({ method: 'POST', path: '/cards/:id/unsuspend', summary: 'Unsuspend a card' });
 registerRoute({ method: 'POST', path: '/cards/:id/bury', summary: 'Bury a card (F1707)' });
+registerRoute({ method: 'POST', path: '/cards/:id/undo', summary: 'Undo last rating (F1728)' });
+registerRoute({
+  method: 'GET',
+  path: '/review/summary',
+  summary: 'Review session summary (F1729)',
+});
 registerRoute({ method: 'GET', path: '/review/queue', summary: 'Due queue (F1705/F1706)' });
 registerRoute({ method: 'GET', path: '/review/counts', summary: 'Due/new/suspended counts' });
 registerRoute({ method: 'GET', path: '/review/orphans', summary: 'Orphaned cards (F1718)' });
@@ -172,6 +178,24 @@ export const cardRoutes: FastifyPluginAsync = async (app) => {
 
   app.get('/review/orphans', async () => {
     return { data: { cards: repo.orphans() } };
+  });
+
+  app.get('/review/summary', async (request) => {
+    const q = parseWith(
+      z.object({ since: z.string().datetime().optional() }),
+      request.query,
+      'query',
+    );
+    // Default window: the last 24 hours.
+    const since = q.since ?? new Date(Date.now() - 86_400_000).toISOString();
+    return { data: { since, ...repo.sessionSummary(since) } };
+  });
+
+  app.post('/cards/:id/undo', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const card = repo.undoLastReview(id);
+    if (!card) throw notFound('card or review to undo', id);
+    return { data: card };
   });
 
   app.get('/cards/:id', async (request) => {

@@ -317,6 +317,86 @@ export function cardsRepo(db: Db) {
       );
     },
 
+    /**
+     * Undo the most recent review of a card (F1728): restore the card to its
+     * pre-review memory state and lifecycle, and delete that review-log row. The
+     * prior log entry (if any) holds the state to restore to; if the undone review
+     * was the card's first, it returns to 'new'.
+     */
+    undoLastReview(id: string): Card | null {
+      const logs = this.reviewLog(id); // newest first
+      const last = logs[0];
+      if (!last) return null;
+      const prior = logs[1];
+      const card = this.get(id);
+      if (!card) return null;
+
+      const MS_PER_DAY = 86_400_000;
+      const tx = db.transaction(() => {
+        if (prior) {
+          // Restore to the state recorded by the previous review.
+          const due = new Date(
+            new Date(prior.reviewedAt).getTime() + prior.scheduledDays * MS_PER_DAY,
+          ).toISOString();
+          const lapses = card.lapses - (last.rating === 1 ? 1 : 0);
+          db.prepare(
+            `UPDATE cards SET state = ?, stability = ?, difficulty = ?, due = ?, reps = ?, lapses = ?, last_review = ?, updated_at = ?
+             WHERE id = ?`,
+          ).run(
+            last.stateBefore,
+            prior.stability,
+            prior.difficulty,
+            due,
+            Math.max(0, card.reps - 1),
+            Math.max(0, lapses),
+            prior.reviewedAt,
+            nowIso(),
+            id,
+          );
+        } else {
+          // The undone review was the first — reset to a brand-new card.
+          db.prepare(
+            `UPDATE cards SET state = 'new', stability = NULL, difficulty = NULL, due = NULL, reps = 0, lapses = 0, last_review = NULL, updated_at = ?
+             WHERE id = ?`,
+          ).run(nowIso(), id);
+        }
+        db.prepare('DELETE FROM review_log WHERE id = ?').run(last.id);
+      });
+      tx();
+      return this.get(id);
+    },
+
+    /**
+     * Review-session summary since an ISO timestamp (F1729): how many reviews,
+     * broken down by rating, and how many distinct cards were touched.
+     */
+    sessionSummary(since: string): {
+      reviews: number;
+      cards: number;
+      byRating: Record<'again' | 'hard' | 'good' | 'easy', number>;
+    } {
+      const rows = db
+        .prepare(
+          `SELECT rating, COUNT(*) AS n FROM review_log WHERE reviewed_at >= ? GROUP BY rating`,
+        )
+        .all(since) as { rating: number; n: number }[];
+      const byRating = { again: 0, hard: 0, good: 0, easy: 0 };
+      let reviews = 0;
+      for (const r of rows) {
+        reviews += r.n;
+        if (r.rating === 1) byRating.again = r.n;
+        else if (r.rating === 2) byRating.hard = r.n;
+        else if (r.rating === 3) byRating.good = r.n;
+        else if (r.rating === 4) byRating.easy = r.n;
+      }
+      const cards = (
+        db
+          .prepare('SELECT COUNT(DISTINCT card_id) AS n FROM review_log WHERE reviewed_at >= ?')
+          .get(since) as { n: number }
+      ).n;
+      return { reviews, cards, byRating };
+    },
+
     /** Review a card: apply FSRS, append the log, update state (F1701/F1703). */
     review(id: string, rating: Rating, now = nowIso(), options: ScheduleOptions = {}): Card | null {
       const card = this.get(id);
