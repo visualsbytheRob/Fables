@@ -64,6 +64,7 @@ describe('migrations', () => {
       '045-scripts',
       '046-profiles',
       '047-ai-runtime',
+      '048-secret-notes',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

@@ -1659,7 +1659,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1211 — Encrypted vault mode: note bodies/titles encrypted at rest
 - [x] F1212 — Searchable metadata strategy documented (what stays plaintext and why)
-- [ ] F1213 — Encrypted FTS approach: in-memory index built post-unlock
+- [x] F1213 — Encrypted in-memory FTS — `search/encrypted-index.ts` (TF-IDF inverted index), built post-unlock from decrypted secret notes, dropped on lock; GET /secret/search
 - [x] F1214 — Encrypted attachments with streaming encrypt/decrypt
 - [ ] F1215 — Vault conversion: plaintext → encrypted migration with verification
 - [x] F1216 — Decrypt-on-read caching with memory bounds
@@ -1696,16 +1696,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Per-Note Encryption (F1241–F1250)
 
-- [ ] F1241 — Secret notes: per-note encryption inside a plaintext vault
-- [ ] F1242 — Separate key path so vault passphrase ≠ secret-note passphrase
-- [ ] F1243 — Secret note UI treatment (locked cards, blur previews)
-- [ ] F1244 — Secret notes excluded from search/embeddings/exports by default
-- [ ] F1245 — Bulk convert notes to/from secret
-- [ ] F1246 — Secret notebooks (whole-notebook encryption)
-- [ ] F1247 — Link behavior into secret notes (stub until unlocked)
-- [ ] F1248 — Secret note session timeouts independent of vault
-- [ ] F1249 — Plugin API blind spot: secrets never exposed to plugins
-- [ ] F1250 — Per-note encryption tests
+- [x] F1241 — Secret notes — `vault/secret-notes.ts` per-note seal under a secret DEK (migration 048), works in a plaintext vault
+- [x] F1242 — Separate key path — `secret_box` config + own Argon2id master→DEK, independent of the vault passphrase
+- [~] F1243 — Secret note UI treatment — locked-card/blur rendering is web (server marks notes secret + reveals on unlock)
+- [x] F1244 — Secret notes excluded from search/exports — `n.secret = 0` in FQL/query/export; AI wall via `isEncryptedField`
+- [x] F1245 — Bulk convert to/from secret — `bulkConvert`, POST /secret/bulk; reveal restores plaintext
+- [~] F1246 — Secret notebooks — achievable now via bulk-convert of a notebook’s notes; a first-class notebook secret flag is future
+- [~] F1247 — Link stubs into secret notes — link rendering as a stub-until-unlocked is web (content is ciphertext server-side until reveal)
+- [x] F1248 — Independent session timeout — secret box has its own idle timer + auto-lock, separate from the vault
+- [x] F1249 — Plugin blind spot — capability handler excludes secret notes from notes.query and notes.get
+- [x] F1250 — Per-note encryption tests — `vault/secret-notes.test.ts` (8) + `routes/secret-notes.test.ts` (2) + FTS (45)
 
 ### Encrypted Sync & Collab (F1251–F1260)
 

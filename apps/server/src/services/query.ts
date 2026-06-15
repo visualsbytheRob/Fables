@@ -53,7 +53,10 @@ export function runFqlQuery(
 
   const column = SORT_COLUMNS[sort.key];
   const dir = sort.dir === 'asc' ? 'ASC' : 'DESC';
-  const conditions = ['n.trashed_at IS NULL', `(${where})`];
+  // Secret notes are excluded from normal search/query — their content is
+  // `enc:` ciphertext at rest and only the in-memory encrypted index (post
+  // secret-unlock) may surface them (F1244).
+  const conditions = ['n.trashed_at IS NULL', 'n.secret = 0', `(${where})`];
   const args: unknown[] = [...params];
 
   if (opts.cursor !== null) {

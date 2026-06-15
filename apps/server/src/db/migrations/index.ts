@@ -45,6 +45,7 @@ import { migration044BulkJournal } from './044-bulk-journal.js';
 import { migration045Scripts } from './045-scripts.js';
 import { migration046Profiles } from './046-profiles.js';
 import { migration047AiRuntime } from './047-ai-runtime.js';
+import { migration048SecretNotes } from './048-secret-notes.js';
 
 export interface Migration {
   id: number;
@@ -101,4 +102,5 @@ export const migrations: Migration[] = [
   migration045Scripts,
   migration046Profiles,
   migration047AiRuntime,
+  migration048SecretNotes,
 ];

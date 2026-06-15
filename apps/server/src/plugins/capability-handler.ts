@@ -21,7 +21,8 @@ function runFqlQuery(db: Db, fql: string, limit: number, cursor: string | null |
   const parsed = parseFql(fql);
   const compiled = compileFql(parsed.ast);
   const cursorClause = cursor ? `AND n.id > ?` : '';
-  const sql = `SELECT n.* FROM notes n WHERE (${compiled.where}) AND n.trashed_at IS NULL ${cursorClause} ORDER BY n.updated_at DESC LIMIT ?`;
+  // Secret notes are never visible to plugins (F1249) — a hard blind spot.
+  const sql = `SELECT n.* FROM notes n WHERE (${compiled.where}) AND n.trashed_at IS NULL AND n.secret = 0 ${cursorClause} ORDER BY n.updated_at DESC LIMIT ?`;
   const params: unknown[] = [...compiled.params, ...(cursor ? [cursor] : []), limit + 1];
   return db.prepare(sql).all(...params) as Array<{
     id: string;
@@ -124,7 +125,13 @@ export function buildCapabilityHandler(db: Db, pluginId: string) {
 
       case 'notes.get': {
         checkReadRate(pluginId);
-        const note = notes.get(call.params.id as NoteId);
+        const noteId = call.params.id as NoteId;
+        // Secret notes are invisible to plugins (F1249), even by direct id.
+        const secret = db.prepare('SELECT secret FROM notes WHERE id = ?').get(noteId) as
+          | { secret: number }
+          | undefined;
+        if (secret?.secret === 1) return null;
+        const note = notes.get(noteId);
         if (!note) return null;
         const noteTags = tags.tagsForNote(note.id);
         return { ...note, tags: noteTags.map((t) => t.name) };

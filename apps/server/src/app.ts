@@ -12,6 +12,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import type { AppConfig } from './config.js';
 import { CollabService } from './collab/service.js';
 import { ExtendedVaultService } from './vault/extended-service.js';
+import { SecretNotesService } from './vault/secret-notes.js';
 import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
 import { AIRuntime } from './ai/runtime.js';
 import { AiRequestQueue } from './ai/queue.js';
@@ -53,6 +54,8 @@ declare module 'fastify' {
     /** Encrypted vault: passphrase unlock + at-rest field encryption (Epic 13).
      *  At runtime this is always an ExtendedVaultService (a strict superset). */
     vault: ExtendedVaultService;
+    /** Secret notes: per-note encryption on an independent key path (F1241–F1250). */
+    secretNotes: SecretNotesService;
     /** AI runtime: pluggable language-model backends; optional/graceful (Epic 14). */
     ai: AIRuntime;
     /** Concurrency-limited, cancellable AI request queue (F1306). */
@@ -109,6 +112,7 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // blob seal/open (F1214) and data-key exposure for the backup v2 format (F1218).
   const vault = new ExtendedVaultService(db);
   app.decorate('vault', vault);
+  app.decorate('secretNotes', new SecretNotesService(db));
   // Let the encrypted-attachment module reach the data key without touching the
   // vault's private field (F1214).
   registerVaultDataKeyGetter(vault, () => vault.currentDataKey());
