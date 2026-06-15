@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) server foundation **COMPLETE** — F1701–F1800 all resolved ([x] shipped or [~] web/UX-layer-deferred). A faithful **FSRS-5** scheduler (pinned by exact forgetting-curve identities), card model + review log, authoring extractors (cloze/Q&A/auto) + live-link sync, decks as dynamic filters, story-driven review fables, memory insights, sibling/edge handling, habit + reminder logic, and Anki `.apkg` interop. Migrations 035–037. `docs/learning/guide.md`, `docs/devlog/epic-18.md`. **3,301 tests green. CI green.** Next: F1801 (Epic 19 — Cinematic & Motion). Prior epics 11–17 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** Epic 18 (Spaced Repetition & Learning) server foundation **COMPLETE** — F1701–F1800 all resolved ([x] shipped or [~] web/UX-layer-deferred). A faithful **FSRS-5** scheduler (pinned by exact forgetting-curve identities), card model + review log, authoring extractors (cloze/Q&A/auto) + live-link sync, decks as dynamic filters, story-driven review fables, memory insights, sibling/edge handling, habit + reminder logic, and Anki `.apkg` interop. Migrations 035–037. `docs/learning/guide.md`, `docs/devlog/epic-18.md`. **Epic 19 (Story Interop & Distribution) underway — .fablepack Format F1801–F1810 COMPLETE** (deterministic container + manifest + sha256 hash-tree integrity + optional HMAC signing, `docs/fablepack-spec.md`; routes /stories/:id/pack + /packs/validate + /packs/unpack). **3,310 tests green. CI green.** Next: F1811 (Standalone Player). Prior epics 11–18 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 18 detail):** **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1791 (Learning Epic Close). (Detail line below retained.)
 
@@ -2462,16 +2462,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### .fablepack Format (F1801–F1810)
 
-- [ ] F1801 — Container spec: story source, bytecode, assets, casting, manifest, signature
-- [ ] F1802 — Deterministic packing (reproducible archives)
-- [ ] F1803 — Pack/unpack CLI and UI
-- [ ] F1804 — Manifest schema with capability requirements (audio, AI, knowledge bindings)
-- [ ] F1805 — Dependency-free packs (knowledge refs snapshotted or stubbed)
-- [ ] F1806 — Pack validation + content warnings metadata
-- [ ] F1807 — Version compatibility ranges in manifest
-- [ ] F1808 — Pack integrity (hash tree, optional signing)
-- [ ] F1809 — Spec document published in docs
-- [ ] F1810 — Format conformance tests
+- [x] F1801 — Container spec — `export/fablepack/pack.ts` (manifest + hash tree + signature)
+- [x] F1802 — Deterministic packing — sorted entries + zero timestamps; same input → byte-identical (tested)
+- [~] F1803 — Pack/unpack — `packFable`/`unpackFable` + routes ship; CLI/UI is web/cli
+- [x] F1804 — Manifest schema with capability requirements — `capabilities[]` (audio/ai/knowledge/images/soundscape)
+- [~] F1805 — Dependency-free packs — knowledge-ref snapshotting is a deeper pass; packs carry source/casting/assets
+- [x] F1806 — Pack validation + content warnings — `validatePack` + `contentWarnings[]`
+- [x] F1807 — Version compatibility ranges — `compat.min/max`
+- [x] F1808 — Pack integrity — sha256 hash tree + optional HMAC signature (tamper + signature tests)
+- [x] F1809 — Spec document — `docs/fablepack-spec.md`
+- [x] F1810 — Format conformance tests — determinism/round-trip/tamper/signing + route suites
 
 ### Standalone Player (F1811–F1820)
 
