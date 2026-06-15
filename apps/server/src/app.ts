@@ -16,6 +16,9 @@ import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
 import { AIRuntime } from './ai/runtime.js';
 import { OllamaAdapter } from './ai/ollama.js';
 import { ClaudeAdapter } from './ai/claude.js';
+import { TtsRuntime } from './audio/tts/runtime.js';
+import { PiperAdapter } from './audio/tts/piper.js';
+import { ttsSettingsRepo } from './audio/tts/settings.js';
 import { usageMeter, type UsageMeter } from './ai/usage-meter.js';
 import { aiSettingsRepo } from './ai/settings.js';
 import { ImporterRegistry } from './import/framework/index.js';
@@ -50,6 +53,8 @@ declare module 'fastify' {
     vault: ExtendedVaultService;
     /** AI runtime: pluggable language-model backends; optional/graceful (Epic 14). */
     ai: AIRuntime;
+    /** TTS runtime: pluggable speech engines; optional/graceful (Epic 17). */
+    tts: TtsRuntime;
     /** Local AI token-usage meter (F1367). */
     aiUsage: UsageMeter;
     /** Importer registry: source adapters keyed by name (Epic 15, F1409). */
@@ -114,6 +119,14 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   ai.setKillSwitch(aiSettingsRepo(db).get().killSwitch);
   app.decorate('ai', ai);
   app.decorate('aiUsage', usageMeter(db));
+
+  // TTS runtime (Epic 17) — a local Piper-class engine is preferred; it's only
+  // available when a binary + voice models are configured, so speech degrades
+  // gracefully to the web layer's Web Speech API (F1604) when absent. The
+  // persisted disable flag (F1608) is applied on boot.
+  const tts = new TtsRuntime().register(new PiperAdapter());
+  tts.setDisabled(ttsSettingsRepo(db).get().disabled);
+  app.decorate('tts', tts);
 
   // Importer registry (Epic 15): built-in source adapters register here; plugins
   // can add more via the importer SDK (F1409).

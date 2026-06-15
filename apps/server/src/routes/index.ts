@@ -46,6 +46,7 @@ import { transcribeRoutes } from './transcribe.js';
 import { trashRoutes } from './trash.js';
 import { worldRoutes } from './world.js';
 import { canvasRoutes } from './canvas.js';
+import { ttsRoutes } from './tts.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -76,6 +77,7 @@ export const routes: FastifyPluginAsync[] = [
   transclusionRoutes,
   worldRoutes,
   canvasRoutes,
+  ttsRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
