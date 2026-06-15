@@ -31,6 +31,12 @@ registerRoute({
   path: '/tts/synthesize',
   summary: 'Render speech, cached by content (F1603)',
 });
+registerRoute({ method: 'GET', path: '/tts/cache', summary: 'Synthesis cache hit-rate (F1692)' });
+registerRoute({
+  method: 'DELETE',
+  path: '/tts/cache',
+  summary: 'Clear the synthesis cache (F1693)',
+});
 
 const settingsBody = z.object({
   defaultVoiceId: z.string().min(1).nullable().optional(),
@@ -64,6 +70,15 @@ export const ttsRoutes: FastifyPluginAsync = async (app) => {
     const available = await app.tts.isAvailable();
     const voices = await app.tts.listVoices();
     return { data: { available, voices, cacheBytes: cache.totalBytes() } };
+  });
+
+  app.get('/tts/cache', async () => {
+    return { data: cache.stats() };
+  });
+
+  app.delete('/tts/cache', async () => {
+    const freed = cache.clear();
+    return { data: { cleared: true, bytesFreed: freed } };
   });
 
   app.get('/tts/settings', async () => {

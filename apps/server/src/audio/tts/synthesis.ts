@@ -38,8 +38,21 @@ interface CacheRow {
   audio: Buffer;
 }
 
+/** Cache hit-rate stats for tuning (F1692). */
+export interface CacheStats {
+  entries: number;
+  bytes: number;
+  hits: number;
+  misses: number;
+  /** hits / (hits + misses), 0 when never queried. */
+  hitRate: number;
+}
+
 /** Content-addressed audio cache backed by the tts_cache table (F1603). */
 export class SynthesisCache {
+  private hits = 0;
+  private misses = 0;
+
   constructor(private readonly db: Db) {}
 
   get(hash: string): SynthesisResult | null {
@@ -48,7 +61,11 @@ export class SynthesisCache {
         'SELECT voice_id, format, sample_rate, duration_ms, audio FROM tts_cache WHERE hash = ?',
       )
       .get(hash) as CacheRow | undefined;
-    if (!row) return null;
+    if (!row) {
+      this.misses++;
+      return null;
+    }
+    this.hits++;
     this.db
       .prepare('UPDATE tts_cache SET last_used = ? WHERE hash = ?')
       .run(new Date().toISOString(), hash);
@@ -103,6 +120,28 @@ export class SynthesisCache {
       removed += victim.bytes;
     }
     return removed;
+  }
+
+  /** Empty the cache entirely (disk-budget control, F1693). Returns bytes freed. */
+  clear(): number {
+    const freed = this.totalBytes();
+    this.db.prepare('DELETE FROM tts_cache').run();
+    return freed;
+  }
+
+  /** Hit-rate + size stats for cache tuning (F1692). */
+  stats(): CacheStats {
+    const row = this.db
+      .prepare('SELECT COUNT(*) AS n, COALESCE(SUM(bytes), 0) AS b FROM tts_cache')
+      .get() as { n: number; b: number };
+    const queried = this.hits + this.misses;
+    return {
+      entries: row.n,
+      bytes: row.b,
+      hits: this.hits,
+      misses: this.misses,
+      hitRate: queried > 0 ? this.hits / queried : 0,
+    };
   }
 }
 
