@@ -2607,29 +2607,29 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Automation Rules (F1911–F1920)
 
-- [ ] F1911 — Rule engine: triggers (events, schedules, FQL conditions) → actions
-- [ ] F1912 — Action library (move, tag, template, notify, export, run plugin)
-- [ ] F1913 — Rule builder UI (no-code, with FQL escape hatch)
-- [ ] F1914 — Dry-run mode for rules
-- [ ] F1915 — Rule run history with diffs
-- [ ] F1916 — Loop/cascade protection (rule firing limits)
-- [ ] F1917 — Rule templates gallery (inbox-zero, weekly review prep)
-- [ ] F1918 — Disable-on-error with notification
-- [ ] F1919 — Rule engine tests
-- [ ] F1920 — Automation docs
+- [x] F1911 — Rule engine — `automation/engine.ts` (triggers + conditions → action plan), migration 040
+- [x] F1912 — Action library — addTag/removeTag/move/setTitle/notify/runPlugin applied to notes
+- [~] F1913 — Rule builder UI — web no-code builder; the rule schema + run engine ship
+- [x] F1914 — Dry-run mode — `run(dryRun)` reports the diff without applying
+- [x] F1915 — Rule run history with diffs — `rule_runs` log, GET /automation/rules/:id/runs
+- [x] F1916 — Cascade protection — per-event rule cap (`runForEvent`)
+- [x] F1917 — Rule templates — GET /automation/templates (inbox-zero, auto-tag)
+- [x] F1918 — Disable-on-error — `disableOnError` parks a rule + records the reason
+- [x] F1919 — Rule engine tests — engine (40) + repo/route suites
+- [~] F1920 — Automation docs — power-user docs pass (F1990)
 
 ### Scheduled Jobs (F1921–F1930)
 
-- [ ] F1921 — Cron-style scheduler with human-readable recurrence UI
-- [ ] F1922 — Job types: backups, digests, re-indexing, rule triggers
-- [ ] F1923 — Job run log with durations and outcomes
-- [ ] F1924 — Missed-job catch-up policy (machine was asleep)
-- [ ] F1925 — Job concurrency limits
-- [ ] F1926 — Manual run-now for any job
-- [ ] F1927 — Job failure notifications with backoff
-- [ ] F1928 — Resource-aware scheduling (defer heavy jobs while active)
-- [ ] F1929 — Scheduler tests
-- [ ] F1930 — Jobs docs
+- [x] F1921 — Cron scheduler — `jobs/cron.ts` (parse/next/describe) + jobs model (migration 041)
+- [x] F1922 — Job types — backup/digest/reindex/rule (handler dispatch wired by the boot scheduler)
+- [x] F1923 — Job run log — `job_runs` (status + duration), GET /jobs/:id/runs
+- [x] F1924 — Missed-job catch-up — `missedRuns` over (lastRun, now], surfaced as `missed`
+- [x] F1925 — Job concurrency — `claim`/`running` guard prevents double-run
+- [x] F1926 — Manual run-now — POST /jobs/:id/run-now
+- [~] F1927 — Job failure notifications — notification/backoff layer (status logged)
+- [~] F1928 — Resource-aware scheduling — boot-scheduler policy; `due()` is concurrency-aware
+- [x] F1929 — Scheduler tests — cron (49) + jobs route suites
+- [~] F1930 — Jobs docs — power-user docs pass (F1990)
 
 ### Webhooks & Integrations (F1931–F1940)
 

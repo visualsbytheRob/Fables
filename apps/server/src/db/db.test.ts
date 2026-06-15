@@ -56,6 +56,8 @@ describe('migrations', () => {
       '037-learning-settings',
       '038-feedback',
       '039-generated-assets',
+      '040-automation',
+      '041-jobs',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
