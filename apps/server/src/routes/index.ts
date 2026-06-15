@@ -50,6 +50,7 @@ import { ttsRoutes } from './tts.js';
 import { castingRoutes } from './casting.js';
 import { narrationRoutes } from './narration.js';
 import { soundscapeRoutes } from './soundscape.js';
+import { readalongRoutes } from './readalong.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -84,6 +85,7 @@ export const routes: FastifyPluginAsync[] = [
   castingRoutes,
   narrationRoutes,
   soundscapeRoutes,
+  readalongRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
