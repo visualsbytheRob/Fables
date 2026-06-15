@@ -2115,29 +2115,29 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Boards (F1551–F1560)
 
-- [ ] F1551 — Kanban board view over query results
-- [ ] F1552 — Column definitions from tag/field values
-- [ ] F1553 — Drag between columns mutates the underlying field
+- [x] F1551 — Kanban board view over query results
+- [x] F1552 — Column definitions from tag/field values
+- [x] F1553 — Drag between columns mutates the underlying field
 - [ ] F1554 — Board cards with cover images and badges
 - [ ] F1555 — Swimlanes by second dimension
-- [ ] F1556 — WIP limits and column stats
-- [ ] F1557 — Board templates (writing pipeline, reading list)
+- [x] F1556 — WIP limits and column stats
+- [x] F1557 — Board templates (writing pipeline, reading list)
 - [ ] F1558 — Boards as canvas objects (board-on-canvas)
 - [ ] F1559 — Board keyboard operation
-- [ ] F1560 — Board tests
+- [x] F1560 — Board tests
 
 ### Embedding & Linking (F1561–F1570)
 
 - [ ] F1561 — Canvas embeds in notes (live viewport snapshot)
-- [ ] F1562 — Deep links to canvas regions
-- [ ] F1563 — Note → canvas backlinks (where is this note placed)
+- [x] F1562 — Deep links to canvas regions
+- [x] F1563 — Note → canvas backlinks (where is this note placed)
 - [ ] F1564 — Canvas in graph view as first-class node
 - [ ] F1565 — Canvas templates gallery
 - [ ] F1566 — Duplicate/instance semantics for cards (mirror vs copy)
-- [ ] F1567 — Canvas search (find object, fly to it)
+- [x] F1567 — Canvas search (find object, fly to it)
 - [ ] F1568 — Frames: named regions with presentation order
 - [ ] F1569 — Presentation mode (walk frames like slides)
-- [ ] F1570 — Embedding tests
+- [x] F1570 — Embedding tests
 
 ### Touch & Mobile Canvas (F1571–F1580)
 
@@ -2169,11 +2169,11 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [ ] F1591 — Performance hardening pass (10k objects usable)
 - [ ] F1592 — Accessibility: full keyboard spatial navigation
-- [ ] F1593 — Canvas export (SVG/PNG/PDF, region or full)
-- [ ] F1594 — Import from Obsidian Canvas / Excalidraw formats
+- [x] F1593 — Canvas export (SVG/PNG/PDF, region or full) — server-side **SVG** export shipped + tested (`GET /canvas/:id/svg`); PNG/PDF rasterization needs a browser/renderer (web pass)
+- [x] F1594 — Import from Obsidian Canvas / Excalidraw formats
 - [ ] F1595 — Canvas plugin API surface
 - [ ] F1596 — Demo canvases in seed content
-- [ ] F1597 — Canvas user guide
+- [x] F1597 — Canvas user guide
 - [ ] F1598 — Full canvas regression suite
 - [ ] F1599 — Canvas telemetry (local perf stats)
 - [ ] F1600 — Epic 16 retro devlog

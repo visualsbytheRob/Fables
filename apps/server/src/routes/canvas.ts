@@ -18,11 +18,43 @@ import { canvasRepo } from '../db/repos/canvas.js';
 import { canvasEdgesRepo } from '../db/repos/canvas-edges.js';
 import { canConnect, materializeConnectorLink } from '../canvas/connections.js';
 import { buildStoryMap } from '../canvas/story-map.js';
+import { importObsidianCanvas, importExcalidraw } from '../canvas/canvas-interop.js';
+import { exportCanvasSvg } from '../canvas/svg-export.js';
+import { buildBoard, type BoardItem } from '../canvas/boards.js';
+import { noteCanvasPlacements, searchCanvasObjects } from '../canvas/embedding.js';
+import type { ObjectInput } from '../db/repos/canvas.js';
+import type { CanvasObjectKind } from '../canvas/types.js';
+import { notesRepo } from '../db/repos/notes.js';
+import { notebooksRepo } from '../db/repos/notebooks.js';
+import { tagsRepo } from '../db/repos/tags.js';
+import { runFqlQuery } from '../services/query.js';
+import type { NoteId, NotebookId } from '@fables/core';
 
 registerRoute({
   method: 'POST',
   path: '/canvas/:id/story-map',
   summary: 'Generate a story map (knot cards + diverts) from Forge source (F1541)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/canvas/:id/import',
+  summary: 'Import an Obsidian Canvas / Excalidraw file onto a canvas (F1594)',
+});
+registerRoute({
+  method: 'GET',
+  path: '/canvas/:id/svg',
+  summary: 'Export a canvas as SVG (F1593)',
+});
+registerRoute({ method: 'GET', path: '/canvas/search', summary: 'Search canvas objects (F1567)' });
+registerRoute({
+  method: 'POST',
+  path: '/board',
+  summary: 'Build a Kanban board from notes (F1551)',
+});
+registerRoute({
+  method: 'GET',
+  path: '/notes/:id/canvas-placements',
+  summary: 'Canvases where a note is placed (F1563)',
 });
 registerRoute({ method: 'GET', path: '/canvas/:id/edges', summary: 'List connectors (F1521)' });
 registerRoute({
@@ -60,6 +92,21 @@ const edgeBody = z.object({
 });
 
 const storyMapBody = z.object({ source: z.string().min(1).max(2_000_000) });
+
+const importBody = z.object({
+  format: z.enum(['obsidian', 'excalidraw']),
+  source: z.string().min(1).max(20_000_000),
+});
+
+const boardBody = z.object({
+  query: z.string().max(2000).optional(),
+  notebookId: z.string().min(1).optional(),
+  groupBy: z.string().min(1).max(60),
+  columnOrder: z.array(z.string()).max(50).optional(),
+  wipLimits: z.record(z.string(), z.number().int().min(0)).optional(),
+});
+
+const searchQuery = z.object({ q: z.string().min(1).max(200) });
 
 const OBJECT_KINDS = [
   'note',
@@ -187,6 +234,82 @@ export const canvasRoutes: FastifyPluginAsync = async (app) => {
     const { id, edgeId } = parseWith(edgeParams, request.params, 'params');
     if (!canvasEdgesRepo(app.db).remove(id, edgeId)) throw notFound('CanvasEdge', edgeId);
     return { data: { deleted: true } };
+  });
+
+  // F1594: import an Obsidian Canvas / Excalidraw file onto this canvas.
+  app.post('/canvas/:id/import', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const { format, source } = parseWith(importBody, request.body, 'body');
+    if (!repo().get(id)) throw notFound('Canvas', id);
+    const map = format === 'obsidian' ? importObsidianCanvas(source) : importExcalidraw(source);
+    const objects: ObjectInput[] = map.objects.map((o) => ({
+      ...(o.id !== undefined ? { id: o.id } : {}),
+      kind: o.kind as CanvasObjectKind,
+      x: o.x,
+      y: o.y,
+      width: o.width,
+      height: o.height,
+      ...(o.z !== undefined ? { z: o.z } : {}),
+      ...(o.data !== undefined ? { data: o.data } : {}),
+    }));
+    repo().replaceObjects(id, objects);
+    const edges = canvasEdgesRepo(app.db);
+    for (const e of map.edges) {
+      edges.create(id, {
+        fromId: e.fromId,
+        toId: e.toId,
+        ...(e.kind !== undefined ? { kind: e.kind } : {}),
+        ...(e.label !== undefined ? { label: e.label } : {}),
+      });
+    }
+    return { data: { objects: objects.length, edges: map.edges.length } };
+  });
+
+  // F1593: export the canvas as a standalone SVG.
+  app.get('/canvas/:id/svg', async (request, reply) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    if (!repo().get(id)) throw notFound('Canvas', id);
+    const svg = exportCanvasSvg(repo().listObjects(id), canvasEdgesRepo(app.db).list(id));
+    return reply.header('content-type', 'image/svg+xml').send(svg);
+  });
+
+  // F1567: search objects across all canvases.
+  app.get('/canvas/search', async (request) => {
+    const { q } = parseWith(searchQuery, request.query, 'query');
+    return { data: searchCanvasObjects(app.db, q) };
+  });
+
+  // F1551: build a Kanban board from notes (FQL query / notebook / all).
+  app.post('/board', async (request) => {
+    const body = parseWith(boardBody, request.body, 'body');
+    const notes = body.query
+      ? runFqlQuery(app.db, body.query, { fetch: 2000, cursor: null }).notes
+      : notesRepo(app.db).list({
+          sort: 'updated',
+          fetch: 2000,
+          cursor: null,
+          ...(body.notebookId !== undefined ? { notebookId: body.notebookId as NotebookId } : {}),
+        });
+    const nb = notebooksRepo(app.db);
+    const tags = tagsRepo(app.db);
+    const items: BoardItem[] = notes.map((n) => ({
+      id: n.id,
+      title: n.title,
+      tags: tags.tagsForNote(n.id as NoteId).map((t) => t.name),
+      fields: { notebook: nb.get(n.notebookId as NotebookId)?.name ?? '(unset)' },
+    }));
+    const board = buildBoard(items, {
+      groupBy: body.groupBy,
+      ...(body.columnOrder !== undefined ? { columnOrder: body.columnOrder } : {}),
+      ...(body.wipLimits !== undefined ? { wipLimits: body.wipLimits } : {}),
+    });
+    return { data: board };
+  });
+
+  // F1563: which canvases is a note placed on?
+  app.get('/notes/:id/canvas-placements', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    return { data: noteCanvasPlacements(app.db, id) };
   });
 
   // F1541: lay out a Forge story as knot cards + divert connectors on the canvas.
