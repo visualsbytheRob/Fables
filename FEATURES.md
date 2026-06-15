@@ -2685,16 +2685,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Workspace Profiles (F1971–F1980)
 
-- [ ] F1971 — Profiles: named UI states (open panes, filters, theme)
-- [ ] F1972 — Focus modes (hide features per profile: writing mode, review mode)
-- [ ] F1973 — Time-based profile switching option
-- [ ] F1974 — Per-profile notification rules
-- [ ] F1975 — Profile quick-switch in palette
-- [ ] F1976 — Reading-only profile for phone evenings
-- [ ] F1977 — Profile export/import
-- [ ] F1978 — Default profile per device
-- [ ] F1979 — Profile tests
-- [ ] F1980 — Profile docs
+- [x] F1971 — Profiles: named UI states — `db/repos/profiles.ts` (migration 046), CRUD under /profiles
+- [~] F1972 — Focus modes — preset state blobs ship (writing/review/reading); the feature-hiding enforcement is web
+- [~] F1973 — Time-based profile switching — a profile carries a schedule in its state; the client flips on it
+- [x] F1974 — Per-profile notification rules — stored in the profile state blob
+- [~] F1975 — Profile quick-switch in palette — web command-palette surface
+- [x] F1976 — Reading-only profile for phone evenings — `profiles/presets.ts` reading preset, GET /profiles/presets
+- [x] F1977 — Profile export/import — `exportProfile`/`importProfile`, GET /profiles/:id/export + POST /profiles/import
+- [x] F1978 — Default profile per device — `device`-scoped `setDefault`/`getDefault` with fallback
+- [x] F1979 — Profile tests — `routes/profiles.test.ts`
+- [x] F1980 — Profile docs — `docs/workspace-profiles.md`
 
 ### Power Tools (F1981–F1990)
 
