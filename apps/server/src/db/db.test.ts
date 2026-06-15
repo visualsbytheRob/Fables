@@ -60,6 +60,7 @@ describe('migrations', () => {
       '041-jobs',
       '042-vaults',
       '043-webhooks',
+      '044-bulk-journal',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

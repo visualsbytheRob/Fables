@@ -2659,16 +2659,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Bulk Operations (F1951–F1960)
 
-- [ ] F1951 — Bulk operation framework: preview → confirm → undoable batch
-- [ ] F1952 — Find-and-replace across vault (regex, scoped)
-- [ ] F1953 — Bulk frontmatter/field editing
-- [ ] F1954 — Bulk link rewriting (restructure-safe moves)
-- [ ] F1955 — Bulk tag operations with preview counts
-- [ ] F1956 — Batch note merging tool
-- [ ] F1957 — Batch splitting (one note → many by heading)
-- [ ] F1958 — Operation journal (every bulk op replayable/reversible)
-- [ ] F1959 — Bulk ops tests
-- [ ] F1960 — Bulk ops docs
+- [x] F1951 — Bulk operation framework — `bulk/engine.ts` plan/diff + `db/repos/bulk.ts` preview→apply→undo (migration 044), routes /bulk
+- [x] F1952 — Find-and-replace across vault — literal + regex, scoped to title/body/both, invalid-regex guard
+- [x] F1953 — Bulk frontmatter/field editing — `fieldEdit` op (set/clear keys)
+- [x] F1954 — Bulk link rewriting — `wikilinkRename` op (no partial-title matches)
+- [x] F1955 — Bulk tag operations with preview counts — `tagOp` add/remove/rename + `previewTagOp`
+- [x] F1956 — Batch note merging — `merge` op (union tags, concatenate bodies), reversible
+- [x] F1957 — Batch splitting — `split` op (one note → many by heading level)
+- [x] F1958 — Operation journal — `bulk_journal` full before-snapshot, GET /bulk/history + POST /bulk/:id/undo
+- [x] F1959 — Bulk ops tests — `bulk/engine.test.ts` (53) + `routes/bulk.test.ts`
+- [x] F1960 — Bulk ops docs — `docs/bulk-operations.md`
 
 ### FQL v2 (F1961–F1970)
 
