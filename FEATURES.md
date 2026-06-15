@@ -2594,16 +2594,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Multi-Vault (F1901–F1910)
 
-- [ ] F1901 — Vault registry: multiple data dirs, named vaults
-- [ ] F1902 — Vault switcher UI with fast switching
-- [ ] F1903 — Per-vault settings isolation
-- [ ] F1904 — Cross-vault search (opt-in federation)
-- [ ] F1905 — Move/copy notes between vaults
-- [ ] F1906 — Vault templates (work, personal, worldbuilding presets)
-- [ ] F1907 — Per-vault encryption states coexisting
-- [ ] F1908 — Vault archive/cold storage
-- [ ] F1909 — Multi-vault tests
-- [ ] F1910 — Multi-vault docs
+- [x] F1901 — Vault registry: multiple data dirs, named vaults — `db/repos/vaults.ts` (migration 042), `/vaults`
+- [~] F1902 — Vault switcher UI — registry + `POST /vaults/:id/activate` ship (atomic, one-active invariant); the fast-switch front-end is web
+- [x] F1903 — Per-vault settings isolation — isolated `settings` blob, PUT/PATCH `/vaults/:id/settings`
+- [~] F1904 — Cross-vault search — opt-in `federated` flag + `GET /vaults/federated` surface; the multi-DB query layer is future work
+- [~] F1905 — Move/copy notes between vaults — needs multi-connection orchestration across vault DBs (deferred with F1904)
+- [x] F1906 — Vault templates — `vaults/templates.ts` (blank/work/personal/worldbuilding), `GET /vaults/templates`
+- [x] F1907 — Per-vault encryption states coexisting — tracked `encryption` state, `POST /vaults/:id/encryption`
+- [x] F1908 — Vault archive/cold storage — `archived` flag, `POST /vaults/:id/archive` + `/unarchive`, hidden from default list
+- [x] F1909 — Multi-vault tests — `routes/vaults.test.ts` (register/activate/settings/encryption/archive/federated/invariants)
+- [x] F1910 — Multi-vault docs — `docs/multi-vault.md`
 
 ### Automation Rules (F1911–F1920)
 

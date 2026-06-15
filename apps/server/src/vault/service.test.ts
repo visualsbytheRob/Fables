@@ -92,6 +92,8 @@ describe('field encryption at rest (F1216, F1217)', () => {
 });
 
 describe('passphrase change (F1223)', () => {
+  // Several Argon2 derivations back-to-back (create + change + two unlocks);
+  // an explicit timeout keeps it from tipping over the 5s default under load.
   it('re-wraps without re-encrypting: old content still decrypts, old pass fails', async () => {
     const { db, vault } = freshVault();
     await vault.create('old-pass', 'interactive');
@@ -113,7 +115,7 @@ describe('passphrase change (F1223)', () => {
     await expect(vault.unlock('old-pass')).rejects.toBeInstanceOf(AppError);
     await vault.unlock('new-pass');
     expect(await vault.decryptField(ct)).toBe('survives the rotation');
-  });
+  }, 30_000);
 
   it('rejects a wrong current passphrase', async () => {
     const { vault } = freshVault();

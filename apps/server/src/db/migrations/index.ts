@@ -39,6 +39,7 @@ import { migration038Feedback } from './038-feedback.js';
 import { migration039GeneratedAssets } from './039-generated-assets.js';
 import { migration040Automation } from './040-automation.js';
 import { migration041Jobs } from './041-jobs.js';
+import { migration042Vaults } from './042-vaults.js';
 
 export interface Migration {
   id: number;
@@ -89,4 +90,5 @@ export const migrations: Migration[] = [
   migration039GeneratedAssets,
   migration040Automation,
   migration041Jobs,
+  migration042Vaults,
 ];

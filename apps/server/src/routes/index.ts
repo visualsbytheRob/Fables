@@ -70,6 +70,7 @@ import { artRoutes } from './art.js';
 import { archiveRoutes } from './archive.js';
 import { automationRoutes } from './automation.js';
 import { jobRoutes } from './jobs.js';
+import { vaultsRoutes } from './vaults.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -124,6 +125,7 @@ export const routes: FastifyPluginAsync[] = [
   archiveRoutes,
   automationRoutes,
   jobRoutes,
+  vaultsRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
