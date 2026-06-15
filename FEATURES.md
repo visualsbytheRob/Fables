@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1751 (Memory Insights). (Detail line below retained.)
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1761 (Sibling & Edge Cases). (Detail line below retained.)
 
 **Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2389,16 +2389,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Memory Insights (F1751–F1760)
 
-- [ ] F1751 — Retention charts (true retention over time)
-- [ ] F1752 — Review heatmap calendar
-- [ ] F1753 — Workload forecast graph
-- [ ] F1754 — Difficulty distribution analysis
-- [ ] F1755 — Leech detection with remediation suggestions
-- [ ] F1756 — Time-per-card stats
-- [ ] F1757 — Knowledge coverage map (which notes have cards)
-- [ ] F1758 — Streaks and gentle gamification (optional)
-- [ ] F1759 — Insights export
-- [ ] F1760 — Insights tests
+- [x] F1751 — Retention charts (true retention over time) — `trueRetention` (recall on review-state reviews), GET /learning/insights/retention
+- [x] F1752 — Review heatmap calendar — `heatmap` (reviews/day)
+- [x] F1753 — Workload forecast graph — global `forecast` + per-deck dashboard forecast
+- [x] F1754 — Difficulty distribution analysis — `difficultyDistribution` (10 buckets)
+- [x] F1755 — Leech detection with remediation suggestions — `leeches` (lapse threshold + remediation hint)
+- [~] F1756 — Time-per-card stats — needs a per-review duration field on the log (timing-capture pass)
+- [x] F1757 — Knowledge coverage map (which notes have cards) — `coverage`
+- [x] F1758 — Streaks and gentle gamification (optional) — `streak` (current + longest)
+- [x] F1759 — Insights export — `exportAll`, GET /learning/insights/export
+- [x] F1760 — Insights tests — repo + route suites
 
 ### Sibling & Edge Cases (F1761–F1770)
 
