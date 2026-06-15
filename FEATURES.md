@@ -2698,16 +2698,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Power Tools (F1981–F1990)
 
-- [ ] F1981 — Vault statistics deep-dive page (everything measurable)
-- [ ] F1982 — Duplicate note finder with merge workflow
-- [ ] F1983 — Broken-everything finder (links, embeds, bindings, attachments)
-- [ ] F1984 — Vault linter with fix-its (naming, structure conventions)
-- [ ] F1985 — Storage analyzer (what's taking space)
-- [ ] F1986 — Performance profiler page (slowest queries, renders)
-- [ ] F1987 — Keyboard macro recorder
-- [ ] F1988 — Custom CSS injection point with examples
-- [ ] F1989 — Power tools tests
-- [ ] F1990 — Power user guide
+- [x] F1981 — Vault statistics deep-dive — `power/analyze.ts` `vaultStats`, GET /power/stats
+- [x] F1982 — Duplicate note finder — `findDuplicates` (hash + shingled Jaccard) + suggested merge target, GET /power/duplicates
+- [x] F1983 — Broken-everything finder — `findBroken` (broken links, missing attachments, empty notes), GET /power/broken
+- [x] F1984 — Vault linter with fix-its — `lintVault` (configurable rules + machine-readable fixes), POST /power/lint
+- [x] F1985 — Storage analyzer — `analyzeStorage` (bodies vs attachments, by notebook, largest items), GET /power/storage
+- [~] F1986 — Performance profiler page — web surface; `GET /query/explain` (FQL v2) is the server-side input
+- [~] F1987 — Keyboard macro recorder — client-side web convenience
+- [~] F1988 — Custom CSS injection point — client-side web convenience
+- [x] F1989 — Power tools tests — `power/analyze.test.ts` (61) + `routes/power.test.ts`
+- [x] F1990 — Power user guide — `docs/power-tools.md`
 
 ### Grand Close (F1991–F2000)
 
