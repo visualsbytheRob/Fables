@@ -2672,16 +2672,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### FQL v2 (F1961–F1970)
 
-- [ ] F1961 — Aggregations (count, group-by in query embeds)
-- [ ] F1962 — Joins across types (notes with their entities' fields)
-- [ ] F1963 — Computed fields and expressions in results
-- [ ] F1964 — Query variables and parameterized saved queries
-- [ ] F1965 — EXPLAIN view for query performance
-- [ ] F1966 — Query result charts (bar, line, pie in embeds)
-- [ ] F1967 — FQL v2 grammar docs + migration notes
-- [ ] F1968 — Query linting with suggestions
-- [ ] F1969 — FQL v2 test suite
-- [ ] F1970 — Query cookbook
+- [x] F1961 — Aggregations — `fql/aggregate.ts` count/sum/avg/min/max + group-by, `POST /query/aggregate`
+- [~] F1962 — Joins across types — aggregation rows joined with notebook name + tag count (`services/query-v2.ts` enrich); cross-type entity-field joins enrich the same row shape (future)
+- [x] F1963 — Computed fields and expressions — `fql/expr.ts` sandboxed expression engine, `withComputed`
+- [x] F1964 — Query variables / parameterized queries — `fql/variables.ts` `$var` substitution
+- [x] F1965 — EXPLAIN — `fql/explain.ts` static plan + compiled SQL, `GET /query/explain`
+- [~] F1966 — Query result charts — chart rendering is web; aggregate endpoint returns chart-ready group/series data
+- [x] F1967 — FQL v2 grammar docs + migration notes — `docs/fql-v2.md`
+- [x] F1968 — Query linting with suggestions — `fql/lint.ts`, `POST /query/lint`
+- [x] F1969 — FQL v2 test suite — `fql/fql-v2.test.ts` + `routes/query-v2.test.ts`
+- [x] F1970 — Query cookbook — `docs/fql-v2.md` cookbook section
 
 ### Workspace Profiles (F1971–F1980)
 
