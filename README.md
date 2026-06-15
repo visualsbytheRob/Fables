@@ -3,9 +3,12 @@
 **A personal Knowledge OS fused with an interactive-fiction engine.**
 Your notes are the world. Your stories run on a compiler you own. Everything local, everything yours.
 
-> Being built in the open, one fable at a time — a **2,026-feature** journey from a blank repo to a
-> complete personal-software suite. **1,340 features shipped** so far, **~2,770 tests green**, and not a
-> byte of your data leaves your machine.
+> Built in the open, one fable at a time — a **2,026-feature** journey from a blank repo to a
+> complete personal-software suite. **The plan is complete**: every feature shipped, or honestly
+> deferred (`[~]`) with a reason. **~4,100 tests green**, and not a byte of your data leaves your machine.
+>
+> 👉 **Never installed something like this before?** Jump to
+> [**Install Fables — the gentle, step-by-step guide**](#install-fables--the-gentle-step-by-step-guide).
 
 ---
 
@@ -44,32 +47,32 @@ semantic search, daily journal, tags, notebooks, saved queries, templates; the F
 choices, variables, conditionals, diverts, saves, playback); the fusion of the two; an offline-first
 PWA with op-log sync; security hardening; accessibility; backups; local analytics. **Shipped.**
 
-### 🚧 Tier 2 — the power tier (F1001–F2000)
+### ✅ Tier 2 — the power tier (F1001–F2000)
 
-| Epic                                           | Theme                                                                            | Status                |
-| ---------------------------------------------- | -------------------------------------------------------------------------------- | --------------------- |
-| **11 — Plugins & Extensions**                  | A sandboxed plugin runtime + capability system + SDK                             | ✅ Complete           |
-| **12 — Real-Time Collaboration**               | CRDT core (Yjs), live editing, sharing model, merge history                      | ✅ Complete           |
-| **13 — Encrypted Vault & Security**            | Argon2id + XChaCha20 vault, audit log, compliance, SSRF guard                    | ✅ Core complete¹     |
-| **14 — AI Co-Writer & Modality Mesh**          | Local-first AI: RAG, note intelligence, story/character co-writer, opt-in Claude | ✅ Complete           |
-| **15 — Importers & Interop**                   | 19 importers, 6 export formats, format-detection, round-trip fidelity            | 🚧 ~80% (F1401–F1480) |
-| **16 — Canvas & Spatial Views**                | Infinite canvas, world atlas, spatial thinking                                   | 🔭 Planned            |
-| **17 — Audio Fables**                          | Narration, soundscapes, the `audio` modality                                     | 🔭 Planned            |
-| **18 — Spaced Repetition & Learning**          | Turn your vault into durable memory                                              | 🔭 Planned            |
-| **19 — Story Interop & Distribution**          | Publish & share playable fables                                                  | 🔭 Planned            |
-| **20 — Multi-Vault, Automation & Power Tools** | Scale, scripting, the workshop                                                   | 🔭 Planned            |
+| Epic                                           | Theme                                                                                  | Status       |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------- | ------------ |
+| **11 — Plugins & Extensions**                  | A sandboxed plugin runtime + capability system + SDK                                   | ✅ Complete  |
+| **12 — Real-Time Collaboration**               | CRDT core (Yjs), live editing, sharing model, merge history                            | ✅ Complete  |
+| **13 — Encrypted Vault & Security**            | Argon2id + XChaCha20 vault, secret notes, audit log, compliance, SSRF guard            | ✅ Complete¹ |
+| **14 — AI Co-Writer & Modality Mesh**          | Local-first AI: RAG, note intelligence, co-writer, streaming, llama.cpp, opt-in Claude | ✅ Complete  |
+| **15 — Importers & Interop**                   | 19 importers, 6 export formats, format-detection, round-trip fidelity                  | ✅ Complete  |
+| **16 — Canvas & Spatial Views**                | Infinite canvas, world atlas, spatial thinking                                         | ✅ Complete  |
+| **17 — Audio Fables**                          | Narration, soundscapes, the `audio` modality                                           | ✅ Complete  |
+| **18 — Spaced Repetition & Learning**          | FSRS-5 scheduler, cards/decks, Anki interop, learning insights                         | ✅ Complete  |
+| **19 — Story Interop & Distribution**          | `.fablepack`/`.fablearchive`, Ink/Twee import, generative art                          | ✅ Complete  |
+| **20 — Multi-Vault, Automation & Power Tools** | Vault registry, automation, webhooks, scripting, bulk ops, FQL v2, power tools         | ✅ Complete  |
 
-¹ The vault's cryptography, audit log, and security tier are shipped and tested; threading at-rest
-field encryption through every last note-service path (the "keystone") is deliberately parked for its
-own focused session — a careless change there risks a plaintext leak, so it gets done carefully or not
-at all.
+¹ The vault's cryptography, secret-notes key path, audit log, and security tier are shipped and tested.
+A few deep-integration and multi-device-transport pieces remain `[~]` (deferred-with-reason) — the
+honest edges, listed in [`FEATURES.md`](./FEATURES.md).
 
 ### 🎨 Encore — New Millennium Polish (F2001–F2022)
 
 22 design-led features to make it _gorgeous_ — OKLCH perceptual color, editorial typography on a
 baseline grid, GSAP-class spring motion + view transitions, WebGL/GLSL showpieces (ambient gradient
 mesh, glass materials, a GPU-rendered knowledge graph), all reduced-motion- and battery-aware. Apple
-restraint, Pentagram craft. The 22 that round the plan up to 2,026.
+restraint, Pentagram craft. The computational design-system core (color/type/motion) is shipped and
+tested; the GPU/CSS rendering surfaces are the web app's to paint. The 22 that round the plan up to 2,026.
 
 ### Recent marquee work
 
@@ -98,7 +101,200 @@ keep going, but every claim is backed by a passing test and an unflinching `FEAT
 
 ---
 
-## Getting started
+## Install Fables — the gentle, step-by-step guide
+
+> **New to this kind of thing? This section is for you.** It assumes **zero** prior
+> experience. Take it slowly; you can't break anything.
+
+### Read this once: honest expectations
+
+- **It's free software you run on _your own_ computer.** There's no App Store, no
+  website to sign up for, no subscription, and nothing of yours ever leaves your
+  machine.
+- **It's not a double-click `.exe` (yet).** You'll copy-and-paste a few commands
+  into a plain text window called a **Terminal**. That's the only unfamiliar part —
+  everything is copy-paste, and we explain each line. Budget about **20–30 minutes**
+  the first time. After that, starting Fables is **one command**.
+- **Where it lives:** put it in **any** folder you like — your home folder or
+  Documents is perfect. It does **not** need to be near Claude or anywhere special.
+- **Two devices, two jobs:** your **laptop runs Fables** (it's the engine, always
+  the "real" copy). Your **iPhone simply opens it** in Safari over your private
+  network — you don't copy any code onto the phone.
+- **What do you connect it to? Nothing.** Fables works completely on its own —
+  offline, private, no accounts or keys. (Optional local power-ups like AI and
+  voices exist; see [Step 7](#step-7-optional--add-power-ups-later) — but **none are
+  required** to use everything else.)
+
+### Which computer are you on?
+
+- **Mac** — the smoothest path. Follow the steps as written.
+- **Linux** — also smooth. Follow the steps as written.
+- **Windows** — Fables runs best inside **WSL** (Windows Subsystem for Linux), a
+  free, official Microsoft feature that gives you a tidy Linux environment where
+  these tools "just work." One-time setup: open **PowerShell as Administrator**, run
+  `wsl --install`, restart, and pick a username/password when prompted. Then open
+  the new **Ubuntu** app from your Start menu and follow the steps below inside it.
+
+---
+
+### Step 1 — Install the two free tools Fables is built on
+
+Fables runs on **Node.js** (the engine) and uses **pnpm** (which fetches its
+building blocks). You install these once.
+
+1. **Node.js (version 22 or newer).** Go to **[nodejs.org](https://nodejs.org)** and
+   download the **LTS** installer for your system, then run it and click through.
+   (On Mac with [Homebrew](https://brew.sh): `brew install node`. On WSL/Ubuntu:
+   `sudo apt update && sudo apt install -y nodejs npm`.)
+
+2. **pnpm.** Open your Terminal (on Mac: **Terminal** app; on Windows: the **Ubuntu**
+   app; on Linux: your terminal) and run:
+
+   ```bash
+   npm install -g pnpm
+   ```
+
+To check both worked, run `node --version` (should say `v22` or higher) and
+`pnpm --version` (should say `10` or higher).
+
+### Step 2 — Download Fables
+
+**Option A — the simple way (no extra tools):** on the
+[GitHub page](https://github.com/visualsbytheRob/Fables), click the green **Code**
+button → **Download ZIP**, then unzip it wherever you like.
+
+**Option B — the better way for getting updates later** (needs [git](https://git-scm.com)):
+
+```bash
+git clone https://github.com/visualsbytheRob/Fables.git
+```
+
+Either way, you now have a folder called **`Fables`**. In your Terminal, move into
+it (type `cd ` then drag the folder onto the Terminal window to fill in the path,
+then press Enter):
+
+```bash
+cd Fables
+```
+
+### Step 3 — Build it and start it
+
+Run these three commands one at a time (the first two take a few minutes the first
+time — that's normal):
+
+```bash
+pnpm install      # fetches Fables' building blocks
+pnpm build        # assembles the app
+pnpm start        # starts Fables
+```
+
+When it's running you'll see log lines and it will **keep running** — that's good.
+**Leave this Terminal window open**; closing it stops Fables. (To stop it on
+purpose, click the window and press **Ctrl + C**.)
+
+> Want a few example notes and a sample story to explore? In a **second** Terminal
+> window (same `Fables` folder), run `pnpm seed:demo` once before starting.
+
+### Step 4 — Open it on your laptop
+
+Open a web browser and go to:
+
+```
+http://localhost:4870
+```
+
+That's Fables. Have a click around — make a note, try a `[[wikilink]]`. Everything
+you do is saved on your own machine (in a hidden folder called `.fables` in your
+home directory).
+
+### Step 5 — Reach it on your iPhone (over Tailscale)
+
+[Tailscale](https://tailscale.com) is a **free**, private network that securely
+connects _your_ devices to each other — and **only** yours. It's how your phone
+talks to your laptop without exposing anything to the public internet, and it
+provides the secure `https://` address an installable phone app needs.
+
+1. **Make a free Tailscale account** at [tailscale.com](https://tailscale.com).
+2. **Install Tailscale on your laptop** and sign in
+   ([Mac](https://tailscale.com/download/mac) · [Windows](https://tailscale.com/download/windows)
+   · [Linux](https://tailscale.com/download/linux)). On Mac/Linux you can also run
+   `sudo tailscale up`.
+3. **Install the Tailscale app on your iPhone** (App Store) and sign in with the
+   **same account**.
+4. With Fables still running (Step 3), tell Tailscale to share it. In a Terminal on
+   your laptop:
+
+   ```bash
+   tailscale serve --bg 4870
+   ```
+
+   Tailscale prints a secure address like
+   `https://your-laptop.your-tailnet.ts.net`.
+
+5. On your **iPhone**, open **Safari** and go to that exact `https://…ts.net`
+   address. Fables loads. 🎉
+
+(There's a deeper walkthrough, including troubleshooting, in
+[docs/tailscale.md](./docs/tailscale.md).)
+
+### Step 6 — Install it like an app (Home Screen, dock, Start menu)
+
+Fables is a **PWA** (Progressive Web App) — modern browsers can "install" a website
+so it gets its own icon and opens in its own window, just like a normal app. No
+App Store needed.
+
+- **On your iPhone (Safari):** with Fables open, tap the **Share** button (the
+  square with an up-arrow) → **Add to Home Screen** → **Add**. You now have a Fables
+  icon on your home screen that opens full-screen.
+- **On your laptop (Chrome or Edge):** open `http://localhost:4870`, then click the
+  **Install** icon at the right of the address bar (a little screen-with-arrow) →
+  **Install**. You'll get a Fables icon you can pin to your **dock / taskbar / Start
+  menu** and launch like any app. (Safari on Mac: **File → Add to Dock**.)
+
+### Step 7 (optional) — Add power-ups later
+
+**You don't need any of these.** Everything except these specific extras already
+works. When you want them, they're all **local and private** too:
+
+| Power-up                 | What it adds                               | How to enable                                                                        |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| **Local AI** (Ollama)    | "Ask your vault", summaries, the co-writer | Install [Ollama](https://ollama.com), `ollama pull llama3.1`, and it's auto-detected |
+| **Local AI** (llama.cpp) | Same, with a llama.cpp server              | Run `llama-server`; set `FABLES_LLAMACPP_URL` if it isn't on the default port        |
+| **Cloud AI** (Claude)    | Optionally use Claude for AI features      | Set `ANTHROPIC_API_KEY`; it's **opt-in** and gated behind a consent prompt           |
+| **Voices** (TTS)         | Narrate notes and stories aloud            | Install [Piper](https://github.com/rhasspy/piper) + a voice model                    |
+| **Generated art**        | Cover/scene art for stories                | Run a local [ComfyUI](https://github.com/comfyanonymous/ComfyUI) server              |
+
+If none of these are present, the matching features simply stay quiet — Fables
+never breaks because an optional tool is missing.
+
+### Keeping it running, and starting it again tomorrow
+
+- **To stop Fables:** click its Terminal window and press **Ctrl + C**.
+- **To start it again later:** open a Terminal, `cd` into the `Fables` folder, and
+  run `pnpm start`. (You only `pnpm install` / `pnpm build` again after you
+  **update** to a new version.)
+- **To update to the latest version:** if you used `git clone`, run `git pull` then
+  `pnpm install && pnpm build`. If you downloaded the ZIP, download a fresh ZIP and
+  rebuild. Your notes (in `~/.fables`) are untouched by updates.
+- **Want Fables to start automatically when your laptop boots?** That's a more
+  advanced setup (a background service); ask and we can add it.
+
+### If something goes wrong
+
+- **`command not found` for `pnpm` or `node`** — Step 1 didn't finish; reinstall
+  Node.js, close and reopen the Terminal, and try again.
+- **"port already in use"** — something else is on port 4870. Start on another port:
+  `PORT=4871 pnpm start` (and then `tailscale serve --bg 4871`).
+- **The phone can't reach it** — make sure (a) Fables is still running on the
+  laptop, (b) `tailscale serve` is running, and (c) both devices are signed into the
+  **same** Tailscale account. Run `pnpm doctor` on the laptop for a quick health
+  check.
+- **Still stuck?** Open an issue on GitHub, or see
+  [docs/troubleshooting.md](./docs/troubleshooting.md).
+
+---
+
+## Getting started (for developers)
 
 Start with [docs/architecture.md](./docs/architecture.md) for the big picture, then the import guides in
 [`docs/`](./docs/) (Notion, Evernote, Apple Notes, outliners, …) and [docs/ai.md](./docs/ai.md) for how
