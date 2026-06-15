@@ -55,6 +55,7 @@ import { studioRoutes } from './studio.js';
 import { audiobookRoutes } from './audiobook.js';
 import { playbackRoutes } from './playback.js';
 import { audioA11yRoutes } from './audio-a11y.js';
+import { cardRoutes } from './cards.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -94,6 +95,7 @@ export const routes: FastifyPluginAsync[] = [
   audiobookRoutes,
   playbackRoutes,
   audioA11yRoutes,
+  cardRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
