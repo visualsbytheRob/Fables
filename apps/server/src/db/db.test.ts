@@ -47,6 +47,7 @@ describe('migrations', () => {
       '028-canvas',
       '029-canvas-edges',
       '030-tts',
+      '031-casting',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

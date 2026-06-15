@@ -28,6 +28,7 @@ import { migration027ImportFramework } from './027-import-framework.js';
 import { migration028Canvas } from './028-canvas.js';
 import { migration029CanvasEdges } from './029-canvas-edges.js';
 import { migration030Tts } from './030-tts.js';
+import { migration031Casting } from './031-casting.js';
 
 export interface Migration {
   id: number;
@@ -67,4 +68,5 @@ export const migrations: Migration[] = [
   migration028Canvas,
   migration029CanvasEdges,
   migration030Tts,
+  migration031Casting,
 ];
