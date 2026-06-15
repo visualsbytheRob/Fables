@@ -2633,16 +2633,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Webhooks & Integrations (F1931–F1940)
 
-- [ ] F1931 — Outbound webhooks on events (tailnet/local targets)
-- [ ] F1932 — Inbound webhook endpoints with token auth (capture from anywhere)
-- [ ] F1933 — Webhook payload templates
-- [ ] F1934 — Delivery retries with dead-letter view
-- [ ] F1935 — Shortcuts-app recipes documented (iOS automation)
-- [ ] F1936 — Email-in capture (local SMTP catcher option)
-- [ ] F1937 — RSS feed output of selected queries
-- [ ] F1938 — Webhook security review
-- [ ] F1939 — Webhook tests
-- [ ] F1940 — Integration cookbook
+- [x] F1931 — Outbound webhooks on events — `webhooks/delivery.ts` + `db/repos/webhooks.ts` (migration 043), POST /webhooks/emit
+- [x] F1932 — Inbound webhook endpoints with token auth — constant-time `verifyInboundToken`, POST /webhooks/inbound/:token/capture
+- [x] F1933 — Webhook payload templates — `renderTemplate` ({{path}} + {{json}}), per-subscription template
+- [x] F1934 — Delivery retries with dead-letter — `nextRetry` backoff + `recordResult`, GET /webhooks/dead-letter
+- [x] F1935 — Shortcuts-app recipes documented — `docs/webhooks.md` iOS Shortcuts recipe
+- [~] F1936 — Email-in capture — local SMTP catcher is an optional ops component; feeds the same capture endpoint
+- [x] F1937 — RSS feed output of selected queries — `buildFeed` (escaped RSS 2.0), GET /webhooks/feed
+- [x] F1938 — Webhook security review — HMAC signing (`signPayload`/`verifySignature`), constant-time token compare
+- [x] F1939 — Webhook tests — `webhooks/delivery.test.ts` (87) + `routes/webhooks.test.ts`
+- [x] F1940 — Integration cookbook — `docs/webhooks.md`
 
 ### Scripting Console (F1941–F1950)
 
