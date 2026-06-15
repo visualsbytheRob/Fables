@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) server foundation **COMPLETE** — F1701–F1800 all resolved ([x] shipped or [~] web/UX-layer-deferred). A faithful **FSRS-5** scheduler (pinned by exact forgetting-curve identities), card model + review log, authoring extractors (cloze/Q&A/auto) + live-link sync, decks as dynamic filters, story-driven review fables, memory insights, sibling/edge handling, habit + reminder logic, and Anki `.apkg` interop. Migrations 035–037. `docs/learning/guide.md`, `docs/devlog/epic-18.md`. **Epic 19 (Story Interop & Distribution) underway — .fablepack Format F1801–F1810 COMPLETE** (deterministic container + manifest + sha256 hash-tree integrity + optional HMAC signing, `docs/fablepack-spec.md`; routes /stories/:id/pack + /packs/validate + /packs/unpack). **3,310 tests green. CI green.** Next: F1811 (Standalone Player). Prior epics 11–18 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** Epic 18 (Spaced Repetition & Learning) server foundation **COMPLETE** — F1701–F1800 all resolved ([x] shipped or [~] web/UX-layer-deferred). A faithful **FSRS-5** scheduler (pinned by exact forgetting-curve identities), card model + review log, authoring extractors (cloze/Q&A/auto) + live-link sync, decks as dynamic filters, story-driven review fables, memory insights, sibling/edge handling, habit + reminder logic, and Anki `.apkg` interop. Migrations 035–037. `docs/learning/guide.md`, `docs/devlog/epic-18.md`. **Epic 19 (Story Interop & Distribution) server foundation COMPLETE** — F1801–F1900 all resolved (.fablepack/.fablearchive deterministic formats + fixity + signing, Ink/Twine→Forge converters, release diffing, reader feedback analytics, ComfyUI art adapter + typographic fallback, archives; web/network layers deferred). Migrations 038–039. `docs/distribution/guide.md`, `docs/fablepack-spec.md`, `docs/devlog/epic-19.md`. **3,455 tests green. CI green.** Next: F1901 (Epic 20 — Multi-Vault, Automation & Power Tools). Prior epics 11–18 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 18 detail):** **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1791 (Learning Epic Close). (Detail line below retained.)
 
@@ -2579,16 +2579,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Distribution Epic Close (F1891–F1900)
 
-- [ ] F1891 — Full pipeline e2e: author → release → pack → share → play elsewhere
-- [ ] F1892 — Interop conformance dashboard (Ink/Twine/standalone status)
-- [ ] F1893 — Pack security review (no script injection via stories)
-- [ ] F1894 — Distribution performance (large pack handling)
-- [ ] F1895 — Demo pack gallery in seed
-- [ ] F1896 — Distribution user guide
-- [ ] F1897 — Distribution regression suite
-- [ ] F1898 — Community format RFC docs (inviting other tools)
-- [ ] F1899 — Distribution plugin hooks
-- [ ] F1900 — Epic 19 retro devlog
+- [x] F1891 — Full pipeline e2e — Ink import → pack → archive → verify → unpack → recompile (`distribution.test.ts`)
+- [x] F1892 — Interop conformance — GET /interop/conformance (import/export status per format)
+- [x] F1893 — Pack security review — packs are data; source round-trips inert + runs in the sandboxed VM (test)
+- [x] F1894 — Distribution performance — large-pack (~2MB, 200 files) pack+verify benchmark
+- [~] F1895 — Demo pack gallery in seed — seed content pass
+- [x] F1896 — Distribution user guide — `docs/distribution/guide.md`
+- [x] F1897 — Distribution regression suite — e2e pipeline + format + interop + archive suites
+- [x] F1898 — Community format RFC — open format spec + RFC note in the Epic 19 retro
+- [~] F1899 — Distribution plugin hooks — plugin API surface pass
+- [x] F1900 — Distribution epic close devlog — `docs/devlog/epic-19.md`
 
 ## Epic 20 — Multi-Vault, Automation & Power Tools (F1901–F2000)
 

@@ -23,6 +23,11 @@ registerRoute({
   path: '/import/twine',
   summary: 'Import Twee → Forge (F1831/F1839)',
 });
+registerRoute({
+  method: 'GET',
+  path: '/interop/conformance',
+  summary: 'Interop conformance status (F1892)',
+});
 
 const body = z.object({
   source: z.string().min(1).max(5_000_000),
@@ -53,5 +58,21 @@ export const interopRoutes: FastifyPluginAsync = async (app) => {
     const { forge, start, passages, unsupported } = tweeToForge(b.source);
     const storyId = maybeCreate(b.title, forge);
     return { data: { forge, start, passages, unsupported, storyId } };
+  });
+
+  // Interop conformance dashboard data (F1892): which formats we read/write.
+  app.get('/interop/conformance', async () => {
+    return {
+      data: {
+        formats: {
+          ink: { import: true, export: false, note: 'common subset → compilable Forge' },
+          twine: { import: true, export: false, note: 'Twee 3 → compilable Forge' },
+          anki: { import: true, export: true, note: '.apkg notes/cards + scheduling' },
+          fablepack: { import: true, export: true, note: 'native deterministic pack' },
+          fablearchive: { import: true, export: true, note: 'fixity-verified archive' },
+          standalone: { import: false, export: 'web', note: 'single-file HTML player (web build)' },
+        },
+      },
+    };
   });
 };
