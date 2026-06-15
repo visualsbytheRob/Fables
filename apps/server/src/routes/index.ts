@@ -77,6 +77,7 @@ import { bulkRoutes } from './bulk.js';
 import { scriptRoutes } from './scripts.js';
 import { profileRoutes } from './profiles.js';
 import { aiRuntimeRoutes } from './ai-runtime.js';
+import { storyExportRoutes } from './story-export.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -138,6 +139,7 @@ export const routes: FastifyPluginAsync[] = [
   scriptRoutes,
   profileRoutes,
   aiRuntimeRoutes,
+  storyExportRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,

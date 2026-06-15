@@ -140,6 +140,22 @@ export function storySavesRepo(db: Db) {
       return rows.map(toMeta);
     },
 
+    /** Like {@link list} but includes each save's full state (F467 slot meta). */
+    listFull(storyId: StoryId, kind?: SaveKind): StorySave[] {
+      const rows = (
+        kind === undefined
+          ? db
+              .prepare('SELECT * FROM story_saves WHERE story_id = ? ORDER BY rowid DESC')
+              .all(storyId)
+          : db
+              .prepare(
+                'SELECT * FROM story_saves WHERE story_id = ? AND kind = ? ORDER BY rowid DESC',
+              )
+              .all(storyId, kind)
+      ) as Row[];
+      return rows.map(toSave);
+    },
+
     get(storyId: StoryId, saveId: string): StorySave | null {
       const row = db
         .prepare('SELECT * FROM story_saves WHERE story_id = ? AND id = ?')

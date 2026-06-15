@@ -653,7 +653,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F464 — Rewind: restore to any point in choice history
 - [x] F465 — Save migration when story is recompiled (best-effort, with report)
 - [x] F466 — Transcript log: full text + choices made, exportable
-- [ ] F467 — Save slot UI metadata: progress %, scene name, timestamp
+- [x] F467 — Save-slot metadata — `stories/save-slots.ts` (progress % from visited/total knots, scene, turn, timestamps), GET /stories/:id/save-slots
 - [ ] F468 — Cloud-of-one: saves synced through the op-log like notes
 - [x] F469 — Corrupt save detection + graceful recovery
 - [x] F470 — Save/rewind integration tests
@@ -808,15 +808,15 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 ### Export & Sharing (F581–F590)
 
 - [x] F581 — Export story source as zip of .fable files
-- [ ] F582 — Export compiled story as standalone `.fable.bin`
-- [ ] F583 — Self-contained HTML export: single file with embedded VM + story
-- [ ] F584 — Import story from zip/bin with validation
+- [x] F582 — Export `.fable.bin` — `forge-export/pack.ts` (magic+version+meta+CRC32 container), GET /stories/:id/export.bin
+- [x] F583 — Self-contained HTML export — `forge-export/html.ts` embeds the program (integrity-verified) + injected player runtime, GET /stories/:id/export.html
+- [x] F584 — Import `.fable.bin` with validation — `validateFableBin` (magic/version/checksum/fingerprint), POST /stories/import/bin; ZIP source bundles import via fablepack
 - [x] F585 — Export transcript as markdown/PDF
 - [x] F586 — Story JSON manifest for interop (title, files, checksum)
 - [x] F587 — Print stylesheet for transcripts
-- [ ] F588 — QR code generation for tailnet story URLs
-- [ ] F589 — Export integrity tests (HTML export plays identically)
-- [ ] F590 — Share-sheet integration on mobile PWA (Web Share API)
+- [x] F588 — QR codes — `forge-export/qr.ts` (Reed-Solomon QR encoder → SVG), GET /stories/:id/qr
+- [x] F589 — Export integrity tests — round-trip fingerprint match for .bin and embedded-HTML programs (`routes/story-export.test.ts`)
+- [~] F590 — Share-sheet integration — Web Share API is a PWA/web surface over the export endpoints
 
 ### Ambient Extras (F591–F600)
 
