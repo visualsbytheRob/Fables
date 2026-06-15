@@ -43,6 +43,8 @@ const settingsBody = z
       .max(365 * 100),
     requestRetention: z.number().min(0.7).max(0.99),
     priorityOverrides: z.record(z.string(), z.number()),
+    quietStart: z.number().int().min(0).max(23),
+    quietEnd: z.number().int().min(0).max(23),
   })
   .partial();
 

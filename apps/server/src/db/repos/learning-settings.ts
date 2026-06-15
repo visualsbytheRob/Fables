@@ -21,6 +21,9 @@ export interface LearningSettings {
   requestRetention: number;
   /** F1766: cardId → priority (higher sorts earlier in a session). */
   priorityOverrides: Record<string, number>;
+  /** F1776: quiet-hours window (UTC hours); start === end disables it. */
+  quietStart: number;
+  quietEnd: number;
 }
 
 export const DEFAULT_LEARNING_SETTINGS: LearningSettings = {
@@ -31,6 +34,8 @@ export const DEFAULT_LEARNING_SETTINGS: LearningSettings = {
   maxIntervalDays: 365 * 100,
   requestRetention: 0.9,
   priorityOverrides: {},
+  quietStart: 22,
+  quietEnd: 7,
 };
 
 export function learningSettingsRepo(db: Db) {
@@ -55,6 +60,8 @@ export function learningSettingsRepo(db: Db) {
           maxIntervalDays: parsed.maxIntervalDays ?? DEFAULT_LEARNING_SETTINGS.maxIntervalDays,
           requestRetention: parsed.requestRetention ?? DEFAULT_LEARNING_SETTINGS.requestRetention,
           priorityOverrides: parsed.priorityOverrides ?? {},
+          quietStart: parsed.quietStart ?? DEFAULT_LEARNING_SETTINGS.quietStart,
+          quietEnd: parsed.quietEnd ?? DEFAULT_LEARNING_SETTINGS.quietEnd,
         };
       } catch {
         return {

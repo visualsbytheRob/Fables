@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1771 (Notifications & Habits). (Detail line below retained.)
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1781 (Anki Interop). (Detail line below retained.)
 
 **Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2415,16 +2415,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Notifications & Habits (F1771–F1780)
 
-- [ ] F1771 — Daily review reminder (local notifications)
-- [ ] F1772 — Due-count badge on app icon
-- [ ] F1773 — Best-time suggestion from review history
-- [ ] F1774 — Habit streak protection (one-tap minimum session)
-- [ ] F1775 — Weekly learning digest note
-- [ ] F1776 — Quiet hours respect
-- [ ] F1777 — Reminder copy variants (non-nagging tone)
-- [ ] F1778 — Notification deep-link straight into review
-- [ ] F1779 — Habit feature tests
-- [ ] F1780 — Habit design doc
+- [~] F1771 — Daily review reminder (local notifications) — PWA notification scheduling; server supplies the copy + timing
+- [~] F1772 — Due-count badge on app icon — PWA Badge API; server provides /review/counts
+- [x] F1773 — Best-time suggestion from review history — `bestReviewHour`, GET /learning/habits/best-time
+- [~] F1774 — Habit streak protection (one-tap minimum session) — web one-tap; /review/session backs a minimal session
+- [x] F1775 — Weekly learning digest note — `weeklyDigest`, POST /learning/habits/digest (optionally files a note)
+- [x] F1776 — Quiet hours respect — `inQuietHours` + quiet-hours settings; reminder suppressed in-window
+- [x] F1777 — Reminder copy variants (non-nagging tone) — `REMINDER_VARIANTS` + `pickReminder`
+- [~] F1778 — Notification deep-link straight into review — web deep-link
+- [x] F1779 — Habit feature tests — habits module + route suites
+- [~] F1780 — Habit design doc — learning docs pass (F1795)
 
 ### Anki Interop (F1781–F1790)
 
