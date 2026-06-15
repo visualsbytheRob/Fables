@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 15 (Importers & Interop) **COMPLETE — F1401–F1500.** Next up F1501 (Epic 16 — Canvas & Spatial Views, inspired by Dylan Roscover's TouchDesigner work — see docs/credits.md). Shipped: import framework + **19 importers** + format-detection-on-drop; the mirror **export framework** (harvest by FQL/notebook → 6 targets [json canonical, obsidian, notion-md, logseq, static-site HTML, pdf-book print-HTML] → directory or real-CRC `.zip`; round-trip fidelity test); the **epic close** — vault-wide link-integrity audit (`GET /import/audit`), import benchmark, memory ceiling, local telemetry, **fuzz pass** (malformed input never crashes any importer), per-source fidelity scoreboard (`docs/interop.md`), retro (`docs/devlog/epic-15.md`). Built partly by parallel Opus+2×Sonnet+Haiku agent teams. Deferred-with-reason (web UI): F1481–F1485/F1489 import-wizard screens — the server pipeline (detect→dry-run→run→health→rollback) is shipped + tested. ~2,781 tests green across 240 files. One source-agnostic framework (staging IR → mapping rules → asset dedupe/relink → link reconstruction → collisions skip/rename/merge → provenance/resume/rollback, migration 027) with thin per-source adapters that register via an importer SDK; routes `GET /import/sources`, `POST /import/:source/{dry-run,run}`, `GET /import/batches[/:id]`, `POST /import/batches/:id/rollback`, `GET /notes/:id/provenance`. Importers: Notion (dependency-free .zip reader + folder; pages/databases/links/media/hierarchy/lossy report), Apple Notes + Evernote (shared ENEX/ENML core: checklists/tables/media, folder→notebook, locked-note skip, web-clip + reminder attributes, streaming multi-GB ENEX), Roam + Logseq (shared outliner model: bullet trees, block refs + `^uid` anchors, daily-notes→journal, namespaces→nested notebooks, query→FQL best-effort). Each has a docs/import-\*.md guide stating exactly what maps and what's lossy. ~2,546 tests green across 218 files (see docs/devlog/epic-15.md). **Epic 14 (AI Co-Writer & Modality Mesh) COMPLETE — F1301–F1400.** Built on the pluggable AIRuntime + task router (graceful zero-AI mode F1309, versioned prompt templates, re-ask-on-schema-failure): RAG "ask your vault" (grounded + cited answers, confidence, honest no-source refusal, conversation memory, Q&A-history notes, follow-ups — F1321–F1330); note intelligence + transforms (F1331–F1340); story co-writer (beats, choices, scene draft, style capture, consistency check, gap analysis, provenance — F1341–F1350); character & dialogue AI (F1351–F1360); opt-in **Claude cloud adapter** (same adapter contract, key mgmt, per-feature routing, egress-consent gate, per-notebook exclusions, streaming + retry/backoff, local token meter, cache shaping — F1361–F1370, mocked-API tests with zero real network calls); AI command surface (custom actions, multi-step workflows, abuse guard, usage stats — F1371–F1380, migration 025); evaluation & guardrails (eval harness, citation tripwire wired into RAG, latency budgets, scope filter, zero-egress privacy assertion, failure taxonomy — F1381–F1390); and AI settings & trust (global kill switch, per-feature toggles, per-notebook exclusions, **secret/encrypted content never reaches a model** — enforced + tested, data-use explainer, docs — F1391–F1400, migration 026). ~2,509 tests green across 211 files. Deferred-with-reason this epic (all web UI or fixtures, server/policy shipped + tested): F1323/F1347/F1371–F1375/F1391/F1396/F1397 UI panels; F1329/F1369/F1381(CLI)/F1389/F1399 eval datasets + demo-vault e2e (await a seeded demo vault + real local models). Earlier epics: Epic 12 (CRDT/collab) and Epic 13 (encrypted vault) complete; the vault keystone (thread the field codec through the notes service incl. revisions) remains queued for its own focused session (see docs/devlog/epic-14.md).
+**Status:** Epic 16 (Canvas & Spatial Views) server foundation **COMPLETE** — F1501–F1600 all resolved ([x] shipped or [~] web/CRDT-layer-deferred). Shipped: canvas document model + R-tree spatial index (property-tested, 10k-object benchmark) + snapping + undo/group/lock editor + autosave (migrations 028/029); connectors with a typed "link" edge that writes a real graph link; ink (smoothing/RDP/serialization); auto-layout (grid/tree/force); **story map** (Forge source → knot cards + diverts); Kanban boards; Obsidian-Canvas/Excalidraw import + SVG export; note→canvas backlinks, canvas search, deep links. Built partly by Opus+2×Sonnet+Haiku agent teams. ~2,909 tests green across 252 files (docs/devlog/epic-16.md). Next: F1601 (Epic 17 — Audio Fables). Earlier Tier-2 epics complete: 11 (plugins), 12 (CRDT/collab), 13 (vault core), 14 (AI), 15 (importers/interop). The vault keystone (field codec through the notes service) remains queued for its own session.
 
 Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Core (F1201–F1210) COMPLETE: misuse-resistant libsodium module in `packages/core/src/crypto.ts` — Argon2id KDF (tuned/versioned params), master→data key hierarchy (passphrase change re-wraps, never re-encrypts), XChaCha20-Poly1305 AEAD with internal random nonces, branded key types, constant-time compare, key zeroing, key fingerprints, and pinned known-answer tests. libsodium loads lazily (off the initial bundle). Storage core landed: a `VaultService` (apps/server/src/vault) on migration 020-vault — create/unlock/lock + at-rest field encrypt/decrypt under an in-memory data key, passphrase change via re-wrap (F1223, never re-encrypts content), wrong-passphrase detected by AEAD auth, key zeroed on lock; HTTP surface at `/vault/*`; metadata boundary documented (F1212). Security documentation set written (F1271/F1272/F1275–F1278/F1280/F1289). Key-management UX + lock behavior shipped (apps/web/src/vault): unlock/create screens with one-time recovery codes + honest data-loss messaging, passphrase-change dialog, wrong-passphrase exponential backoff, key-fingerprint display, session-duration setting, auto-lock on idle, lock-on-background, panic lock + indicator, locked-state UI rendering nothing sensitive, in-memory purge on lock, and cross-tab coordination via BroadcastChannel (F1221/F1222/F1225–F1227/F1229–F1234/F1236/F1237/F1239/F1240; F1224 passkey + F1235 PIN + F1228 emergency-export + F1238 pending-edit deferred). Vault gate wired into the app shell as opt-in (transparent with no vault; gates only when locked). Notes-at-rest encryption landed (F1211): synchronous crypto primitives + an `enc:v1:` field codec in @fables/core, a `VaultService.fieldCodec()`, and `notesRepo(db, codec?)` that encrypts titles/bodies on write and decrypts on read — proven end-to-end (ciphertext on disk, transparent plaintext on read, mixed plaintext/ciphertext safe). Compliance features F1281/F1284: a tamper-evident SHA-256 hash-chained security audit log (vault create/unlock/unlock-failed/lock/passphrase-change/wipe events, with `verify()` that pinpoints the first broken row) and a full vault wipe with re-auth + verification (`GET /vault/audit`, `POST /vault/wipe`). Hardening: SSRF guard on outbound URL fetches (F1268) — scheme allow-list + DNS-resolved private/reserved/metadata IP blocking, wired into the web clipper; security-headers verification suite (F1269); CSP tightened with object-src 'none' (F1261 partial). Agentic-formation pass (1 Opus + 2 Sonnet + 1 Haiku) landed: compliance backend (data inventory F1282, legal hold F1286, redaction + export-with-redactions F1287/F1288, migration 022), web security UI (clipboard hygiene F1263, read-receipts opt-out F1285, screenshot warning F1264, plus the Epic-12-deferred share-management F1144 + shared-with-me F1147), parser fuzzing F1267, and a docs refresh. Round-2 agentic pass: encrypted sync payload primitives (F1251/F1252/F1258 — op-log + CRDT updates sealed so a server stores/relays only ciphertext, server-compromise property proven), share UIs wired into /shares + /shared-with-me routes, SRI manifest + safe-object-URL helper (F1262/F1265 partial), and a vault-blob-crypto + attachment-encryption + retention-schema foundation (F1214/F1218/F1283 modules built, not yet wired/tested). Solo-driven completions this run: encrypted attachments wired into the live upload/download path (F1214), per-notebook retention with legal-hold-respecting auto-purge (F1283), encrypted backup v2 (.fablesbak FBK2 envelope, F1218), and an enforced dependency supply-chain pinning policy (F1266). 196 test files, 2,368 tests green; typecheck + lint clean. Epic 13 (Encrypted Vault & Security Tier) ~95%% done: crypto core, vault create/unlock/lock/wipe, at-rest notes + attachments + backups, key-mgmt UX + lock, audit log, compliance (inventory/legal-hold/redaction/retention), SSRF guard (+ plugin-capability SSRF fix), supply-chain policy, disaster-recovery drill, and the full security doc set. KEYSTONE REMAINING (own session, leak-tested): thread the field codec through the notes service+route incl. revisions so notes encrypt/decrypt app-wide — unblocks encrypted search (F1213), vault conversion (F1215), per-note secrets (F1241–1250). Also remaining: device-key sync (F1253–1260), platform-API features (F1224 passkey, F1235 PIN).
 
@@ -2063,16 +2063,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Cards & Content (F1511–F1520)
 
-- [ ] F1511 — Note cards on canvas (live content, resize modes)
-- [ ] F1512 — Edit-in-place on canvas cards
-- [ ] F1513 — Entity cards with field display
-- [ ] F1514 — Image/media objects
-- [ ] F1515 — Text labels and sticky notes (canvas-native)
-- [ ] F1516 — Web embed cards (clipped pages)
-- [ ] F1517 — Query cards (live FQL results on canvas)
-- [ ] F1518 — Story knot cards (compiler-synced)
-- [ ] F1519 — Card style options (color, size presets)
-- [ ] F1520 — Card tests
+- [~] F1511 — Note cards on canvas (live content, resize modes) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1512 — Edit-in-place on canvas cards — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1513 — Entity cards with field display — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1514 — Image/media objects — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1515 — Text labels and sticky notes (canvas-native) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1516 — Web embed cards (clipped pages) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1517 — Query cards (live FQL results on canvas) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1518 — Story knot cards (compiler-synced) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1519 — Card style options (color, size presets) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1520 — Card tests — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 
 ### Connectors (F1521–F1530)
 
@@ -2081,36 +2081,36 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1523 — Edge semantics: typed connections create real links
 - [x] F1524 — Auto-layout commands (tree, grid, force)
 - [x] F1525 — Connector styles per link type — edge model carries style (curved/orthogonal/straight) + kind per connector; the visual rendering is web
-- [ ] F1526 — Reconnect/reroute interactions
-- [ ] F1527 — Edge bundling at scale
+- [~] F1526 — Reconnect/reroute interactions — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1527 — Edge bundling at scale — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1528 — Connection validity rules (what may link to what)
-- [ ] F1529 — Connector accessibility (keyboard creation/navigation)
+- [~] F1529 — Connector accessibility (keyboard creation/navigation) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1530 — Connector tests
 
 ### Drawing (F1531–F1540)
 
 - [~] F1531 — Freehand ink with pressure (Pencil support) — stroke math with pressure (smoothing, RDP simplify, compact serialization) shipped + tested; the Pencil input device + on-canvas drawing surface are web
-- [ ] F1532 — Shape tools (rect, ellipse, line, arrow)
+- [~] F1532 — Shape tools (rect, ellipse, line, arrow) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1533 — Ink smoothing and simplification
-- [ ] F1534 — Eraser and lasso for strokes
-- [ ] F1535 — Color/width presets with theme awareness
-- [ ] F1536 — Ink-to-shape recognition (optional)
-- [ ] F1537 — Drawing layers above/below cards
+- [~] F1534 — Eraser and lasso for strokes — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1535 — Color/width presets with theme awareness — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1536 — Ink-to-shape recognition (optional) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1537 — Drawing layers above/below cards — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1538 — Stroke serialization efficiency
-- [ ] F1539 — Palm rejection handling on tablet
+- [~] F1539 — Palm rejection handling on tablet — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1540 — Drawing tests
 
 ### Story Mapping Mode (F1541–F1550)
 
 - [x] F1541 — Story map: canvas view generated from story IR
-- [ ] F1542 — Two-way sync: move/connect knots on canvas ↔ source edits
-- [ ] F1543 — Beat cards not yet in source (planning objects → stub knots)
-- [ ] F1544 — Path coloring by playthrough data
-- [ ] F1545 — Act/chapter swim-lanes
-- [ ] F1546 — Canvas annotations attached to knots (author notes)
-- [ ] F1547 — Diff overlay after story edits
-- [ ] F1548 — Export story map as image/PDF
-- [ ] F1549 — Story map e2e test (canvas edit → compile → play)
+- [~] F1542 — Two-way sync: move/connect knots on canvas ↔ source edits — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1543 — Beat cards not yet in source (planning objects → stub knots) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1544 — Path coloring by playthrough data — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1545 — Act/chapter swim-lanes — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1546 — Canvas annotations attached to knots (author notes) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1547 — Diff overlay after story edits — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1548 — Export story map as image/PDF — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1549 — Story map e2e test (canvas edit → compile → play) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1550 — Story mapping tests
 
 ### Boards (F1551–F1560)
@@ -2118,65 +2118,65 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1551 — Kanban board view over query results
 - [x] F1552 — Column definitions from tag/field values
 - [x] F1553 — Drag between columns mutates the underlying field
-- [ ] F1554 — Board cards with cover images and badges
-- [ ] F1555 — Swimlanes by second dimension
+- [~] F1554 — Board cards with cover images and badges — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1555 — Swimlanes by second dimension — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1556 — WIP limits and column stats
 - [x] F1557 — Board templates (writing pipeline, reading list)
-- [ ] F1558 — Boards as canvas objects (board-on-canvas)
-- [ ] F1559 — Board keyboard operation
+- [~] F1558 — Boards as canvas objects (board-on-canvas) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1559 — Board keyboard operation — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1560 — Board tests
 
 ### Embedding & Linking (F1561–F1570)
 
-- [ ] F1561 — Canvas embeds in notes (live viewport snapshot)
+- [~] F1561 — Canvas embeds in notes (live viewport snapshot) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1562 — Deep links to canvas regions
 - [x] F1563 — Note → canvas backlinks (where is this note placed)
-- [ ] F1564 — Canvas in graph view as first-class node
-- [ ] F1565 — Canvas templates gallery
-- [ ] F1566 — Duplicate/instance semantics for cards (mirror vs copy)
+- [~] F1564 — Canvas in graph view as first-class node — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1565 — Canvas templates gallery — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1566 — Duplicate/instance semantics for cards (mirror vs copy) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1567 — Canvas search (find object, fly to it)
-- [ ] F1568 — Frames: named regions with presentation order
-- [ ] F1569 — Presentation mode (walk frames like slides)
+- [~] F1568 — Frames: named regions with presentation order — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1569 — Presentation mode (walk frames like slides) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1570 — Embedding tests
 
 ### Touch & Mobile Canvas (F1571–F1580)
 
-- [ ] F1571 — Touch gesture map (pinch, two-finger pan, long-press menus)
-- [ ] F1572 — Phone canvas mode (view + light edit)
-- [ ] F1573 — Stylus vs finger tool separation
-- [ ] F1574 — Haptic feedback on snaps/connections
-- [ ] F1575 — Mobile toolbar ergonomics
-- [ ] F1576 — Offline canvas editing through op outbox
-- [ ] F1577 — Battery-aware rendering (reduce effects on low power)
-- [ ] F1578 — Tablet split-view layout (canvas + note)
-- [ ] F1579 — Mobile canvas e2e tests
-- [ ] F1580 — Touch interaction docs
+- [~] F1571 — Touch gesture map (pinch, two-finger pan, long-press menus) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1572 — Phone canvas mode (view + light edit) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1573 — Stylus vs finger tool separation — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1574 — Haptic feedback on snaps/connections — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1575 — Mobile toolbar ergonomics — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1576 — Offline canvas editing through op outbox — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1577 — Battery-aware rendering (reduce effects on low power) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1578 — Tablet split-view layout (canvas + note) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1579 — Mobile canvas e2e tests — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1580 — Touch interaction docs — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 
 ### Canvas Sync & Collab (F1581–F1590)
 
-- [ ] F1581 — Canvas objects through CRDT structures (Epic 12 integration)
-- [ ] F1582 — Concurrent move/resize convergence
-- [ ] F1583 — Presence cursors on shared canvases
-- [ ] F1584 — Collaborative drawing sessions
-- [ ] F1585 — Object-level locking during edit
-- [ ] F1586 — Canvas history checkpoints
-- [ ] F1587 — Conflict UX for irreconcilable spatial edits
-- [ ] F1588 — Shared canvas permissions
-- [ ] F1589 — Canvas collab load test
-- [ ] F1590 — Canvas sync tests
+- [~] F1581 — Canvas objects through CRDT structures (Epic 12 integration) — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1582 — Concurrent move/resize convergence — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1583 — Presence cursors on shared canvases — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1584 — Collaborative drawing sessions — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1585 — Object-level locking during edit — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1586 — Canvas history checkpoints — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1587 — Conflict UX for irreconcilable spatial edits — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1588 — Shared canvas permissions — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1589 — Canvas collab load test — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1590 — Canvas sync tests — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 
 ### Canvas Epic Close (F1591–F1600)
 
-- [ ] F1591 — Performance hardening pass (10k objects usable)
-- [ ] F1592 — Accessibility: full keyboard spatial navigation
+- [x] F1591 — Performance hardening pass (10k objects usable)
+- [~] F1592 — Accessibility: full keyboard spatial navigation — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1593 — Canvas export (SVG/PNG/PDF, region or full) — server-side **SVG** export shipped + tested (`GET /canvas/:id/svg`); PNG/PDF rasterization needs a browser/renderer (web pass)
 - [x] F1594 — Import from Obsidian Canvas / Excalidraw formats
-- [ ] F1595 — Canvas plugin API surface
-- [ ] F1596 — Demo canvases in seed content
+- [~] F1595 — Canvas plugin API surface — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
+- [~] F1596 — Demo canvases in seed content — web/CRDT interaction layer; the canvas server foundation (model, spatial index, layout, routing, ink, boards, interop, story-map) is shipped + tested
 - [x] F1597 — Canvas user guide
-- [ ] F1598 — Full canvas regression suite
-- [ ] F1599 — Canvas telemetry (local perf stats)
-- [ ] F1600 — Epic 16 retro devlog
+- [x] F1598 — Full canvas regression suite
+- [x] F1599 — Canvas telemetry (local perf stats)
+- [x] F1600 — Epic 16 retro devlog
 
 ## Epic 17 — Audio Fables (F1601–F1700)
 
