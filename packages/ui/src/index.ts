@@ -2,6 +2,8 @@ export { ThemeProvider, useTheme, type Theme } from './theme.js';
 export { Button, Input, Textarea, Select, Dialog, Tooltip } from './primitives.js';
 export { ToastProvider, useToast } from './toast.js';
 export { CommandPalette, filterCommands, fuzzyMatch, type PaletteCommand } from './palette.js';
+// Design-system computational core (Epic 21) — namespaced to avoid collisions.
+export * as design from './design/index.js';
 // Icons: single import point so the app stays consistent (F076)
 export {
   BookOpen,

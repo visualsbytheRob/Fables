@@ -71,6 +71,7 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 - **[Bulk Operations](bulk-operations.md)** — Preview → apply → undo across many notes: find/replace, merge, split, retag.
 - **[Workspace Profiles](workspace-profiles.md)** — Named UI states, focus modes, per-device defaults, export/import.
 - **[Power Tools](power-tools.md)** — Vault statistics, duplicate finder, broken-everything finder, linter, storage analyzer.
+- **[Design System Core](design-system.md)** — The OKLCH colour engine, seed-to-system theming, type scale, and spring/motion policy (Epic 21).
 
 ---
 

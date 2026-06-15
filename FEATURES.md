@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** 🏁 **Epic 20 (Multi-Vault, Automation & Power Tools) COMPLETE — F1901–F2000 all resolved**, which closes the **2,000-feature plan**. Shipped this session: Multi-Vault registry (migration 042, one-active invariant, isolated settings, per-vault encryption state, templates, cold storage), Webhooks & Integrations (migration 043, templated+HMAC-signed outbound, retries+dead-letter, token-auth inbound capture, RSS), Bulk Operations (migration 044, pure engine + preview→apply→undo journal), Scripting Console (migration 045, library + capability-scope static analysis + gallery), Workspace Profiles (migration 046, named UI states + per-device defaults + export/import), FQL v2 (aggregations, computed-field expression engine, query variables, EXPLAIN, linter), Power Tools (stats, duplicate/broken finders, linter with fix-its, storage analyzer), and the Grand Close (regression run, perf re-baseline, docs audit, demo vault, the Fables Book, retrospective, v2.0.0 release). Automation Rules + Scheduled Jobs (F1911–F1930, migrations 040–041) shipped in the prior session. New docs: `docs/multi-vault.md`, `docs/webhooks.md`, `docs/bulk-operations.md`, `docs/scripting.md`, `docs/workspace-profiles.md`, `docs/power-tools.md`, `docs/fql-v2.md`, `docs/the-fables-book.md`, `docs/announcement-v2.md`, `docs/devlog/epic-20.md`. **3,783 tests green across 337 files. Version bumped to 2.0.0.** Genuinely client/VM/multi-DB features triaged [~] with reasons (vault switcher UI, cross-vault federation/move, live scripting REPL, query charts, focus-mode enforcement, profiler/macro/CSS web surfaces). Next: **Epic 21 — New Millennium Polish (F2001–F2022)**, the design-system encore (largely web/GPU/visual). Prior epics 11–19 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** 🏁 **Epic 20 (Multi-Vault, Automation & Power Tools) COMPLETE — F1901–F2000 all resolved**, which closes the **2,000-feature plan**. Shipped this session: Multi-Vault registry (migration 042, one-active invariant, isolated settings, per-vault encryption state, templates, cold storage), Webhooks & Integrations (migration 043, templated+HMAC-signed outbound, retries+dead-letter, token-auth inbound capture, RSS), Bulk Operations (migration 044, pure engine + preview→apply→undo journal), Scripting Console (migration 045, library + capability-scope static analysis + gallery), Workspace Profiles (migration 046, named UI states + per-device defaults + export/import), FQL v2 (aggregations, computed-field expression engine, query variables, EXPLAIN, linter), Power Tools (stats, duplicate/broken finders, linter with fix-its, storage analyzer), and the Grand Close (regression run, perf re-baseline, docs audit, demo vault, the Fables Book, retrospective, v2.0.0 release). Automation Rules + Scheduled Jobs (F1911–F1930, migrations 040–041) shipped in the prior session. New docs: `docs/multi-vault.md`, `docs/webhooks.md`, `docs/bulk-operations.md`, `docs/scripting.md`, `docs/workspace-profiles.md`, `docs/power-tools.md`, `docs/fql-v2.md`, `docs/the-fables-book.md`, `docs/announcement-v2.md`, `docs/devlog/epic-20.md`. **3,783 tests green across 337 files. Version bumped to 2.0.0.** Genuinely client/VM/multi-DB features triaged [~] with reasons (vault switcher UI, cross-vault federation/move, live scripting REPL, query charts, focus-mode enforcement, profiler/macro/CSS web surfaces). **Epic 21 — New Millennium Polish (F2001–F2022)** has its computational design-system core shipped: `packages/ui/src/design/` — the OKLCH perceptual colour engine (F2001), seed-to-system theming with WCAG-contrast guarantees (F2002), the editorial modular type scale + baseline-rhythm engine (F2005–F2006), the spring-physics solver (F2009), and the reduced-motion/eco motion-budget policy (F2022), with 17 tests. The rendering/GPU/CSS surfaces (theme cross-fade, variable-font animation, View Transitions, WebGL/GLSL showpieces, micro-interactions, skeletons) are triaged [~] with reasons — each pointing at the core that drives it. `docs/design-system.md`, `docs/devlog/epic-21.md`. This brings the **full 2,026-feature plan to a close** (Tier 1 + Tier 2 + the 22-feature encore). Prior epics 11–20 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 18 detail):** **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1791 (Learning Epic Close). (Detail line below retained.)
 
@@ -2737,40 +2737,40 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Colour & light
 
-- [ ] F2001 — OKLCH perceptual colour core: every token defined in OKLCH so palettes are perceptually uniform and contrast is correct by construction
-- [ ] F2002 — Seed-to-system theming: one seed colour generates a full tonal palette (Material-You-style) with guaranteed WCAG-AA/AAA contrast pairings
-- [ ] F2003 — Light / dark / dim triad with flash-free cross-fade theme transitions, honouring `prefers-color-scheme` + manual override
-- [ ] F2004 — Per-notebook accent colour that ripples through tags, headers, focus rings, and selection via the OKLCH engine
+- [x] F2001 — OKLCH perceptual colour core — `packages/ui/src/design/color.ts` (OKLCH→sRGB, WCAG luminance/contrast, gamut check)
+- [x] F2002 — Seed-to-system theming — `design/palette.ts` `seedToSystem` tonal ramp + role tokens + `auditRoles` contrast guarantees
+- [~] F2003 — Light / dark / dim triad — the triad role sets generate from the ramp (`rolesFor`); the flash-free cross-fade transition is CSS
+- [~] F2004 — Per-notebook accent — `accentRamp` derives the OKLCH ramp; rippling it through tags/headers/focus rings is the CSS layer
 
 ### Typography & composition (Pentagram fundamentals)
 
-- [ ] F2005 — Editorial modular type scale (perfect-fourth ramp), optical sizing, and tabular numerals for a print-quality voice
-- [ ] F2006 — Baseline-grid + vertical-rhythm engine: everything snaps to a 4/8pt grid for compositional calm
-- [ ] F2007 — Variable-font axis animation: weight/width interpolate smoothly on emphasis, headings, and state changes
-- [ ] F2008 — Fine typesetting: balanced wrapping (`text-wrap: balance/pretty`), hanging punctuation, true smart quotes + ligatures
+- [x] F2005 — Editorial modular type scale — `design/typography.ts` perfect-fourth `typeScale`/`scaleStep` with rem + grid-aligned line heights
+- [x] F2006 — Baseline-grid + vertical-rhythm engine — `snapToGrid`/`lineHeightFor`/`rhythmUnits` snap to a 4/8pt grid
+- [~] F2007 — Variable-font axis animation — CSS font-variation-settings + the spring layer; no pure core
+- [~] F2008 — Fine typesetting — `text-wrap: balance/pretty`, hanging punctuation, smart quotes are CSS/render
 
 ### Motion (GSAP-class)
 
-- [ ] F2009 — Unified spring-physics motion layer: interruptible spring + easing tokens driving every transition consistently
-- [ ] F2010 — Shared-element view transitions (View Transitions API): the selected note expands into the editor and back
-- [ ] F2011 — Orchestrated staggered reveals for lists/grids on first paint and on filter/search changes
-- [ ] F2012 — Scroll-driven choreography (scroll-linked progress, gentle parallax depth) tuned for 120Hz ProMotion + battery-aware throttling
-- [ ] F2013 — Micro-interaction kit: tactile press, magnetic hover, draw-on checkboxes, with haptics where supported
+- [x] F2009 — Unified spring-physics motion layer — `design/motion.ts` `stepSpring`/`springKeyframes`/`isSettled` interruptible spring solver
+- [~] F2010 — Shared-element view transitions — View Transitions API is browser-only (the spring solver drives the timing)
+- [~] F2011 — Orchestrated staggered reveals — DOM animation over the spring/easing tokens
+- [~] F2012 — Scroll-driven choreography — scroll-linked + parallax is web; the `motionBudget` gates it battery-aware
+- [~] F2013 — Micro-interaction kit — tactile press / magnetic hover / haptics are web
 
 ### WebGL / GLSL showpieces
 
-- [ ] F2014 — WebGL ambient backdrop: a slow generative gradient-mesh (GLSL) that drifts with theme and time of day
-- [ ] F2015 — GPU aurora / flow-field shader for hero + empty states, degrading cleanly to a CSS gradient without WebGL
-- [ ] F2016 — Shader-based glass materials: real-time blur + refraction + specular for panels, sheets, and the command palette (Apple-style depth)
-- [ ] F2017 — Knowledge graph on WebGL: thousands of nodes at 60fps with bloom, depth-of-field, and buttery pan/zoom
-- [ ] F2018 — Tasteful GPU delight: save-pulse, completion bursts, and constellation effects — reduced-motion aware, never gratuitous
+- [~] F2014 — WebGL ambient backdrop — GLSL gradient-mesh is GPU/web; `motionBudget.shaders` gates it
+- [~] F2015 — GPU aurora / flow-field shader — WebGL with CSS-gradient fallback; gated by `motionBudget`
+- [~] F2016 — Shader-based glass materials — real-time blur/refraction is GPU/web
+- [~] F2017 — Knowledge graph on WebGL — GPU rendering of the existing graph data
+- [~] F2018 — Tasteful GPU delight — save-pulse/bursts are GPU/web; `resolveMotionLevel` makes them reduced-motion aware
 
 ### Craft & system polish
 
-- [ ] F2019 — Cohesive icon system on one grid (consistent stroke, corner radius, optical balance) with animated state morphs
-- [ ] F2020 — Layered elevation + light-source-consistent soft shadows, plus subtle film grain to kill gradient banding
-- [ ] F2021 — Content-aware skeletons with shimmer and zero layout shift, so loading feels designed, not blank
-- [ ] F2022 — Beauty-with-a-conscience: complete `prefers-reduced-motion` paths, `:focus-visible` choreography, and an eco/performance mode that dials shaders down — accessibility and battery first
+- [~] F2019 — Cohesive icon system — single-import icon set ships (`packages/ui` index); the one-grid morphs are SVG/CSS
+- [~] F2020 — Layered elevation + soft shadows — light-source-consistent shadow + film-grain is CSS/render
+- [~] F2021 — Content-aware skeletons — shimmer + zero-layout-shift skeletons are web
+- [x] F2022 — Beauty-with-a-conscience — `design/motion.ts` `resolveMotionLevel`/`motionBudget` (reduced-motion + eco mode dial shaders/parallax/duration down)
 
 ---
 
