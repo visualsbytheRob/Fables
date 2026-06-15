@@ -92,6 +92,20 @@ export interface ReviewLogEntry {
   reviewedAt: string;
 }
 
+export interface BrowseFilters {
+  state?: CardState | undefined;
+  kind?: string | undefined;
+  noteId?: string | undefined;
+  /** Substring match on prompt/answer. */
+  query?: string | undefined;
+  /** Cards due at or before this ISO timestamp. */
+  dueBefore?: string | undefined;
+  /** Minimum lapse count (for finding leeches). */
+  minLapses?: number | undefined;
+  limit?: number | undefined;
+  offset?: number | undefined;
+}
+
 export interface DueQueueOptions {
   /** ISO timestamp treated as "now"; due review cards have due <= now. */
   now?: string;
@@ -146,6 +160,94 @@ export function cardsRepo(db: Db) {
           .prepare('SELECT * FROM cards WHERE note_id = ? ORDER BY created_at')
           .all(noteId) as CardRow[]
       ).map(toCard);
+    },
+
+    /** Filtered card browser (F1719). All filters are optional and AND together. */
+    browse(filters: BrowseFilters = {}): Card[] {
+      const clauses: string[] = [];
+      const args: unknown[] = [];
+      if (filters.state !== undefined) {
+        clauses.push('state = ?');
+        args.push(filters.state);
+      }
+      if (filters.kind !== undefined) {
+        clauses.push('kind = ?');
+        args.push(filters.kind);
+      }
+      if (filters.noteId !== undefined) {
+        clauses.push('note_id = ?');
+        args.push(filters.noteId);
+      }
+      if (filters.dueBefore !== undefined) {
+        clauses.push('due IS NOT NULL AND due <= ?');
+        args.push(filters.dueBefore);
+      }
+      if (filters.minLapses !== undefined) {
+        clauses.push('lapses >= ?');
+        args.push(filters.minLapses);
+      }
+      if (filters.query !== undefined && filters.query.length > 0) {
+        clauses.push('(prompt LIKE ? OR answer LIKE ?)');
+        const like = `%${filters.query}%`;
+        args.push(like, like);
+      }
+      const where = clauses.length > 0 ? `WHERE ${clauses.join(' AND ')}` : '';
+      const limit = filters.limit ?? 100;
+      const offset = filters.offset ?? 0;
+      args.push(limit, offset);
+      return (
+        db
+          .prepare(`SELECT * FROM cards ${where} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
+          .all(...args) as CardRow[]
+      ).map(toCard);
+    },
+
+    /**
+     * Reconcile a note's auto-extracted cards against `extracted` (F1717): add
+     * new block-refs, update changed prompt/answer (preserving FSRS state), and
+     * delete vanished cards that were never reviewed. Reviewed cards that vanish
+     * are left intact so review history is never silently lost.
+     */
+    syncForNote(
+      noteId: string,
+      extracted: { kind: string; prompt: string; answer: string; blockRef: string }[],
+    ): { added: number; updated: number; removed: number } {
+      const existing = this.forNote(noteId).filter((c) => c.blockRef.length > 0);
+      const byRef = new Map(existing.map((c) => [c.blockRef, c]));
+      const seen = new Set<string>();
+      let added = 0;
+      let updated = 0;
+      let removed = 0;
+      const tx = db.transaction(() => {
+        for (const e of extracted) {
+          if (e.blockRef.length === 0) continue;
+          seen.add(e.blockRef);
+          const cur = byRef.get(e.blockRef);
+          if (!cur) {
+            this.create({
+              noteId,
+              blockRef: e.blockRef,
+              kind: e.kind,
+              prompt: e.prompt,
+              answer: e.answer,
+            });
+            added++;
+          } else if (cur.prompt !== e.prompt || cur.answer !== e.answer || cur.kind !== e.kind) {
+            db.prepare(
+              'UPDATE cards SET prompt = ?, answer = ?, kind = ?, updated_at = ? WHERE id = ?',
+            ).run(e.prompt, e.answer, e.kind, nowIso(), cur.id);
+            updated++;
+          }
+        }
+        for (const c of existing) {
+          if (!seen.has(c.blockRef) && c.state === 'new' && c.reps === 0) {
+            db.prepare('DELETE FROM cards WHERE id = ?').run(c.id);
+            removed++;
+          }
+        }
+      });
+      tx();
+      return { added, updated, removed };
     },
 
     /** Cards whose source note was deleted (F1718). */

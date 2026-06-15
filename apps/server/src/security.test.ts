@@ -110,6 +110,9 @@ describe('SQL injection audit (F943)', () => {
       /ORDER BY \$\{column\} \$\{dir\}/,
       // Dynamic WHERE clause built from hardcoded clause strings (no user data in clause text):
       /SELECT \* FROM stories \$\{where\}/,
+      // Card browser: `${where}` is composed only of hardcoded clause strings
+      // ("state = ?", "kind = ?", …); every user value is bound via ? (F1719).
+      /SELECT \* FROM cards \$\{where\}/,
     ];
 
     for (const file of files) {
@@ -206,9 +209,7 @@ describe('VM effects allowlist (F945)', () => {
       payload: {
         playthroughId: 'pt-allowed',
         idempotencyKey: 'ik-allowed-1',
-        events: [
-          { type: 'journal', payload: { text: 'The fox spoke.', scene: 'scene1' } },
-        ],
+        events: [{ type: 'journal', payload: { text: 'The fox spoke.', scene: 'scene1' } }],
       },
     });
     expect(res.statusCode).toBe(201);
@@ -256,9 +257,7 @@ describe('token authentication (F949)', () => {
 
   it('app with FABLES_TOKEN rejects requests missing the token', async () => {
     const token = 'super-secret-test-token';
-    const secureApp = await buildApp(
-      loadConfig({ NODE_ENV: 'test', LOG_LEVEL: 'fatal' }),
-    );
+    const secureApp = await buildApp(loadConfig({ NODE_ENV: 'test', LOG_LEVEL: 'fatal' }));
     // Manually inject a token gate.
     const { registerTokenAuth } = await import('./security.js');
     registerTokenAuth(secureApp, token);

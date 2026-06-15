@@ -23,9 +23,13 @@ import { z } from 'zod';
 import { registerRoute } from '../api/registry.js';
 import { parseWith } from '../api/validate.js';
 import { cardsRepo } from '../db/repos/cards.js';
+import { notesRepo } from '../db/repos/notes.js';
+import { extractCards } from '../learning/extract.js';
 import type { Rating } from '../learning/fsrs.js';
+import type { NoteId } from '@fables/core';
 
 registerRoute({ method: 'POST', path: '/cards', summary: 'Create a card (F1701)' });
+registerRoute({ method: 'GET', path: '/cards', summary: 'Browse/filter cards (F1719)' });
 registerRoute({ method: 'GET', path: '/cards/:id', summary: 'Fetch a card' });
 registerRoute({ method: 'DELETE', path: '/cards/:id', summary: 'Delete a card' });
 registerRoute({ method: 'GET', path: '/cards/:id/log', summary: 'Review history (F1703)' });
@@ -36,6 +40,16 @@ registerRoute({ method: 'POST', path: '/cards/:id/bury', summary: 'Bury a card (
 registerRoute({ method: 'GET', path: '/review/queue', summary: 'Due queue (F1705/F1706)' });
 registerRoute({ method: 'GET', path: '/review/counts', summary: 'Due/new/suspended counts' });
 registerRoute({ method: 'GET', path: '/review/orphans', summary: 'Orphaned cards (F1718)' });
+registerRoute({
+  method: 'POST',
+  path: '/cards/extract',
+  summary: 'Preview cards from text (F1713)',
+});
+registerRoute({
+  method: 'POST',
+  path: '/notes/:id/cards/sync',
+  summary: 'Sync a note’s auto-cards (F1717)',
+});
 
 const idParams = z.object({ id: z.string().min(1) });
 
@@ -56,6 +70,19 @@ const reviewBody = z.object({
   requestRetention: z.number().min(0.7).max(0.99).optional(),
 });
 
+const CARD_STATES = ['new', 'learning', 'review', 'relearning', 'suspended', 'buried'] as const;
+
+const browseQuery = z.object({
+  state: z.enum(CARD_STATES).optional(),
+  kind: z.string().max(50).optional(),
+  noteId: z.string().min(1).optional(),
+  q: z.string().max(500).optional(),
+  dueBefore: z.string().datetime().optional(),
+  minLapses: z.coerce.number().int().min(0).optional(),
+  limit: z.coerce.number().int().min(1).max(1000).optional(),
+  offset: z.coerce.number().int().min(0).optional(),
+});
+
 const queueQuery = z.object({
   now: z.string().datetime().optional(),
   limit: z.coerce.number().int().min(1).max(1000).optional(),
@@ -64,6 +91,26 @@ const queueQuery = z.object({
 
 export const cardRoutes: FastifyPluginAsync = async (app) => {
   const repo = cardsRepo(app.db);
+  const notes = notesRepo(app.db);
+
+  // Preview the cards a piece of text would yield, without persisting (F1713/F1714).
+  app.post('/cards/extract', async (request) => {
+    const { text } = parseWith(
+      z.object({ text: z.string().min(1).max(100_000) }),
+      request.body,
+      'body',
+    );
+    return { data: { cards: extractCards(text) } };
+  });
+
+  // Reconcile a note's auto-extracted cards with its current body (F1717).
+  app.post('/notes/:id/cards/sync', async (request) => {
+    const { id } = parseWith(idParams, request.params, 'params');
+    const note = notes.get(id as NoteId);
+    if (!note) throw notFound('note', id);
+    const result = repo.syncForNote(id, extractCards(note.body));
+    return { data: { ...result, cards: repo.forNote(id) } };
+  });
 
   app.post('/cards', async (request) => {
     const body = parseWith(createBody, request.body, 'body');
@@ -80,6 +127,24 @@ export const cardRoutes: FastifyPluginAsync = async (app) => {
         ...(body.blockRef !== undefined ? { blockRef: body.blockRef } : {}),
         ...(body.kind !== undefined ? { kind: body.kind } : {}),
       }),
+    };
+  });
+
+  app.get('/cards', async (request) => {
+    const q = parseWith(browseQuery, request.query, 'query');
+    return {
+      data: {
+        cards: repo.browse({
+          ...(q.state !== undefined ? { state: q.state } : {}),
+          ...(q.kind !== undefined ? { kind: q.kind } : {}),
+          ...(q.noteId !== undefined ? { noteId: q.noteId } : {}),
+          ...(q.q !== undefined ? { query: q.q } : {}),
+          ...(q.dueBefore !== undefined ? { dueBefore: q.dueBefore } : {}),
+          ...(q.minLapses !== undefined ? { minLapses: q.minLapses } : {}),
+          ...(q.limit !== undefined ? { limit: q.limit } : {}),
+          ...(q.offset !== undefined ? { offset: q.offset } : {}),
+        }),
+      },
     };
   });
 

@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 COMPLETE** ([x] shipped; F1704 param-optimizer [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity properties + a 100k-card benchmark; card model + immutable review log (migration 035); due-queue with timezone-correct `now` + capped new-card intake; suspend/bury; orphan-on-note-delete. Routes under /cards + /review. **3,188 tests green across 290 files. CI green.** Next: F1711 (Card Authoring). Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Routes under /cards + /review + /notes/:id/cards/sync. **3,225 tests green across 293 files. CI green.** Next: F1721 (Review Experience). Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 17):** Epic 17 (Audio Fables) server foundation **COMPLETE** — F1601–F1700 all resolved ([x] shipped or [~] web/Web-Audio-layer-deferred). Shipped: pluggable TTS runtime + Piper adapter + content-addressed cache (hit-rate + LRU + priority queue), voice casting (attribution/separation/resolution + cast sheets), narration renderer (scene + timeline + WAV pre-render), soundscapes (Forge bindings/triggers + CC0 library + mixer), read-along alignment, recording studio (content-addressed takes + recording plan), audiobook export (chapters/metadata/cue), playback (resume/queue/pins/stats), accessibility (transcripts/VTT/spoken menus + mono/balance/normalize), and the end-to-end pipeline test. Migrations 030–034. `docs/audio/tts.md`, `docs/audio/guide.md`, `docs/devlog/epic-17.md`. **3,164 tests green across 286 files. CI green.** Next: F1701 (Epic 18 — Spaced Repetition & Learning). The Web-Audio/PWA playback, editor, mic, and codec layers are deferred-with-reason. Prior: Epic 16 (Canvas) server foundation complete; earlier Tier-2 epics 11–15. The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2335,16 +2335,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Card Authoring (F1711–F1720)
 
-- [ ] F1711 — Cloze syntax in notes ({{c1::hidden}})
-- [ ] F1712 — Q&A block syntax for explicit cards
-- [ ] F1713 — Auto-card suggestions from note structure (definitions, lists)
-- [ ] F1714 — Card preview in editor gutter
-- [ ] F1715 — Multi-cloze cards from one block
-- [ ] F1716 — Image occlusion cards (mask regions)
-- [ ] F1717 — Card-source live link (edit note updates card)
-- [ ] F1718 — Orphaned card handling on note deletion
-- [ ] F1719 — Card browser with FQL filtering
-- [ ] F1720 — Authoring tests
+- [x] F1711 — Cloze syntax in notes ({{c1::hidden}}) — `learning/extract.ts` `extractCloze` (with `::hint`)
+- [x] F1712 — Q&A block syntax for explicit cards — `extractQA` (multiline answers)
+- [x] F1713 — Auto-card suggestions from note structure (definitions, lists) — `suggestCards`, POST /cards/extract
+- [~] F1714 — Card preview in editor gutter — web editor gutter; driven by POST /cards/extract
+- [x] F1715 — Multi-cloze cards from one block — one card per distinct cloze index, other indices revealed
+- [~] F1716 — Image occlusion cards (mask regions) — web image-masking UI
+- [x] F1717 — Card-source live link (edit note updates card) — `syncForNote` reconcile by blockRef, POST /notes/:id/cards/sync
+- [x] F1718 — Orphaned card handling on note deletion — note delete → card.note_id NULL; `orphans()` + /review/orphans
+- [x] F1719 — Card browser with FQL filtering — `browse()` (state/kind/note/text/due/lapses), GET /cards
+- [x] F1720 — Authoring tests — extract (30) + sync + browse + route suites
 
 ### Review Experience (F1721–F1730)
 
