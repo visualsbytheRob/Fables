@@ -1,6 +1,13 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach } from 'vitest';
-import { notificationStore, notificationPrefs, isQuietHours } from './notificationStore.js';
+import {
+  notificationStore,
+  notificationPrefs,
+  isQuietHours,
+  isWithinQuietHours,
+  minutesOfDay,
+  nextReminderDelayMs,
+} from './notificationStore.js';
 
 beforeEach(() => {
   // Clear storage before each test
@@ -115,5 +122,47 @@ describe('isQuietHours', () => {
     if (!isInWindow) {
       expect(isQuietHours()).toBe(false);
     }
+  });
+});
+
+describe('quiet-hours + reminder timing (F878/F872/F880)', () => {
+  it('parses HH:MM to minutes-since-midnight', () => {
+    expect(minutesOfDay('00:00')).toBe(0);
+    expect(minutesOfDay('07:30')).toBe(450);
+    expect(minutesOfDay('22:00')).toBe(1320);
+  });
+
+  it('honours a same-day quiet window [09:00, 17:00)', () => {
+    expect(isWithinQuietHours(minutesOfDay('08:59'), '09:00', '17:00')).toBe(false);
+    expect(isWithinQuietHours(minutesOfDay('09:00'), '09:00', '17:00')).toBe(true);
+    expect(isWithinQuietHours(minutesOfDay('16:59'), '09:00', '17:00')).toBe(true);
+    expect(isWithinQuietHours(minutesOfDay('17:00'), '09:00', '17:00')).toBe(false);
+  });
+
+  it('honours an overnight quiet window [22:00, 07:00) across midnight', () => {
+    expect(isWithinQuietHours(minutesOfDay('23:30'), '22:00', '07:00')).toBe(true);
+    expect(isWithinQuietHours(minutesOfDay('03:00'), '22:00', '07:00')).toBe(true);
+    expect(isWithinQuietHours(minutesOfDay('07:00'), '22:00', '07:00')).toBe(false);
+    expect(isWithinQuietHours(minutesOfDay('12:00'), '22:00', '07:00')).toBe(false);
+  });
+
+  it('isQuietHours respects the enabled flag and an injected time', () => {
+    notificationPrefs.set({
+      quietHoursEnabled: false,
+      quietHoursStart: '22:00',
+      quietHoursEnd: '07:00',
+    });
+    expect(isQuietHours(new Date(2026, 5, 15, 23, 0))).toBe(false);
+    notificationPrefs.set({ quietHoursEnabled: true });
+    expect(isQuietHours(new Date(2026, 5, 15, 23, 0))).toBe(true);
+    expect(isQuietHours(new Date(2026, 5, 15, 12, 0))).toBe(false);
+  });
+
+  it('schedules the daily reminder for today when still ahead, tomorrow when past', () => {
+    const morning = new Date(2026, 5, 15, 8, 0, 0, 0);
+    // 09:00 is one hour ahead → ~3,600,000 ms.
+    expect(nextReminderDelayMs(morning, '09:00')).toBe(60 * 60 * 1000);
+    // 07:00 already passed → rolls to tomorrow (23 hours away).
+    expect(nextReminderDelayMs(morning, '07:00')).toBe(23 * 60 * 60 * 1000);
   });
 });

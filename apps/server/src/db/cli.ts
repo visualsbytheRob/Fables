@@ -4,6 +4,7 @@ import { openDb } from './connection.js';
 import { backup, integrityCheck } from './maintenance.js';
 import { migrate } from './migrate.js';
 import { seed } from './seed.js';
+import { seedDemoWorld } from '../demo/seed-demo.js';
 
 const command = process.argv[2];
 const config = loadConfig();
@@ -31,8 +32,20 @@ switch (command) {
     console.log(result.seeded ? 'seeded demo vault' : 'vault not empty — skipped');
     break;
   }
+  case 'seed:demo': {
+    const result = seedDemoWorld(db);
+    if (result.seeded) {
+      console.log(
+        `seeded demo world: ${result.notes} notes, ${result.notebooks} notebooks, ` +
+          `${result.savedQueries} saved queries, story ${result.story}`,
+      );
+    } else {
+      console.log('vault not empty — demo world skipped');
+    }
+    break;
+  }
   default:
-    console.error('usage: db:cli <backup|check|seed>');
+    console.error('usage: db:cli <backup|check|seed|seed:demo>');
     process.exit(1);
 }
 db.close();

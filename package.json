@@ -20,6 +20,7 @@
     "format:check": "prettier --check .",
     "typecheck": "pnpm -r run typecheck",
     "doctor": "node scripts/doctor.mjs",
+    "seed:demo": "pnpm --filter @fables/server seed:demo",
     "start": "node apps/server/dist/server.js",
     "upgrade-fables": "node scripts/upgrade-fables.mjs",
     "test:coverage": "vitest run --coverage",

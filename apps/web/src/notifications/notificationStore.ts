@@ -125,22 +125,41 @@ export const notificationPrefs = {
 
 // ──────────────────────────────── QUIET HOURS ────────────────────────────────
 
-/** Returns true if current time is within quiet hours. */
-export function isQuietHours(): boolean {
-  const prefs = notificationPrefs.get();
-  if (!prefs.quietHoursEnabled) return false;
-  const now = new Date();
-  const nowMins = now.getHours() * 60 + now.getMinutes();
-  const startParts = prefs.quietHoursStart.split(':').map(Number);
-  const endParts = prefs.quietHoursEnd.split(':').map(Number);
-  const startMins = (startParts[0] ?? 0) * 60 + (startParts[1] ?? 0);
-  const endMins = (endParts[0] ?? 0) * 60 + (endParts[1] ?? 0);
+/** Minutes-since-midnight from an `HH:MM` string. */
+export function minutesOfDay(hhmm: string): number {
+  const [h, m] = hhmm.split(':').map(Number);
+  return (h ?? 0) * 60 + (m ?? 0);
+}
 
+/**
+ * Pure quiet-hours test: is `nowMins` (minutes since midnight) inside the
+ * [start, end) window? Handles windows that span midnight (start > end), so a
+ * 22:00–07:00 quiet period is honoured across the day boundary (F878).
+ */
+export function isWithinQuietHours(nowMins: number, startStr: string, endStr: string): boolean {
+  const startMins = minutesOfDay(startStr);
+  const endMins = minutesOfDay(endStr);
   if (startMins <= endMins) {
     return nowMins >= startMins && nowMins < endMins;
   }
-  // Spans midnight
   return nowMins >= startMins || nowMins < endMins;
+}
+
+/** Returns true if current time is within quiet hours. */
+export function isQuietHours(now: Date = new Date()): boolean {
+  const prefs = notificationPrefs.get();
+  if (!prefs.quietHoursEnabled) return false;
+  const nowMins = now.getHours() * 60 + now.getMinutes();
+  return isWithinQuietHours(nowMins, prefs.quietHoursStart, prefs.quietHoursEnd);
+}
+
+/** Ms from `now` until the next daily `HH:MM` reminder (tomorrow if already past). */
+export function nextReminderDelayMs(now: Date, reminderTime: string): number {
+  const [h, m] = reminderTime.split(':').map(Number);
+  const next = new Date(now);
+  next.setHours(h ?? 9, m ?? 0, 0, 0);
+  if (next <= now) next.setDate(next.getDate() + 1);
+  return next.getTime() - now.getTime();
 }
 
 // ──────────────────────────────── JOURNAL REMINDER ───────────────────────────
@@ -157,15 +176,7 @@ export function scheduleJournalReminder(): void {
   const prefs = notificationPrefs.get();
   if (!prefs.journalReminder) return;
 
-  const now = new Date();
-  const timeParts = prefs.journalReminderTime.split(':').map(Number);
-  const h = timeParts[0] ?? 9;
-  const m = timeParts[1] ?? 0;
-  const next = new Date(now);
-  next.setHours(h, m, 0, 0);
-  if (next <= now) next.setDate(next.getDate() + 1);
-
-  const msUntil = next.getTime() - now.getTime();
+  const msUntil = nextReminderDelayMs(new Date(), prefs.journalReminderTime);
   reminderTimer = setTimeout(() => {
     if (!isQuietHours()) {
       notificationStore.add({

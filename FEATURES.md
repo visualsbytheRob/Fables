@@ -957,12 +957,12 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F691 — Demo world: "The Aesop Engine" — notebook of fable entities (Fox, Crow, Lion...)
 - [x] F692 — Demo story 1: "The Fox & The Crow, Annotated" using lore embeds
 - [x] F693 — Demo story 2: branching fable using entity mutations + codex reveals
-- [ ] F694 — Demo daily-note journal seeded with story-generated entries
-- [ ] F695 — Demo saved queries + dashboard note showcasing FQL embeds
-- [ ] F696 — Demo graph view arrangement that screenshots well
+- [x] F694 — Demo daily-note journal — `demo/seed-demo.ts` seeds a Journal notebook with dated entries
+- [x] F695 — Demo saved queries + dashboard — seeds pinned saved queries + a Dashboard note with ```query embeds
+- [~] F696 — Demo graph arrangement — the seed creates a well-linked graph; the visual arrangement/screenshot is web
 - [x] F697 — Guided tour overlay: first-run walkthrough of the fusion features
-- [ ] F698 — `pnpm seed:demo` one-command demo world install
-- [ ] F699 — Demo content e2e test (compiles, plays, mutates, journals)
+- [x] F698 — `pnpm seed:demo` one-command install — root + server scripts → `seedDemoWorld` (idempotent)
+- [x] F699 — Demo content e2e — `demo/seed-demo.test.ts` (story compiles+plays to an ending, saved query returns characters, journal entries present)
 - [x] F700 — Day-7 retro note in `docs/devlog/day-07.md`
 
 ---
@@ -1205,7 +1205,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F877 — Badge API: unread/pending counts on app icon where supported
 - [x] F878 — Quiet hours setting
 - [x] F879 — Notification center history with mark-read
-- [ ] F880 — Notification tests
+- [x] F880 — Notification tests — extracted pure `isWithinQuietHours`/`nextReminderDelayMs` (overnight windows, reminder roll-over) + store coverage
 
 ### Tailscale Integration (F881–F890)
 
