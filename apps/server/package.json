@@ -4,17 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "NODE_OPTIONS=--conditions=development tsx watch src/server.ts",
+    "dev": "cross-env NODE_OPTIONS=--conditions=development tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/server.js",
-    "db:backup": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts backup",
-    "db:check": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts check",
-    "db:seed": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed",
-    "seed:demo": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed:demo",
-    "forge:run": "NODE_OPTIONS=--conditions=development tsx src/cli/forge-run.ts",
-    "import:vault": "NODE_OPTIONS=--conditions=development tsx src/cli/import.ts",
-    "import": "NODE_OPTIONS=--conditions=development tsx src/cli/import-source.ts"
+    "db:backup": "cross-env NODE_OPTIONS=--conditions=development tsx src/db/cli.ts backup",
+    "db:check": "cross-env NODE_OPTIONS=--conditions=development tsx src/db/cli.ts check",
+    "db:seed": "cross-env NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed",
+    "seed:demo": "cross-env NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed:demo",
+    "forge:run": "cross-env NODE_OPTIONS=--conditions=development tsx src/cli/forge-run.ts",
+    "import:vault": "cross-env NODE_OPTIONS=--conditions=development tsx src/cli/import.ts",
+    "import": "cross-env NODE_OPTIONS=--conditions=development tsx src/cli/import-source.ts"
   },
   "dependencies": {
     "@fables/core": "workspace:*",
@@ -41,6 +41,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^22.19.21",
+    "cross-env": "^7.0.3",
     "pino-pretty": "^13.0.0",
     "tsx": "^4.20.0"
   }
