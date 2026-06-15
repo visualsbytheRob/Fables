@@ -61,6 +61,7 @@ describe('migrations', () => {
       '042-vaults',
       '043-webhooks',
       '044-bulk-journal',
+      '045-scripts',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

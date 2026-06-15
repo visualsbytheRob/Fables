@@ -74,6 +74,7 @@ import { vaultsRoutes } from './vaults.js';
 import { webhooksRoutes } from './webhooks.js';
 import { powerRoutes } from './power.js';
 import { bulkRoutes } from './bulk.js';
+import { scriptRoutes } from './scripts.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -132,6 +133,7 @@ export const routes: FastifyPluginAsync[] = [
   webhooksRoutes,
   powerRoutes,
   bulkRoutes,
+  scriptRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,

@@ -42,6 +42,7 @@ import { migration041Jobs } from './041-jobs.js';
 import { migration042Vaults } from './042-vaults.js';
 import { migration043Webhooks } from './043-webhooks.js';
 import { migration044BulkJournal } from './044-bulk-journal.js';
+import { migration045Scripts } from './045-scripts.js';
 
 export interface Migration {
   id: number;
@@ -95,4 +96,5 @@ export const migrations: Migration[] = [
   migration042Vaults,
   migration043Webhooks,
   migration044BulkJournal,
+  migration045Scripts,
 ];

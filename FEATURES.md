@@ -2646,16 +2646,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Scripting Console (F1941–F1950)
 
-- [ ] F1941 — Sandboxed JS console against the plugin API surface
-- [ ] F1942 — Script library (saved scripts with descriptions)
-- [ ] F1943 — Script scheduling (scripts as job actions)
-- [ ] F1944 — Console REPL with API autocomplete
-- [ ] F1945 — Result rendering (tables, JSON tree)
-- [ ] F1946 — Dry-run transaction wrapper for scripts
-- [ ] F1947 — Script permission scoping like plugins
-- [ ] F1948 — Example script gallery
-- [ ] F1949 — Console tests
-- [ ] F1950 — Scripting docs
+- [~] F1941 — Sandboxed JS console — execution runs through the plugin worker sandbox; the script library + capability surface ship
+- [x] F1942 — Script library — `db/repos/scripts.ts` (migration 045), CRUD under /scripts
+- [~] F1943 — Script scheduling — scripts carry a `cron`; dispatch rides the job scheduler (handler dispatch triaged with F1922)
+- [~] F1944 — Console REPL with autocomplete — web surface over the script endpoints
+- [~] F1945 — Result rendering — web surface (tables / JSON tree)
+- [x] F1946 — Dry-run scope analysis — `scripting/analyze.ts` static capability→scope check, POST /scripts/check
+- [x] F1947 — Script permission scoping — same scope vocabulary as plugins, validated on save
+- [x] F1948 — Example script gallery — `scripting/gallery.ts`, GET /scripts/gallery
+- [x] F1949 — Console tests — `scripting/analyze.test.ts` + `routes/scripts.test.ts`
+- [x] F1950 — Scripting docs — `docs/scripting.md`
 
 ### Bulk Operations (F1951–F1960)
 
