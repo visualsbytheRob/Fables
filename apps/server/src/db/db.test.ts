@@ -49,6 +49,7 @@ describe('migrations', () => {
       '030-tts',
       '031-casting',
       '032-audio-settings',
+      '033-recording-takes',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
