@@ -17,7 +17,9 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1791 (Learning Epic Close). (Detail line below retained.)
+**Status:** Epic 18 (Spaced Repetition & Learning) server foundation **COMPLETE** — F1701–F1800 all resolved ([x] shipped or [~] web/UX-layer-deferred). A faithful **FSRS-5** scheduler (pinned by exact forgetting-curve identities), card model + review log, authoring extractors (cloze/Q&A/auto) + live-link sync, decks as dynamic filters, story-driven review fables, memory insights, sibling/edge handling, habit + reminder logic, and Anki `.apkg` interop. Migrations 035–037. `docs/learning/guide.md`, `docs/devlog/epic-18.md`. **3,301 tests green. CI green.** Next: F1801 (Epic 19 — Cinematic & Motion). Prior epics 11–17 complete. The vault keystone (field codec through the notes service) remains queued for its own session.
+
+**Status (Epic 18 detail):** **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1791 (Learning Epic Close). (Detail line below retained.)
 
 **Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2441,16 +2443,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Learning Epic Close (F1791–F1800)
 
-- [ ] F1791 — Full learning-loop e2e (note → card → reviews → retention)
-- [ ] F1792 — Performance on phone review sessions
-- [ ] F1793 — Learning settings consolidation
-- [ ] F1794 — Demo deck in seed content
-- [ ] F1795 — Learning user guide
-- [ ] F1796 — Scientific honesty pass (claims match evidence)
-- [ ] F1797 — Learning regression suite
-- [ ] F1798 — Plugin API for custom card types
-- [ ] F1799 — Learning analytics privacy review
-- [ ] F1800 — Epic 18 retro devlog
+- [x] F1791 — Full learning-loop e2e (note → card → reviews → retention) — `learning/epic-close.test.ts`
+- [x] F1792 — Performance on phone review sessions — session-build benchmark (2k cards < 1s)
+- [~] F1793 — Learning settings consolidation — web settings page; all settings exist server-side (/learning/settings)
+- [~] F1794 — Demo deck in seed content — seed content pass
+- [x] F1795 — Learning user guide — `docs/learning/guide.md`
+- [x] F1796 — Scientific honesty pass (claims match evidence) — `docs/devlog/epic-18.md` honesty section (FSRS identities pinned; no over-claims)
+- [x] F1797 — Learning regression suite — e2e loop + FSRS identity/property + interop suites
+- [~] F1798 — Plugin API for custom card types — plugin API surface pass
+- [x] F1799 — Learning analytics privacy review — all insights local, no network surface (retro privacy section)
+- [x] F1800 — Epic 18 retro devlog — `docs/devlog/epic-18.md`
 
 ## Epic 19 — Story Interop & Distribution (F1801–F1900)
 
