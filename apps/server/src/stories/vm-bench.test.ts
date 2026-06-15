@@ -53,7 +53,8 @@ describe('VM performance benchmark (F499)', () => {
     // Full pipeline (parse → resolve → check → lower → serialize), twice the
     // front-end work: anything past 10s is a real regression, not noise.
     expect(elapsed).toBeLessThan(10_000);
-  });
+  }, // Above the 10s budget so the assertion fires instead of a 5s harness timeout.
+  30_000);
 
   it('plays 250 scripted turns within the ops/turn budget', () => {
     const { program } = compileToIr(source, { fileName: 'epic.fable' });
