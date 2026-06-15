@@ -61,6 +61,7 @@ import { deckRoutes } from './decks.js';
 import { learningInsightsRoutes } from './learning-insights.js';
 import { learningEdgeRoutes } from './learning-edge.js';
 import { learningHabitsRoutes } from './learning-habits.js';
+import { ankiRoutes } from './anki.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -106,6 +107,7 @@ export const routes: FastifyPluginAsync[] = [
   learningInsightsRoutes,
   learningEdgeRoutes,
   learningHabitsRoutes,
+  ankiRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
