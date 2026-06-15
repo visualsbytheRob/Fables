@@ -51,6 +51,10 @@ const mixBody = z.object({
     .optional(),
   sceneOverrides: z.record(z.string(), z.string()).optional(),
   duckAmount: z.number().min(0).max(1).optional(),
+  // Accessibility prefs (F1686/F1687).
+  mono: z.boolean().optional(),
+  balance: z.number().min(-1).max(1).optional(),
+  normalizeVoices: z.boolean().optional(),
 });
 
 export const soundscapeRoutes: FastifyPluginAsync = async (app) => {
@@ -76,6 +80,9 @@ export const soundscapeRoutes: FastifyPluginAsync = async (app) => {
         ...(body.mix !== undefined ? { mix: body.mix } : {}),
         ...(body.sceneOverrides !== undefined ? { sceneOverrides: body.sceneOverrides } : {}),
         ...(body.duckAmount !== undefined ? { duckAmount: body.duckAmount } : {}),
+        ...(body.mono !== undefined ? { mono: body.mono } : {}),
+        ...(body.balance !== undefined ? { balance: body.balance } : {}),
+        ...(body.normalizeVoices !== undefined ? { normalizeVoices: body.normalizeVoices } : {}),
       }),
     };
   });
