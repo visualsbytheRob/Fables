@@ -2553,29 +2553,29 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Vault-to-Vault Sharing (F1871–F1880)
 
-- [ ] F1871 — Tailnet vault discovery (opt-in mDNS-style announce)
-- [ ] F1872 — Library sharing: browse a friend's shared shelf
-- [ ] F1873 — Pack transfer over tailnet with verification
-- [ ] F1874 — Borrowing semantics (time-boxed reads) as honor-system metadata
-- [ ] F1875 — Shared shelf permissions
-- [ ] F1876 — Update notifications for shared packs
-- [ ] F1877 — Transfer resume on interruption
-- [ ] F1878 — Shelf privacy controls
-- [ ] F1879 — Sharing tests
-- [ ] F1880 — Sharing setup guide
+- [~] F1871 — Tailnet vault discovery — Tailscale/mDNS networking (ops/runtime layer)
+- [~] F1872 — Browse a shared shelf — tailnet peer browsing (network layer)
+- [~] F1873 — Pack transfer over tailnet — network transfer; verification reuses `validatePack` (F1808)
+- [~] F1874 — Borrowing semantics — honor-system metadata on a transferred pack (network layer)
+- [~] F1875 — Shared shelf permissions — tailnet sharing layer
+- [~] F1876 — Update notifications for shared packs — network/web notification layer
+- [~] F1877 — Transfer resume on interruption — network transfer layer
+- [~] F1878 — Shelf privacy controls — tailnet sharing layer
+- [~] F1879 — Sharing tests — exercised with the tailnet sharing layer
+- [~] F1880 — Sharing setup guide — distribution docs pass (F1896)
 
 ### Story Archives (F1881–F1890)
 
-- [ ] F1881 — Archive.org-style local story archive format (everything, forever)
-- [ ] F1882 — Reading history preservation across vault migrations
-- [ ] F1883 — Dead-format rescue importers (old pack versions)
-- [ ] F1884 — Story preservation checklist (assets, fonts, voices pinned)
-- [ ] F1885 — Archival export with fixity manifest
-- [ ] F1886 — Bulk archive verification command
-- [ ] F1887 — Archive browser UI (deep past shelf)
-- [ ] F1888 — Format migration framework for future changes
-- [ ] F1889 — Archive tests
-- [ ] F1890 — Preservation docs
+- [x] F1881 — Local story archive format — `.fablearchive` (deterministic ZIP of packs + fixity manifest), POST /archive/build
+- [~] F1882 — Reading-history preservation — play_events persist locally; cross-migration carry is a migration-framework pass
+- [~] F1883 — Dead-format rescue importers — version field present; old-version rescue importers a later pass
+- [x] F1884 — Preservation checklist — `preservationChecklist` (source/casting/audio/image/fixity), POST /archive/checklist
+- [x] F1885 — Archival export with fixity manifest — sha256-per-pack manifest in the archive
+- [x] F1886 — Bulk archive verification — `verifyArchive`, POST /archive/verify (CLI is a thin wrapper)
+- [~] F1887 — Archive browser UI — web
+- [~] F1888 — Format migration framework — version detection ships; full migration framework a later pass
+- [x] F1889 — Archive tests — build/verify/fixity-tamper/checklist + route suites
+- [~] F1890 — Preservation docs — distribution docs pass (F1896)
 
 ### Distribution Epic Close (F1891–F1900)
 

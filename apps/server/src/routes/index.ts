@@ -67,6 +67,7 @@ import { releaseRoutes } from './releases.js';
 import { interopRoutes } from './interop.js';
 import { feedbackRoutes } from './feedback.js';
 import { artRoutes } from './art.js';
+import { archiveRoutes } from './archive.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -118,6 +119,7 @@ export const routes: FastifyPluginAsync[] = [
   interopRoutes,
   feedbackRoutes,
   artRoutes,
+  archiveRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
