@@ -31,6 +31,7 @@ import { migration030Tts } from './030-tts.js';
 import { migration031Casting } from './031-casting.js';
 import { migration032AudioSettings } from './032-audio-settings.js';
 import { migration033RecordingTakes } from './033-recording-takes.js';
+import { migration034Playback } from './034-playback.js';
 
 export interface Migration {
   id: number;
@@ -73,4 +74,5 @@ export const migrations: Migration[] = [
   migration031Casting,
   migration032AudioSettings,
   migration033RecordingTakes,
+  migration034Playback,
 ];
