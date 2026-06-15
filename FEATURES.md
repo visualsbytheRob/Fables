@@ -654,7 +654,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F465 — Save migration when story is recompiled (best-effort, with report)
 - [x] F466 — Transcript log: full text + choices made, exportable
 - [x] F467 — Save-slot metadata — `stories/save-slots.ts` (progress % from visited/total knots, scene, turn, timestamps), GET /stories/:id/save-slots
-- [ ] F468 — Cloud-of-one: saves synced through the op-log like notes
+- [x] F468 — Cloud-of-one save sync — story saves travel the op-log (`save_slot` domain, upsert/delete in sync-apply, `story_saves` pull category) with round-trip tests
 - [x] F469 — Corrupt save detection + graceful recovery
 - [x] F470 — Save/rewind integration tests
 

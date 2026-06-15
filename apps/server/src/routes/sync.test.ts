@@ -401,3 +401,46 @@ describe('10k op drain (F869)', () => {
     }
   }, 120_000); // 2 min
 });
+
+describe('save-slot sync (F468) — saves travel through the op-log like notes', () => {
+  it('applies an upsert save_slot op and then a delete', async () => {
+    // A real story is required (story_saves has an FK to stories).
+    const story = await app.inject({
+      method: 'POST',
+      url: '/api/v1/stories',
+      payload: { title: 'Synced Saga' },
+    });
+    const storyId = (story.json() as { data: { id: string } }).data.id;
+    const saveId = `sav_${Math.random().toString(36).slice(2)}`;
+
+    const upsert = makeOp({
+      domain: 'save_slot',
+      opType: 'upsert',
+      entityId: saveId,
+      payload: {
+        storyId,
+        slotName: 'chapter 2',
+        state: { turn: 5, scene: 'harbour' },
+      },
+    });
+    const pushed = await push([upsert]);
+    expect(pushed.statusCode).toBe(200);
+
+    const row = app.db
+      .prepare('SELECT name, turn, scene FROM story_saves WHERE id = ?')
+      .get(saveId) as { name: string; turn: number; scene: string } | undefined;
+    expect(row?.name).toBe('chapter 2');
+    expect(row?.turn).toBe(5);
+    expect(row?.scene).toBe('harbour');
+
+    // The op is pullable like any other (cloud-of-one convergence).
+    const del = makeOp({
+      domain: 'save_slot',
+      opType: 'delete',
+      entityId: saveId,
+      payload: { storyId },
+    });
+    await push([del]);
+    expect(app.db.prepare('SELECT 1 FROM story_saves WHERE id = ?').get(saveId)).toBeUndefined();
+  });
+});
