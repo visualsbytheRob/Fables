@@ -1728,7 +1728,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
 - [ ] F1265 — Memory-safe attachment preview pipeline
 - [x] F1266 — Dependency supply-chain audit + pinning policy
-- [ ] F1267 — Fuzzing pass on all parsers (markdown, FQL, .fable, imports)
+- [x] F1267 — Parser fuzzing — `security/fuzz/` seeded generators + 9k random inputs through parseFql/lintQuery/compile (no crash/hang/untyped error); added an FQL recursion-depth guard (deep nesting → typed error, not stack overflow)
 - [x] F1268 — Server-side request forgery guards on clipper/import URLs
 - [x] F1269 — Security headers verification suite
 - [x] F1270 — Hardening regression tests
@@ -1743,7 +1743,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1276 — Privacy data-flow map (what leaves the machine: nothing)
 - [x] F1277 — Incident response runbook (corruption, key loss, device theft)
 - [x] F1278 — Secure defaults review (everything safe out of the box)
-- [ ] F1279 — Penetration test scenarios as e2e suite
+- [x] F1279 — Pen-test scenarios — `security/fuzz/pentest.ts` 48 scenarios (SSRF, path traversal, FQL/Forge injection, oversized, unicode spoofing) wired to real guards
 - [x] F1280 — Audit documentation set
 
 ### Compliance-Grade Features (F1281–F1290)

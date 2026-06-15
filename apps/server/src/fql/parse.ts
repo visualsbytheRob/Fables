@@ -106,8 +106,16 @@ function fieldNode(token: Token & { type: 'field' }, index: number): FqlNode {
   }
 }
 
+/**
+ * Cap on parenthesis nesting. The parser is recursive-descent, so unbounded
+ * nesting could overflow the stack — a deeply-nested query is a denial-of-service
+ * shape (F1267). Real queries nest a handful of levels; 256 is far beyond that.
+ */
+const MAX_DEPTH = 256;
+
 class Parser {
   private pos = 0;
+  private depth = 0;
 
   constructor(private readonly tokens: Token[]) {}
 
@@ -171,6 +179,10 @@ class Parser {
     }
     switch (token.type) {
       case 'lparen': {
+        this.depth += 1;
+        if (this.depth > MAX_DEPTH) {
+          throw new FqlError('query nesting too deep', token.position, this.pos);
+        }
         this.pos += 1;
         const inner = this.orExpr();
         const close = this.peek();
@@ -178,6 +190,7 @@ class Parser {
           throw new FqlError('missing closing ")"', token.position, this.pos);
         }
         this.pos += 1;
+        this.depth -= 1;
         return inner;
       }
       case 'rparen':

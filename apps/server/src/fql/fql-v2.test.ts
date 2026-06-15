@@ -143,6 +143,18 @@ describe('EXPLAIN (F1965)', () => {
   });
 });
 
+describe('parser hardening (F1267)', () => {
+  it('rejects pathologically deep nesting instead of overflowing the stack', () => {
+    const deep = `${'('.repeat(5000)}a${')'.repeat(5000)}`;
+    // A typed VALIDATION error, never a RangeError stack overflow.
+    expect(() => parseFql(deep)).toThrowError(/nesting too deep|syntax error/i);
+  });
+
+  it('still accepts reasonable nesting', () => {
+    expect(() => parseFql('((tag:a OR tag:b) AND (tag:c OR tag:d))')).not.toThrow();
+  });
+});
+
 describe('query linting (F1968)', () => {
   it('suggests the nearest field for a typo', () => {
     const findings = lintQuery('tg:project');
