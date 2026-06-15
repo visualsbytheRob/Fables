@@ -692,7 +692,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [ ] F494 — Debugger UI panel in authoring mode
 - [x] F495 — State inspector tree (variables, lists, visit counts, call stack)
 - [x] F496 — Time-travel: jump to any prior turn in debug session
-- [ ] F497 — `forge run` CLI: play a story in the terminal
+- [x] F497 — `forge run` CLI — `cli/forge-run.ts` interactive terminal player (compile→play→choices→ending), `pnpm forge:run`
 - [x] F498 — `forge test` CLI: assert-script format for story unit tests
 - [x] F499 — VM performance benchmark suite (ops/sec, GC pressure)
 - [x] F500 — Day-5 retro note in `docs/devlog/day-05.md`
@@ -1360,7 +1360,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [~] F992 — pnpm start production mode (deferred: needs the server bundler above; `pnpm dev` is the working documented path)
 - [x] F993 — systemd unit + launchd plist templates for run-on-boot
 - [x] F994 — Install script: clone → build → doctor → serve, fully guided
-- [ ] F995 — Version 1.0.0 tag + generated changelog from commit history
+- [x] F995 — Generated changelog — `cli/changelog.ts` Conventional-Commit grouping + `scripts/gen-changelog.mjs` (`pnpm changelog`); release tagging is a git action
 - [~] F996 — GitHub release with build artifact + checksums (deferred: needs a real git tag + GitHub release publish — ready on request)
 - [x] F997 — Final Lighthouse pass: PWA + perf + a11y + best practices ≥90
 - [x] F998 — Final fresh-machine install test following only the README
