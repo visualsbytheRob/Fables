@@ -34,6 +34,7 @@ import { migration033RecordingTakes } from './033-recording-takes.js';
 import { migration034Playback } from './034-playback.js';
 import { migration035Cards } from './035-cards.js';
 import { migration036Decks } from './036-decks.js';
+import { migration037LearningSettings } from './037-learning-settings.js';
 
 export interface Migration {
   id: number;
@@ -79,4 +80,5 @@ export const migrations: Migration[] = [
   migration034Playback,
   migration035Cards,
   migration036Decks,
+  migration037LearningSettings,
 ];

@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1761 (Sibling & Edge Cases). (Detail line below retained.)
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1771 (Notifications & Habits). (Detail line below retained.)
 
 **Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2402,16 +2402,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Sibling & Edge Cases (F1761–F1770)
 
-- [ ] F1761 — Sibling spacing (related cards not same session)
-- [ ] F1762 — Duplicate card detection
-- [ ] F1763 — Timezone travel handling
-- [ ] F1764 — Vacation mode (pause without pile-up shock)
-- [ ] F1765 — Catch-up strategy after long gaps
-- [ ] F1766 — Card priority overrides
-- [ ] F1767 — Maximum interval caps
-- [ ] F1768 — Re-learning steps configuration
-- [ ] F1769 — Edge case test matrix
-- [ ] F1770 — Scheduler edge docs
+- [x] F1761 — Sibling spacing (related cards not same session) — `edge.ts` `spaceSiblings`, GET /review/session
+- [x] F1762 — Duplicate card detection — `findDuplicates` (normalised prompt), GET /cards/duplicates
+- [x] F1763 — Timezone travel handling — due queue + session take the client `now` ISO, so day boundaries follow the device clock
+- [x] F1764 — Vacation mode (pause without pile-up shock) — `vacationUntil` setting (migration 037); session returns empty while paused
+- [x] F1765 — Catch-up strategy after long gaps — `applyCatchUp` + daily new/review caps
+- [x] F1766 — Card priority overrides — `priorityOverrides` map; session stable-sorts by priority
+- [x] F1767 — Maximum interval caps — `maxIntervalDays` (FSRS schedule option + deck + learning settings)
+- [~] F1768 — Re-learning steps configuration — `relearningSteps` persisted; multi-step relearning execution deferred
+- [x] F1769 — Edge case test matrix — edge module + settings + route suites
+- [~] F1770 — Scheduler edge docs — learning docs pass (F1795)
 
 ### Notifications & Habits (F1771–F1780)
 

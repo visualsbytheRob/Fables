@@ -59,6 +59,7 @@ import { cardRoutes } from './cards.js';
 import { learningStoryRoutes } from './learning-story.js';
 import { deckRoutes } from './decks.js';
 import { learningInsightsRoutes } from './learning-insights.js';
+import { learningEdgeRoutes } from './learning-edge.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -102,6 +103,7 @@ export const routes: FastifyPluginAsync[] = [
   learningStoryRoutes,
   deckRoutes,
   learningInsightsRoutes,
+  learningEdgeRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
