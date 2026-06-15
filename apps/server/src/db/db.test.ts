@@ -55,6 +55,7 @@ describe('migrations', () => {
       '036-decks',
       '037-learning-settings',
       '038-feedback',
+      '039-generated-assets',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

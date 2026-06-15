@@ -2540,16 +2540,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Generative Art — ComfyUI Adapter (F1861–F1870)
 
-- [ ] F1861 — ComfyUI-local adapter: workflow-JSON submission over its HTTP API, health check, queue status
-- [ ] F1862 — Comfy Cloud as an opt-in second endpoint behind the same adapter (egress consent like F1364)
-- [ ] F1863 — Cover generation: title + blurb + theme → cover image, with typographic fallback when no backend
-- [ ] F1864 — Entity portraits: generate from entity fields/description, attach to entity card + codex
-- [ ] F1865 — Scene illustrations: `# scene:` tags render generated art in the player (cached per scene)
-- [ ] F1866 — Style presets per story (consistent look across all generated assets)
-- [ ] F1867 — Generation review UI: candidates, pick/regenerate, never auto-publish
-- [ ] F1868 — Generated-asset pipeline: content-addressed storage, sizes/formats, provenance metadata
-- [ ] F1869 — Library shelf aesthetics using covers (grid/spines), trailer cards with blurb + QR
-- [ ] F1870 — Adapter tests with mocked ComfyUI server + docs
+- [x] F1861 — ComfyUI-local adapter — `art/comfy.ts` (workflow submit + history poll, health check, injectable fetch)
+- [x] F1862 — Comfy Cloud endpoint — same adapter, different base URL, gated behind egress consent
+- [x] F1863 — Cover generation — `buildCoverPrompt` + deterministic typographic SVG fallback, POST /stories/:id/cover
+- [x] F1864 — Entity portraits — `buildPortraitPrompt`, POST /entities/:id/portrait (graceful when no backend)
+- [x] F1865 — Scene illustrations — `buildScenePrompt` from `# scene:` tags (player rendering is web; cache is the asset store)
+- [x] F1866 — Style presets — `STYLE_PRESETS` (storybook/inkwash/noir/watercolor), GET /art/styles
+- [~] F1867 — Generation review UI — web pick/regenerate UI; assets stored, never auto-attached
+- [x] F1868 — Generated-asset pipeline — content-addressed store + provenance (migration 039), GET /art/assets/:hash
+- [~] F1869 — Library shelf aesthetics — web rendering using the covers
+- [x] F1870 — Adapter tests — mocked ComfyUI fetch (health/consent) + runtime + fallback + route suites
 
 ### Vault-to-Vault Sharing (F1871–F1880)
 

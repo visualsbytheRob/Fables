@@ -66,6 +66,7 @@ import { fablepackRoutes } from './fablepack.js';
 import { releaseRoutes } from './releases.js';
 import { interopRoutes } from './interop.js';
 import { feedbackRoutes } from './feedback.js';
+import { artRoutes } from './art.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -116,6 +117,7 @@ export const routes: FastifyPluginAsync[] = [
   releaseRoutes,
   interopRoutes,
   feedbackRoutes,
+  artRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
