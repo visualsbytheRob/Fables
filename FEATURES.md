@@ -2475,55 +2475,55 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Standalone Player (F1811–F1820)
 
-- [ ] F1811 — Single-file HTML player hardening (works from file://)
-- [ ] F1812 — Player size budget (<300KB before story data)
-- [ ] F1813 — Saves in localStorage with export/import
-- [ ] F1814 — Theme/typography parity with in-app player
-- [ ] F1815 — Audio support in standalone (bundled assets)
-- [ ] F1816 — Accessibility parity in standalone
-- [ ] F1817 — Offline-complete guarantee test
-- [ ] F1818 — Standalone analytics: none, verified
-- [ ] F1819 — Browser matrix testing (Safari/Firefox/Chrome, iOS)
-- [ ] F1820 — Standalone player tests
+- [~] F1811 — Single-file HTML player hardening — web build artifact (the in-app player bundled to one file)
+- [~] F1812 — Player size budget — web bundle budget (enforced by the web build)
+- [~] F1813 — Saves in localStorage with export/import — web (localStorage); server save format already exists (story_saves)
+- [~] F1814 — Theme/typography parity — web styling parity
+- [~] F1815 — Audio support in standalone — web (bundled audio + Web Audio); server provides the .fablepack assets
+- [~] F1816 — Accessibility parity in standalone — web a11y parity
+- [~] F1817 — Offline-complete guarantee test — web (no network at runtime) verification
+- [~] F1818 — Standalone analytics: none, verified — web build assertion (no trackers)
+- [~] F1819 — Browser matrix testing — web cross-browser pass
+- [~] F1820 — Standalone player tests — web player test pass
 
 ### Ink Compatibility (F1821–F1830)
 
-- [ ] F1821 — .ink parser for the common-subset grammar
-- [ ] F1822 — Ink → Forge AST mapping with semantics notes
-- [ ] F1823 — Unsupported-construct report (clear, itemized)
-- [ ] F1824 — Ink JSON (compiled) runtime adapter option
-- [ ] F1825 — The Intercept and classic samples as test corpus
-- [ ] F1826 — Forge → Ink export (compatible subset)
-- [ ] F1827 — Divert/knot semantic equivalence tests
-- [ ] F1828 — Ink import UI flow
-- [ ] F1829 — Ink interop docs
-- [ ] F1830 — Ink conformance suite
+- [x] F1821 — .ink parser (common subset) — `import/ink/ink.ts` `inkToForge` (output always compiles)
+- [x] F1822 — Ink → Forge mapping — knots/choices/diverts/gathers mapped; semantics in the converter
+- [x] F1823 — Unsupported-construct report — `unsupported[]` {line, construct, text}
+- [~] F1824 — Ink JSON (compiled) runtime adapter — we convert at source level; compiled-JSON runtime deferred
+- [~] F1825 — Classic-sample corpus — synthetic Ink fixtures cover the converter; real samples a later pass
+- [~] F1826 — Forge → Ink export — reverse converter deferred
+- [x] F1827 — Divert/knot equivalence tests — converted output compiles + divert targets match sanitized knots
+- [~] F1828 — Ink import UI flow — web UI; POST /import/ink endpoint ships
+- [~] F1829 — Ink interop docs — distribution docs pass (F1896)
+- [x] F1830 — Ink conformance suite — 26 tests, every output compiled through Forge
 
 ### Twine Compatibility (F1831–F1840)
 
-- [ ] F1831 — Twee 3 parser
-- [ ] F1832 — Harlowe/SugarCube macro subset mapping strategy
-- [ ] F1833 — Twine HTML archive import
-- [ ] F1834 — Passage links → choices/diverts conversion
-- [ ] F1835 — Twine variable semantics mapping
-- [ ] F1836 — Forge → Twee export (subset)
-- [ ] F1837 — Unsupported-macro report
-- [ ] F1838 — Twine corpus tests
-- [ ] F1839 — Twine import UI
-- [ ] F1840 — Twine interop docs
+- [x] F1831 — Twee 3 parser — `import/twine/twee.ts` `tweeToForge` (output always compiles)
+- [x] F1832 — Harlowe/SugarCube macro strategy — drop-and-report unsupported macros
+- [~] F1833 — Twine HTML archive import — Twee-source path ships; HTML-archive extraction deferred
+- [x] F1834 — Passage links → choices/diverts — all three arrow forms, stub knots for dangling targets
+- [~] F1835 — Twine variable semantics — variables reported as unsupported; full mapping deferred
+- [~] F1836 — Forge → Twee export — reverse converter deferred
+- [x] F1837 — Unsupported-macro report — `unsupported[]` {passage, macro}
+- [x] F1838 — Twine corpus tests — 46 tests, every output compiled through Forge
+- [~] F1839 — Twine import UI — web UI; POST /import/twine endpoint ships
+- [~] F1840 — Twine interop docs — distribution docs pass (F1896)
 
 ### Versioning & Releases (F1841–F1850)
 
-- [ ] F1841 — Story release channel: draft → released versions with names
-- [ ] F1842 — Story changelog generation between releases
-- [ ] F1843 — Save-compat checks between story versions
-- [ ] F1844 — Release diff viewer (what changed narratively)
-- [ ] F1845 — Rollback to prior release
-- [ ] F1846 — Release notes in pack manifest
-- [ ] F1847 — Reader update prompts for re-imported packs
-- [ ] F1848 — Branch freeze (lock a path while editing others)
-- [ ] F1849 — Versioning tests
-- [ ] F1850 — Release workflow docs
+- [x] F1841 — Story release channel — named releases (existing createRelease + versioning routes)
+- [x] F1842 — Changelog generation — `generateChangelog`, GET /stories/:id/releases/:a/changelog/:b
+- [x] F1843 — Save-compat checks — `saveCompat` (removed-knot detection)
+- [x] F1844 — Release diff — `diffReleases` (file + knot level), GET /releases/:a/diff/:b (viewer is web)
+- [x] F1845 — Rollback to prior release — restores a release snapshot, POST /releases/:rel/rollback
+- [~] F1846 — Release notes in pack manifest — manifest carries the release label; freeform notes field deferred
+- [~] F1847 — Reader update prompts — web/reader prompt on re-import
+- [~] F1848 — Branch freeze — path-locking pass
+- [x] F1849 — Versioning tests — release-diff + route suites
+- [~] F1850 — Release workflow docs — distribution docs pass (F1896)
 
 ### Reader Feedback Loop (F1851–F1860)
 

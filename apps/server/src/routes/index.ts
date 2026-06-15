@@ -63,6 +63,8 @@ import { learningEdgeRoutes } from './learning-edge.js';
 import { learningHabitsRoutes } from './learning-habits.js';
 import { ankiRoutes } from './anki.js';
 import { fablepackRoutes } from './fablepack.js';
+import { releaseRoutes } from './releases.js';
+import { interopRoutes } from './interop.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -110,6 +112,8 @@ export const routes: FastifyPluginAsync[] = [
   learningHabitsRoutes,
   ankiRoutes,
   fablepackRoutes,
+  releaseRoutes,
+  interopRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
