@@ -116,14 +116,21 @@ keep going, but every claim is backed by a passing test and an unflinching `FEAT
   everything is copy-paste, and we explain each line. Budget about **20–30 minutes**
   the first time. After that, starting Fables is **one command**.
 - **Where it lives:** put it in **any** folder you like — your home folder or
-  Documents is perfect. It does **not** need to be near Claude or anywhere special.
+  Documents is perfect, and it doesn't need to be anywhere special. **One nuance:**
+  if you plan to keep tinkering with Fables itself using **Claude Code** (e.g.
+  cowork / dispatch), put the folder somewhere Claude Code is allowed to work —
+  many people keep a dedicated projects/Claude folder for exactly this. Either
+  way, your **notes** live separately in `~/.fables`, so moving the code folder
+  later never touches your data.
 - **Two devices, two jobs:** your **laptop runs Fables** (it's the engine, always
   the "real" copy). Your **iPhone simply opens it** in Safari over your private
   network — you don't copy any code onto the phone.
-- **What do you connect it to? Nothing.** Fables works completely on its own —
-  offline, private, no accounts or keys. (Optional local power-ups like AI and
-  voices exist; see [Step 7](#step-7-optional--add-power-ups-later) — but **none are
-  required** to use everything else.)
+- **What do you connect it to? Nothing — but you _can_.** Fables works completely
+  on its own (offline, private, no accounts or keys). When you want more, it plugs
+  into **local or cloud AI** (Ollama, llama.cpp, or the Claude API), **generated
+  art** (a local or cloud ComfyUI diffusion server), and **voices** (Piper) — see
+  [Step 7](#step-7-optional--add-power-ups-ai-art-and-voices). **None are required**,
+  and any cloud option stays off until you explicitly opt in.
 
 ### Which computer are you on?
 
@@ -251,21 +258,56 @@ App Store needed.
   **Install**. You'll get a Fables icon you can pin to your **dock / taskbar / Start
   menu** and launch like any app. (Safari on Mac: **File → Add to Dock**.)
 
-### Step 7 (optional) — Add power-ups later
+### Step 7 (optional) — Add power-ups: AI, art, and voices
 
-**You don't need any of these.** Everything except these specific extras already
-works. When you want them, they're all **local and private** too:
+**You don't need any of these to use Fables.** Everything except these specific
+extras already works out of the box. But Fables is built to _grow_ — it has a
+pluggable "modality mesh" where you can light up **AI writing help**, **generated
+art**, and **spoken narration** whenever you want. You choose **local** (runs on
+your own machine, fully private) or **cloud** (a hosted service, faster/stronger
+but data leaves your machine — so it's always **opt-in and consent-gated**).
 
-| Power-up                 | What it adds                               | How to enable                                                                        |
-| ------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------------ |
-| **Local AI** (Ollama)    | "Ask your vault", summaries, the co-writer | Install [Ollama](https://ollama.com), `ollama pull llama3.1`, and it's auto-detected |
-| **Local AI** (llama.cpp) | Same, with a llama.cpp server              | Run `llama-server`; set `FABLES_LLAMACPP_URL` if it isn't on the default port        |
-| **Cloud AI** (Claude)    | Optionally use Claude for AI features      | Set `ANTHROPIC_API_KEY`; it's **opt-in** and gated behind a consent prompt           |
-| **Voices** (TTS)         | Narrate notes and stories aloud            | Install [Piper](https://github.com/rhasspy/piper) + a voice model                    |
-| **Generated art**        | Cover/scene art for stories                | Run a local [ComfyUI](https://github.com/comfyanonymous/ComfyUI) server              |
+> **How to give Fables a setting:** these are turned on with **environment
+> variables** at start time. The easy way is to put them in front of the start
+> command, e.g.
+> `ANTHROPIC_API_KEY="sk-ant-…" FABLES_COMFY_URL="http://127.0.0.1:8188" pnpm start`.
+> You can combine as many as you like on one line.
 
-If none of these are present, the matching features simply stay quiet — Fables
-never breaks because an optional tool is missing.
+#### 🤖 AI writing help (RAG "ask your vault", summaries, tags, the story/character co-writer)
+
+Pick **either** a local model **or** Claude (or both — Fables prefers whichever is
+available, and you can route per-feature):
+
+| Option                      | Private?          | How to set it up                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ollama** (local, easiest) | ✅ 100% on-device | Install [Ollama](https://ollama.com), run `ollama pull llama3.1` (or any model). Fables **auto-detects** it on the default port. Override with `FABLES_OLLAMA_URL`.                                                                                                                                                                                                                                                 |
+| **llama.cpp** (local)       | ✅ 100% on-device | Run `llama-server`. Set `FABLES_LLAMACPP_URL` if it's not on `http://127.0.0.1:8080`.                                                                                                                                                                                                                                                                                                                               |
+| **Claude API** (cloud)      | ⚠️ Opt-in         | Get a key at [console.anthropic.com](https://console.anthropic.com), set `ANTHROPIC_API_KEY="sk-ant-…"`. **Two locks:** the key enables the adapter, **and** you must turn cloud AI on + accept the egress-consent prompt inside Fables (Settings → AI). Nothing is sent until you do. A global **kill switch** turns all AI off instantly, and secret/encrypted notes are filtered out before any prompt is built. |
+
+#### 🎨 Generated art (cover & scene illustrations for your stories, via Stable Diffusion / Flux, etc.)
+
+Fables talks to **[ComfyUI](https://github.com/comfyanonymous/ComfyUI)** — the
+popular node-based diffusion engine — over its HTTP API. Same local-or-cloud
+choice, pointed at with one variable, **`FABLES_COMFY_URL`**:
+
+| Option                                    | Private?          | How to set it up                                                                                                                                                                                                        |
+| ----------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **ComfyUI Desktop / local** (recommended) | ✅ 100% on-device | Install [ComfyUI Desktop](https://www.comfy.org/download) (or run ComfyUI yourself), load a diffusion model (SDXL, Flux, …), and set `FABLES_COMFY_URL="http://127.0.0.1:8188"`. No consent needed — it's your machine. |
+| **ComfyUI in the cloud** (hosted)         | ⚠️ Opt-in         | Point `FABLES_COMFY_URL` at your hosted ComfyUI endpoint. Because images would leave your machine, the cloud path stays **off until you grant egress consent** in Fables — exactly like the Claude path.                |
+
+If ComfyUI isn't configured, Fables falls back to a clean, typographic SVG cover
+automatically — stories still get art, just generated locally without a model.
+
+#### 🔊 Spoken narration (read notes and stories aloud)
+
+| Option            | Private?          | How to set it up                                                                                                         |
+| ----------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Piper** (local) | ✅ 100% on-device | Install [Piper](https://github.com/rhasspy/piper) and download a voice model; Fables uses it for narration & audiobooks. |
+
+**The golden rule:** if an optional tool isn't present, the matching feature
+simply stays quiet — Fables never breaks because a power-up is missing, and
+**nothing ever leaves your machine unless you explicitly turn on a cloud option
+and accept its consent prompt.**
 
 ### Keeping it running, and starting it again tomorrow
 
