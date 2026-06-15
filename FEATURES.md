@@ -17,7 +17,7 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1741 (Decks & Organization). (Detail line below retained.)
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1751 (Memory Insights). (Detail line below retained.)
 
 **Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2376,16 +2376,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Decks & Organization (F1741–F1750)
 
-- [ ] F1741 — Decks as saved queries (dynamic membership)
-- [ ] F1742 — Deck-level scheduler settings
-- [ ] F1743 — Deck dashboard (due counts, forecast)
-- [ ] F1744 — Cross-deck review sessions
-- [ ] F1745 — Tag-driven deck composition
-- [ ] F1746 — Deck sharing format (.fdeck)
-- [ ] F1747 — Per-notebook card defaults
-- [ ] F1748 — Filtered/custom study sessions
-- [ ] F1749 — Deck management tests
-- [ ] F1750 — Deck docs
+- [x] F1741 — Decks as saved queries (dynamic membership) — `decksRepo` (migration 036), live `members()` via card filter
+- [x] F1742 — Deck-level scheduler settings — per-deck `requestRetention`/`newLimit`/`maxIntervalDays`
+- [x] F1743 — Deck dashboard (due counts, forecast) — `dashboard()` (due/new + N-day forecast), GET /decks/:id/dashboard
+- [x] F1744 — Cross-deck review sessions — POST /decks/review (union of due members)
+- [x] F1745 — Tag-driven deck composition — `tag` filter (note_tags join), `notebookId` filter
+- [x] F1746 — Deck sharing format (.fdeck) — `exportDeck`/`importDeck`, GET /decks/:id/export + POST /decks/import
+- [~] F1747 — Per-notebook card defaults — notebook-scoped default settings pass
+- [x] F1748 — Filtered/custom study sessions — POST /study (ad-hoc filter)
+- [x] F1749 — Deck management tests — repo + route suites
+- [~] F1750 — Deck docs — learning docs pass (F1795)
 
 ### Memory Insights (F1751–F1760)
 

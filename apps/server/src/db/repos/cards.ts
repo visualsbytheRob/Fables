@@ -96,6 +96,10 @@ export interface BrowseFilters {
   state?: CardState | undefined;
   kind?: string | undefined;
   noteId?: string | undefined;
+  /** Cards whose source note is in this notebook (deck membership). */
+  notebookId?: string | undefined;
+  /** Cards whose source note carries this tag name (tag-driven decks, F1745). */
+  tag?: string | undefined;
   /** Substring match on prompt/answer. */
   query?: string | undefined;
   /** Cards due at or before this ISO timestamp. */
@@ -177,6 +181,16 @@ export function cardsRepo(db: Db) {
       if (filters.noteId !== undefined) {
         clauses.push('note_id = ?');
         args.push(filters.noteId);
+      }
+      if (filters.notebookId !== undefined) {
+        clauses.push('note_id IN (SELECT id FROM notes WHERE notebook_id = ?)');
+        args.push(filters.notebookId);
+      }
+      if (filters.tag !== undefined) {
+        clauses.push(
+          'note_id IN (SELECT nt.note_id FROM note_tags nt JOIN tags t ON nt.tag_id = t.id WHERE t.name = ?)',
+        );
+        args.push(filters.tag);
       }
       if (filters.dueBefore !== undefined) {
         clauses.push('due IS NOT NULL AND due <= ?');

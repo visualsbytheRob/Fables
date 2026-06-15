@@ -33,6 +33,7 @@ import { migration032AudioSettings } from './032-audio-settings.js';
 import { migration033RecordingTakes } from './033-recording-takes.js';
 import { migration034Playback } from './034-playback.js';
 import { migration035Cards } from './035-cards.js';
+import { migration036Decks } from './036-decks.js';
 
 export interface Migration {
   id: number;
@@ -77,4 +78,5 @@ export const migrations: Migration[] = [
   migration033RecordingTakes,
   migration034Playback,
   migration035Cards,
+  migration036Decks,
 ];
