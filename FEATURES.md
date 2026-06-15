@@ -669,7 +669,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F477 — Replay determinism tests: same seed + same choices = same transcript
 - [x] F478 — Expression evaluator fuzz tests
 - [x] F479 — Stdlib reference doc generated from registry
-- [ ] F480 — Dice roller UI affordance in player (tap to roll visibly)
+- [~] F480 — Dice roller UI — the Forge `dice()` builtin + PRNG ship; the tap-to-roll visible affordance is the web player
 
 ### Effects & Host Hooks (F481–F490)
 
@@ -689,7 +689,7 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 - [x] F491 — Step-through debugger API: step, step-over choice, inspect state
 - [x] F492 — Breakpoints on knots/stitches/lines
 - [x] F493 — Watch expressions evaluated against live state
-- [ ] F494 — Debugger UI panel in authoring mode
+- [~] F494 — Debugger UI panel — the VM `StoryDebugger` (breakpoints/watch/step) ships in forge-vm; the authoring-mode panel is web
 - [x] F495 — State inspector tree (variables, lists, visit counts, call stack)
 - [x] F496 — Time-travel: jump to any prior turn in debug session
 - [x] F497 — `forge run` CLI — `cli/forge-run.ts` interactive terminal player (compile→play→choices→ending), `pnpm forge:run`
@@ -820,12 +820,12 @@ Epic 13 (Encrypted Vault & Security Tier, F1201–F1300) IN PROGRESS. Crypto Cor
 
 ### Ambient Extras (F591–F600)
 
-- [ ] F591 — Audio cue effect: story-triggered one-shot sounds (host hook)
-- [ ] F592 — Ambient loop per scene tag with crossfade
-- [ ] F593 — Volume/mute controls persisted in player settings
-- [ ] F594 — Haptic feedback on choices (mobile vibration API)
-- [ ] F595 — Audio asset management UI under story files
-- [ ] F596 — Preloading strategy for audio on slow tailnet links
+- [~] F591 — Audio cue effect — soundscape effect bindings/triggers ship (Epic 17); the one-shot playback host hook is the web player
+- [~] F592 — Ambient loop per scene tag — soundscape mixer + scene bindings ship (Epic 17); the crossfade playback is web (Web Audio)
+- [~] F593 — Volume/mute controls — web player settings (persisted client-side)
+- [~] F594 — Haptic feedback — the mobile Vibration API is a web/PWA surface
+- [~] F595 — Audio asset management UI — web; the content-addressed asset store + generated-assets pipeline ship server-side
+- [~] F596 — Audio preloading strategy — a web/PWA prefetch concern over the existing audio cache
 - [x] F597 — Text-to-speech read-aloud mode (Web Speech API)
 - [x] F598 — TTS voice/rate settings + per-paragraph highlighting
 - [x] F599 — Accessibility pass on player (screen reader choice navigation)
@@ -1552,7 +1552,7 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ### Presence & Awareness (F1131–F1140)
 
 - [x] F1131 — Awareness protocol: who's viewing/editing what
-- [ ] F1132 — Avatar stack on open documents
+- [~] F1132 — Avatar stack — collaboration presence/awareness ships (Epic 12); the avatar-stack rendering is web
 - [x] F1133 — Vault-level presence sidebar (active now)
 - [~] F1134 — Follow mode: jump to a collaborator's view (deferred: follow-mode UI needs scroll-position in awareness — follow-up)
 - [x] F1135 — Idle/away detection
