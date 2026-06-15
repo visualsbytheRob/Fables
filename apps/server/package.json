@@ -1,20 +1,20 @@
 {
   "name": "@fables/server",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "NODE_OPTIONS=--conditions=development tsx watch src/server.ts",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "start": "node dist/server.js",
-    "db:backup": "tsx src/db/cli.ts backup",
-    "db:check": "tsx src/db/cli.ts check",
-    "db:seed": "tsx src/db/cli.ts seed",
-    "seed:demo": "tsx src/db/cli.ts seed:demo",
-    "forge:run": "tsx src/cli/forge-run.ts",
-    "import:vault": "tsx src/cli/import.ts",
-    "import": "tsx src/cli/import-source.ts"
+    "db:backup": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts backup",
+    "db:check": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts check",
+    "db:seed": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed",
+    "seed:demo": "NODE_OPTIONS=--conditions=development tsx src/db/cli.ts seed:demo",
+    "forge:run": "NODE_OPTIONS=--conditions=development tsx src/cli/forge-run.ts",
+    "import:vault": "NODE_OPTIONS=--conditions=development tsx src/cli/import.ts",
+    "import": "NODE_OPTIONS=--conditions=development tsx src/cli/import-source.ts"
   },
   "dependencies": {
     "@fables/core": "workspace:*",

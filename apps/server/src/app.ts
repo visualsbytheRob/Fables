@@ -82,7 +82,7 @@ const HTTP_STATUS: Record<ErrorCode, number> = {
   INTERNAL: 500,
 };
 
-export const APP_VERSION = '0.1.0';
+export const APP_VERSION = '2.0.0';
 
 export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   const app = Fastify({

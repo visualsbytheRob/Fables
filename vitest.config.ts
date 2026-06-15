@@ -1,6 +1,27 @@
 import { defineConfig } from 'vitest/config';
+import { fileURLToPath } from 'node:url';
+
+/**
+ * Resolve workspace packages to their TS source for tests, independent of the
+ * published `exports` that point compiled (production) consumers at `dist`. The
+ * packages now ship conditional exports (`development` → src, `default` → dist);
+ * these aliases pin tests to src so a package source edit is picked up without a
+ * rebuild.
+ */
+const pkgSrc = (name: string): string =>
+  fileURLToPath(new URL(`./packages/${name}/src/index.ts`, import.meta.url));
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      '@fables/core': pkgSrc('core'),
+      '@fables/forge-dsl': pkgSrc('forge-dsl'),
+      '@fables/forge-vm': pkgSrc('forge-vm'),
+      '@fables/plugin-sdk': pkgSrc('plugin-sdk'),
+      '@fables/sync': pkgSrc('sync'),
+      '@fables/ui': pkgSrc('ui'),
+    },
+  },
   test: {
     // Retry once: the jsdom UI tests run under v8 coverage instrumentation on
     // shared CI runners, where async `waitFor`s occasionally exceed their

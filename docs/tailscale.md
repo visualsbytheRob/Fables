@@ -52,13 +52,25 @@ Download **Tailscale** from the App Store and sign in with the same account. Tur
 
 ### 3. Start Fables and expose port 4870 over Tailscale
 
-On your Mac/PC, start Fables normally:
+On your Mac/PC, build and start Fables. For an always-on deployment use the
+**production** build (compiled, no watch overhead):
 
 ```bash
-pnpm dev
+pnpm install
+pnpm build
+pnpm start          # → node apps/server/dist/server.js
 ```
 
-Fables defaults to port `4870`. Once it's running, expose that port with:
+Configure where data lives and which port to bind with environment variables
+(data defaults to `~/.fables`, port to `4870`):
+
+```bash
+DATA_DIR="$HOME/.fables" PORT=4870 pnpm start
+```
+
+For development with live reload, use `pnpm dev` instead of `pnpm build && pnpm start`.
+
+Once Fables is running, expose that port with:
 
 ```bash
 tailscale serve --bg 4870
