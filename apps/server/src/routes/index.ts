@@ -52,6 +52,7 @@ import { narrationRoutes } from './narration.js';
 import { soundscapeRoutes } from './soundscape.js';
 import { readalongRoutes } from './readalong.js';
 import { studioRoutes } from './studio.js';
+import { audiobookRoutes } from './audiobook.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -88,6 +89,7 @@ export const routes: FastifyPluginAsync[] = [
   soundscapeRoutes,
   readalongRoutes,
   studioRoutes,
+  audiobookRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
