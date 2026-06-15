@@ -106,6 +106,7 @@ const settingsBody = z.object({
   killSwitch: z.boolean().optional(),
   featureToggles: z.record(z.enum(AI_FEATURES), z.boolean()).optional(),
   excludedNotebooks: z.array(z.string().min(1)).max(1000).optional(),
+  promptLogging: z.boolean().optional(),
 });
 
 const rewriteBody = z.object({
@@ -168,6 +169,7 @@ export const aiRoutes: FastifyPluginAsync = async (app) => {
       killSwitch: body.killSwitch ?? current.killSwitch,
       featureToggles: body.featureToggles ?? current.featureToggles,
       excludedNotebooks: body.excludedNotebooks ?? current.excludedNotebooks,
+      promptLogging: body.promptLogging ?? current.promptLogging,
     });
     // F1392: reflect the kill switch onto the live runtime immediately.
     app.ai.setKillSwitch(next.killSwitch);

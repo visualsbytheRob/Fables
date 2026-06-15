@@ -33,12 +33,15 @@ export interface AiSettings {
   featureToggles: Partial<Record<AiFeature, boolean>>;
   /** F1394: notebook ids excluded from ALL AI operations (local + cloud). */
   excludedNotebooks: string[];
+  /** F1316: local prompt/response logging. OFF by default. */
+  promptLogging?: boolean | undefined;
 }
 
 export const DEFAULT_AI_SETTINGS: AiSettings = {
   killSwitch: false,
   featureToggles: {},
   excludedNotebooks: [],
+  promptLogging: false,
 };
 
 /** Whether a feature may run under the current settings (F1391 + F1392). */
@@ -78,6 +81,7 @@ export function aiSettingsRepo(db: Db) {
           ),
         ),
         excludedNotebooks: [...new Set(settings.excludedNotebooks)],
+        promptLogging: settings.promptLogging ?? false,
       };
       db.prepare(
         `INSERT INTO ai_settings (id, data) VALUES (1, ?)

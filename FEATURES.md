@@ -1789,13 +1789,13 @@ green tree at every commit. Epics assume Tier 1 is complete.
 ### Local Model Runtime (F1301–F1310)
 
 - [x] F1301 — Ollama adapter: detect, list models, health check
-- [ ] F1302 — llama.cpp server adapter as alternative backend
+- [x] F1302 — llama.cpp server adapter — `ai/llamacpp.ts` (native /completion + /health + /v1/models), registered after Ollama
 - [x] F1303 — Backend abstraction: one interface, pluggable engines
 - [x] F1304 — Model capability registry (context size, speed class)
-- [ ] F1305 — Streaming token output through server to UI
-- [ ] F1306 — Request queue with cancellation
-- [ ] F1307 — Resource guardrails (no AI when battery/CPU constrained, configurable)
-- [ ] F1308 — Model download guidance UI (not bundled)
+- [x] F1305 — Streaming token output — `AIRuntime.generateStream` + adapter SSE parse, `POST /ai/stream` (SSE, abort-on-disconnect)
+- [x] F1306 — Request queue with cancellation — `ai/queue.ts` concurrency-limited FIFO + per-task cancel, `GET /ai/queue`
+- [x] F1307 — Resource guardrails — `ai/resource-policy.ts` battery/CPU/memory budget resolver, `POST /ai/resource/evaluate`
+- [~] F1308 — Model download guidance — web/docs surface; the adapters degrade gracefully when no model is present
 - [x] F1309 — Zero-AI graceful mode: every feature optional
 - [x] F1310 — Runtime adapter tests with mock backend
 
@@ -1806,10 +1806,10 @@ green tree at every commit. Epics assume Tier 1 is complete.
 - [x] F1313 — Template library versioned in-repo
 - [x] F1314 — Per-task model routing (small for tags, big for prose)
 - [x] F1315 — Response schema validation (JSON tasks re-asked on parse failure)
-- [ ] F1316 — Prompt/response logging (local, inspectable, off by default)
-- [ ] F1317 — User-editable prompt overrides
+- [x] F1316 — Prompt/response logging — `ai_prompt_log` (migration 047), off by default (AI setting), `GET/DELETE /ai/prompt-log`
+- [x] F1317 — User-editable prompt overrides — `ai/prompt-overrides.ts` slot-validated resolver + `ai_prompt_overrides`, `/ai/prompts`
 - [x] F1318 — Determinism settings (temperature presets per task)
-- [ ] F1319 — Prompt regression harness with golden outputs
+- [x] F1319 — Prompt regression harness — `ai/prompt-regression.ts` golden-output similarity scoring, `POST /ai/prompt-regression`
 - [x] F1320 — Prompt infra tests
 
 ### Vault Q&A — RAG (F1321–F1330)

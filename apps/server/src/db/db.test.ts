@@ -63,6 +63,7 @@ describe('migrations', () => {
       '044-bulk-journal',
       '045-scripts',
       '046-profiles',
+      '047-ai-runtime',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });

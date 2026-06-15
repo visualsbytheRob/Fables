@@ -97,4 +97,23 @@ export class AIRuntime {
   async pickModel(desired: SpeedClass): Promise<ModelInfo | null> {
     return selectForSpeed(await this.listModels(), desired);
   }
+
+  /**
+   * Stream a completion token-by-token via the active backend (F1305). When the
+   * backend implements `generateStream` its deltas are forwarded; otherwise this
+   * falls back to a one-shot `generate` and yields the whole text once, so every
+   * caller can use the streaming API regardless of backend.
+   */
+  async *generateStream(req: GenerateRequest): AsyncIterable<string> {
+    const adapter = await this.activeAdapter();
+    if (!adapter) {
+      throw new AppError('BAD_REQUEST', 'no AI backend available — install a local model runtime');
+    }
+    if (adapter.generateStream) {
+      yield* adapter.generateStream(req);
+      return;
+    }
+    const { text } = await adapter.generate(req);
+    yield text;
+  }
 }

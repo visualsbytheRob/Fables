@@ -14,7 +14,9 @@ import { CollabService } from './collab/service.js';
 import { ExtendedVaultService } from './vault/extended-service.js';
 import { registerVaultDataKeyGetter } from './vault/attachment-crypto.js';
 import { AIRuntime } from './ai/runtime.js';
+import { AiRequestQueue } from './ai/queue.js';
 import { OllamaAdapter } from './ai/ollama.js';
+import { LlamaCppAdapter } from './ai/llamacpp.js';
 import { ClaudeAdapter } from './ai/claude.js';
 import { TtsRuntime } from './audio/tts/runtime.js';
 import { PiperAdapter } from './audio/tts/piper.js';
@@ -53,6 +55,8 @@ declare module 'fastify' {
     vault: ExtendedVaultService;
     /** AI runtime: pluggable language-model backends; optional/graceful (Epic 14). */
     ai: AIRuntime;
+    /** Concurrency-limited, cancellable AI request queue (F1306). */
+    aiQueue: AiRequestQueue;
     /** TTS runtime: pluggable speech engines; optional/graceful (Epic 17). */
     tts: TtsRuntime;
     /** Local AI token-usage meter (F1367). */
@@ -113,11 +117,15 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // is registered too but only becomes available when an API key is configured
   // and is opt-in (F1361–F1365). Absent/unavailable backends mean every AI
   // feature degrades gracefully (F1309). Tests register a mock adapter.
-  const ai = new AIRuntime().register(new OllamaAdapter()).register(new ClaudeAdapter());
+  const ai = new AIRuntime()
+    .register(new OllamaAdapter())
+    .register(new LlamaCppAdapter())
+    .register(new ClaudeAdapter());
   // Apply the persisted global kill switch on boot (F1392) so "AI off" survives
   // restarts — secret-by-default if the user turned everything off.
   ai.setKillSwitch(aiSettingsRepo(db).get().killSwitch);
   app.decorate('ai', ai);
+  app.decorate('aiQueue', new AiRequestQueue(2));
   app.decorate('aiUsage', usageMeter(db));
 
   // TTS runtime (Epic 17) — a local Piper-class engine is preferred; it's only
