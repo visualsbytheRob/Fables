@@ -65,6 +65,7 @@ import { ankiRoutes } from './anki.js';
 import { fablepackRoutes } from './fablepack.js';
 import { releaseRoutes } from './releases.js';
 import { interopRoutes } from './interop.js';
+import { feedbackRoutes } from './feedback.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -114,6 +115,7 @@ export const routes: FastifyPluginAsync[] = [
   fablepackRoutes,
   releaseRoutes,
   interopRoutes,
+  feedbackRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,

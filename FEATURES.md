@@ -2527,16 +2527,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Reader Feedback Loop (F1851–F1860)
 
-- [ ] F1851 — Local reader feedback notes (per-moment reactions)
-- [ ] F1852 — Feedback export bundle to send back to authors
-- [ ] F1853 — Author feedback inbox (import reader bundles)
-- [ ] F1854 — Aggregated choice statistics (local playthroughs)
-- [ ] F1855 — Drop-off analysis per knot
-- [ ] F1856 — Ending distribution charts
-- [ ] F1857 — Playtest mode with structured prompts at checkpoints
-- [ ] F1858 — Feedback anonymization options
-- [ ] F1859 — Feedback loop tests
-- [ ] F1860 — Playtesting guide
+- [x] F1851 — Local reader feedback notes — `feedbackRepo.addFeedback` (migration 038), POST /stories/:id/feedback
+- [x] F1852 — Feedback export bundle — `exportBundle`, POST /stories/:id/feedback/export
+- [x] F1853 — Author feedback inbox — `importBundle`, POST /stories/:id/feedback/import
+- [x] F1854 — Aggregated choice statistics — `choiceStats` over the play-event log
+- [x] F1855 — Drop-off analysis per knot — `dropOff` (last-visited knot of ending-less sessions)
+- [x] F1856 — Ending distribution — `endingDistribution` (charts are web; data ships)
+- [~] F1857 — Playtest mode prompts — web playtest UI; the play-event + feedback capture backs it
+- [x] F1858 — Feedback anonymization — export `anonymize` coarsens timestamps
+- [x] F1859 — Feedback loop tests — route + aggregation suites
+- [~] F1860 — Playtesting guide — distribution docs pass (F1896)
 
 ### Generative Art — ComfyUI Adapter (F1861–F1870)
 

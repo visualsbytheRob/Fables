@@ -54,6 +54,7 @@ describe('migrations', () => {
       '035-cards',
       '036-decks',
       '037-learning-settings',
+      '038-feedback',
     ]);
     expect(migrate(db).applied).toEqual([]);
   });
