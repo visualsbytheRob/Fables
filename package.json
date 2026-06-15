@@ -1,6 +1,6 @@
 {
   "name": "fables",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "description": "A personal Knowledge OS fused with an interactive fiction engine. Your notes are the world; your stories run on a compiler you own.",
   "license": "MIT",

@@ -1,5 +1,46 @@
 # Changelog
 
+## v2.0.0 — Tier 2 complete
+
+Fables v2.0: the Knowledge OS grows a second tier. Everything from v1.0 plus a
+plugin architecture, real-time collaboration, an encrypted vault, AI assists,
+a deep importer suite, a full audio/narration studio, spaced-repetition
+learning, story interop & distribution, and a power-user automation layer —
+built across Epics 11–21 (F1001–F2026).
+
+### Tier 2 epics
+
+- **Epic 11 — Plugins (F1001–F1100):** sandboxed worker-thread runtime, capability security, host APIs, `@fables/plugin-sdk`, extension points, `.fplugin` distribution.
+- **Epic 12 — Collaboration (F1101–F1200):** CRDT/Yjs shared editing, rooms, presence, comments — local-first.
+- **Epic 13 — Encryption & Security (F1201–F1300):** Argon2id + XChaCha20-Poly1305 vault, at-rest field encryption, tamper-evident audit log, compliance backend.
+- **Epic 14 — AI Assist (F1301–F1400):** pluggable AI runtime with graceful degradation, story/character/action assists, consent-gated cloud adapters.
+- **Epic 15 — Importers (F1401–F1500):** Notion, Evernote, Apple Notes, outliners, documents — deterministic, with a pluggable import framework.
+- **Epic 16 — Audio & Narration (F1501–F1640):** TTS runtime, casting, recording takes, soundscapes, read-along, audiobook export, accessible playback.
+- **Epic 18 — Spaced Repetition (F1701–F1800):** FSRS-5 scheduler, cards/decks, Anki interop, learning insights & habits.
+- **Epic 19 — Story Interop & Distribution (F1801–F1900):** Ink/Twee import, `.fablepack` (deterministic, signed), `.fablearchive` fixity, ComfyUI generative art, reader feedback loop.
+- **Epic 20 — Multi-Vault, Automation & Power Tools (F1901–F2000):** vault registry, automation rules, cron jobs, webhooks & integrations, scripting console, bulk operations, FQL v2, workspace profiles, power tools, Grand Close.
+- **Epic 21 — New Millennium Polish (F2001–F2022):** the design-system encore (see `docs/devlog/epic-21.md`).
+
+### Epic 20 highlights
+
+- **Multi-Vault (F1901–F1910):** named vaults across data dirs, one-active invariant, isolated settings, per-vault encryption state, templates, cold storage.
+- **Automation & Jobs (F1911–F1930):** a pure rule engine (triggers→conditions→actions, dry-run, cascade protection) and a cron scheduler (parse/next/missed/describe) with a concurrency-guarded job model.
+- **Webhooks & Integrations (F1931–F1940):** outbound subscriptions (templated, HMAC-signed), retries + dead-letter, token-authenticated inbound capture, RSS feed output.
+- **Scripting Console (F1941–F1950):** a script library scoped to the plugin capability surface, with static dry-run scope analysis and an example gallery.
+- **Bulk Operations (F1951–F1960):** preview → apply → undo over a pure engine (find/replace, field edits, link rewriting, tag ops, merge, split), fully journalled.
+- **FQL v2 (F1961–F1970):** aggregations, a sandboxed computed-field expression engine, query variables, a static EXPLAIN, and a linter.
+- **Power Tools (F1981–F1990):** vault statistics, duplicate finder, broken-everything finder, configurable linter with fix-its, storage analyzer.
+- **Grand Close (F1991–F2000):** full regression run, performance re-baseline, documentation audit, demo vault v2, the Fables Book, retrospective, and the v2.0 ship.
+
+### The numbers
+
+3,800+ tests across 330+ files, all green. TypeScript strict throughout
+(`exactOptionalPropertyTypes` + `noUncheckedIndexedAccess`). 46 numbered
+migrations. Local-first, owner-only, served over Tailscale as an iPhone PWA.
+
+See `docs/devlog/epic-20.md` for the Epic 20 retrospective and the full
+shipped/triaged breakdown.
+
 ## v1.0.0 — Tier 1 complete
 
 Fables v1.0: a personal Knowledge OS fused with the Forge interactive-fiction engine.

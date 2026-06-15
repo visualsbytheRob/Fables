@@ -60,6 +60,20 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 
 ---
 
+## Power-User Features (Tier 2, Epic 20)
+
+**Automate, query, and maintain a large vault.**
+
+- **[Multi-Vault](multi-vault.md)** — Named vaults across data dirs, per-vault settings and encryption, templates, cold storage.
+- **[FQL v2](fql-v2.md)** — Aggregations, computed-field expressions, query variables, EXPLAIN, and a linter.
+- **[Webhooks & Integrations](webhooks.md)** — Outbound webhooks, token-auth inbound capture, RSS output, iOS Shortcuts recipe.
+- **[Scripting Console](scripting.md)** — A script library scoped to the plugin capability surface, with static dry-run analysis.
+- **[Bulk Operations](bulk-operations.md)** — Preview → apply → undo across many notes: find/replace, merge, split, retag.
+- **[Workspace Profiles](workspace-profiles.md)** — Named UI states, focus modes, per-device defaults, export/import.
+- **[Power Tools](power-tools.md)** — Vault statistics, duplicate finder, broken-everything finder, linter, storage analyzer.
+
+---
+
 ## Build Logs & Retrospectives
 
 **Follow the daily progress of Fables development.**
@@ -81,6 +95,16 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 ### Tier 2 — Stretch Epics
 
 - **[Epic 11: Plugin & Extension Architecture](devlog/epic-11.md)** — Sandboxed worker-thread plugins with capability model, SDK, and distribution pipeline.
+- **[Epics 12–19](devlog/)** — Collaboration, encryption, AI, importers, audio, spaced repetition, and story distribution (see the `devlog/` directory).
+- **[Epic 20: Multi-Vault, Automation & Power Tools](devlog/epic-20.md)** — The power-user tier and the close of the 2,000-feature plan.
+
+---
+
+## Milestones
+
+- **[The Fables Book](the-fables-book.md)** — A narrative tour of the whole system.
+- **[v1.0 Announcement](announcement.md)** — What Fables is and why it exists.
+- **[v2.0 Announcement](announcement-v2.md)** — Tier 2 complete, written as a fable.
 
 ---
 
@@ -102,4 +126,4 @@ Welcome to Fables — a personal Knowledge OS fused with an interactive fiction 
 
 ---
 
-**Last updated:** Day 10 (June 13, 2026). This documentation describes Fables v1.0 (Tier 1 complete, Tier 2 in progress).
+**Last updated:** June 15, 2026. This documentation describes Fables v2.0 (Tier 1 + Tier 2 complete; the 2,000-feature plan shipped through Epic 20, with Epic 21 polish).
