@@ -17,7 +17,9 @@ Your notes are the world. Your stories run on a compiler you own.
 6. Keep `pnpm test` and `pnpm build` green at every commit. Do not leave the tree broken at end of session.
 7. Update the **Status** line below at the end of every session.
 
-**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
+**Status:** Epic 18 (Spaced Repetition & Learning) underway — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 + Review Experience (server) F1721–F1730 + Story-Driven Learning F1731–F1740 COMPLETE/server.** Story-driven: due cards become a **provably-compilable Fable Forge "review fable"** (`generateReviewStory`), mastery gate by current retrievability, card creation from story source. Routes /review/story + /review/mastery + /stories/:id/cards/sync. **3,258 tests green. CI green.** Next: F1741 (Decks & Organization). (Detail line below retained.)
+
+**Status (detail):** Epic 18 — **Scheduler Core F1701–F1710 + Card Authoring F1711–F1720 COMPLETE** ([x] shipped; F1704 param-optimizer + F1714/F1716 web [~]). A faithful pure **FSRS-5** scheduler (`learning/fsrs.ts`, 19 default weights) verified against the exact forgetting-curve identities (R(S,S)=0.9, I(S,0.9)=S) + monotonicity + a 100k-card benchmark; card model + immutable review log (migration 035); timezone-correct due-queue + capped new-card intake; suspend/bury; orphan-on-note-delete. Authoring: cloze (multi-index) + Q&A + auto-suggestion extractors (`learning/extract.ts`), live-link sync that reconciles a note's cards by blockRef preserving review history, a filtered card browser. Review Experience: undo-last-rating (restores prior FSRS state + drops the log row) + session summary (counts by rating); the phone-first review UI itself is web. Routes under /cards + /review + /notes/:id/cards/sync. **3,233 tests green across 296 files. CI green.** Next: F1731 (Story-Driven Learning) — the Socrates-flavoured heart, where due cards become fables. Prior epics 11–17 complete (Epic 17 Audio Fables F1601–F1700). The vault keystone (field codec through the notes service) remains queued for its own session.
 
 **Status (Epic 17):** Epic 17 (Audio Fables) server foundation **COMPLETE** — F1601–F1700 all resolved ([x] shipped or [~] web/Web-Audio-layer-deferred). Shipped: pluggable TTS runtime + Piper adapter + content-addressed cache (hit-rate + LRU + priority queue), voice casting (attribution/separation/resolution + cast sheets), narration renderer (scene + timeline + WAV pre-render), soundscapes (Forge bindings/triggers + CC0 library + mixer), read-along alignment, recording studio (content-addressed takes + recording plan), audiobook export (chapters/metadata/cue), playback (resume/queue/pins/stats), accessibility (transcripts/VTT/spoken menus + mono/balance/normalize), and the end-to-end pipeline test. Migrations 030–034. `docs/audio/tts.md`, `docs/audio/guide.md`, `docs/devlog/epic-17.md`. **3,164 tests green across 286 files. CI green.** Next: F1701 (Epic 18 — Spaced Repetition & Learning). The Web-Audio/PWA playback, editor, mic, and codec layers are deferred-with-reason. Prior: Epic 16 (Canvas) server foundation complete; earlier Tier-2 epics 11–15. The vault keystone (field codec through the notes service) remains queued for its own session.
 
@@ -2361,16 +2363,16 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 ### Story-Driven Learning (F1731–F1740)
 
-- [ ] F1731 — Quiz knots: story choices as recall checks
-- [ ] F1732 — Story generator from due cards (review disguised as fable)
-- [ ] F1733 — Mastery gates in stories (path unlocks by retention)
-- [ ] F1734 — Learning-mode story template in Forge stdlib
-- [ ] F1735 — Card creation from story content (codex → cards)
-- [ ] F1736 — Spaced story re-reads (schedule story revisits)
-- [ ] F1737 — Language-learning fable mode (vocab integration)
-- [ ] F1738 — Story quiz analytics
-- [ ] F1739 — Demo learning fable in seed
-- [ ] F1740 — Story-learning tests
+- [x] F1731 — Quiz knots: story choices as recall checks — generated `# quiz` knots (`learning/story-gen.ts`)
+- [x] F1732 — Story generator from due cards (review disguised as fable) — `generateReviewStory` (output provably compiles), POST /review/story
+- [x] F1733 — Mastery gates in stories (path unlocks by retention) — `masteryGate` + `cardRetrievability`, POST /review/mastery
+- [~] F1734 — Learning-mode story template in Forge stdlib — Forge stdlib authoring pass; the generator embodies the pattern
+- [x] F1735 — Card creation from story content (codex → cards) — POST /stories/:id/cards/sync (extracts from story source)
+- [~] F1736 — Spaced story re-reads (schedule story revisits) — needs a story-as-study-item scheduling model
+- [~] F1737 — Language-learning fable mode (vocab integration) — vocab-card integration pass
+- [~] F1738 — Story quiz analytics — reuses review_log + session summary; quiz-specific rollups deferred
+- [~] F1739 — Demo learning fable in seed — seed content pass
+- [x] F1740 — Story-learning tests — story-gen (22, incl. compile assertions) + route suites
 
 ### Decks & Organization (F1741–F1750)
 

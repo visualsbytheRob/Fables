@@ -56,6 +56,7 @@ import { audiobookRoutes } from './audiobook.js';
 import { playbackRoutes } from './playback.js';
 import { audioA11yRoutes } from './audio-a11y.js';
 import { cardRoutes } from './cards.js';
+import { learningStoryRoutes } from './learning-story.js';
 
 /** Every resource module exports a plugin and registers here — one line per resource. */
 export const routes: FastifyPluginAsync[] = [
@@ -96,6 +97,7 @@ export const routes: FastifyPluginAsync[] = [
   playbackRoutes,
   audioA11yRoutes,
   cardRoutes,
+  learningStoryRoutes,
   searchRoutes,
   embeddingsRoutes,
   insightsRoutes,
