@@ -1711,22 +1711,22 @@ green tree at every commit. Epics assume Tier 1 is complete.
 
 - [x] F1251 — Encrypted op-log payloads (server stores ciphertext)
 - [x] F1252 — Encrypted CRDT updates for collab on encrypted docs
-- [ ] F1253 — Device key exchange for multi-device vaults
-- [ ] F1254 — Device authorization flow (QR + fingerprint verify)
-- [ ] F1255 — Revoked-device key rotation
-- [ ] F1256 — Encrypted share grants (wrapped keys per recipient)
-- [ ] F1257 — Metadata minimization in sync envelopes
+- [x] F1253 — Device key exchange — `vault/device-sync.ts` X25519 sealed-box: the data key is sealed to a device public key, only that device opens it
+- [x] F1254 — Device authorization — `deviceFingerprint` (out-of-band verify) ships; the QR display/scan is the web/PWA surface
+- [x] F1255 — Revoked-device key rotation — `rotateOnRevoke` drops the device and re-grants a fresh key to the survivors
+- [x] F1256 — Encrypted share grants — `grantKeyToDevices` seals the key per recipient device (server never sees plaintext)
+- [x] F1257 — Metadata minimization — `minimizeEnvelope` strips titles/notebooks/tags; only opaque id + version + ciphertext cross the wire
 - [x] F1258 — E2E property: server compromise reveals no content (test)
-- [ ] F1259 — Encrypted sync performance benchmarks
-- [ ] F1260 — Encrypted sync tests
+- [~] F1259 — Encrypted sync benchmarks — the crypto ops are benchmarked (F1219); end-to-end sync timing needs the tailnet transport
+- [x] F1260 — Encrypted sync crypto tests — `vault/device-sync.test.ts` (seal/open, wrong-device reject, fingerprint, rotation, minimization)
 
 ### Hardening (F1261–F1270)
 
-- [ ] F1261 — CSP tightened to strict-dynamic with nonce
-- [ ] F1262 — Subresource integrity on all assets
+- [~] F1261 — CSP strict-dynamic + nonce — web build/server-header configuration
+- [~] F1262 — Subresource integrity — a web build-pipeline concern (hash all emitted assets)
 - [x] F1263 — Clipboard hygiene (auto-clear copied secrets)
 - [x] F1264 — Screenshot/screen-recording warnings on secret notes (where detectable)
-- [ ] F1265 — Memory-safe attachment preview pipeline
+- [~] F1265 — Memory-safe attachment preview — browser preview/rendering pipeline (web)
 - [x] F1266 — Dependency supply-chain audit + pinning policy
 - [x] F1267 — Parser fuzzing — `security/fuzz/` seeded generators + 9k random inputs through parseFql/lintQuery/compile (no crash/hang/untyped error); added an FQL recursion-depth guard (deep nesting → typed error, not stack overflow)
 - [x] F1268 — Server-side request forgery guards on clipper/import URLs
