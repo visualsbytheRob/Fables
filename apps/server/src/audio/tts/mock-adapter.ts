@@ -11,6 +11,33 @@ const VOICES: Voice[] = [
   { id: 'mock-ben', name: 'Ben (mock)', lang: 'en-GB', gender: 'male', quality: 'high' },
 ];
 
+const MOCK_SAMPLE_RATE = 8000;
+
+/** A valid 8 kHz mono 16-bit PCM WAV whose length tracks the text, so pre-render
+ *  (which parses + concatenates real WAV clips) works against the mock. */
+function mockWav(text: string): Uint8Array {
+  const frames = Math.max(1, text.length) * 80; // 10ms of audio per character
+  const dataBytes = frames * 2;
+  const out = new Uint8Array(44 + dataBytes);
+  const view = new DataView(out.buffer);
+  view.setUint32(0, 0x46464952, true); // "RIFF"
+  view.setUint32(4, 36 + dataBytes, true);
+  view.setUint32(8, 0x45564157, true); // "WAVE"
+  view.setUint32(12, 0x20746d66, true); // "fmt "
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true); // PCM
+  view.setUint16(22, 1, true); // mono
+  view.setUint32(24, MOCK_SAMPLE_RATE, true);
+  view.setUint32(28, MOCK_SAMPLE_RATE * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  view.setUint32(36, 0x61746164, true); // "data"
+  view.setUint32(40, dataBytes, true);
+  // Non-zero samples derived from the text so distinct lines differ.
+  for (let i = 0; i < text.length; i++) out[44 + i] = text.charCodeAt(i) & 0xff;
+  return out;
+}
+
 export class MockTtsAdapter implements TtsAdapter {
   readonly name = 'mock';
   available = true;
@@ -28,15 +55,12 @@ export class MockTtsAdapter implements TtsAdapter {
   async synthesize(req: SynthesisRequest): Promise<SynthesisResult> {
     this.calls++;
     const voiceId = req.voiceId ?? VOICES[0]!.id;
-    // One byte per character of input — enough to make distinct texts distinct.
-    const audio = new Uint8Array(Math.max(1, req.text.length));
-    for (let i = 0; i < req.text.length; i++) audio[i] = req.text.charCodeAt(i) & 0xff;
     return {
-      audio,
+      audio: mockWav(req.text),
       format: 'wav',
-      sampleRate: 22_050,
+      sampleRate: MOCK_SAMPLE_RATE,
       voiceId,
-      durationMs: req.text.length * 50,
+      durationMs: req.text.length * 10,
     };
   }
 }
