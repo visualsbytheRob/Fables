@@ -29,6 +29,10 @@ if not exist "apps\server\dist\server.js" (
   call pnpm build || ( echo  Build failed. & pause & exit /b 1 )
 )
 
+rem Free port 4870 in case a previous Fables server is still running (closing the
+rem window doesn't always stop the node process), so we don't hit EADDRINUSE.
+for /f "tokens=5" %%a in ('netstat -ano ^| findstr /r /c:":4870 .*LISTENING"') do taskkill /F /PID %%a >nul 2>nul
+
 echo.
 echo  Starting Fables. Keep this window open while you use it.
 echo  Opening http://localhost:4870 in your browser...
