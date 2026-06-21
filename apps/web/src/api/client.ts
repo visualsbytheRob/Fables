@@ -35,11 +35,19 @@ async function parse<T>(res: Response): Promise<T> {
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(`/api/v1${path}`, {
-    headers: { 'content-type': 'application/json', ...init?.headers },
-    ...init,
-  });
+  const res = await fetch(`/api/v1${path}`, init);
   return parse<T>(res);
+}
+
+/**
+ * Build a request init that only sets a JSON content-type when there is a body.
+ * Sending `content-type: application/json` with an empty body makes the server's
+ * JSON body parser reject the request — which broke every no-payload POST (e.g.
+ * the AI note actions, restore, duplicate).
+ */
+function jsonInit(method: string, payload: unknown): RequestInit {
+  if (payload === undefined) return { method };
+  return { method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) };
 }
 
 /** Envelope page metadata for paginated lists. */
@@ -68,15 +76,9 @@ async function requestPaged<T>(path: string): Promise<Paginated<T>> {
 export const api = {
   get: <T>(path: string) => request<T>(path),
   getPaged: <T>(path: string) => requestPaged<T>(path),
-  post: <T>(path: string, payload?: unknown) =>
-    request<T>(path, {
-      method: 'POST',
-      body: payload === undefined ? null : JSON.stringify(payload),
-    }),
-  patch: <T>(path: string, payload: unknown) =>
-    request<T>(path, { method: 'PATCH', body: JSON.stringify(payload) }),
-  put: <T>(path: string, payload: unknown) =>
-    request<T>(path, { method: 'PUT', body: JSON.stringify(payload) }),
+  post: <T>(path: string, payload?: unknown) => request<T>(path, jsonInit('POST', payload)),
+  patch: <T>(path: string, payload: unknown) => request<T>(path, jsonInit('PATCH', payload)),
+  put: <T>(path: string, payload: unknown) => request<T>(path, jsonInit('PUT', payload)),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' }),
 };
 
