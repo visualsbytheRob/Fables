@@ -42,12 +42,7 @@ import {
 } from './engine.js';
 import type { PlayerBlock } from './engine.js';
 import { EndScreen } from './EndScreen.js';
-import {
-  BookmarksPanel,
-  ComparePanel,
-  HistoryPanel,
-  TranscriptPanel,
-} from './HistorySheets.js';
+import { BookmarksPanel, ComparePanel, HistoryPanel, TranscriptPanel } from './HistorySheets.js';
 import {
   InfoPanel,
   MenuSheet,
@@ -85,8 +80,8 @@ import { loadPlayerKnowledge, type PlayerKnowledge } from './playerData.js';
 import { CodexPanel } from './Codex.js';
 import { EntityCard } from './EntityCard.js';
 import { LorePopover, MAX_LORE_DEPTH, resolveLoreTitle } from './LorePopover.js';
-import { AnnotationsPanel } from './Annotations.js';
-import { addAnnotation, annotationBody, annotationTitle } from './annotations.js';
+import { AnnotationsPanel } from './index.js';
+import { addAnnotation, annotationBody, annotationTitle } from './annotationsLogic.js';
 import { loadLoreVisits, markLoreVisited } from './loreVisits.js';
 import './player.css';
 
@@ -392,7 +387,12 @@ function Player({
   // (loaded or errored — a failed knowledge load just plays without bindings).
   const knowledgeSettled = !knowledgeQuery.isLoading;
   useEffect(() => {
-    if (phase === 'playing' && vmRef.current === null && runtimeError === null && knowledgeSettled) {
+    if (
+      phase === 'playing' &&
+      vmRef.current === null &&
+      runtimeError === null &&
+      knowledgeSettled
+    ) {
       beginFresh();
     }
   }, [phase, beginFresh, runtimeError, knowledgeSettled]);
@@ -685,7 +685,8 @@ function Player({
         }
         if (segment.kind === 'lore') {
           const resolvable =
-            knowledge !== null && resolveLoreTitle(segment.title, knowledge.noteTitleIndex) !== null;
+            knowledge !== null &&
+            resolveLoreTitle(segment.title, knowledge.noteTitleIndex) !== null;
           const visited = loreVisitsRef.current.has(segment.title);
           return (
             <button
@@ -696,7 +697,9 @@ function Player({
               }`}
               onClick={resolvable ? () => openLore(segment.title) : undefined}
               disabled={!resolvable}
-              title={resolvable ? `Lore: ${segment.title}` : `${segment.title} (no longer available)`}
+              title={
+                resolvable ? `Lore: ${segment.title}` : `${segment.title} (no longer available)`
+              }
             >
               {segment.text}
             </button>
@@ -715,8 +718,8 @@ function Player({
         <div className="player-gate">
           <h1>{story.title}</h1>
           <p className="player-gate-sub">
-            This story does not compile yet{build.error !== null ? ` — ${build.error}` : ''}. Fix
-            it in the editor, then come back.
+            This story does not compile yet{build.error !== null ? ` — ${build.error}` : ''}. Fix it
+            in the editor, then come back.
           </p>
           <div className="player-gate-actions">
             <Button variant="primary" onClick={() => navigate(`/stories/${storyId}/edit`)}>
@@ -979,7 +982,7 @@ function Player({
       {panel === 'annotations' ? (
         <AnnotationsPanel
           storyId={storyId}
-          onOpen={(turn) => {
+          onOpen={(turn: number) => {
             setPanel(null);
             const session = vmRef.current;
             if (session !== null && turn > 0 && turn <= session.currentTurn) {

@@ -32,7 +32,7 @@ import { Skeleton } from './components/Skeleton.js';
 import { CheatSheet } from './notes/CheatSheet.js';
 import { QuickCapture } from './notes/QuickCapture.js';
 import { SearchOverlay } from './search/SearchOverlay.js';
-import { Tour } from './onboarding/Tour.js';
+import { Tour } from './onboarding/index.js';
 import { PlaygroundPage } from './pages/Playground.js';
 import { SWUpdateToast } from './pwa/SWUpdateToast.js';
 import { OfflineIndicator } from './offline/OfflineIndicator.js';

@@ -2,7 +2,7 @@
  * First-run tour overlay (F697). A dismissible five-step walkthrough of the
  * fusion features (entities, codex, lore embeds, journal, demo world). It
  * auto-opens once — keyed off localStorage — and never reappears after the
- * reader skips or finishes. Step text and dismissal logic live in `tour.ts`;
+ * reader skips or finishes. Step text and dismissal logic live in `tourLogic.ts`;
  * this component is the presentation + persistence shell.
  *
  * Mounting is someone else's job: just render <Tour /> wherever the app shell
@@ -19,7 +19,7 @@ import {
   nextStep,
   prevStep,
   type StorageLike,
-} from './tour.js';
+} from './tourLogic.js';
 import './onboarding.css';
 
 export interface TourProps {
@@ -52,7 +52,13 @@ export function Tour({ storage, forceOpen = false, onClose }: TourProps) {
   };
 
   return (
-    <div className="tour-overlay" role="dialog" aria-modal="true" aria-label="Welcome to Fables" data-testid="tour">
+    <div
+      className="tour-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Welcome to Fables"
+      data-testid="tour"
+    >
       <div className="tour-card">
         <button className="tour-skip" onClick={close} aria-label="Skip the tour">
           <X size={16} />
@@ -76,9 +82,7 @@ export function Tour({ storage, forceOpen = false, onClose }: TourProps) {
           <span className="tour-progress">
             {step + 1} / {TOUR_STEP_COUNT}
           </span>
-          {step > 0 ? (
-            <Button onClick={() => setStep((i) => prevStep(i))}>Back</Button>
-          ) : null}
+          {step > 0 ? <Button onClick={() => setStep((i) => prevStep(i))}>Back</Button> : null}
           {last ? (
             <Button variant="primary" onClick={close}>
               <Check size={14} /> Done

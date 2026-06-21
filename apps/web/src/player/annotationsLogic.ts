@@ -136,8 +136,7 @@ export function annotationBody(input: {
     .map((line) => `> ${line}`)
     .join('\n');
   return (
-    `${quoted}\n\n` +
-    `— from [${input.storyTitle}](${link}) at turn ${input.turn}${sceneLine}\n`
+    `${quoted}\n\n` + `— from [${input.storyTitle}](${link}) at turn ${input.turn}${sceneLine}\n`
   );
 }
 

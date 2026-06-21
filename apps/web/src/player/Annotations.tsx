@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Highlighter } from '@fables/ui';
 import { useNavigate } from 'react-router-dom';
 import { Sheet } from './PlayerSheets.js';
-import { loadAnnotations, removeAnnotation, type Annotation } from './annotations.js';
+import { loadAnnotations, removeAnnotation, type Annotation } from './annotationsLogic.js';
 
 export function AnnotationsPanel({
   storyId,

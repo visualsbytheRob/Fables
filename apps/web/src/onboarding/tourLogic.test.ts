@@ -12,15 +12,15 @@ import {
   prevStep,
   resetTour,
   type StorageLike,
-} from './tour.js';
+} from './tourLogic.js';
 
 /** In-memory localStorage stand-in so tests run without a DOM. */
 const memoryStore = (): StorageLike => {
   const data = new Map<string, string>();
   return {
-    getItem: (k) => data.get(k) ?? null,
-    setItem: (k, v) => void data.set(k, v),
-    removeItem: (k) => void data.delete(k),
+    getItem: (k: string) => data.get(k) ?? null,
+    setItem: (k: string, v: string) => void data.set(k, v),
+    removeItem: (k: string) => void data.delete(k),
   };
 };
 

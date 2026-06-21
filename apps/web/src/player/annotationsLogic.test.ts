@@ -7,14 +7,14 @@ import {
   loadAnnotations,
   removeAnnotation,
   type StorageLike,
-} from './annotations.js';
+} from './annotationsLogic.js';
 
 function memoryStore(): StorageLike {
   const map = new Map<string, string>();
   return {
-    getItem: (k) => map.get(k) ?? null,
-    setItem: (k, v) => void map.set(k, v),
-    removeItem: (k) => void map.delete(k),
+    getItem: (k: string) => map.get(k) ?? null,
+    setItem: (k: string, v: string) => void map.set(k, v),
+    removeItem: (k: string) => void map.delete(k),
   };
 }
 
@@ -24,7 +24,14 @@ describe('annotations registry', () => {
     expect(loadAnnotations('s1', store)).toEqual([]);
 
     const a = addAnnotation(
-      { noteId: 'n1', storyId: 's1', playthroughId: 'pt1', turn: 3, scene: 'forest', quote: 'The fox' },
+      {
+        noteId: 'n1',
+        storyId: 's1',
+        playthroughId: 'pt1',
+        turn: 3,
+        scene: 'forest',
+        quote: 'The fox',
+      },
       store,
     );
     expect(a.id).toMatch(/^an_/);
@@ -39,9 +46,18 @@ describe('annotations registry', () => {
 
   it('keeps newest annotation first and isolates stories', () => {
     const store = memoryStore();
-    addAnnotation({ noteId: 'n1', storyId: 's1', playthroughId: 'p', turn: 1, scene: '', quote: 'a' }, store);
-    addAnnotation({ noteId: 'n2', storyId: 's1', playthroughId: 'p', turn: 2, scene: '', quote: 'b' }, store);
-    addAnnotation({ noteId: 'n3', storyId: 's2', playthroughId: 'p', turn: 1, scene: '', quote: 'c' }, store);
+    addAnnotation(
+      { noteId: 'n1', storyId: 's1', playthroughId: 'p', turn: 1, scene: '', quote: 'a' },
+      store,
+    );
+    addAnnotation(
+      { noteId: 'n2', storyId: 's1', playthroughId: 'p', turn: 2, scene: '', quote: 'b' },
+      store,
+    );
+    addAnnotation(
+      { noteId: 'n3', storyId: 's2', playthroughId: 'p', turn: 1, scene: '', quote: 'c' },
+      store,
+    );
 
     const s1 = loadAnnotations('s1', store);
     expect(s1.map((x) => x.noteId)).toEqual(['n2', 'n1']);
