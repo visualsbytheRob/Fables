@@ -117,14 +117,16 @@ export async function buildApp(config: AppConfig): Promise<FastifyInstance> {
   // vault's private field (F1214).
   registerVaultDataKeyGetter(vault, () => vault.currentDataKey());
 
-  // AI runtime (Epic 14) — local Ollama is preferred; the Claude cloud adapter
-  // is registered too but only becomes available when an API key is configured
-  // and is opt-in (F1361–F1365). Absent/unavailable backends mean every AI
-  // feature degrades gracefully (F1309). Tests register a mock adapter.
+  // AI runtime (Epic 14) — backends are tried in registration order (first
+  // available wins). Claude is registered first so, when an API key is
+  // configured, the high-quality cloud model is the default; the local Ollama /
+  // llama.cpp backends are the private, offline fallback used when Claude is
+  // absent or disabled. Absent/unavailable backends mean every AI feature
+  // degrades gracefully (F1309). Tests register a mock adapter.
   const ai = new AIRuntime()
+    .register(new ClaudeAdapter())
     .register(new OllamaAdapter())
-    .register(new LlamaCppAdapter())
-    .register(new ClaudeAdapter());
+    .register(new LlamaCppAdapter());
   // Apply the persisted global kill switch on boot (F1392) so "AI off" survives
   // restarts — secret-by-default if the user turned everything off.
   ai.setKillSwitch(aiSettingsRepo(db).get().killSwitch);
