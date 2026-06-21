@@ -20,7 +20,7 @@ function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 
 const messagesBody = (text: string) => ({
   content: [{ type: 'text', text }],
-  model: 'claude-fable-5',
+  model: 'claude-opus-4-8',
   usage: { input_tokens: 11, output_tokens: 7 },
 });
 
@@ -36,7 +36,7 @@ describe('availability + models (F1362)', () => {
     expect(await a.isAvailable()).toBe(true);
     const models = await a.listModels();
     expect(models.map((m) => m.name)).toEqual([...CLAUDE_MODELS]);
-    // Opus/Fable are large-class, Haiku is fast — from the capability registry.
+    // Opus is large-class, Haiku is fast — from the capability registry.
     expect(models.find((m) => m.name.includes('haiku'))?.speedClass).toBe('fast');
     expect(models.find((m) => m.name.includes('opus'))?.speedClass).toBe('large');
   });
@@ -56,7 +56,7 @@ describe('generate (F1361)', () => {
     const a = new ClaudeAdapter({ apiKey: KEY, fetchImpl });
     const res = await a.generate({ prompt: 'hi', system: 'be terse' });
     expect(res.text).toBe('Hello there.');
-    expect(res.model).toBe('claude-fable-5');
+    expect(res.model).toBe('claude-opus-4-8');
     expect(res.tokens).toBe(18);
     expect(fetchImpl).toHaveBeenCalledOnce();
   });

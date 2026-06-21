@@ -32,7 +32,6 @@ const FAMILIES: { match: string; cap: Capability }[] = [
   { match: 'claude-haiku', cap: { contextTokens: 200_000, speedClass: 'fast' } },
   { match: 'claude-sonnet', cap: { contextTokens: 200_000, speedClass: 'balanced' } },
   { match: 'claude-opus', cap: { contextTokens: 200_000, speedClass: 'large' } },
-  { match: 'claude-fable', cap: { contextTokens: 200_000, speedClass: 'large' } },
 ];
 
 const DEFAULT_CAP: Capability = { contextTokens: 4096, speedClass: 'balanced' };

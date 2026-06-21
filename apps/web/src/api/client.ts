@@ -960,3 +960,100 @@ export const sharesApi = {
   /** List items shared with this device (incoming shares). */
   sharedWithMe: () => api.get<SharedWithMeItem[]>('/shared-with-me'),
 };
+
+/* ===== AI / Claude (Epic 14: note intelligence, transforms, ask-your-vault) ===== */
+
+/** Capability-annotated model entry from the active AI backend. */
+export interface AiModelInfo {
+  name: string;
+  contextTokens: number;
+  speedClass: 'fast' | 'balanced' | 'large';
+}
+
+export interface AiStatus {
+  available: boolean;
+  models: AiModelInfo[];
+}
+
+/**
+ * Every AI action degrades gracefully (server F1309): `available:false` when no
+ * backend is configured, then a success/`ok:false` split so the UI can show a
+ * precise error without a thrown exception. Mirrors the server's `AiOutcome<T>`.
+ */
+export type AiOutcome<T> =
+  | { available: false }
+  | ({ available: true; ok: true } & T)
+  | { available: true; ok: false; error: string };
+
+export type RewriteMode = 'tighten' | 'expand' | 'formal' | 'casual' | 'simplify';
+
+export interface MeetingAction {
+  task: string;
+  owner: string;
+}
+
+export interface AiLinkSuggestion {
+  phrase: string;
+  target: string;
+  targetId: string;
+}
+
+/* --- Ask-your-vault (RAG) --- */
+
+export type RagConfidence = 'high' | 'medium' | 'low' | 'none';
+
+export interface RagSource {
+  n: number;
+  id: string;
+  title: string;
+  sourceType: string;
+  score: number;
+}
+
+export interface RagAnswer {
+  answer: string;
+  sources: RagSource[];
+  confidence: RagConfidence;
+  /** False when the pipeline refused for lack of sources (answer holds the refusal). */
+  grounded: boolean;
+  /** False is a hallucination signal — a grounded answer whose [n] markers don't resolve. */
+  citationsValid: boolean;
+  /** Present when `save:true` filed the answer as a searchable note (F1327). */
+  savedNoteId?: string;
+}
+
+export type AskResult = AiOutcome<RagAnswer>;
+
+export interface AskParams {
+  question: string;
+  notebookId?: string;
+  limit?: number;
+  history?: { question: string; answer: string }[];
+  save?: boolean;
+}
+
+export const aiApi = {
+  /** Active-backend availability + models (F1309). Never throws on no-backend. */
+  status: () => api.get<AiStatus>('/ai/status'),
+
+  // Per-note intelligence (advisory; applying is an ordinary, undoable edit).
+  summary: (noteId: string) =>
+    api.post<AiOutcome<{ summary: string }>>(`/notes/${noteId}/ai/summary`),
+  tags: (noteId: string) => api.post<AiOutcome<{ tags: string[] }>>(`/notes/${noteId}/ai/tags`),
+  title: (noteId: string) => api.post<AiOutcome<{ title: string }>>(`/notes/${noteId}/ai/title`),
+  rewrite: (noteId: string, mode: RewriteMode) =>
+    api.post<AiOutcome<{ text: string }>>(`/notes/${noteId}/ai/rewrite`, { mode }),
+  outline: (noteId: string) =>
+    api.post<AiOutcome<{ outline: string }>>(`/notes/${noteId}/ai/outline`),
+  structure: (noteId: string) =>
+    api.post<AiOutcome<{ summary: string; decisions: string[]; actions: MeetingAction[] }>>(
+      `/notes/${noteId}/ai/structure`,
+    ),
+  links: (noteId: string) =>
+    api.post<AiOutcome<{ links: AiLinkSuggestion[] }>>(`/notes/${noteId}/ai/links`),
+
+  // Ask-your-vault (RAG) + follow-ups.
+  ask: (params: AskParams) => api.post<AskResult>('/ai/ask', params),
+  followUps: (question: string, answer: string) =>
+    api.post<AiOutcome<{ questions: string[] }>>('/ai/follow-ups', { question, answer }),
+};

@@ -23,6 +23,7 @@ import {
   Minimize2,
   Pin,
   PinOff,
+  Sparkles,
   useToast,
 } from '@fables/ui';
 import { EditorView, keymap, Prec } from '@uiw/react-codemirror';
@@ -34,12 +35,15 @@ import {
   type NoteWithTags,
 } from '../api/client.js';
 import {
+  useAiStatus,
   useCreateNote,
   useInvalidateNotes,
   useNoteIndex,
   usePatchNote,
   useTags,
 } from '../api/hooks.js';
+import { NoteAiMenu } from '../ai/NoteAiMenu.js';
+import { AskClaudePanel } from '../ai/AskClaudePanel.js';
 import { useRegisterCommands } from '../commands/registry.js';
 import { MarkdownEditor } from '../editor/MarkdownEditor.js';
 import { loadEditorSettings } from '../editor/settings.js';
@@ -138,6 +142,7 @@ export function NoteEditorPane({
   const [showInNoteFind, setShowInNoteFind] = useState(false);
   const [showRelated, setShowRelated] = useState(false);
   const [showInsertTemplate, setShowInsertTemplate] = useState(false);
+  const [showAsk, setShowAsk] = useState(false);
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null);
   const [editorSettings] = useState(loadEditorSettings);
   const [previewSettings, setPreviewSettings] = useState(loadPreviewSettings);
@@ -147,6 +152,8 @@ export function NoteEditorPane({
   const invalidate = useInvalidateNotes();
   const tags = useTags();
   const noteIndex = useNoteIndex();
+  const aiStatus = useAiStatus();
+  const aiAvailable = aiStatus.data?.available ?? false;
   const viewRef = useRef<EditorView | null>(null);
 
   // F1111–F1140: Real-time collaboration (lazy-loaded; yjs stays off the initial chunk).
@@ -478,6 +485,16 @@ export function NoteEditorPane({
       keywords: 'related suggestions similar',
       run: () => setShowRelated((v) => !v),
     },
+    ...(aiAvailable
+      ? [
+          {
+            id: 'ask-claude',
+            label: showAsk ? 'Hide Ask Claude' : 'Ask Claude your vault',
+            keywords: 'ai claude ask question rag vault',
+            run: () => setShowAsk((v) => !v),
+          },
+        ]
+      : []),
   ]);
 
   const crumbs = breadcrumb(roots, note.notebookId);
@@ -511,6 +528,24 @@ export function NoteEditorPane({
               {/* F1132/F1119: presence avatars + collab toggle */}
               <PresenceAvatars peers={collab.peers} />
               <CollabToggle collab={collab} />
+              {/* Epic 14: Claude actions on this note + ask-your-vault (only when AI is up) */}
+              {aiAvailable && (
+                <>
+                  <NoteAiMenu
+                    noteId={note.id}
+                    getContent={() => contentRef.current}
+                    onApply={edit}
+                  />
+                  <Button
+                    title="Ask Claude your vault"
+                    aria-label="Ask Claude"
+                    aria-pressed={showAsk}
+                    onClick={() => setShowAsk((v) => !v)}
+                  >
+                    <Sparkles size={14} />
+                  </Button>
+                </>
+              )}
               <Button
                 title={note.pinned ? 'Unpin' : 'Pin'}
                 aria-label="Pin note"
@@ -653,6 +688,15 @@ export function NoteEditorPane({
       )}
 
       {showRelated && <RelatedPanel note={note} onClose={() => setShowRelated(false)} />}
+
+      {showAsk && aiAvailable && (
+        <AskClaudePanel
+          onOpenNote={(noteId) => {
+            void flush().finally(() => navigate(`/notes/${noteId}`));
+          }}
+          onClose={() => setShowAsk(false)}
+        />
+      )}
 
       {/* F1161–F1170: Comments panel (lazy). The store is in commentsStoreRef;
           we pass a stable handle built from it. */}

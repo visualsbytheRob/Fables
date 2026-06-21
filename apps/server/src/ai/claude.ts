@@ -27,13 +27,16 @@ const ANTHROPIC_VERSION = '2023-06-01';
 const DEFAULT_MAX_TOKENS = 1024;
 const API_KEY_PREFIX = 'sk-ant-';
 
-/** Models this adapter exposes, newest/most-capable first (F1363 routing prefers these). */
-export const CLAUDE_MODELS = [
-  'claude-fable-5',
-  'claude-opus-4-8',
-  'claude-sonnet-4-6',
-  'claude-haiku-4-5',
-] as const;
+/**
+ * Models this adapter exposes, newest/most-capable first (F1363 routing prefers
+ * these). The first entry is the default model (see {@link CLAUDE_MODELS}[0] use
+ * below), so Opus is the current default.
+ *
+ * NOTE: `claude-fable-5` is temporarily withheld (provider-blocked). To restore
+ * it, add `'claude-fable-5'` back as the first entry — that also makes it the
+ * default again.
+ */
+export const CLAUDE_MODELS = ['claude-opus-4-8', 'claude-sonnet-4-6', 'claude-haiku-4-5'] as const;
 
 export type FetchLike = (url: string, init: RequestInit) => Promise<Response>;
 

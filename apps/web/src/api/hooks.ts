@@ -4,6 +4,7 @@
  */
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  aiApi,
   attachmentsApi,
   embeddingsApi,
   graphApi,
@@ -55,6 +56,7 @@ export const queryKeys = {
   allFql: ['fql'] as const,
   savedQueries: ['saved-queries'] as const,
   importJob: (id: string) => ['import-job', id] as const,
+  aiStatus: ['ai', 'status'] as const,
 };
 
 /** Everything note-related that a write may touch. */
@@ -74,6 +76,20 @@ export function useInvalidateNotes() {
       void qc.invalidateQueries({ queryKey: queryKeys.revisions(noteId) });
     }
   };
+}
+
+/**
+ * Whether an AI backend (Claude/local) is available right now, plus its models.
+ * Drives whether the app shows Claude actions at all (graceful degradation,
+ * F1309). Cached briefly and refetched on focus so toggling a backend on/off is
+ * reflected without a reload.
+ */
+export function useAiStatus() {
+  return useQuery({
+    queryKey: queryKeys.aiStatus,
+    queryFn: () => aiApi.status(),
+    staleTime: 30_000,
+  });
 }
 
 /* ===== Queries ===== */
