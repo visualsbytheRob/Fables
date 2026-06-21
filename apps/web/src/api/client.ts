@@ -849,56 +849,58 @@ export interface InsightsOverview {
 }
 
 export interface GrowthDay {
-  date: string;
+  /** YYYY-MM-DD bucket (server field name). */
+  day: string;
   notes: number;
   links: number;
   words: number;
 }
 
+/** {date,count} pair the heatmap component renders (derived client-side). */
 export interface HeatmapDay {
   date: string;
   count: number;
 }
 
 export interface InsightsStreaks {
-  currentStreak: number;
-  longestStreak: number;
-  heatmap: HeatmapDay[];
+  current: number;
+  longest: number;
+  /** index 0 = today … index N = N days ago; value = notes created that day. */
+  heatmap: number[];
 }
 
 export interface StaleNote {
   id: string;
   title: string;
   updatedAt: string;
-  daysSinceUpdate: number;
+  linkDegree: number;
 }
 
 export interface SuggestedLink {
-  id: string;
   sourceId: string;
   sourceTitle: string;
   targetId: string;
   targetTitle: string;
-  score: number;
+  mentionCount: number;
 }
 
-export interface ReadingNote {
-  id: string;
-  title: string;
-  wordCount: number;
-  readingMinutes: number;
+export interface ReadingInsights {
+  plays: number;
+  turns: number;
+  completions: number;
+  topScenes: { scene: string; count: number }[];
 }
 
-export interface DeadEndNote {
-  id: string;
-  title: string;
-  updatedAt: string;
+export interface DeadEnds {
+  orphanNotes: { id: string; title: string; createdAt: string }[];
+  brokenLinks: { id: string; sourceId: string; targetTitle: string }[];
 }
 
 export interface HealthCheckItem {
-  id: string;
+  key: string;
   label: string;
   ok: boolean;
+  detail?: string;
 }
 
 export interface VaultHealth {
@@ -913,8 +915,8 @@ export const insightsApi = {
   stale: (limit = 20) => api.get<StaleNote[]>(`/insights/stale${qs({ limit })}`),
   suggestedLinks: (limit = 20) =>
     api.get<SuggestedLink[]>(`/insights/suggested-links${qs({ limit })}`),
-  reading: () => api.get<ReadingNote[]>('/insights/reading'),
-  deadEnds: () => api.get<DeadEndNote[]>('/insights/dead-ends'),
+  reading: () => api.get<ReadingInsights>('/insights/reading'),
+  deadEnds: () => api.get<DeadEnds>('/insights/dead-ends'),
   health: () => api.get<VaultHealth>('/insights/health'),
   digest: () => api.post<Note>('/insights/digest'),
 };

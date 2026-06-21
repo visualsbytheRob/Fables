@@ -6,9 +6,9 @@ import { GrowthChart } from './GrowthChart.js';
 import type { GrowthDay } from '../api/client.js';
 
 const data: GrowthDay[] = [
-  { date: '2026-06-01', notes: 2, links: 5, words: 400 },
-  { date: '2026-06-02', notes: 3, links: 7, words: 600 },
-  { date: '2026-06-03', notes: 1, links: 4, words: 200 },
+  { day: '2026-06-01', notes: 2, links: 5, words: 400 },
+  { day: '2026-06-02', notes: 3, links: 7, words: 600 },
+  { day: '2026-06-03', notes: 1, links: 4, words: 200 },
 ];
 
 describe('GrowthChart (F793)', () => {

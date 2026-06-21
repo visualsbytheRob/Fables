@@ -35,7 +35,9 @@ export function GrowthChart({ data, field, width = 400, height = 120 }: GrowthCh
   const yScale = (v: number) => pad.t + innerH - ((v - minV) / rangeV) * innerH;
 
   const points = data.map((d, i) => ({ x: xScale(i), y: yScale(d[field]) }));
-  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+  const pathD = points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`)
+    .join(' ');
   // Fill path below the line
   const fillD = `${pathD} L${points[points.length - 1]!.x.toFixed(1)},${(pad.t + innerH).toFixed(1)} L${pad.l.toFixed(1)},${(pad.t + innerH).toFixed(1)} Z`;
 
@@ -82,7 +84,7 @@ export function GrowthChart({ data, field, width = 400, height = 120 }: GrowthCh
           fill="var(--text-dim)"
           fontSize="11"
         >
-          {data[i]?.date.slice(5) ?? ''}
+          {data[i]?.day?.slice(5) ?? ''}
         </text>
       ))}
 

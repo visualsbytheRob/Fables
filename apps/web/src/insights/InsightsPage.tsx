@@ -32,9 +32,23 @@ import {
   useInsightsStreaks,
   useInsightsSuggestedLinks,
 } from '../api/hooks.js';
+import type { HeatmapDay } from '../api/client.js';
 import { ActivityHeatmap } from './ActivityHeatmap.js';
 import { GrowthChart } from './GrowthChart.js';
 import './insights.css';
+
+/**
+ * The server streak heatmap is a flat `number[]` (index 0 = today, index N = N
+ * days ago). Expand it into the {date,count} pairs the heatmap component renders.
+ */
+function heatmapDays(counts: number[]): HeatmapDay[] {
+  const today = new Date();
+  return counts.map((count, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    return { date: d.toISOString().slice(0, 10), count };
+  });
+}
 
 function StatCard({
   label,
@@ -103,8 +117,7 @@ export function InsightsPage() {
     });
   };
 
-  const formatWords = (n: number) =>
-    n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n);
+  const formatWords = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n));
 
   return (
     <div className="insights-page">
@@ -112,11 +125,7 @@ export function InsightsPage() {
         <h1 className="insights-header__title">
           <Brain size={24} /> Insights
         </h1>
-        <Button
-          variant="primary"
-          onClick={handleDigest}
-          disabled={digest.isPending}
-        >
+        <Button variant="primary" onClick={handleDigest} disabled={digest.isPending}>
           {digest.isPending ? <Loader2 size={14} /> : <Zap size={14} />}
           Generate digest
         </Button>
@@ -134,7 +143,11 @@ export function InsightsPage() {
             <StatCard label="Stories" value={overview.data.stories} icon={TrendingUp} />
             <StatCard label="Links" value={overview.data.links} icon={ExternalLink} />
             <StatCard label="Orphans" value={overview.data.orphans} icon={AlertCircle} />
-            <StatCard label="Total words" value={formatWords(overview.data.wordsTotal)} icon={Activity} />
+            <StatCard
+              label="Total words"
+              value={formatWords(overview.data.wordsTotal)}
+              icon={Activity}
+            />
           </div>
         ) : (
           <div className="insights-error">Could not load overview</div>
@@ -172,16 +185,16 @@ export function InsightsPage() {
           <div className="insights-streaks">
             <div className="insights-streak-stats">
               <div className="insights-streak-stat">
-                <span className="insights-streak-stat__value">{streaks.data.currentStreak}</span>
+                <span className="insights-streak-stat__value">{streaks.data.current}</span>
                 <span className="insights-streak-stat__label">Current streak (days)</span>
               </div>
               <div className="insights-streak-stat">
-                <span className="insights-streak-stat__value">{streaks.data.longestStreak}</span>
+                <span className="insights-streak-stat__value">{streaks.data.longest}</span>
                 <span className="insights-streak-stat__label">Longest streak (days)</span>
               </div>
             </div>
             <div className="insights-heatmap">
-              <ActivityHeatmap data={streaks.data.heatmap} weeks={26} />
+              <ActivityHeatmap data={heatmapDays(streaks.data.heatmap)} weeks={26} />
             </div>
           </div>
         ) : streaks.isPending ? (
@@ -205,7 +218,7 @@ export function InsightsPage() {
                   {n.title || 'Untitled'}
                 </button>
                 <span className="insights-list-item__meta">
-                  {n.daysSinceUpdate}d ago
+                  {n.linkDegree} links · {n.updatedAt.slice(0, 10)}
                 </span>
               </li>
             ))}
@@ -222,7 +235,7 @@ export function InsightsPage() {
         {suggested.data && suggested.data.length > 0 ? (
           <ul className="insights-list">
             {suggested.data.map((s) => (
-              <li key={s.id} className="insights-list-item">
+              <li key={`${s.sourceId}-${s.targetId}`} className="insights-list-item">
                 <span className="insights-list-item__link">
                   <button type="button" onClick={() => navigate(`/notes/${s.sourceId}`)}>
                     {s.sourceTitle}
@@ -233,7 +246,7 @@ export function InsightsPage() {
                   </button>
                 </span>
                 <span className="insights-list-item__meta">
-                  score {s.score.toFixed(2)}
+                  {s.mentionCount} mention{s.mentionCount === 1 ? '' : 's'}
                 </span>
               </li>
             ))}
@@ -245,37 +258,40 @@ export function InsightsPage() {
         )}
       </Section>
 
-      {/* Reading funnel */}
-      <Section title="Reading queue">
-        {reading.data && reading.data.length > 0 ? (
-          <ul className="insights-list">
-            {reading.data.map((n) => (
-              <li key={n.id} className="insights-list-item">
-                <button
-                  type="button"
-                  className="insights-list-item__link"
-                  onClick={() => navigate(`/notes/${n.id}`)}
-                >
-                  {n.title || 'Untitled'}
-                </button>
-                <span className="insights-list-item__meta">
-                  {n.wordCount} words · {n.readingMinutes} min
-                </span>
-              </li>
-            ))}
-          </ul>
+      {/* Story reading / play activity */}
+      <Section title="Story reading">
+        {reading.data ? (
+          <>
+            <div className="insights-stats-grid">
+              <StatCard label="Plays" value={reading.data.plays} icon={Activity} />
+              <StatCard label="Turns" value={reading.data.turns} icon={BarChart2} />
+              <StatCard label="Completions" value={reading.data.completions} icon={CircleCheck} />
+            </div>
+            {reading.data.topScenes.length > 0 && (
+              <ul className="insights-list">
+                {reading.data.topScenes.map((s) => (
+                  <li key={s.scene} className="insights-list-item">
+                    <span className="insights-list-item__link">{s.scene}</span>
+                    <span className="insights-list-item__meta">
+                      {s.count} visit{s.count === 1 ? '' : 's'}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
         ) : reading.isPending ? (
           <div className="insights-loading">Loading…</div>
         ) : (
-          <div className="insights-empty">Nothing in the reading queue</div>
+          <div className="insights-empty">No story reading activity yet</div>
         )}
       </Section>
 
       {/* Dead ends */}
       <Section title="Dead-end notes">
-        {deadEnds.data && deadEnds.data.length > 0 ? (
+        {deadEnds.data && deadEnds.data.orphanNotes.length > 0 ? (
           <ul className="insights-list">
-            {deadEnds.data.map((n) => (
+            {deadEnds.data.orphanNotes.map((n) => (
               <li key={n.id} className="insights-list-item">
                 <button
                   type="button"
@@ -284,6 +300,7 @@ export function InsightsPage() {
                 >
                   {n.title || 'Untitled'}
                 </button>
+                <span className="insights-list-item__meta">{n.createdAt.slice(0, 10)}</span>
               </li>
             ))}
           </ul>
@@ -298,18 +315,27 @@ export function InsightsPage() {
       <Section title="Vault health">
         {health.data ? (
           <div className="insights-health">
-            <div className="insights-health__score" aria-label={`Health score ${health.data.score}`}>
+            <div
+              className="insights-health__score"
+              aria-label={`Health score ${health.data.score}`}
+            >
               <Heart size={32} />
               <span className="insights-health__score-value">{health.data.score}</span>
               <span className="insights-health__score-label">/ 100</span>
             </div>
             <ul className="insights-checklist">
               {health.data.checklist.map((item) => (
-                <li key={item.id} className={`insights-checklist-item${item.ok ? ' insights-checklist-item--ok' : ''}`}>
+                <li
+                  key={item.key}
+                  className={`insights-checklist-item${item.ok ? ' insights-checklist-item--ok' : ''}`}
+                >
                   {item.ok ? (
                     <CircleCheck size={14} className="insights-checklist-item__icon" />
                   ) : (
-                    <AlertCircle size={14} className="insights-checklist-item__icon insights-checklist-item__icon--warn" />
+                    <AlertCircle
+                      size={14}
+                      className="insights-checklist-item__icon insights-checklist-item__icon--warn"
+                    />
                   )}
                   <span>{item.label}</span>
                 </li>

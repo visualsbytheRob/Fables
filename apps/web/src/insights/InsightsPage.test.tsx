@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { createWrapper, mockFetchRoutes } from '../test-utils/wrappers.js';
+import { createWrapper, mockFetchRoutes, type FetchRoute } from '../test-utils/wrappers.js';
 import { InsightsPage } from './InsightsPage.js';
 
 const overview = {
@@ -15,25 +15,36 @@ const overview = {
 };
 
 const streaks = {
-  currentStreak: 7,
-  longestStreak: 14,
+  current: 7,
+  longest: 14,
   heatmap: [],
 };
+
+const reading = { plays: 0, turns: 0, completions: 0, topScenes: [] };
+const deadEnds = { orphanNotes: [], brokenLinks: [] };
+
+/** The full route set the page fetches; callers can override individual entries. */
+function routes(overrides: FetchRoute[] = []): FetchRoute[] {
+  const base: FetchRoute[] = [
+    { url: '/api/v1/insights/overview', body: { data: overview } },
+    { url: '/api/v1/insights/growth', body: { data: [] } },
+    { url: '/api/v1/insights/streaks', body: { data: streaks } },
+    { url: '/api/v1/insights/stale', body: { data: [] } },
+    { url: '/api/v1/insights/suggested-links', body: { data: [] } },
+    { url: '/api/v1/insights/reading', body: { data: reading } },
+    { url: '/api/v1/insights/dead-ends', body: { data: deadEnds } },
+    { url: '/api/v1/insights/health', body: { data: { score: 80, checklist: [] } } },
+  ];
+  const byUrl = new Map(base.map((r) => [r.url, r]));
+  for (const o of overrides) byUrl.set(o.url, o);
+  return [...byUrl.values()];
+}
 
 afterEach(() => vi.unstubAllGlobals());
 
 describe('InsightsPage (F791–F800)', () => {
   it('renders overview stat cards', async () => {
-    mockFetchRoutes([
-      { url: '/api/v1/insights/overview', body: { data: overview } },
-      { url: '/api/v1/insights/growth', body: { data: [] } },
-      { url: '/api/v1/insights/streaks', body: { data: streaks } },
-      { url: '/api/v1/insights/stale', body: { data: [] } },
-      { url: '/api/v1/insights/suggested-links', body: { data: [] } },
-      { url: '/api/v1/insights/reading', body: { data: [] } },
-      { url: '/api/v1/insights/dead-ends', body: { data: [] } },
-      { url: '/api/v1/insights/health', body: { data: { score: 80, checklist: [] } } },
-    ]);
+    mockFetchRoutes(routes());
 
     render(<InsightsPage />, { wrapper: createWrapper(['/insights']) });
 
@@ -43,16 +54,7 @@ describe('InsightsPage (F791–F800)', () => {
   });
 
   it('renders streak stats', async () => {
-    mockFetchRoutes([
-      { url: '/api/v1/insights/overview', body: { data: overview } },
-      { url: '/api/v1/insights/growth', body: { data: [] } },
-      { url: '/api/v1/insights/streaks', body: { data: streaks } },
-      { url: '/api/v1/insights/stale', body: { data: [] } },
-      { url: '/api/v1/insights/suggested-links', body: { data: [] } },
-      { url: '/api/v1/insights/reading', body: { data: [] } },
-      { url: '/api/v1/insights/dead-ends', body: { data: [] } },
-      { url: '/api/v1/insights/health', body: { data: { score: 80, checklist: [] } } },
-    ]);
+    mockFetchRoutes(routes());
 
     render(<InsightsPage />, { wrapper: createWrapper(['/insights']) });
 
@@ -62,27 +64,22 @@ describe('InsightsPage (F791–F800)', () => {
   });
 
   it('renders vault health score and checklist', async () => {
-    mockFetchRoutes([
-      { url: '/api/v1/insights/overview', body: { data: overview } },
-      { url: '/api/v1/insights/growth', body: { data: [] } },
-      { url: '/api/v1/insights/streaks', body: { data: streaks } },
-      { url: '/api/v1/insights/stale', body: { data: [] } },
-      { url: '/api/v1/insights/suggested-links', body: { data: [] } },
-      { url: '/api/v1/insights/reading', body: { data: [] } },
-      { url: '/api/v1/insights/dead-ends', body: { data: [] } },
-      {
-        url: '/api/v1/insights/health',
-        body: {
-          data: {
-            score: 85,
-            checklist: [
-              { id: 'orphans', label: 'No orphan notes', ok: false },
-              { id: 'links', label: 'Good link density', ok: true },
-            ],
+    mockFetchRoutes(
+      routes([
+        {
+          url: '/api/v1/insights/health',
+          body: {
+            data: {
+              score: 85,
+              checklist: [
+                { key: 'orphans', label: 'No orphan notes', ok: false },
+                { key: 'links', label: 'Good link density', ok: true },
+              ],
+            },
           },
         },
-      },
-    ]);
+      ]),
+    );
 
     render(<InsightsPage />, { wrapper: createWrapper(['/insights']) });
 

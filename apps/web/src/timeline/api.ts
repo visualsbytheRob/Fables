@@ -73,12 +73,13 @@ function listQuery(params: TimelineListParams): string {
 }
 
 export const timelineApi = {
-  list: (params: TimelineListParams = {}) =>
-    api.get<TimelinePage>(`/timeline${listQuery(params)}`),
-  entityTimeline: (id: string) =>
-    api.get<EntityTimelineEvent[]>(`/entities/${id}/timeline`),
-  chronology: (storyId: string) =>
-    api.get<ChronologyEntry[]>(`/stories/${storyId}/chronology`),
-  export: (body: TimelineExportBody = {}) =>
-    api.post<ExportedChronicle>('/timeline/export', body),
+  // The server returns a bare array of day-groups (no envelope cursor); normalise
+  // to the paginated shape the page expects so `.groups`/`.nextCursor` are safe.
+  list: async (params: TimelineListParams = {}): Promise<TimelinePage> => {
+    const raw = await api.get<TimelinePage | TimelineGroup[]>(`/timeline${listQuery(params)}`);
+    return Array.isArray(raw) ? { groups: raw, nextCursor: null } : raw;
+  },
+  entityTimeline: (id: string) => api.get<EntityTimelineEvent[]>(`/entities/${id}/timeline`),
+  chronology: (storyId: string) => api.get<ChronologyEntry[]>(`/stories/${storyId}/chronology`),
+  export: (body: TimelineExportBody = {}) => api.post<ExportedChronicle>('/timeline/export', body),
 };
