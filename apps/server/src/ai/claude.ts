@@ -138,14 +138,19 @@ export class ClaudeAdapter implements LanguageModelAdapter {
   // ── Internals ──────────────────────────────────────────────────────────────
 
   private requestBody(req: GenerateRequest, stream: boolean): Record<string, unknown> {
+    const model = req.model ?? this.defaultModel;
+    // `temperature` is deprecated on some Claude 4.x models (e.g. claude-opus-4-8)
+    // and sending it returns HTTP 400. Drop it for those models so the same task
+    // router (which sets a per-task temperature) works across every model.
+    const sendTemperature = req.temperature !== undefined && supportsTemperature(model);
     return {
-      model: req.model ?? this.defaultModel,
+      model,
       max_tokens: req.maxTokens ?? DEFAULT_MAX_TOKENS,
       // F1368: keep the request shape cache-friendly — a stable `system` prefix
       // followed by the variable user turn lets the API reuse prompt-cache hits.
       ...(req.system !== undefined ? { system: req.system } : {}),
       messages: [{ role: 'user', content: req.prompt }],
-      ...(req.temperature !== undefined ? { temperature: req.temperature } : {}),
+      ...(sendTemperature ? { temperature: req.temperature } : {}),
       ...(stream ? { stream: true } : {}),
     };
   }
@@ -203,6 +208,18 @@ export class ClaudeAdapter implements LanguageModelAdapter {
       ...(tokens !== undefined ? { tokens } : {}),
     };
   }
+}
+
+/**
+ * Models that have deprecated the `temperature` sampling parameter — sending it
+ * returns HTTP 400. Sonnet/Haiku still accept it; the Opus 4.8 reasoning model
+ * does not. Keep this list narrow and explicit.
+ */
+const NO_TEMPERATURE_MODELS = new Set<string>(['claude-opus-4-8']);
+
+/** Whether a model accepts the `temperature` parameter (F1366 robustness). */
+export function supportsTemperature(model: string): boolean {
+  return !NO_TEMPERATURE_MODELS.has(model);
 }
 
 /** A key looks well-formed for client-side validation before any network call (F1362). */

@@ -9,13 +9,15 @@
 
 /* ── Action dialog ── */
 .ai-dialog {
-  width: min(560px, 86vw);
+  width: min(440px, 84vw);
+  max-height: 78vh;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
 
 .ai-dialog__head {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -29,6 +31,9 @@
 }
 
 .ai-menu-grid {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--space-2);
@@ -80,6 +85,7 @@
 }
 
 .ai-dialog__actions {
+  flex: 0 0 auto;
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
@@ -87,7 +93,8 @@
 
 /* ── Results ── */
 .ai-result {
-  max-height: 46vh;
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
   border: 1px solid var(--border);
   border-radius: var(--radius, 6px);

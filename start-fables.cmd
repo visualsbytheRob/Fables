@@ -9,7 +9,7 @@ rem set "FABLES_OLLAMA_URL=http://127.0.0.1:11434"
 rem (see the "Add power-ups" section of README.md for the full list)
 rem ======================================================================
 
-where pnpm >/dev/null 2>/dev/null
+where pnpm >nul 2>nul
 if errorlevel 1 (
   echo.
   echo  Fables needs two free tools first: Node.js and pnpm.

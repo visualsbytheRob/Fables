@@ -67,6 +67,19 @@ describe('generate (F1361)', () => {
     await expect(a.generate({ prompt: 'hi' })).rejects.toThrow(/API key/);
     expect(fetchImpl).not.toHaveBeenCalled();
   });
+
+  it('omits temperature for models that deprecated it (opus 4.8), keeps it otherwise', async () => {
+    const bodies: Record<string, unknown>[] = [];
+    const fetchImpl = vi.fn<FetchLike>(async (_url, init) => {
+      bodies.push(JSON.parse(init.body as string) as Record<string, unknown>);
+      return jsonResponse(messagesBody('ok'));
+    });
+    const a = new ClaudeAdapter({ apiKey: KEY, fetchImpl });
+    await a.generate({ prompt: 'hi', model: 'claude-opus-4-8', temperature: 0.8 });
+    await a.generate({ prompt: 'hi', model: 'claude-sonnet-4-6', temperature: 0.8 });
+    expect(bodies[0]).not.toHaveProperty('temperature');
+    expect(bodies[1]).toMatchObject({ temperature: 0.8 });
+  });
 });
 
 describe('retries + backoff (F1366)', () => {
